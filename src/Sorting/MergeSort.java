@@ -1,3 +1,6 @@
+package Sorting;
+
+import Utils.ConsolePrinting;
 
 public class MergeSort {
 

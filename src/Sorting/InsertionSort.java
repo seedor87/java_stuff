@@ -1,3 +1,7 @@
+package Sorting;
+
+import Utils.ConsolePrinting;
+
 public class InsertionSort {
 
     public static <T extends Comparable<T>> void insertionSort(T[] arr) {

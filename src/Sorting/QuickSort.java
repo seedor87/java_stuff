@@ -1,3 +1,7 @@
+package Sorting;
+
+import Utils.ConsolePrinting;
+
 public class QuickSort {
 
     public static <T extends Comparable<T>> void exchange(T[] arr, int i, int j) {

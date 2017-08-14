@@ -1,3 +1,5 @@
+package Utils;
+
 import java.util.Arrays;
 
 public class ConsolePrinting {
@@ -20,7 +22,8 @@ public class ConsolePrinting {
             print(delim + elem);
             delim = ", ";
         }
-        print("}");
+        delim = (delim.equals("{")) ? "{}" : "}";
+        print(delim);
     }
 
     public static <T extends Iterable<E>, E> void println(T o) {
@@ -29,6 +32,8 @@ public class ConsolePrinting {
             print(delim + elem);
             delim = ", ";
         }
+        delim = (delim.equals("{")) ? "{}" : "}";
+        print(delim);
         println();
     }
 
@@ -38,7 +43,8 @@ public class ConsolePrinting {
             print(delim + elem);
             delim = ", ";
         }
-        print("}");
+        delim = (delim.equals("{")) ? "{}" : "}";
+        print(delim);
     }
 
     public static <T> void println(T[] o) {
@@ -47,7 +53,9 @@ public class ConsolePrinting {
             print(delim + elem);
             delim = ", ";
         }
-        println("}");
+        delim = (delim.equals("{")) ? "{}" : "}";
+        print(delim);
+        println();
     }
 
     public static void print(int[] arr) {
