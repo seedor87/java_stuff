@@ -4,13 +4,13 @@ import Utils.ConsolePrinting;
 
 public class SelectionSort {
 
-    public static <T extends Comparable<T>> void exchange(T[] arr, int i, int j) {
+    private static  <T extends Comparable<? super T>> void exchange(T[] arr, int i, int j) {
         T tmp = arr[i];
         arr[i] = arr[j];
         arr[j] = tmp;
     }
 
-    public static <T extends Comparable<T>> void selectionSort(T[] arr) {
+    public static  <T extends Comparable<? super T>> void selectionSort(T[] arr) {
         int i,j;
         int n = arr.length;
 

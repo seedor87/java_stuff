@@ -7,11 +7,9 @@ public class ConsolePrinting {
     public static void print(Object o) {
         System.out.print(o.toString());
     }
-
     public static void println(Object o) {
         System.out.println(o.toString());
     }
-
     public static void println() {
         System.out.println();
     }
@@ -51,6 +49,48 @@ public class ConsolePrinting {
         String delim = "{";
         for (T elem : o) {
             print(delim + elem);
+            delim = ", ";
+        }
+        delim = (delim.equals("{")) ? "{}" : "}";
+        print(delim);
+        println();
+    }
+
+    public static void print(char[] o) {
+        String delim = "{";
+        for(char elem: o) {
+            print(delim + "'" + elem + "'");
+            delim = ", ";
+        }
+        delim = (delim.equals("{")) ? "{}" : "}";
+        print(delim);
+    }
+
+    public static void println(char[] o) {
+        String delim = "{";
+        for(char elem: o) {
+            print(delim +  "'" + elem + "'");
+            delim = ", ";
+        }
+        delim = (delim.equals("{")) ? "{}" : "}";
+        print(delim);
+        println();
+    }
+
+    public static void print(Character[] o) {
+        String delim = "{";
+        for(char elem: o) {
+            print(delim + "'" + elem + "'");
+            delim = ", ";
+        }
+        delim = (delim.equals("{")) ? "{}" : "}";
+        print(delim);
+    }
+
+    public static void println(Character[] o) {
+        String delim = "{";
+        for(char elem: o) {
+            print(delim +  "'" + elem + "'");
             delim = ", ";
         }
         delim = (delim.equals("{")) ? "{}" : "}";

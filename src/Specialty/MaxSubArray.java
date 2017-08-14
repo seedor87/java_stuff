@@ -1,10 +1,12 @@
+package Specialty;
+
 import Utils.ConsolePrinting;
 
 import java.util.Arrays;
 
 public class MaxSubArray {
 
-    public static class myInt implements Arithmetic{
+    public static class myInt implements Arithmetic {
         int val;
         public myInt(int val) {
             this.val = val;

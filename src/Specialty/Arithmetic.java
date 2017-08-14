@@ -1,3 +1,4 @@
+package Specialty;
 
 public interface Arithmetic {
 

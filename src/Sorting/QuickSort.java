@@ -4,13 +4,13 @@ import Utils.ConsolePrinting;
 
 public class QuickSort {
 
-    public static <T extends Comparable<T>> void exchange(T[] arr, int i, int j) {
+    private static  <T extends Comparable<? super T>> void exchange(T[] arr, int i, int j) {
         T tmp = arr[i];
         arr[i] = arr[j];
         arr[j] = tmp;
     }
 
-    public static <T extends Comparable<T>> int partition(T[] arr, int left, int right) {
+    private static  <T extends Comparable<? super T>> int partition(T[] arr, int left, int right) {
         int i = left, j = right;
         T pivot = arr[(left + right) / 2];
 
@@ -28,7 +28,7 @@ public class QuickSort {
         return i;
     }
 
-    public static <T extends Comparable<T>> void quickSort(T[] arr, int left, int right) {
+    public static  <T extends Comparable<? super T>> void quickSort(T[] arr, int left, int right) {
         int index = partition(arr, left, right);
         if (left < index - 1)
             quickSort(arr, left, index - 1);
@@ -36,7 +36,7 @@ public class QuickSort {
             quickSort(arr, index, right);
     }
 
-    public static <T extends Comparable<T>> void quickSort(T[] arr) {
+    public static  <T extends Comparable<? super T>> void quickSort(T[] arr) {
         quickSort(arr, 0, arr.length-1);
     }
 

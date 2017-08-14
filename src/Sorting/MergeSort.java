@@ -4,11 +4,11 @@ import Utils.ConsolePrinting;
 
 public class MergeSort {
 
-    public static <T extends Comparable<T>> void mergeSort(T[] arr) {
+    public static <T extends Comparable<? super T>> void mergeSort(T[] arr) {
         mergeSort(arr, 0, arr.length-1);
     }
 
-    public static <T extends Comparable<T>> void mergeSort(T[] arr, int i, int j) {
+    private static <T extends Comparable<? super T>> void mergeSort(T[] arr, int i, int j) {
         int mid = 0;
         if(i < j) {
             mid = (i + j) / 2;
@@ -18,7 +18,7 @@ public class MergeSort {
         }
     }
 
-    public static <T extends Comparable<T>> void merge(T[] arr, int i, int mid, int j) {
+    private static <T extends Comparable<? super T>> void merge(T[] arr, int i, int mid, int j) {
         Comparable temp[] = new Comparable[arr.length];
         int l = i;
         int r = j;
@@ -28,18 +28,16 @@ public class MergeSort {
         while(l <= mid && m <= r) {
             if(arr[l].compareTo(arr[m]) <= 0) {
                 temp[k++] = arr[l++];
-            }
-            else {
+            } else {
                 temp[k++] = arr[m++];
             }
         }
-        while(l <= mid)
+        while(l <= mid) {
             temp[k++] = arr[l++];
-
+        }
         while(m <= r) {
             temp[k++] = arr[m++];
         }
-
         for(int i1 = i; i1 <= j; i1++) {
             arr[i1] = (T) temp[i1];
         }

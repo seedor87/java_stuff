@@ -1,5 +1,4 @@
-import Utils.ConsolePrinting;
-
+package Utils;
 import java.util.ArrayList;
 import java.awt.Toolkit;
 

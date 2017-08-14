@@ -4,11 +4,11 @@ import Utils.ConsolePrinting;
 
 public class InsertionSort {
 
-    public static <T extends Comparable<T>> void insertionSort(T[] arr) {
+    public static <T extends Comparable<? super T>> void insertionSort(T[] arr) {
         insertionSort(arr, arr.length-1);
     }
 
-    public static <T extends Comparable<T>> void insertionSort(T[] arr, int n) {
+    public static <T extends Comparable<? super T>> void insertionSort(T[] arr, int n) {
         T x;
         int j;
         if(n > 0) {
