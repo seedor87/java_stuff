@@ -109,14 +109,16 @@ public class PrineFactorization {
 
     //TODO fix this one its bad and we can do it better
     public static boolean isPerfectPower(int n) {
-        List<Integer> factors = primeFactors(n);
-        int last = factors.get(0);
-        for (int elem : primeFactors(n)) {
-            if (elem != last) {
-                return false;
+        for (int i = 2; i*i <= n; i++) {
+            int temp = n;
+            while (temp % i == 0) {
+                temp /= i;
+            }
+            if(temp == 1) {
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     public static List<Integer> primeFactors(int n) {
