@@ -1,16 +1,15 @@
 package Specialty;
 
 import Utils.ConsolePrinting;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class LongestIncreasingSubsequence {
 
-    public static List<Integer> longestIncreasingSubsequence(int[] arr) {
-        List<Integer> ret = new ArrayList<>();
+    public static <T extends Comparable<? super T>> List<T> longestIncreasingSubsequence(T[] arr) {
+        List<T> ret = new ArrayList<>();
         int n = arr.length;
-        if(n < 2) {
+        if (n < 2) {
             if (n < 1) {
                 return ret;
             }
@@ -24,7 +23,7 @@ public class LongestIncreasingSubsequence {
         for (int i=n-2; i > -1; i--) {
             D[i] = 1;
             for(int j=n-1; j > i; j--) {
-                if (arr[i] < arr[j] && D[j] + 1 > D[i]) {
+                if (arr[i].compareTo(arr[j]) < 0 && D[j] + 1 > D[i]) {
                     D[i] = D[j] + 1;
                     if (D[i] > max_so_far) {
                         index_max = i;
@@ -44,7 +43,10 @@ public class LongestIncreasingSubsequence {
     }
 
     public static void main(String[] args) {
-        int[] iarr = new int[]{2,5,-2,-3,3,4,5,3,7};
+        Integer[] iarr = new Integer[]{2,5,-2,-3,3,4,5,3,7};
         ConsolePrinting.println(longestIncreasingSubsequence(iarr));
+
+        Character[] carr = new Character[]{'d','f','g','a','b','c','e','h'};
+        ConsolePrinting.println(longestIncreasingSubsequence(carr));
     }
 }
