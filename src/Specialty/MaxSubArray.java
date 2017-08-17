@@ -1,6 +1,6 @@
 package Specialty;
 
-import Utils.ConsolePrinting;
+import myUtils.ConsolePrinting;
 
 import java.util.Arrays;
 

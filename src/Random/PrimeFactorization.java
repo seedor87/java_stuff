@@ -1,6 +1,6 @@
 package Random;
 
-import Utils.ConsolePrinting;
+import myUtils.ConsolePrinting;
 
 import java.io.IOException;
 import java.util.ArrayList;

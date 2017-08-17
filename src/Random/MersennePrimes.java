@@ -1,8 +1,8 @@
 package Random;
 
-import Utils.ConsolePrinting;
+import myUtils.ConsolePrinting;
 
-import static Utils.Primes.isPrime;
+import static myUtils.Primes.isPrime;
 
 public class MersennePrimes {
 

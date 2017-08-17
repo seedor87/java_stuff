@@ -1,12 +1,10 @@
 package Random;
 
-import Utils.ConsolePrinting;
+import myUtils.ConsolePrinting;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import static Utils.Primes.getAllPrimes;
 
 public class PerfectNumbers {
 

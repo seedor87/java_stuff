@@ -1,6 +1,6 @@
 package Sorting;
 
-import Utils.ConsolePrinting;
+import myUtils.ConsolePrinting;
 
 public class SelectionSort {
 

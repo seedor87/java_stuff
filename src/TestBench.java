@@ -1,7 +1,7 @@
 import Sorting.DualPivotQuickSort;
 import Sorting.QuickSort;
-import Utils.ConsolePrinting;
-import Utils.MyGenerator;
+import myUtils.ConsolePrinting;
+import myUtils.MyGenerator;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Set;
 
 import static Random.PrimeFactorization.isPerfectPower;
-import static Utils.Equivalence.equal;
-import static Utils.Primes.isPrime;
+import static myUtils.Equivalence.equal;
+import static myUtils.Primes.isPrime;
 
 public class TestBench {
 

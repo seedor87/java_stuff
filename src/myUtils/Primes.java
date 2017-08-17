@@ -1,5 +1,4 @@
-package Utils;
-import org.omg.CORBA.INTERNAL;
+package myUtils;
 
 import java.util.ArrayList;
 import java.awt.Toolkit;

@@ -1,8 +1,6 @@
-package Utils;
+package myUtils;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class ConsolePrinting {
 
@@ -19,7 +17,8 @@ public class ConsolePrinting {
     public static <T> void print(T... args) {
         String delim = "";
         for (T elem : args) {
-            print(delim + elem);
+            print(delim);
+            print(elem);
             delim = " ";
         }
         delim = (delim.equals("")) ? "{}" : "";
@@ -27,46 +26,43 @@ public class ConsolePrinting {
     }
 
     public static <T> void println(T... args) {
-        String delim = "";
-        for (T elem : args) {
-            print(delim + elem);
-            delim = " ";
-        }
-        delim = (delim.equals("")) ? "{}" : "";
-        print(delim);
+        print(args);
         println();
     }
 
     public static <T> void printDelim(String delim, T... args) {
         String temp = "";
         for (T elem : args) {
-            print(temp + elem);
+            print(temp);
+            print(elem);
             temp = delim;
         }
     }
 
     public static <T> void printlnDelim(String delim, T... args) {
-        print(delim, args);
+        printDelim(delim, args);
         println();
     }
 
     public static <T extends Iterable<E>, E> void printDelim(String delim, T args) {
         String temp = "";
         for (E elem : args) {
-            print(temp + elem);
+            print(temp);
+            print(elem);
             temp = delim;
         }
     }
 
     public static <T extends Iterable<E>, E> void printlnDelim(String delim, T args) {
-        print(delim, args);
+        printDelim(delim, args);
         println();
     }
 
     public static <T extends Iterable> void printDelim(String delim, T[] args) {
         String temp = "";
         for (T elem : args) {
-            print(temp + elem);
+            print(temp);
+            print(elem);
             temp = delim;
         }
     }
@@ -78,7 +74,8 @@ public class ConsolePrinting {
     public static <T extends Iterable<E>, E> void print(T o) {
         String delim = "{";
         for(E elem: o) {
-            print(delim + elem);
+            print(delim);
+            print(elem);
             delim = ", ";
         }
         delim = (delim.equals("{")) ? "{}" : "}";
@@ -93,7 +90,8 @@ public class ConsolePrinting {
     public static <T extends Iterable> void print(T[] o) {
         String delim = "{";
         for (T elem : o) {
-            print(delim + elem);
+            print(delim);
+            print(elem);
             delim = ", ";
         }
         delim = (delim.equals("{")) ? "{}" : "}";
@@ -108,7 +106,9 @@ public class ConsolePrinting {
     public static void print(char[] o) {
         String delim = "{";
         for(char elem: o) {
-            print(delim + "'" + elem + "'");
+            print(delim + "'");
+            print(elem);
+            print("'");
             delim = ", ";
         }
         delim = (delim.equals("{")) ? "{}" : "}";
@@ -120,10 +120,60 @@ public class ConsolePrinting {
         println();
     }
 
+    public static void print(int[] o) {
+        String delim = "{";
+        for(int elem: o) {
+            print(delim);
+            print(elem);
+            delim = ", ";
+        }
+        delim = (delim.equals("{")) ? "{}" : "}";
+        print(delim);
+    }
+
+    public static void println(int[] o) {
+       print(o);
+       println();
+    }
+
+    public static void print(double[] o) {
+        String delim = "{";
+        for(double elem: o) {
+            print(delim);
+            print(elem);
+            delim = ", ";
+        }
+        delim = (delim.equals("{")) ? "{}" : "}";
+        print(delim);
+    }
+
+    public static void println(double[] o) {
+        print(o);
+        println();
+    }
+
+    public static void print(long[] o) {
+        String delim = "{";
+        for(long elem: o) {
+            print(delim);
+            print(elem);
+            delim = ", ";
+        }
+        delim = (delim.equals("{")) ? "{}" : "}";
+        print(delim);
+    }
+
+    public static void println(long[] o) {
+        print(o);
+        println();
+    }
+
     public static void print(Character[] o) {
         String delim = "{";
         for(char elem: o) {
-            print(delim + "'" + elem + "'");
+            print(delim + "'");
+            print(elem);
+            print("'");
             delim = ", ";
         }
         delim = (delim.equals("{")) ? "{}" : "}";
@@ -133,16 +183,6 @@ public class ConsolePrinting {
     public static void println(Character[] o) {
         print(o);
         println();
-    }
-
-    public static void print(int[] arr) {
-        Integer[] temp = Arrays.stream(arr).boxed().toArray( Integer[]::new );
-        print(temp);
-    }
-
-    public static void println(int[] arr) {
-        Integer[] temp = Arrays.stream(arr).boxed().toArray( Integer[]::new );
-        println(temp);
     }
 
     public static void printDelim(String delim, int[] arr) {
@@ -155,16 +195,6 @@ public class ConsolePrinting {
         printlnDelim(delim, temp);
     }
 
-    public static void print(long[] arr) {
-        Long[] temp = Arrays.stream(arr).boxed().toArray( Long[]::new );
-        print(temp);
-    }
-
-    public static void println(long[] arr) {
-        Long[] temp = Arrays.stream(arr).boxed().toArray( Long[]::new );
-        println(temp);
-    }
-
     public static void printDelim(String delim, long[] arr) {
         Long[] temp = Arrays.stream(arr).boxed().toArray( Long[]::new );
         printDelim(delim, temp);
@@ -173,16 +203,6 @@ public class ConsolePrinting {
     public static void printlnDelim(String delim, long[] arr) {
         Long[] temp = Arrays.stream(arr).boxed().toArray( Long[]::new );
         printlnDelim(delim, temp);
-    }
-
-    public static void print(double[] arr) {
-        Double[] temp = Arrays.stream(arr).boxed().toArray( Double[]::new );
-        print(temp);
-    }
-
-    public static void println(double[] arr) {
-        Double[] temp = Arrays.stream(arr).boxed().toArray( Double[]::new );
-        println(temp);
     }
 
     public static void printDelim(String delim, double[] arr) {
@@ -196,20 +216,12 @@ public class ConsolePrinting {
     }
 
     public static void main(String[] args) {
-        printDelim(", ", 1, 47, true, 't', "bob");
-        println();
-        printDelim(", ", Arrays.asList(1,2,3,4));
-        println();
-        print(Arrays.asList(1,2,3,4));
-        println();
-        printDelim(" - ", new int[]{1,2,3});
-        println();
-        print(new int[]{1,2,3});
-        println();
-        printDelim(". ", new Integer[]{1,2,3});
-        println();
-        print(new Character[]{'a','b','c'});
-        println();
+        printlnDelim(", ", 1, 47, true, 't', "bob", new Tuple<>());
+        printlnDelim(" + ", Arrays.asList(1,2,3,4));
+        println(Arrays.asList(1,2,3,4));
+        println(new long[]{Long.MAX_VALUE, Long.MAX_VALUE+1});
+        printlnDelim(". ", new Integer[]{1,2,3});
+        println(new Character[]{'a','b','c'});
     }
 
 }
