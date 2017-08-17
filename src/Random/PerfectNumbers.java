@@ -16,9 +16,9 @@ public class PerfectNumbers {
         }
     }
 
-    public static int binaryToInteger(String binary) {
+    public static long binaryToInteger(String binary) {
         char[] numbers = binary.toCharArray();
-        int result = 0;
+        long result = 0;
         for(int i=numbers.length - 1; i>=0; i--)
             if(numbers[i]=='1')
                 result += Math.pow(2, (numbers.length-i - 1));
@@ -53,7 +53,7 @@ public class PerfectNumbers {
     }
 
     public static void main(String[] args) throws IOException {
-        int[] primes = new int[]{3,5,7,13};
+        int[] primes = new int[]{3,5,7,13,17,19,31};
         for (int prime : primes) {
             StringBuffer binForm = new StringBuffer();
             binForm.append("1");
