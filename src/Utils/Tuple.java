@@ -1,28 +1,48 @@
 package Utils;
 
-public class Tuple {
+import java.util.*;
 
-    public Object one;
-    public Object two;
+public class Tuple<T extends Object> {
 
-    public Tuple(Object one, Object two) {
-        this.one = one;
-        this.one = two;
+    private List<T> components;
+
+    public Tuple(T... composite) {
+        components = new ArrayList<>(Arrays.asList(composite));
     }
 
-    public Object getOne() {
-        return this.one;
+    public Tuple(Collection<T> composite) {
+        components = new ArrayList<>(composite);
     }
 
-    public Object getTwo() {
-        return this.two;
+    public T getZero() {
+        return this.components.get(0);
     }
 
-    public void setOne(Object one) {
-        this.one = one;
+    public T getOne() {
+        return this.components.get(1);
     }
 
-    public void setTwo(Object two) {
-        this.two = two;
+    public T getN(int n) {
+        return this.components.get(n);
+    }
+
+    public List<T> getComponents() {
+        return this.components;
+    }
+
+    @Override
+    public String toString() {
+        return this.components.toString();
+    }
+
+    public static void main(String[] args) {
+        Tuple tuple0 = new Tuple(1, true, 'a', "test");
+        ConsolePrinting.println(tuple0.toString());
+
+        Tuple<Integer> tuple1 = new Tuple("test");
+        ConsolePrinting.println(tuple1.toString());
+
+        Tuple tuple2 = new Tuple(new ArrayList<>(Arrays.asList('a','b','c')));
+        ConsolePrinting.println(tuple2.toString());
     }
 }
