@@ -32,12 +32,12 @@ public class Tuple<T> implements Iterable<T>{
     @Override
     public String toString() {
         String ret = "";
-        String delim = "{";
+        String delim = "<";
         for(T elem: composite) {
             ret += delim + elem;
             delim = ", ";
         }
-        delim = (delim.equals("{")) ? "{}" : "}";
+        delim = (delim.equals("<")) ? "<>" : ">";
         ret+= delim;
         return ret;
     }

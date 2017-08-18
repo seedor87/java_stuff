@@ -1,3 +1,5 @@
+package Testing;
+
 public class KnightsTour {
 
     private static final int N = 8;
@@ -52,7 +54,7 @@ public class KnightsTour {
         int xMove[] = {2, 1, -1, -2, -2, -1, 1, 2};
         int yMove[] = {1, 2, 2, 1, -1, -2, -2, -1};
         soln[0][0] = 0;
-        if (!solveKTUtil(1, 0, 1, xMove, yMove)) {
+        if (!solveKTUtil(0, 0, 1, xMove, yMove)) {
             System.out.println("the solution does not exist");
             return false;
         } else {

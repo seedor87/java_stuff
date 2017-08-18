@@ -1,29 +1,22 @@
 package Random;
 
-//import org.junit.jupiter.api.Testing.Test;
-//import static org.junit.jupiter.api.Assertions.assertEquals;
-
 public class LargeProduct {
 
-//    @Testing.Test
-//    public void test1() {
-//        double res1, res2;
-//
-//        int[] arr = new int[]{6,5,4};
-//        res1 = myWay(arr);
-//        res2 = averageCeil(arr);
-//        assertEquals(res1, res2);
-//    }
-//
-//    @Testing.Test
-//    public void teste2() {
-//        double res1, res2;
-//
-//        int[] arr = new int[]{6,5,4,3};
-//        res1 = myWay(arr);
-//        res2 = averageCeil(arr);
-//        assertEquals(res1, res2);
-//    }
+    public boolean test1() {
+        double res1, res2;
+        int[] arr = new int[]{6,5,4};
+        res1 = myWay(arr);
+        res2 = averageCeil(arr);
+        return res1 == res2;
+    }
+
+    public boolean test2() {
+        double res1, res2;
+        int[] arr = new int[]{6,5,4,3};
+        res1 = myWay(arr);
+        res2 = averageCeil(arr);
+        return res1 == res2;
+    }
 
     public static double averageCeil(int[] arr) {
         int total = 0;
