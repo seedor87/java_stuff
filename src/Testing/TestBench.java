@@ -2,7 +2,6 @@ package Testing;
 
 import Sorting.DualPivotQuickSort;
 import Sorting.QuickSort;
-import Testing.Test;
 import myUtils.ConsolePrinting;
 import myUtils.MyGenerator;
 import myUtils.Tuple;
@@ -11,16 +10,28 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 import static Random.PrimeFactorization.isPerfectPower;
 import static myUtils.ConsolePrinting.println;
 import static myUtils.Equivalence.equal;
 import static myUtils.Primes.isPrime;
 
-public class TestBench {
+public class TestBench<T extends Object> implements Callable {
 
     static long startTime, endTime;
     static double duration;
+    private Object[] data;
+
+    public TestBench() {}
+
+    public TestBench(T... data) {
+        this.data = data;
+    }
+
+    public TestBench(Tuple data) {
+        this.data = data.getComposite();
+    }
 
     private static void qsTesting() {
         Integer[] itest1 = MyGenerator.randomInts(100000, 100000);
@@ -90,7 +101,7 @@ public class TestBench {
         println(primes);
     }
 
-    public static <T extends Object> void timeIt(Test method) {
+    public static <T extends Object> void timeIt(TestBench method) {
         startTime = System.nanoTime();
         try {
             method.call();
@@ -102,11 +113,25 @@ public class TestBench {
         println("Runtime: " + duration + "s");
     }
 
-    public static <T extends Object> void timeIt(Test method, Tuple args) {
+    public void call(Tuple<T> args) {
+        primeTest((Integer) args.get(0));
+    }
+
+    public void call(T... args) {
+        primeTest((Integer) args[0]);
+    }
+
+    @Override
+    public Object call() {
+        primeTest((Integer) data[0]);
+        return null;
+    }
+
+    public static <T extends Object> void timeIt(TestBench method, Tuple args) {
         timeIt(method, args.getComposite());
     }
 
-    public static <T extends Object> void timeIt(Test method, T... args) {
+    public static <T extends Object> void timeIt(TestBench method, T... args) {
         startTime = System.nanoTime();
         try {
             method.call(args);
@@ -120,8 +145,9 @@ public class TestBench {
 
     public static void main(String[] args) {
         int lim = 10000;
-        timeIt(new Test(lim));
-        timeIt(new Test(), lim);
-        timeIt(new Test(), new Tuple(lim));
+        timeIt(new TestBench(lim));
+        timeIt(new TestBench(new Tuple(lim)));
+        timeIt(new TestBench(), lim);
+        timeIt(new TestBench(), new Tuple(lim));
     }
 }
