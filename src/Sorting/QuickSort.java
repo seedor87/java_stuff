@@ -2,13 +2,10 @@ package Sorting;
 
 import myUtils.ConsolePrinting;
 
-public class QuickSort {
+import static myUtils.ConsolePrinting.println;
+import static myUtils.Exchange.exchange;
 
-    private static  <T extends Comparable<? super T>> void exchange(T[] arr, int i, int j) {
-        T tmp = arr[i];
-        arr[i] = arr[j];
-        arr[j] = tmp;
-    }
+public class QuickSort {
 
     private static  <T extends Comparable<? super T>> int partition(T[] arr, int left, int right) {
         int i = left, j = right;
@@ -43,10 +40,10 @@ public class QuickSort {
     public static void main(String[] args) {
         Integer[] iarr = new Integer[]{3,2,5,6,1,7,8,4};
         quickSort(iarr);
-        ConsolePrinting.println(iarr);
+        println(iarr);
 
         Character[] carr = new Character[]{'d','f','b','a','g','e','c','h'};
         quickSort(carr);
-        ConsolePrinting.println(carr);
+        println(carr);
     }
 }

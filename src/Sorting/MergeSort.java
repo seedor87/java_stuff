@@ -1,6 +1,6 @@
 package Sorting;
 
-import myUtils.ConsolePrinting;
+import static myUtils.ConsolePrinting.println;
 
 public class MergeSort {
 
@@ -46,10 +46,10 @@ public class MergeSort {
     public static void main(String[] args) {
         Integer[] iarr = new Integer[]{3,2,5,6,1,7,8,4};
         mergeSort(iarr);
-        ConsolePrinting.println(iarr);
+        println(iarr);
 
         Character[] carr = new Character[]{'d','f','b','a','g','e','c','h'};
         mergeSort(carr);
-        ConsolePrinting.println(carr);
+        println(carr);
     }
 }

@@ -6,30 +6,32 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static myUtils.ConsolePrinting.*;
+
 public class PrimeFactorization {
 
     public static void geekTest(int lim) {
         for (int i = 2; i < lim; i++) {
             if (isPrime2(i)) {
-                ConsolePrinting.println("Prime: ");
+                println("Prime: ");
             } else if(isGeekNumber(i)) {
-                ConsolePrinting.println("GEEK :" + i);
+                println("GEEK :" + i);
             } else {
-                ConsolePrinting.println("Neither...");
+                println("Neither...");
             }
-            ConsolePrinting.println("i: " + i);
-            ConsolePrinting.println(primeFactors(i));
-            ConsolePrinting.println();
+            println("i: " + i);
+            println(primeFactors(i));
+            println();
         }
     }
 
     public static void isPerfectPowerTest(int lim) {
         for (int i = 2; i < lim; i++) {
             if (isPerfectPower(i)) {
-                ConsolePrinting.println("PP :" + i);
-                ConsolePrinting.println("i: " + i);
-                ConsolePrinting.println(primeFactors(i));
-                ConsolePrinting.println();
+                println("PP :" + i);
+                println("i: " + i);
+                println(primeFactors(i));
+                println();
             }
         }
     }
@@ -37,14 +39,14 @@ public class PrimeFactorization {
     public static void smithTest(int lim) {
         for (int i = 2; i < lim; i++) {
             if (isSmithNumber(i) && !isPrime2(i)) {
-                ConsolePrinting.println("Smith :" + i);
-                ConsolePrinting.println("i: " + i);
-                ConsolePrinting.print(sumDig(i));
-                ConsolePrinting.print(" == ");
-                ConsolePrinting.print(sumAll(primeFactors(i)));
-                ConsolePrinting.print(" ");
-                ConsolePrinting.print(primeFactors(i));
-                ConsolePrinting.println();
+                println("Smith :" + i);
+                println("i: " + i);
+                print(sumDig(i));
+                print(" == ");
+                print(sumAll(primeFactors(i)));
+                print(" ");
+                print(primeFactors(i));
+                println();
             }
         }
     }

@@ -1,14 +1,9 @@
 package Sorting;
 
-import myUtils.ConsolePrinting;
+import static myUtils.ConsolePrinting.println;
+import static myUtils.Exchange.exchange;
 
 public class SelectionSort {
-
-    private static  <T extends Comparable<? super T>> void exchange(T[] arr, int i, int j) {
-        T tmp = arr[i];
-        arr[i] = arr[j];
-        arr[j] = tmp;
-    }
 
     public static  <T extends Comparable<? super T>> void selectionSort(T[] arr) {
         int i,j;
@@ -30,11 +25,11 @@ public class SelectionSort {
     public static void main(String[] args) {
         Integer[] iarr = new Integer[]{3,2,5,6,1,7,8,4};
         selectionSort(iarr);
-        ConsolePrinting.println(iarr);
+        println(iarr);
 
         Character[] carr = new Character[]{'d','f','b','a','g','e','c','h'};
         selectionSort(carr);
-        ConsolePrinting.println(carr);
+        println(carr);
     }
 
 }

@@ -1,6 +1,6 @@
-import myUtils.ConsolePrinting;
-
 import java.util.*;
+
+import static myUtils.ConsolePrinting.*;
 
 public class Palindromes {
 
@@ -51,13 +51,13 @@ public class Palindromes {
 
     public static void main(String[] args) {
         Character[] arr = new Character[]{'e','e','v','e','e'};
-        ConsolePrinting.println(isPalindrome(arr));
+        println(isPalindrome(arr));
 
         List<Integer> aray = new ArrayList<>(Arrays.asList(1,2,3,2,1));
-        ConsolePrinting.println(isPalindrome(aray));
+        println(isPalindrome(aray));
 
         String str = "racecar";
-        ConsolePrinting.println(isPalindrome(str));
+        println(isPalindrome(str));
 
     }
 }

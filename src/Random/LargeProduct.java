@@ -1,11 +1,11 @@
 package Random;
 
-//import org.junit.jupiter.api.Test;
+//import org.junit.jupiter.api.Testing.Test;
 //import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class LargeProduct {
 
-//    @Test
+//    @Testing.Test
 //    public void test1() {
 //        double res1, res2;
 //
@@ -15,7 +15,7 @@ public class LargeProduct {
 //        assertEquals(res1, res2);
 //    }
 //
-//    @Test
+//    @Testing.Test
 //    public void teste2() {
 //        double res1, res2;
 //

@@ -2,6 +2,8 @@ package myUtils;
 
 import java.util.Random;
 
+import static myUtils.ConsolePrinting.println;
+
 public abstract class MyGenerator {
 
     private static Random generator = new Random();
@@ -23,7 +25,7 @@ public abstract class MyGenerator {
     }
 
     public static void main(String[] args) {
-        ConsolePrinting.println(randomChars(100));
-        ConsolePrinting.println(randomInts(100, 100));
+        println(randomChars(100));
+        println(randomInts(100, 100));
     }
 }

@@ -1,7 +1,6 @@
 package Random;
 
-import myUtils.ConsolePrinting;
-
+import static myUtils.ConsolePrinting.println;
 import static myUtils.Primes.isPrime;
 
 public class MersennePrimes {
@@ -21,7 +20,7 @@ public class MersennePrimes {
         int lim = 1000000000;
         for (int i = 1; i < lim; i++) {
             if (isMersenne(i)) {
-                ConsolePrinting.println("found @ " + i);
+                println("found @ " + i);
             }
         }
     }

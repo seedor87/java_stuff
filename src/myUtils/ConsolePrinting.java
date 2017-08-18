@@ -1,33 +1,19 @@
 package myUtils;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
 public class ConsolePrinting {
 
-    public static <T extends Object> void print(T o) {
-        System.out.print(o.toString());
-    }
-    public static <T extends Object> void println(T o) {
-        System.out.println(o.toString());
-    }
-    public static void println() {
-        System.out.println();
-    }
-
     public static <T> void print(T... args) {
-        String delim = "";
         for (T elem : args) {
-            print(delim);
-            print(elem);
-            delim = " ";
+            System.out.print(elem);
         }
-        delim = (delim.equals("")) ? "{}" : "";
-        print(delim);
     }
 
     public static <T> void println(T... args) {
         print(args);
-        println();
+        System.out.println();
     }
 
     public static <T> void printDelim(String delim, T... args) {
@@ -44,7 +30,7 @@ public class ConsolePrinting {
         println();
     }
 
-    public static <T extends Iterable<E>, E> void printDelim(String delim, T args) {
+    public static <T extends Iterable<E>, E extends Serializable> void printDelim(String delim, T args) {
         String temp = "";
         for (E elem : args) {
             print(temp);
@@ -53,7 +39,7 @@ public class ConsolePrinting {
         }
     }
 
-    public static <T extends Iterable<E>, E> void printlnDelim(String delim, T args) {
+    public static <T extends Iterable<E>, E extends Serializable> void printlnDelim(String delim, T args) {
         printDelim(delim, args);
         println();
     }
@@ -71,7 +57,7 @@ public class ConsolePrinting {
         print(delim, args);
         println();
     }
-    public static <T extends Iterable<E>, E> void print(T o) {
+    public static <T extends Iterable<E>, E extends Serializable> void print(T o) {
         String delim = "{";
         for(E elem: o) {
             print(delim);
@@ -82,12 +68,12 @@ public class ConsolePrinting {
         print(delim);
     }
 
-    public static <T extends Iterable<E>, E> void println(T o) {
+    public static <T extends Iterable<E>, E extends Serializable> void println(T o) {
         print(o);
         println();
     }
 
-    public static <T extends Iterable> void print(T[] o) {
+    public static <T extends Serializable> void print(T[] o) {
         String delim = "{";
         for (T elem : o) {
             print(delim);
@@ -98,7 +84,7 @@ public class ConsolePrinting {
         print(delim);
     }
 
-    public static <T extends Iterable> void println(T[] o) {
+    public static <T extends Serializable> void println(T[] o) {
         print(o);
         println();
     }
@@ -222,6 +208,7 @@ public class ConsolePrinting {
         println(new long[]{Long.MAX_VALUE, Long.MAX_VALUE+1});
         printlnDelim(". ", new Integer[]{1,2,3});
         println(new Character[]{'a','b','c'});
+        println(new int[]{'a','b','c'});
     }
 
 }

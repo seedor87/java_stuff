@@ -1,17 +1,17 @@
 package Random;
 
-import myUtils.ConsolePrinting;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static myUtils.ConsolePrinting.*;
 
 public class PerfectNumbers {
 
     public static void isPerfectNumberTest(int lim) {
         for (int i = 2; i < lim; i++) {
             if (isPerfectNumber(i)) {
-                ConsolePrinting.println("\tDude Perfect :" + i);
+                println("\tDude Perfect :" + i);
             }
         }
     }
@@ -48,7 +48,7 @@ public class PerfectNumbers {
                 ret.add(n/i);
             }
         }
-        ConsolePrinting.println(sum(ret));
+        println(sum(ret));
         return ret;
     }
 
@@ -61,8 +61,8 @@ public class PerfectNumbers {
                 binForm.insert(0,"1");
                 binForm.append("0");
             }
-            ConsolePrinting.println(binForm.toString());
-            ConsolePrinting.println(binaryToInteger(binForm.toString()));
+            println(binForm.toString());
+            println(binaryToInteger(binForm.toString()));
         }
     }
 }

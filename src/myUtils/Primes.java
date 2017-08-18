@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.awt.Toolkit;
 import java.util.List;
 
+import static myUtils.ConsolePrinting.*;
+
 public class Primes {
 
     public static void main(String[] args) {
@@ -28,10 +30,10 @@ public class Primes {
         }
         long endTime = System.nanoTime();
 
-        ConsolePrinting.print("All Primes: ");
-        ConsolePrinting.println(primes);
+        print("All Primes: ");
+        println(primes);
         double duration = (endTime - startTime) / 1000000000.0;
-        ConsolePrinting.println("Runtime: " + duration + "s");
+        println("Runtime: " + duration + "s");
     }
 
     public static List<Integer> getAllPrimes(int lim) {
