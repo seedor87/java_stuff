@@ -6,42 +6,6 @@ import java.util.Arrays;
 
 public class MaxSubArray {
 
-    public static class myInt implements Arithmetic {
-        int val;
-        public myInt(int val) {
-            this.val = val;
-        }
-
-        @Override
-        public Arithmetic add(Arithmetic o) {
-            return new myInt(this.getVal() + o.getVal());
-        }
-
-        @Override
-        public Arithmetic sub(Arithmetic o) {
-            return new myInt(this.getVal() - o.getVal());
-        }
-
-        @Override
-        public int compareTo(Arithmetic o) {
-            return (this.getVal() > o.getVal()) ? -1 : 1;
-        }
-
-        @Override
-        public int getVal() {
-            return this.val;
-        }
-
-        @Override
-        public void setval(int val) {
-            this.val = val;
-        }
-
-        public String toString() {
-            return "" + this.getVal();
-        }
-    }
-
     public static <T extends Arithmetic> Arithmetic sum(T[] arr) {
         Arithmetic count = arr[0];
         for (T elem : Arrays.copyOfRange(arr, 1, arr.length)) {
@@ -75,7 +39,7 @@ public class MaxSubArray {
     public static Arithmetic[] test(int[] inp) {
         myInt[] arr = new myInt[inp.length];
         for (int i = 0; i < arr.length; i++) {
-            arr[i] = new MaxSubArray.myInt(inp[i]);
+            arr[i] = new myInt(inp[i]);
         }
         return maxSubArray(arr);
     }
@@ -88,14 +52,14 @@ public class MaxSubArray {
         inp = new int[]{1, 2, -4, 1, 2, 3};
         out = test(inp);
         ConsolePrinting.print("result: ");
-        ConsolePrinting.println(out);
+        ConsolePrinting.printlnDelim(", ", out);
         ConsolePrinting.print("sumAll: ");
         ConsolePrinting.println(sum(test(inp)));
 
         inp = new int[]{9, 9, 2, 5, -8, 8, 2, -6, -10, 5, 2, -6, -9, 1, 2, 10, -5, 9, 9, 3, -7, 8, 1, 6, -3, -9, -7, 7, 7, 7, 10, 10, 0, 6, -2, -6, 4, 5, -4, 5, -5, 1, 9, -4, -10, 8, -3, -1, 1, 8, 10, 10, 6, 10, 5, 10, 5, -10, -9, -8, -9, 10, -2, 5, 9, 0, -5, 6, 10, -9, 9, -7, 0, -1, -6, 10, -8, 4, -3, -5, 6, 2, -10, 5, 7, 0, -6, -2, -10, 2, -1, 8, 2, 1, 8, -7, 7, -8, 8, -6};
         out = test(inp);
         ConsolePrinting.print("result: ");
-        ConsolePrinting.println(out);
+        ConsolePrinting.printlnDelim(", ", out);
         ConsolePrinting.print("sumAll: ");
         ConsolePrinting.println(sum(test(inp)));
     }

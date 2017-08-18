@@ -1,3 +1,5 @@
+package myUtils;
+
 import java.util.*;
 
 import static myUtils.ConsolePrinting.*;

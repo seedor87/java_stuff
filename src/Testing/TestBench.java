@@ -1,5 +1,6 @@
 package Testing;
 
+import Random.KnightsTour;
 import Random.LargeProduct;
 import myUtils.Tuple;
 

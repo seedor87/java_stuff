@@ -4,14 +4,14 @@ import myUtils.ConsolePrinting;
 
 public class RodCutting {
 
-    public static int cutRod(int[] arr, int n) {
-        int[] val = new int[n+1];
-        val[0] = 0;
+    public static Arithmetic cutRod(Arithmetic[] arr, int n) {
+        myInt[] val = new myInt[n+1];
+        val[0] = new myInt(0);
 
         for (int i = 1; i <= n; i++) {
-            int max = Integer.MIN_VALUE;
+            myInt max = new myInt(Integer.MIN_VALUE);
             for(int j = 0; j < i; j++) {
-                max = Math.max(max, arr[j] + val[i-j-1]);
+                max = ((max.compareTo(arr[j].add(val[i-j-1])) < 0) ? max : (myInt) arr[j].add(val[i-j-1]));
             }
             val[i] = max;
         }
@@ -20,7 +20,16 @@ public class RodCutting {
 
     public static void main(String args[])
     {
-        int arr[] = new int[] {1, 5, 8, 9, 10, 17, 17, 20};
+        myInt[] arr = new myInt[] {
+                new myInt(1),
+                new myInt(5),
+                new myInt(8),
+                new myInt(9),
+                new myInt(10),
+                new myInt(17),
+                new myInt(17),
+                new myInt(20)
+        };
         int size = arr.length;
         ConsolePrinting.println("Maximum Obtainable Value is " + cutRod(arr, size));
     }
