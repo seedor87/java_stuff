@@ -53,16 +53,17 @@ public class PerfectNumbers {
     }
 
     public static void main(String[] args) throws IOException {
-        int[] primes = new int[]{3,5,7,13,17,19,31};
-        for (int prime : primes) {
-            StringBuffer binForm = new StringBuffer();
-            binForm.append("1");
-            for (int i = 0; i < prime-1; i++) {
-                binForm.insert(0,"1");
-                binForm.append("0");
-            }
-            println(binForm.toString());
-            println(binaryToInteger(binForm.toString()));
-        }
+//        int[] primes = new int[]{3,5,7,13,17,19,31};
+//        for (int prime : primes) {
+//            StringBuffer binForm = new StringBuffer();
+//            binForm.append("1");
+//            for (int i = 0; i < prime-1; i++) {
+//                binForm.insert(0,"1");
+//                binForm.append("0");
+//            }
+//            println(binForm.toString());
+//            println(binaryToInteger(binForm.toString()));
+//        }
+        isPerfectNumberTest(1000);
     }
 }
