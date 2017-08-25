@@ -1,16 +1,12 @@
 package myUtils.Measurement;
 
-import myUtils.Measurement.Timer;
-
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
 
 public class CPUTimer extends Timer {
 
-    private final long nativeFactor = 1000000000;
-
     public CPUTimer() {}
-    public CPUTimer(units u) {
+    public CPUTimer(TimeUnit u) {
         super(u);
     }
 
@@ -21,7 +17,7 @@ public class CPUTimer extends Timer {
     }
 
     @Override
-    public double getElapsedTime(units u) {
+    public double getElapsedTime(TimeUnit u) {
         switch(u) {
             case NANO:
                 return elapsedTime;

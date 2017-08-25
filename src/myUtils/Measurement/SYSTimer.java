@@ -1,13 +1,11 @@
 package myUtils.Measurement;
 
-import myUtils.Measurement.Timer;
-
 public class SYSTimer extends Timer {
 
     private final double nativeFactor = 1000000000.0;
 
     public SYSTimer() {}
-    public SYSTimer(units u) {
+    public SYSTimer(TimeUnit u) {
         super(u);
     }
 
@@ -17,7 +15,7 @@ public class SYSTimer extends Timer {
     }
 
     @Override
-    public double getElapsedTime(units u) {
+    public double getElapsedTime(TimeUnit u) {
         switch(u) {
             case NANO:
                 break;

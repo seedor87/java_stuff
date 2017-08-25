@@ -7,21 +7,21 @@ import java.util.Scanner;
 
 public abstract class Timer {
 
-    public enum units {
+    public enum TimeUnit {
         NANO, MICRO, MILLI, SECONDS, MINUTES, HOURS
     }
-    private units unit = units.MILLI;
+    private TimeUnit unit = TimeUnit.MILLI;
     double startTime = 01, endTime = 01, elapsedTime = 0;
     DecimalFormat formatter = new DecimalFormat("#,###,###.###");
 
     public abstract double getTime();
-    public abstract double getElapsedTime(units u);
+    public abstract double getElapsedTime(TimeUnit u);
 
     public Timer() {}
-    public Timer(units u) { setUnit(u); }
-    private units getUnit() { return unit; }
+    public Timer(TimeUnit u) { setUnit(u); }
+    private TimeUnit getUnit() { return unit; }
 
-    private void setUnit(units u) {
+    private void setUnit(TimeUnit u) {
         this.unit = u;
         switch(unit) {
             case NANO:
@@ -107,6 +107,8 @@ public abstract class Timer {
                 return "NaN";
         }
     }
+
+    @Override
     public String toString() {
         return getTimeString();
     }
@@ -115,7 +117,7 @@ public abstract class Timer {
         Scanner reader = new Scanner(System.in);
         String key = "start[1] suspend[2] resume[3] stop[4]";
         int input;
-        Timer timer = new SYSTimer(units.SECONDS);
+        Timer timer = new SYSTimer(TimeUnit.SECONDS);
         String lastAction = "timer application";
         do {
             ConsolePrinting.println(timer + " : " + lastAction);
