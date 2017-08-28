@@ -40,13 +40,13 @@ public class Spacer {
             case BYTE:
                 return memConsumed;
             case KILO:
-                return memConsumed / Math.pow(1000, 1);
+                return memConsumed / Math.pow(1024, 1);
             case MEGA:
-                return memConsumed / Math.pow(1000, 2);
+                return memConsumed / Math.pow(1024, 2);
             case GIGA:
-                return memConsumed / Math.pow(1000, 3);
+                return memConsumed / Math.pow(1024, 3);
             case TERA:
-                return memConsumed / Math.pow(1000, 4);
+                return memConsumed / Math.pow(1024, 4);
             default:
                 break;
         }
