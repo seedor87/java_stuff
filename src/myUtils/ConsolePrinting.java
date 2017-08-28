@@ -44,6 +44,10 @@ public class ConsolePrinting {
         }
     }
 
+    public static void print(COLOR c) {
+        print(decypher(c));
+    }
+
     public static <T> String wrap(COLOR c, T... args) {
         StringBuffer sb = new StringBuffer();
         sb.append(decypher(c));
@@ -52,10 +56,6 @@ public class ConsolePrinting {
         }
         sb.append(ANSI_RESET);
         return sb.toString();
-    }
-
-    public static void print(COLOR c) {
-        print(decypher(c));
     }
 
     public static <T> void print(T... args) {
