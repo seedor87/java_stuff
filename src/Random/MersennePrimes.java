@@ -18,11 +18,16 @@ public class MersennePrimes {
         return false;
     }
 
-    public static void main(String[] args) {
-        for (int i = 1; i < 100000; i++) {
+    public static void mersennePrimeTest(int lim) {
+        for (int i = 1; i < lim; i++) {
             if (isMersenne(i)) {
                 print("found @ " + i + " ");
             }
         }
+        println();
+    }
+
+    public static void main(String[] args) {
+        mersennePrimeTest(1000000);
     }
 }

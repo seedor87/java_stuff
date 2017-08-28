@@ -16,7 +16,7 @@ public class CPUTimeTest extends AbstractTest {
     Tuple wrapperFunc(Object[] params) throws Exception {
         Timer timer = new CPUTimer();
         timer.start();
-        Tuple ret = new Tuple(m.invoke(obj, params));
+        Tuple ret = new Tuple(myMethod(params));
         timer.stop();
         println("Runtime: " + timer);
         return ret;

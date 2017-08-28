@@ -1,5 +1,9 @@
 package Sorting;
 
+import myUtils.MyGenerator;
+
+import java.util.List;
+
 import static myUtils.ConsolePrinting.println;
 import static myUtils.Exchange.exchange;
 
@@ -44,6 +48,11 @@ public class DualPivotQuickSort {
             quickSort (arr, lt+1, gt-1);
             quickSort(arr, gt+1, highIndex);
         }
+    }
+
+    public static void test(int len, int max) {
+        Integer[] itest1 = MyGenerator.randomInts(len, max);
+        quickSort(itest1);
     }
 
     public static void main(String[] args) {

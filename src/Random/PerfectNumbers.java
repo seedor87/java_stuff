@@ -2,11 +2,46 @@ package Random;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import static Random.PrimeFactorization.isPerfectPower;
 import static myUtils.ConsolePrinting.*;
 
 public class PerfectNumbers {
+
+    public static List generatePerfectNumbers(int lim) {
+        int i, j;
+        double result;
+        i = 2;
+        double thresh = Math.pow(lim, 0.5);
+        Set<Double> results = new HashSet<>();
+        while (i <= thresh) {
+            j = 2;
+            while (j <= thresh) {
+                result = Math.pow(i, j);
+                if (result > lim) {
+                    break;
+                }
+                results.add(result);
+                j++;
+            }
+            i++;
+        }
+        List<Double> res = new ArrayList<>(results);
+        return res;
+    }
+
+    public static List findPerfectNumbers(int lim) {
+        List<Double> res = new ArrayList<>();
+        for (int i = 0; i <= lim; i++) {
+            if (isPerfectPower(i)) {
+                res.add((double) i);
+            }
+        }
+        return res;
+    }
 
     public static void isPerfectNumberTest(int lim) {
         for (int i = 2; i < lim; i++) {
@@ -34,7 +69,6 @@ public class PerfectNumbers {
     }
 
 
-
     public static boolean isPerfectNumber(int n) {
         return sum(allFactors(n)) == n;
     }
@@ -53,6 +87,7 @@ public class PerfectNumbers {
     }
 
     public static void main(String[] args) throws IOException {
+
 //        int[] primes = new int[]{3,5,7,13,17,19,31};
 //        for (int prime : primes) {
 //            StringBuffer binForm = new StringBuffer();
@@ -64,6 +99,7 @@ public class PerfectNumbers {
 //            println(binForm.toString());
 //            println(binaryToInteger(binForm.toString()));
 //        }
+
         isPerfectNumberTest(1000);
     }
 }

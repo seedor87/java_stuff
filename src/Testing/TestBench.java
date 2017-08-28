@@ -2,100 +2,66 @@ package Testing;
 
 import Random.KnightsTour;
 import Random.LargeProduct;
+import Random.MersennePrimes;
+import Random.PerfectNumbers;
 import Sorting.DualPivotQuickSort;
 import Sorting.QuickSort;
 import myUtils.MyGenerator;
+import myUtils.Primes;
+import myUtils.Tuple;
 
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
-import static Random.MersennePrimes.isMersenne;
-import static Random.PrimeFactorization.isPerfectPower;
-import static myUtils.ConsolePrinting.print;
-import static myUtils.ConsolePrinting.println;
+import static myUtils.ConsolePrinting.*;
+import static myUtils.ConsolePrinting.printlnDelim;
 import static myUtils.Equivalence.equal;
-import static myUtils.Primes.isPrime;
 
 public class TestBench {
 
     public static void qsTest(Integer len, Integer max) {
-        Integer[] itest1 = MyGenerator.randomInts(len, max);
-        Character[] ctest1 = MyGenerator.randomChars(len);
-        long startTime, endTime;
-        double duration;
 
-        startTime = System.nanoTime();
-        QuickSort.quickSort(itest1);
-        println(itest1);
-        QuickSort.quickSort(ctest1);
-        println(ctest1);
-        endTime = System.nanoTime();
-        duration = (endTime - startTime) / 1000000000.0;
-        println("Runtime: " + duration + "s");
-
-        startTime = System.nanoTime();
-        DualPivotQuickSort.quickSort(itest1);
-        println(itest1);
-        DualPivotQuickSort.quickSort(ctest1);
-        println(ctest1);
-        endTime = System.nanoTime();
-        duration = (endTime - startTime) / 1000000000.0;
-        println("Runtime: " + duration + "s");
+        for(int i = 10; i < len; i*=10) {
+            try {
+                print("DP Sort: ");
+                new SYSTimeTest(DualPivotQuickSort.class, "test").exe(i,max);
+                print("Reg qs: ");
+                new SYSTimeTest(QuickSort.class, "test").exe(i,max);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
     public static boolean ppTest(int lim) {
-        int i, j;
-        double result;
-        i = 2;
-        double thresh = Math.pow(lim, 0.5);
-        Set<Double> results = new HashSet<>();
-        //generate all perfect powers
-        while (i <= thresh) {
-            j = 2;
-            while (j <= thresh) {
-                result = Math.pow(i, j);
-                if (result > lim) {
-                    break;
-                }
-                results.add(result);
-                j++;
-            }
-            i++;
+        boolean result = false;
+        try {
+            List<Double> res1 = (List) new SYSTimeTest(PerfectNumbers.class, "generatePerfectNumbers").exe(lim).get(0);
+            List<Double> res2 = (List) new SYSTimeTest(PerfectNumbers.class, "findPerfectNumbers").exe(lim).get(0);
+            result = equal(res1, res2);
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-        List<Double> res1 = new ArrayList<>(results);
-        println(res1);
-
-        //test each each number under limit against the generated list
-        List<Double> res2 = new ArrayList<>();
-        for (i = 0; i <= lim; i++) {
-            if (isPerfectPower(i)) {
-                res2.add((double) i);
-            }
-        }
-        println(res2);
-
-        return equal(res1, res2);
+        return result;
     }
 
     public static List<Integer> primeTest(int lim) {
-        List primes = new ArrayList<>();
-        for (int j = 0; j < lim; j++) {
-            if (isPrime(j)) {
-                primes.add(j);
-            }
+        Tuple result;
+        try {
+            result = new CPUTimeTest(Primes.class, "getAllPrimes").exe(lim);
+            return (List) result.get(0);
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-        return primes;
+        return null;
     }
 
     public static void mersennePrimeTest(int lim) {
-        for (int i = 1; i < lim; i++) {
-            if (isMersenne(i)) {
-                print("found @ " + i + " ");
-            }
+        try {
+            new CPUTimeTest(MersennePrimes.class, "mersennePrimeTest").exe(lim);
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-        println();
     }
 
     public static void testTest1(int lim) throws Exception {
@@ -106,35 +72,32 @@ public class TestBench {
         }
     }
 
-    public static void testTest2() throws Exception {
-        for (int i = 100; i <= 1000000; i*=10) {
-            new SYSTimeTest(TestBench.class, "primeTest").exe(i);
-        }
-
-        for (int i = 100; i <= 1000000; i*=10) {
-            new SYSTimeTest(TestBench.class, "ppTest").exe(i);
-        }
-
-        for (int i = 1; i <= 1000; i*=10) {
-            new SYSTimeTest(TestBench.class, "qsTest").exe(i, 1000);
-        }
+    public static void notherTest(List args) {
+        printlnDelim(" + ", args);
     }
 
     public static void main(String argv[]) throws Exception {
 
-        new MemUseTest(KnightsTour.class, "solveKnightTour").exe();
-        new SYSTimeTest(LargeProduct.class, "test1").exe();
-        new CPUTimeTest(LargeProduct.class, "test2").exe();
+//        new MemUseTest(KnightsTour.class, "solveKnightTour").exe();
+//        new SYSTimeTest(LargeProduct.class, "test1").exe();
+//        new CPUTimeTest(LargeProduct.class, "test2").exe();
 
-        new SYSTimeTest(
-                TestBench.class,
-                "testTest1"
-        ).exe(100000000);
+//        qsTest(100000000,10000);
 
-        new CPUTimeTest(
-                TestBench.class,
-                "testTest2"
-        ).exe();
+//        println(ppTest(1000000));
+
+//        println(primeTest(10000000));
+
+//        mersennePrimeTest();
+
+
+//        new SYSTimeTest(TestBench.class, "notherTest").exe(Arrays.asList("1", "2", "3"));
+
+
+//        new SYSTimeTest(
+//                TestBench.class,
+//                "testTest1"
+//        ).exe(100000000);
 
     }
 }

@@ -2,7 +2,7 @@ package myUtils;
 
 import java.io.IOException;
 
-public class flowControlTools {
+public class FlowControlTools {
 
     public static void waitForKey() {
         System.out.print("Press Enter Key To Continue >>>");

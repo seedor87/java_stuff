@@ -1,6 +1,9 @@
 package Sorting;
 
 import myUtils.ConsolePrinting;
+import myUtils.MyGenerator;
+
+import java.util.List;
 
 import static myUtils.ConsolePrinting.println;
 import static myUtils.Exchange.exchange;
@@ -35,6 +38,11 @@ public class QuickSort {
 
     public static  <T extends Comparable<? super T>> void quickSort(T[] arr) {
         quickSort(arr, 0, arr.length-1);
+    }
+
+    public static void test(int len, int max) {
+        Integer[] itest1 = MyGenerator.randomInts(len, max);
+        quickSort(itest1);
     }
 
     public static void main(String[] args) {

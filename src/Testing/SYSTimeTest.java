@@ -14,9 +14,9 @@ public class SYSTimeTest extends AbstractTest {
 
     @Override
     Tuple wrapperFunc(Object[] params) throws Exception {
-        Timer timer = new SYSTimer(Timer.TimeUnit.NANO);
+        Timer timer = new SYSTimer();
         timer.start();
-        Tuple ret = new Tuple(m.invoke(obj, params));
+        Tuple ret = new Tuple(myMethod(params));
         timer.stop();
         println("Runtime: " + timer);
         return ret;
