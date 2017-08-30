@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static myUtils.ConsolePrinting.*;
+import Testing.superWrapper;
+import myUtils.Tuple;
 
-public class PrimeFactorization {
+public class PrimeFactorization extends superWrapper{
 
     public static void geekTest(int lim) {
         for (int i = 2; i < lim; i++) {
@@ -137,7 +139,14 @@ public class PrimeFactorization {
         return ret;
     }
 
+    @Override
+    public Tuple runIt(Object... params) {
+        printlnDelim(" + ", params);
+        return null;
+    }
+
     public static void main(String[] args) throws IOException {
-        isPerfectPowerTest(1000);
+        PrimeFactorization pf = new PrimeFactorization();
+        println(pf.test(new String[]{"1", "2", "3"}));
     }
 }
