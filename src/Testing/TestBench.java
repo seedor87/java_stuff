@@ -76,6 +76,11 @@ public class TestBench {
         printlnDelim(" + ", args);
     }
 
+    public static <T extends  Object> void notherTest(T first, T... rest) {
+        println(first);
+        notherTest(rest);
+    }
+
     public static void main(String argv[]) throws Exception {
 
 //        new MemUseTest(KnightsTour.class, "solveKnightTour").exe();
@@ -90,8 +95,8 @@ public class TestBench {
 
 //        mersennePrimeTest();
 
-
-//        new SYSTimeTest(TestBench.class, "notherTest").exe(Arrays.asList("1", "2", "3"));
+        new SYSTimeTest(TestBench.class, "notherTest").exe(Arrays.asList("1", "2", "3"));
+        new SYSTimeTest(TestBench.class, "notherTest").exe(new String[] {"1", "2", "3"});
 
 
 //        new SYSTimeTest(

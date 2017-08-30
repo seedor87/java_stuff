@@ -6,15 +6,13 @@ import myUtils.Tuple;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.function.UnaryOperator;
 
 import static Random.FermatNumbers.fermatNumber;
-import static myUtils.ConsolePrinting.println;
 
-public class RecursiveLambdaExample {
+public class RecursiveLambdaExample<T extends Object> {
 
-    static UnaryOperator<Integer> fac = i -> new RecursiveLambdaExample().f.apply(i);
+    static UnaryOperator<Integer> fac = i -> (int) new RecursiveLambdaExample().f.apply(i);
     UnaryOperator<Integer> f = i -> i == 0 ? 1 : i * this.f.apply(i - 1);
 
     interface VarArgs<T extends Object> {
@@ -28,23 +26,16 @@ public class RecursiveLambdaExample {
         return RecursiveLambdaExample.test.varArgs(Arrays.copyOfRange(params, 1, params.length)) + 1;
     };
 
-    interface timeIt<T extends Object> {
-        Tuple<T> exe(T... params);
-    }
-
-    static timeIt<Object> timer = (Object... params) -> {
-        Timer timer = new SYSTimer();
-        timer.start();
-        List ret = new ArrayList<Integer>();
-        for(int i = 0; i < 1000; i++) {
-            ret.add(fermatNumber(i));
+    VarArgs<T>  test2 = (T...params) -> {
+        for (int i = 0; i < (Integer) params[0]; i++) {
+            ConsolePrinting.println(i + ": " + fermatNumber(i));
         }
-        Tuple retur = new Tuple(ret);
-        timer.stop();
-        println("Runtime: " + timer);
-        return retur;
+        return 0;
     };
 
+    public void exe(VarArgs<T> lam, T... args) {
+        lam.varArgs(args);
+    }
 
     public static void main(String[] args) {
 
@@ -58,6 +49,7 @@ public class RecursiveLambdaExample {
         System.out.println(test.varArgs("one", 2, 'c', false, new Tuple()));
         System.out.println(test.varArgs(new HashSet(), new ArrayList()));
 
-        println(timer.exe());
+
+        reclambex.exe(reclambex.test2, 10);
     }
 }
