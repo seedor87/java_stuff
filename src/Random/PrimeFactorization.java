@@ -1,16 +1,13 @@
 package Random;
 
-import myUtils.ConsolePrinting;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import static myUtils.ConsolePrinting.*;
-import Testing.superWrapper;
+import NewTesting.NewSYSTimeTest;
 import myUtils.Tuple;
 
-public class PrimeFactorization extends superWrapper{
+public class PrimeFactorization<T extends Object> extends NewSYSTimeTest<T> {
 
     public static void geekTest(int lim) {
         for (int i = 2; i < lim; i++) {
@@ -140,12 +137,12 @@ public class PrimeFactorization extends superWrapper{
     }
 
     @Override
-    public Tuple runIt(Object... params) {
+    public Tuple runThis(Object... params) {
         printlnDelim(" + ", params);
-        return null;
+        return new Tuple();
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         PrimeFactorization pf = new PrimeFactorization();
         println(pf.test(new String[]{"1", "2", "3"}));
     }

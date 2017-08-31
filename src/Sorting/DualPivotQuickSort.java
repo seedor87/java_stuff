@@ -2,9 +2,8 @@ package Sorting;
 
 import myUtils.MyGenerator;
 
-import java.util.List;
-
 import static myUtils.ConsolePrinting.println;
+import static myUtils.Equivalence.lt;
 import static myUtils.Exchange.exchange;
 
 public class DualPivotQuickSort {
@@ -14,40 +13,37 @@ public class DualPivotQuickSort {
     }
 
     private static <T extends Comparable<? super T>> void quickSort(T[] arr, int lowIndex, int highIndex) {
-        if (lowIndex < highIndex) {
-            T lowPivot = arr[lowIndex];
-            T highPivot = arr[highIndex];
-
-            if(lowPivot.compareTo(highPivot) > 0) {
-                exchange(arr, lowIndex, highIndex);
-                lowPivot = arr[lowIndex];
-                highPivot = arr[highIndex];
-            } else if (lowPivot.equals(highPivot)) {
-                while (lowPivot.equals(highPivot) && lowIndex < highIndex) {
-                    lowIndex++;
-                    lowPivot = arr[lowIndex];
-                }
-            }
-
-            int i = lowIndex+1;
-            int lt = lowIndex+1;
-            int gt = highIndex-1;
-            while (i <= gt) {
-                if (arr[i].compareTo(lowPivot) < 0) {
-                    exchange(arr, i++, lt++);
-                } else if (arr[i].compareTo(highPivot) > 0) {
-                    exchange(arr, i, gt--);
-                } else {
-                    i++;
-                }
-            }
-
-            exchange(arr, lowIndex, --lt);
-            exchange(arr, highIndex, ++gt);
-            quickSort(arr, lowIndex, lt-1);
-            quickSort (arr, lt+1, gt-1);
-            quickSort(arr, gt+1, highIndex);
+        if(highIndex <= lowIndex) {
+            return;
         }
+
+        T lowPivot = arr[lowIndex];
+        T highPivot = arr[highIndex];
+
+        if(lt(highPivot, lowPivot)) {
+            exchange(arr, lowIndex, highIndex);
+        }
+        int lt = lowIndex + 1;
+        int gt = highIndex - 1;
+        int i = lowIndex + 1;
+
+        while (i <= gt) {
+            if (lt(arr[i], lowPivot)) {
+                exchange(arr, i++, lt++);
+            } else if (lt(highPivot, arr[i])) {
+                exchange(arr, i, gt--);
+            } else {
+                i++;
+            }
+        }
+        exchange(arr, lowIndex, --lt);
+        exchange(arr, highIndex, ++gt);
+
+        quickSort(arr, lowIndex, lt-1);
+        if (lt(arr[lt], arr[gt])) {
+            quickSort (arr, lt+1, gt-1);
+        }
+        quickSort(arr, gt+1, highIndex);
     }
 
     public static void test(int len, int max) {

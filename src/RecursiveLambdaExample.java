@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.function.UnaryOperator;
 
 import static Random.FermatNumbers.fermatNumber;
+import static myUtils.Equivalence.equal;
 
 public class RecursiveLambdaExample<T extends Object> {
 
@@ -17,6 +18,10 @@ public class RecursiveLambdaExample<T extends Object> {
 
     interface VarArgs<T extends Object> {
         int varArgs(T... params);
+    }
+
+    interface palindroming<T extends Comparable> {
+        Tuple varArgs(T... params);
     }
 
     static VarArgs<Object> test = (Object... params) -> {
@@ -31,6 +36,17 @@ public class RecursiveLambdaExample<T extends Object> {
             ConsolePrinting.println(i + ": " + fermatNumber(i));
         }
         return 0;
+    };
+
+    static palindroming<Comparable> palindromia = (Comparable... params) -> {
+        if(params.length < 2) {
+            return new Tuple(true);
+        } else {
+            if (equal(params[0], params[params.length-1])) {
+                return RecursiveLambdaExample.palindromia.varArgs(Arrays.copyOfRange(params, 1, params.length-1));
+            }
+        }
+        return new Tuple(false);
     };
 
     public void exe(VarArgs<T> lam, T... args) {
@@ -49,7 +65,9 @@ public class RecursiveLambdaExample<T extends Object> {
         System.out.println(test.varArgs("one", 2, 'c', false, new Tuple()));
         System.out.println(test.varArgs(new HashSet(), new ArrayList()));
 
-
         reclambex.exe(reclambex.test2, 10);
+
+        ConsolePrinting.println(palindromia.varArgs('r','a','c','e','c','a','r'));
+        ConsolePrinting.println(palindromia.varArgs(1,2,3,3,2,1));
     }
 }
