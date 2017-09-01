@@ -2,6 +2,7 @@ package myUtils.Measurement;
 
 import myUtils.ConsolePrinting;
 
+import java.awt.*;
 import java.text.DecimalFormat;
 import java.util.Scanner;
 
@@ -119,11 +120,12 @@ public abstract class AbstractTimer {
     public static void main(String[] args) {
         Scanner reader = new Scanner(System.in);
         String key = "start[1] suspend[2] resume[3] stop[4]";
+        ConsolePrinting.COLOR printCol = ConsolePrinting.COLOR.RED;
         int input;
-        AbstractTimer timer = new CPUTimer(TimeUnit.SECONDS);
+        AbstractTimer timer = new SYSTimer(TimeUnit.SECONDS);
         String lastAction = "timer application";
         do {
-            ConsolePrinting.println(timer + " : " + lastAction);
+            ConsolePrinting.println(printCol, timer + " : " + lastAction);
             ConsolePrinting.println(key);
             ConsolePrinting.print(">> ");
             String s = reader.next();
@@ -132,18 +134,22 @@ public abstract class AbstractTimer {
                 case 1:
                     timer.start();
                     lastAction = "started";
+                    printCol = ConsolePrinting.COLOR.GREEN;
                     break;
                 case 2:
                     timer.suspend();
                     lastAction = "suspended";
+                    printCol = ConsolePrinting.COLOR.YELLOW;
                     break;
                 case 3:
                     timer.resume();
                     lastAction = "resumed";
+                    printCol = ConsolePrinting.COLOR.CYAN;
                     break;
                 case 4:
                     timer.stop();
                     lastAction = "stopped";
+                    printCol = ConsolePrinting.COLOR.RED;
                     break;
                 default:
                     break;

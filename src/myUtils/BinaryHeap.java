@@ -209,7 +209,7 @@ public class BinaryHeap<E extends Comparable<? super E>> implements Iterable<E> 
         println(bh);
 
 
-        class test implements Comparable, Serializable{
+        class test implements Comparable {
             private Integer val;
             test(int val) {
                 this.val = val;
@@ -220,7 +220,7 @@ public class BinaryHeap<E extends Comparable<? super E>> implements Iterable<E> 
 
             @Override
             public int compareTo(Object o) {
-                return this.val.compareTo(((test) o).getVal());
+                return -1 * this.val.compareTo(((test) o).getVal());
             }
 
             @Override

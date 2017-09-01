@@ -1,8 +1,5 @@
 package myUtils;
 
-import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Arrays;
 
 public class ConsolePrinting {
@@ -48,6 +45,10 @@ public class ConsolePrinting {
         print(decypher(c));
     }
 
+    public static <T> void print(T o) {
+        System.out.print(o.toString());
+    }
+
     public static <T> String wrap(COLOR c, T... args) {
         StringBuffer sb = new StringBuffer();
         sb.append(decypher(c));
@@ -59,9 +60,13 @@ public class ConsolePrinting {
     }
 
     public static <T> void print(T... args) {
+        String delim = "";
         for (T elem : args) {
-            System.out.print(elem);
+            print(delim);
+            print(elem);
+            delim = ", ";
         }
+        print("");
     }
 
     public static <T> void println(T... args) {
@@ -94,7 +99,7 @@ public class ConsolePrinting {
         println();
     }
 
-    public static <T extends Iterable<E>, E extends Serializable> void printDelim(String delim, T args) {
+    public static <T extends Iterable<E>, E extends Object> void printDelim(String delim, T args) {
         String temp = "";
         for (E elem : args) {
             print(temp);
@@ -103,7 +108,7 @@ public class ConsolePrinting {
         }
     }
 
-    public static <T extends Iterable<E>, E extends Serializable> void printlnDelim(String delim, T args) {
+    public static <T extends Iterable<E>, E extends Object> void printlnDelim(String delim, T args) {
         printDelim(delim, args);
         println();
     }
@@ -122,7 +127,7 @@ public class ConsolePrinting {
         println();
     }
 
-    public static <T extends Iterable<E>, E extends Serializable> void print(T o) {
+    public static <T extends Iterable<E>, E extends Object> void print(T o) {
         String delim = "{";
         for(E elem: o) {
             print(delim);
@@ -133,44 +138,18 @@ public class ConsolePrinting {
         print(delim);
     }
 
-    public static <T extends Iterable<E>, E extends Serializable> void println(T o) {
+    public static <T extends Iterable<E>, E extends Object> void println(T o) {
         print(o);
         println();
     }
 
-    public static <T extends Iterable<E>, E extends Serializable> void print(COLOR c, T o) {
+    public static <T extends Iterable<E>, E extends Object> void print(COLOR c, T o) {
         print(c);
         print(o);
         print(ANSI_RESET);
     }
 
-    public static <T extends Iterable<E>, E extends Serializable> void println(COLOR c, T o) {
-        print(c, o);
-        println();
-    }
-
-    public static <T extends Serializable> void print(T[] o) {
-        String delim = "{";
-        for (T elem : o) {
-            print(delim);
-            print(elem);
-            delim = ", ";
-        }
-        delim = (delim.equals("{")) ? "{}" : "}";
-        print(delim);
-    }
-
-    public static <T extends Serializable> void println(T[] o) {
-        print(o);
-        println();
-    }
-
-    public static <T extends Serializable> void print(COLOR c, T[] o) {
-        print(c);
-        print(o);
-    }
-
-    public static <T extends Serializable> void println(COLOR c, T[] o) {
+    public static <T extends Iterable<E>, E extends Object> void println(COLOR c, T o) {
         print(c, o);
         println();
     }
@@ -355,6 +334,7 @@ public class ConsolePrinting {
         println(COLOR.YELLOW, new Character[]{'a','b','c'});
         println(COLOR.BLUE, new int[]{'a','b','c'});
 
+        println(new Character[20]);
     }
 
 }
