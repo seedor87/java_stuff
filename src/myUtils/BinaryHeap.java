@@ -1,5 +1,6 @@
 package myUtils;
 
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.*;
 
@@ -16,45 +17,37 @@ public class BinaryHeap<E extends Comparable<? super E>> implements Iterable<E> 
     private E[] data;
     private int heapSize;
     private Comparator comp;
-
-    public <T extends E> BinaryHeap(Class<T> type) {
-        this.data = (T[]) Array.newInstance(type, MAX_SIZE);
-        heapSize = 0;
-        this.comp = lt;
-    }
-
-    public <T extends E> BinaryHeap(Class<T> type, T... args) {
-        this.data = (T[]) Array.newInstance(type, MAX_SIZE);
-        heapSize = 0;
-        this.comp = lt;
-        push(args);
-    }
-
-    public  <C extends Collection<E>> BinaryHeap(Class<E> type, C args) {
-        this.data = (E[]) Array.newInstance(type, MAX_SIZE);
-        heapSize = 0;
-        this.comp = lt;
-        push(args);
-    }
+    private Class type;
 
     public <T extends E> BinaryHeap(Comparator comp, Class<T> type) {
-        this.data = (T[]) Array.newInstance(type, MAX_SIZE);
-        heapSize = 0;
+        this.type = type;
+        this.data = (T[]) Array.newInstance(this.type, MAX_SIZE);
+        this.heapSize = 0;
         this.comp = comp;
     }
 
     public <T extends E> BinaryHeap(Comparator comp, Class<T> type, T... args) {
-        this.data = (T[]) Array.newInstance(type, MAX_SIZE);
-        heapSize = 0;
-        this.comp = comp;
+        this(comp, type);
         push(args);
     }
 
     public  <C extends Collection<E>> BinaryHeap(Comparator comp, Class<E> type, C args) {
-        this.data = (E[]) Array.newInstance(type, MAX_SIZE);
-        heapSize = 0;
-        this.comp = comp;
+        this(comp, type);
         push(args);
+    }
+
+    public <T extends E> BinaryHeap(Class<T> type) {
+       this(lt, type);
+    }
+
+    public <T extends E> BinaryHeap(Class<T> type, T... args) {
+       this(lt, type);
+        push(args);
+    }
+
+    public  <C extends Collection<E>> BinaryHeap(Class<E> type, C args) {
+       this(lt, type);
+       push(args);
     }
 
     public E peek() {
@@ -65,7 +58,7 @@ public class BinaryHeap<E extends Comparable<? super E>> implements Iterable<E> 
     }
 
     public boolean empty() {
-        return (heapSize == 0);
+        return (this.heapSize == 0);
     }
 
     private int getLeftChildIndex(int nodeIndex) {
@@ -82,15 +75,20 @@ public class BinaryHeap<E extends Comparable<? super E>> implements Iterable<E> 
 
     @Override
     public Iterator<E> iterator() {
-        return new HeapIterator();
+        return new HeapIterator<E>(this.comp, this.type, this.data, this.heapSize);
     }
 
-    public class HeapIterator implements Iterator {
+    public class HeapIterator<C extends E> implements Iterator {
+
+        BinaryHeap<E> temp;
+        HeapIterator(Comparator<E> comp, Class<E> type, E[] data, int heapSize) {
+            this.temp = new BinaryHeap<>(comp, type ,Arrays.copyOfRange(data, 0, heapSize));
+        }
 
         @Override
         public boolean hasNext() {
             try {
-                peek();
+                this.temp.peek();
             } catch (HeapException ex) {
                 return false;
             }
@@ -99,7 +97,7 @@ public class BinaryHeap<E extends Comparable<? super E>> implements Iterable<E> 
 
         @Override
         public E next() {
-            return pop();
+            return this.temp.pop();
         }
     }
 
@@ -110,12 +108,12 @@ public class BinaryHeap<E extends Comparable<? super E>> implements Iterable<E> 
     }
 
     public void push(E value) {
-        if (heapSize == data.length) {
+        if (this.heapSize == data.length) {
             throw new HeapException("Heap's underlying storage is overflow");
         }
-        heapSize++;
-        this.data[heapSize - 1] = value;
-        siftUp(heapSize - 1);
+        this.heapSize++;
+        this.data[this.heapSize - 1] = value;
+        siftUp(this.heapSize - 1);
     }
 
     public void push(E... values) {
@@ -149,9 +147,9 @@ public class BinaryHeap<E extends Comparable<? super E>> implements Iterable<E> 
         if (empty()) {
             throw new HeapException("Heap is empty");
         }
-        this.data[0] = this.data[heapSize - 1];
-        heapSize--;
-        if (heapSize > 0) {
+        this.data[0] = this.data[this.heapSize - 1];
+        this.heapSize--;
+        if (this.heapSize > 0) {
             siftDown(0);
         }
         return ret;
@@ -162,8 +160,8 @@ public class BinaryHeap<E extends Comparable<? super E>> implements Iterable<E> 
         E tmp;
         leftChildIndex = getLeftChildIndex(nodeIndex);
         rightChildIndex = getRightChildIndex(nodeIndex);
-        if (rightChildIndex >= heapSize) {
-            if (leftChildIndex >= heapSize) {
+        if (rightChildIndex >= this.heapSize) {
+            if (leftChildIndex >= this.heapSize) {
                 return;
             } else {
                 minIndex = leftChildIndex;
@@ -198,11 +196,44 @@ public class BinaryHeap<E extends Comparable<? super E>> implements Iterable<E> 
         bh.push(5);
         bh.push(3);
         println(bh);
+        bh.push(7, 8, 6);
+        println(bh);
+        bh.pop();
+        bh.pop();
+        println(bh);
 
         bh = new BinaryHeap(gt, Character.class, 'a','b','c','z');
         println(bh);
 
-        bh = new BinaryHeap(String.class, new HashSet(Arrays.asList("star", "alex", "bob")));
+        bh = new BinaryHeap<>(String.class, new HashSet(Arrays.asList("star", "alex", "bob")));
         println(bh);
+
+
+        class test implements Comparable, Serializable{
+            private Integer val;
+            test(int val) {
+                this.val = val;
+            }
+            public int getVal() {
+                return this.val;
+            }
+
+            @Override
+            public int compareTo(Object o) {
+                return this.val.compareTo(((test) o).getVal());
+            }
+
+            @Override
+            public String toString() {
+                return this.val +  "";
+            }
+        }
+
+        bh = new BinaryHeap(test.class);
+        bh.push(new test(9));
+        bh.push(new test(10));
+        bh.push(new test(11));
+        println(bh);
+
     }
 }
