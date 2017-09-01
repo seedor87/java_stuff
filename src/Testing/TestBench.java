@@ -15,7 +15,7 @@ import java.util.List;
 
 import static myUtils.ConsolePrinting.*;
 import static myUtils.ConsolePrinting.printlnDelim;
-import static myUtils.Equivalence.equal;
+import static myUtils.Equivalence.eq;
 
 public class TestBench {
 
@@ -38,7 +38,7 @@ public class TestBench {
         try {
             List<Double> res1 = (List) new SYSTimeTest(PerfectNumbers.class, "generatePerfectNumbers").exe(lim).get(0);
             List<Double> res2 = (List) new SYSTimeTest(PerfectNumbers.class, "findPerfectNumbers").exe(lim).get(0);
-            result = equal(res1, res2);
+            result = eq(res1, res2);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.function.UnaryOperator;
 
 import static Random.FermatNumbers.fermatNumber;
-import static myUtils.Equivalence.equal;
+import static myUtils.Equivalence.eq;
 
 public class RecursiveLambdaExample<T extends Object> {
 
@@ -42,7 +42,7 @@ public class RecursiveLambdaExample<T extends Object> {
         if(params.length < 2) {
             return new Tuple(true);
         } else {
-            if (equal(params[0], params[params.length-1])) {
+            if (eq(params[0], params[params.length-1])) {
                 return RecursiveLambdaExample.palindromia.varArgs(Arrays.copyOfRange(params, 1, params.length-1));
             }
         }

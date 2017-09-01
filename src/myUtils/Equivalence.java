@@ -1,6 +1,9 @@
 package myUtils;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 public class Equivalence {
@@ -39,25 +42,51 @@ public class Equivalence {
     }
 
     public static <T extends Comparable<? super T>> boolean lt(T elem1, T elem2) {
-        return elem1.compareTo(elem2) < 0;
+        return lt.compare(elem1, elem2);
     }
 
     public static <T extends Comparable<? super T>> boolean lte(T elem1, T elem2) {
-        return lt(elem1, elem2) || equal(elem1, elem2);
+        return lte.compare(elem1, elem2);
     }
 
     public static <T extends Comparable<? super T>> boolean gt(T elem1, T elem2) {
-        return elem1.compareTo(elem2) > 0;
+        return gt.compare(elem1, elem2);
     }
 
     public static <T extends Comparable<? super T>> boolean gte(T elem1, T elem2) {
-        return gt(elem1, elem2) || equal(elem1, elem2);
+        return gte.compare(elem1, elem2);
+    }
+
+    public static <T extends Comparable<? super T>> boolean eq(T elem1, T elem2) {
+        return eq.compare(elem1, elem2);
+    }
+
+    public static <T extends Comparable<? super T>> boolean neq(T elem1, T elem2) {
+        return elem1.compareTo(elem2) != 0;
+    }
+
+    public static <E extends Comparable<? super E>> boolean eq(List<E> arr1, List<E> arr2) {
+        for (E elem : arr1) {
+            if (!contains(arr2, elem)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static <E extends Comparable<? super E>> boolean eq(E[] arr1, E[] arr2) {
+        for (E elem : arr1) {
+            if (!contains(arr2, elem)) {
+                return false;
+            }
+        }
+        return true;
     }
 
 
     public static <E extends Comparable<? super E>> boolean contains(List<E> arr, E elem1) {
         for (E elem2 : arr) {
-            if (equal(elem1, elem2)) {
+            if (eq(elem1, elem2)) {
                 return true;
             }
         }
@@ -66,34 +95,55 @@ public class Equivalence {
 
     public static <E extends Comparable<? super E>> boolean contains(E[] arr, E elem1) {
         for (E elem2 : arr) {
-            if (equal(elem1, elem2)) {
+            if (eq(elem1, elem2)) {
                 return true;
             }
         }
         return false;
     }
 
-    public static <T extends Comparable<? super T>> boolean equal(T elem1, T elem2) {
-        return elem1.equals(elem2) || elem1 == elem2;
-    }
-
-    public static <E extends Comparable<? super E>> boolean equal(List<E> arr1, List<E> arr2) {
-        for (E elem : arr1) {
-            if (!contains(arr2, elem)) {
+    public static <E extends Comparable<? super E>> boolean distinct(E... args) {
+        HashSet<E> set = new HashSet<>();
+        for(E elem : args) {
+            if(!set.add(elem)) {
                 return false;
             }
         }
         return true;
     }
 
-    public static <E extends Comparable<? super E>> boolean equal(E[] arr1, E[] arr2) {
-        for (E elem : arr1) {
-            if (!contains(arr2, elem)) {
+    public static <E extends Comparable<? super E>> boolean distinct(Collection<E> arr) {
+        HashSet<E> set = new HashSet<>();
+        for(E elem : arr) {
+            if(!set.add(elem)) {
                 return false;
             }
         }
         return true;
     }
+
+
+    public static boolean cnfAnd(boolean first, boolean... rest) {
+        if (rest.length < 1) {
+            return first;
+        }
+        if(first) {
+            return cnfAnd(rest[0], Arrays.copyOfRange(rest, 1, rest.length));
+        }
+        return false;
+    }
+
+    public static boolean cnfOr(boolean first, boolean... rest) {
+        if(rest.length < 1) {
+            return first;
+        }
+        if(first) {
+            return true;
+        } else {
+            return cnfOr(rest[0], Arrays.copyOfRange(rest, 1, rest.length));
+        }
+    }
+
 
     public static <T extends Object> void main(String[] args) {
         Character[] carr1 = {'a','b','c','d'};
@@ -109,8 +159,14 @@ public class Equivalence {
         ConsolePrinting.println(evaluate(lt, 'a', 'b', 'c', 'd'));
         ConsolePrinting.println(evaluate(gt, 'd', 'c', 'b', 'a'));
         ConsolePrinting.println(evaluate(lte, 'a','a', 'a', 'a'));
-        ConsolePrinting.println(gte('a', 'b'));
+        ConsolePrinting.println(gte('a','b'));
+        ConsolePrinting.println(neq('a','b'));
 
+        ConsolePrinting.println(cnfAnd(true, true, false));
+        ConsolePrinting.println(cnfOr(false, false, true));
+
+        ConsolePrinting.println(distinct(new Character[]{'a','b','c','d','e','f'}));
+        ConsolePrinting.println(distinct(1,2,3,4,5,6,1));
 
     }
 }
