@@ -1,7 +1,7 @@
 package NewTesting;
 
 import myUtils.Measurement.SYSTimer;
-import myUtils.Measurement.Timer;
+import myUtils.Measurement.AbstractTimer;
 import myUtils.Tuple;
 
 import static myUtils.ConsolePrinting.println;
@@ -15,7 +15,7 @@ public abstract class NewSYSTimeTest<T extends Object> extends NewAbstractTest {
 
     @Override
     public Tuple test (VarArgs lam, Object... args)  {
-        Timer timer = new SYSTimer();
+        AbstractTimer timer = new SYSTimer();
         timer.start();
         Tuple ret = lam.varArgs(args);
         timer.stop();

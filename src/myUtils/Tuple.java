@@ -2,9 +2,7 @@ package myUtils;
 
 import java.util.*;
 
-import static myUtils.ConsolePrinting.print;
 import static myUtils.ConsolePrinting.println;
-import static myUtils.ConsolePrinting.printlnDelim;
 
 public class Tuple<T> implements Iterable<T>{
 

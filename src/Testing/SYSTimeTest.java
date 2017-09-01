@@ -1,7 +1,7 @@
 package Testing;
 
 import myUtils.Measurement.SYSTimer;
-import myUtils.Measurement.Timer;
+import myUtils.Measurement.AbstractTimer;
 import myUtils.Tuple;
 
 import static myUtils.ConsolePrinting.println;
@@ -14,7 +14,7 @@ public class SYSTimeTest extends AbstractTest {
 
     @Override
     Tuple wrapperFunc(Object[] params) throws Exception {
-        Timer timer = new SYSTimer();
+        AbstractTimer timer = new SYSTimer();
         timer.start();
         Tuple ret = new Tuple(myMethod(params));
         timer.stop();

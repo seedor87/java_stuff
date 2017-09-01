@@ -1,6 +1,5 @@
 package myUtils;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -122,7 +121,6 @@ public class Equivalence {
         return true;
     }
 
-
     public static boolean cnfAnd(boolean first, boolean... rest) {
         if (rest.length < 1) {
             return first;
@@ -139,9 +137,8 @@ public class Equivalence {
         }
         if(first) {
             return true;
-        } else {
-            return cnfOr(rest[0], Arrays.copyOfRange(rest, 1, rest.length));
         }
+        return cnfOr(rest[0], Arrays.copyOfRange(rest, 1, rest.length));
     }
 
 

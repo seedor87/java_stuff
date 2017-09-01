@@ -3,11 +3,9 @@ package myUtils.Measurement;
 import myUtils.ConsolePrinting;
 
 import java.text.DecimalFormat;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.Scanner;
 
-public abstract class Timer {
+public abstract class AbstractTimer {
 
     public enum TimeUnit {
         NANO, MICRO, MILLI, SECONDS, MINUTES, HOURS
@@ -19,8 +17,8 @@ public abstract class Timer {
     public abstract double getTime();
     public abstract double getElapsedTime(TimeUnit u);
 
-    public Timer() {}
-    public Timer(TimeUnit u) { setUnit(u); }
+    public AbstractTimer() {}
+    public AbstractTimer(TimeUnit u) { setUnit(u); }
     private TimeUnit getUnit() { return unit; }
 
     private void setUnit(TimeUnit u) {
@@ -122,7 +120,7 @@ public abstract class Timer {
         Scanner reader = new Scanner(System.in);
         String key = "start[1] suspend[2] resume[3] stop[4]";
         int input;
-        Timer timer = new CPUTimer(TimeUnit.SECONDS);
+        AbstractTimer timer = new CPUTimer(TimeUnit.SECONDS);
         String lastAction = "timer application";
         do {
             ConsolePrinting.println(timer + " : " + lastAction);

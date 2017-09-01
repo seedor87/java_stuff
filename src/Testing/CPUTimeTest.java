@@ -1,7 +1,7 @@
 package Testing;
 
 import myUtils.Measurement.CPUTimer;
-import myUtils.Measurement.Timer;
+import myUtils.Measurement.AbstractTimer;
 import myUtils.Tuple;
 
 import static myUtils.ConsolePrinting.println;
@@ -14,7 +14,7 @@ public class CPUTimeTest extends AbstractTest {
 
     @Override
     Tuple wrapperFunc(Object[] params) throws Exception {
-        Timer timer = new CPUTimer();
+        AbstractTimer timer = new CPUTimer();
         timer.start();
         Tuple ret = new Tuple(myMethod(params));
         timer.stop();

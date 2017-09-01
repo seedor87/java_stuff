@@ -1,6 +1,6 @@
 package myUtils.Measurement;
 
-public class SYSTimer extends Timer {
+public class SYSTimer extends AbstractTimer {
 
     private final double nativeFactor = 1000000000.0;
 

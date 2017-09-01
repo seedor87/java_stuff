@@ -3,7 +3,7 @@ package myUtils.Measurement;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
 
-public class CPUTimer extends Timer {
+public class CPUTimer extends AbstractTimer {
 
     public CPUTimer() {}
     public CPUTimer(TimeUnit u) {
