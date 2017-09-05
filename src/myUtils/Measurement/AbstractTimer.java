@@ -5,8 +5,16 @@ import myUtils.ConsolePrinting;
 import java.text.DecimalFormat;
 import java.util.Scanner;
 
+/***
+ * Absttract timer that holds capabilities of general use in code timer.
+ * when implemented requires instantiation of only the getTime() and getElapsedTime() methods,
+ * All other work is done in this class.
+ */
 public abstract class AbstractTimer {
 
+    /**
+     * Special exception for bad state transitions.
+     */
     class IllegalStateTransitionException extends RuntimeException {
 
         IllegalStateTransitionException(String msg) {
@@ -14,23 +22,46 @@ public abstract class AbstractTimer {
         }
     }
 
+    /**
+     * Enum for usable units of time that can be registered, the abstract methods be aware of this
+     */
     public enum TimeUnit {
         NANO, MICRO, MILLI, SECONDS, MINUTES, HOURS
     }
 
+    /**
+     * Enum for state transition of timer recording machine.
+     * Used post measurement to save state and transition, or throw away and resume.
+     */
     public enum State {
         STOPPED, STARTED, SUSPENDED, RESUMMED
     }
 
-    private TimeUnit timeUnit = TimeUnit.MILLI;
-    double startTime = 01, endTime = 01, elapsedTime = 0;
-    DecimalFormat formatter = new DecimalFormat("#,###,###.###");
-    private State current_state = State.STOPPED;
+    /**
+     * protected fields for access only within extending classes.
+     */
+    protected TimeUnit timeUnit = TimeUnit.MILLI;
+    protected double startTime = 01, endTime = 01, elapsedTime = 0;
+    protected DecimalFormat formatter = new DecimalFormat("#,###,###.###");
+    protected State current_state = State.STOPPED;
 
+    /**
+     * abstract methods to be overridden.
+     * @return double - get present time per method of measurement, and current value of elapsed time, respectively.
+     */
     public abstract double getTime();
+
+    /**
+     * abstract methods to be overridden.
+     * @return double - get present time per method of measurement, and current value of elapsed time, respectively.
+     */
     public abstract double getElapsedTime(TimeUnit u);
 
+    /**
+     * Default Constructor
+     */
     public AbstractTimer() {}
+    
     public AbstractTimer(TimeUnit u) { setTimeUnit(u); }
     private TimeUnit getTimeUnit() { return timeUnit; }
 
