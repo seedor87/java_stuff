@@ -7,9 +7,9 @@ import java.util.Scanner;
 
 public abstract class AbstractTimer {
 
-    class IllegalStateTransitionExcpetion extends RuntimeException {
+    class IllegalStateTransitionException extends RuntimeException {
 
-        IllegalStateTransitionExcpetion(String msg) {
+        IllegalStateTransitionException(String msg) {
             super(msg);
         }
     }
@@ -22,21 +22,21 @@ public abstract class AbstractTimer {
         STOPPED, STARTED, SUSPENDED, RESUMMED
     }
 
-    private TimeUnit unit = TimeUnit.MILLI;
+    private TimeUnit timeUnit = TimeUnit.MILLI;
     double startTime = 01, endTime = 01, elapsedTime = 0;
     DecimalFormat formatter = new DecimalFormat("#,###,###.###");
-    private State current = State.STOPPED;
+    private State current_state = State.STOPPED;
 
     public abstract double getTime();
     public abstract double getElapsedTime(TimeUnit u);
 
     public AbstractTimer() {}
-    public AbstractTimer(TimeUnit u) { setUnit(u); }
-    private TimeUnit getUnit() { return unit; }
+    public AbstractTimer(TimeUnit u) { setTimeUnit(u); }
+    private TimeUnit getTimeUnit() { return timeUnit; }
 
-    private void setUnit(TimeUnit u) {
-        this.unit = u;
-        switch(unit) {
+    private void setTimeUnit(TimeUnit u) {
+        this.timeUnit = u;
+        switch(getTimeUnit()) {
             case NANO:
                 formatter = new DecimalFormat("###,###,###,###");
                 break;
@@ -63,41 +63,41 @@ public abstract class AbstractTimer {
     public double start () {
         startTime = getTime();
         elapsedTime = 0;
-        current = State.STARTED;
+        current_state = State.STARTED;
         return startTime;
     }
 
     public double suspend() {
         double hold = getTime();
-        if(current == State.STARTED || current == State.RESUMMED) {
+        if(isRunning()) {
             endTime = hold;
             elapsedTime += (endTime - startTime);
             startTime = 0l;
-            current = State.SUSPENDED;
+            current_state = State.SUSPENDED;
             return endTime;
         }
         endTime = 01;
-        throw new IllegalStateTransitionExcpetion(current + " -> " + State.SUSPENDED);
+        throw new IllegalStateTransitionException(current_state + " -> " + State.SUSPENDED);
     }
 
     public double resume() {
         double hold = getTime();
-        if(current == State.SUSPENDED) {
+        if(current_state == State.SUSPENDED) {
             startTime = hold;
             endTime = 01;
-            current = State.RESUMMED;
+            current_state = State.RESUMMED;
             return startTime;
         }
-        throw new IllegalStateTransitionExcpetion(current + " -> " + State.RESUMMED);
+        throw new IllegalStateTransitionException(current_state + " -> " + State.RESUMMED);
     }
 
     public double stop () {
         double hold = getTime();
-        if(current == State.RESUMMED || current == State.STARTED) {
+        if(isRunning()) {
             endTime = hold;
             elapsedTime += (endTime - startTime);
             startTime = 0l;
-            current = State.STOPPED;
+            current_state = State.STOPPED;
         } else {
             elapsedTime = 0;
             startTime = 0;
@@ -107,16 +107,21 @@ public abstract class AbstractTimer {
     }
 
     public boolean isRunning () {
-        return startTime != 0l;
+        return current_state == State.STARTED
+                || current_state == State.RESUMMED;
+    }
+
+    public boolean isStopped() {
+        return current_state == State.STOPPED;
     }
 
     public double getElapsedTime() {
-        return getElapsedTime(getUnit());
+        return getElapsedTime(getTimeUnit());
     }
 
     public String getTimeString() {
         String ret = formatter.format(getElapsedTime());
-        switch(unit) {
+        switch(timeUnit) {
             case NANO:
                 return ret + " nanoseconds";
             case MICRO:
@@ -141,13 +146,13 @@ public abstract class AbstractTimer {
 
     public static void main(String[] args) {
         Scanner reader = new Scanner(System.in);
-        String key = "start[1] suspend[2] resume[3] stop[4]";
-        int input = 4;
+        String commands = "start[1] suspend[2] resume[3] stop[4] quit[~]";
+        int input;
         AbstractTimer timer = new SYSTimer(TimeUnit.SECONDS);
         String lastAction = "timer application";
         ConsolePrinting.println(ConsolePrinting.COLOR.RED, timer + " : " + lastAction);
         do {
-            ConsolePrinting.println(key);
+            ConsolePrinting.println(commands);
             ConsolePrinting.print(">> ");
             String s = reader.next();
             input = Integer.parseInt(s);
@@ -177,11 +182,12 @@ public abstract class AbstractTimer {
                     default:
                         break;
                 }
-            } catch (IllegalStateTransitionExcpetion ex) {
+            } catch (IllegalStateTransitionException ex) {
                 ConsolePrinting.println(ConsolePrinting.COLOR.PURPLE, ex.toString());
             }
         } while(0 < input && input < 5);
         ConsolePrinting.print("quiting...");
         reader.close();
+        System.exit(0);
     }
 }
