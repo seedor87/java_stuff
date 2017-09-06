@@ -61,7 +61,7 @@ public abstract class AbstractTimer {
      * Default Constructor
      */
     public AbstractTimer() {}
-    
+
     public AbstractTimer(TimeUnit u) { setTimeUnit(u); }
     private TimeUnit getTimeUnit() { return timeUnit; }
 
