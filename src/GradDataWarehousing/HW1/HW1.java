@@ -1,5 +1,8 @@
 package GradDataWarehousing.HW1;
 
+import myUtils.ConsolePrinting;
+import myUtils.Measurement.AbstractTimer;
+import myUtils.Measurement.SYSTimer;
 import myUtils.Tuple;
 
 import java.io.*;
@@ -15,6 +18,7 @@ import java.util.Random;
 
 import static myUtils.ConsolePrinting.print;
 import static myUtils.ConsolePrinting.println;
+import static myUtils.ConsolePrinting.printlnDelim;
 
 public class HW1 {
 
@@ -33,19 +37,17 @@ public class HW1 {
     static final int custLow = 1140;
     static final int custHi = 1180;
     static final double priceMult = 1.1;
-    static final int MAX_ITEMS = 70+1;
+    static final int MAX_ITEMS = 70 + 1;
     static final int WEEKEND_INCREASE = 50;
 
-    /**
-     Rowan Dairy|1.00% Milk|1 gal|Milk|42355001|$3.69
-     Rowan Dairy|1.00% Milk|1/2 gal|Milk|42356001|$1.89
-     Rowan Dairy|2.00% Milk|1 gal|Milk|42357001|$3.69
-     Rowan Dairy|2.00% Milk|1/2 gal|Milk|42358001|$1.89
-     Rowan Dairy|Whole Milk Milk|1 gal|Milk|42359001|$3.69
-     Rowan Dairy|Whole Milk Milk|1/2 gal|Milk|42360001|$1.89
-     */
     static final String MILK_SKU = "XXXXXXX";
     static final String CEREAL_SKU = "0000000";
+    static final String BABY_FOOD_SKU = "^^^^^^^";
+    static final String DIAPERS_SKU = "8888888";
+    static final String PEANUTBUTTER_SKU = "PPPPPPP";
+    static final String JAM_JELLY_SKU = "JJJJJJJJ";
+    static final String BREAD_SKU = "#######";
+
 
     public static void readProducts(String pathname) {
         BufferedReader br;
@@ -56,8 +58,14 @@ public class HW1 {
             br.readLine();
             while ((line = br.readLine()) != null) {
                 // use pipe as separator
-                Tuple tup = new Tuple(line.split("\\|"));
-                products.add(new Tuple(tup.get(1), tup.get(4), ((String) tup.get(5)).replace("$", "")));
+                String[] fields = line.split("\\|");
+                String brand = fields[0];
+                String name = fields[1];
+                String weight = fields[2];
+                String category = fields[3];
+                String sku = fields[4];
+                Double price = Double.parseDouble(fields[5].replace("$", ""));
+                products.add(new Tuple(brand, name, weight, category, sku, price));
             }
 
         } catch (FileNotFoundException e) {
@@ -95,6 +103,7 @@ public class HW1 {
     }
 
     public static void write(Object... args) {
+        println(args);
         String delim = "";
         try {
             for (Object o : args) {
@@ -110,7 +119,12 @@ public class HW1 {
 
     public static void main(String[] args) {
 
-        readProducts("C:\\Users\\rseedorf\\IdeaProjects\\java_stuff\\src\\GradDataWarehousing\\HW1\\Products");
+        AbstractTimer timer = new SYSTimer(AbstractTimer.TimeUnit.SECONDS);
+        timer.start();
+
+        int TOTAL_LINES_IN_DB = 0;
+
+//        readProducts("C:\\Users\\rseedorf\\IdeaProjects\\java_stuff\\src\\GradDataWarehousing\\HW1\\Products");
 
         File file;
         try {
@@ -161,17 +175,65 @@ public class HW1 {
                             write(date, custCount, itemsCount, CEREAL_SKU);
                             itemsCount++;
                             if (itemsCount >= numItems) {
-                                break;
+                                fallThrough = true;
                             }
                         }
                     }
-                    if (true) {
-                        //                        yada yada
+
+                    if (!fallThrough && randPct() <= 20) {
+                        write(date, custCount, itemsCount, BABY_FOOD_SKU);
+                        itemsCount++;
+                        if (itemsCount >= numItems) {
+                            fallThrough = true;
+                        }
+                        if (!fallThrough && randPct() <= 80) {
+                            write(date, custCount, itemsCount, DIAPERS_SKU);
+                            itemsCount++;
+                            if (itemsCount >= numItems) {
+                                fallThrough = true;
+                            }
+                        }
+                    } else {
+                        if (!fallThrough && randPct() <= 1) {
+                            write(date, custCount, itemsCount, DIAPERS_SKU);
+                            itemsCount++;
+                            if (itemsCount >= numItems) {
+                                fallThrough = true;
+                            }
+                        }
                     }
-                    print("");
+
+                    if (!fallThrough && randPct() <= 10) {
+                        write(date, custCount, itemsCount, PEANUTBUTTER_SKU);
+                        itemsCount++;
+                        if (itemsCount >= numItems) {
+                            fallThrough = true;
+                        }
+                        if (!fallThrough && randPct() <= 90) {
+                            write(date, custCount, itemsCount, JAM_JELLY_SKU);
+                            itemsCount++;
+                            if (itemsCount >= numItems) {
+                                fallThrough = true;
+                            }
+                        }
+                    } else {
+                        if (!fallThrough && randPct() <= 5) {
+                            write(date, custCount, itemsCount, JAM_JELLY_SKU);
+                            itemsCount++;
+                            if (itemsCount >= numItems) {
+                                fallThrough = true;
+                            }
+                        }
+                    }
+
+                    if(fallThrough && randPct() < 50) {
+                        write(date, custCount, itemsCount, BREAD_SKU);
+                    }
+
                     for (int remainder = itemsCount; remainder < numItems; remainder++) {
                         write(date, custCount, remainder, getRandomItem());
                     }
+                    TOTAL_LINES_IN_DB += numItems;
                 }
             }
         } catch (Exception ex) {
@@ -184,6 +246,10 @@ public class HW1 {
                 ex.printStackTrace();
             }
         }
+
+        timer.stop();
+        println(ConsolePrinting.COLOR.CYAN, timer);
+        println("Lines of DB: " + TOTAL_LINES_IN_DB);
     }
 
 }
