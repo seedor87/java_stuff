@@ -97,7 +97,7 @@ public class HW1 {
 
         int TOTAL_LINES_IN_DB = 0;
 
-        readTest("C:\\Users\\Bob S\\IdeaProjects\\java_stuff\\src\\GradDataWarehousing\\HW1\\Test");
+        readTest("C:\\Users\\Bob S\\IdeaProjects\\java_stuff\\src\\GradDataWarehousing\\HW1\\myProducts");
 
         File file;
         try {
@@ -211,11 +211,15 @@ public class HW1 {
                     if(!fallThrough && randPct() < 50) {
                         Tuple randBread = getRandomItem(BREADS);
                         write(date, custCount, itemsCount, randBread.getZero(), (Double) randBread.getOne() * priceMult);
+                        itemsCount++;
+                        if (itemsCount >= numItems) {
+                            fallThrough = true;
+                        }
                     }
 
                     for (int remainder = itemsCount; remainder < numItems; remainder++) {
                         Tuple randAll = getRandomItem();
-                        write(date, custCount, itemsCount, randAll.getZero(), Double.parseDouble((String) randAll.getOne()) * priceMult);
+                        write(date, custCount, remainder, randAll.getZero(), Double.parseDouble((String) randAll.getOne()) * priceMult);
                     }
 
                     TOTAL_LINES_IN_DB += numItems;
