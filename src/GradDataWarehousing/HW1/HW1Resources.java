@@ -200,7 +200,7 @@ public class HW1Resources {
             new
                     Tuple(44131001,5.49)
     };
-    
+
     static final Tuple[] BABY_FOODS= {
         new Tuple(43253001, 2.79),
         new Tuple(43254001, 2.79),
@@ -365,7 +365,7 @@ public class HW1Resources {
         new Tuple(44045001, 1.29),
         new Tuple(44046001, 1.29)
     };
-    
+
     static final Tuple[] DIAPERS = {
             new Tuple(42149001, 7.99),
             new Tuple(42150001, 14.99),
@@ -481,7 +481,7 @@ public class HW1Resources {
             new Tuple(42314001, 2.14)
     };
 
-    static final Tuple[] BREAD = {
+    static final Tuple[] BREADS = {
             new Tuple(44122001, 3.49),
             new Tuple(44123001, 3.49),
             new Tuple(44124001, 3.49),
