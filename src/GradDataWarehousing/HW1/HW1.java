@@ -20,31 +20,34 @@ import static myUtils.ConsolePrinting.println;
 
 public class HW1 {
 
-    static BufferedWriter writer;
-    static ArrayList<Tuple> ALL = new ArrayList<>();
+    static String outputPath = "." + File.separatorChar + "output.txt";
+    static String allProductsPath = "C:\\Users\\rseedorf\\IdeaProjects\\java_stuff\\src\\GradDataWarehousing\\HW1\\myProducts";
+
+    static final String START_DATE_STRING = "2017-01-01";
+    static final String END_DATE_STRING = "2018-01-01";
+    static final int CUST_LOW = 1140;
+    static final int CUST_HI = 1180;
+    static final double PRICE_MULT = 1.1;
+    static final int MAX_ITEMS = 70;
+    static final int WEEKEND_INCREASE = 50;
 
     static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+    static ArrayList<Tuple> allMyProdcuts = new ArrayList<>();
+    static int total_lines_in_db = 0;
+
+    static BufferedWriter writer;
     static LocalDate start;
     static LocalDate end;
     static Date startDate;
     static Date endDate;
 
-    static String startString = "2017-01-01";
-    static String endString = "2018-01-01";
-
-    static final int custLow = 1140;
-    static final int custHi = 1180;
-    static final double priceMult = 1.1;
-    static final int MAX_ITEMS = 70 + 1;
-    static final int WEEKEND_INCREASE = 50;
-
-    public static void readTest(String pathname) {
+    public static void constructAllProducts(String pathname) {
         try {
             FileInputStream fs= new FileInputStream(pathname);
             BufferedReader br = new BufferedReader(new InputStreamReader(fs));
             String line;
             while((line = br.readLine()) != null) {
-                ALL.add(new Tuple(line.split(", ")));
+                allMyProdcuts.add(new Tuple(line.split(", ")));
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -66,7 +69,7 @@ public class HW1 {
     }
 
     public static void write(Object... args) {
-        println(args);
+        // println(args);
         String delim = "";
         try {
             for (Object o : args) {
@@ -82,37 +85,35 @@ public class HW1 {
 
     public static Tuple getRandomItem() {
         Random rand = new Random();
-        int randomIndex = rand.nextInt(ALL.size());
-        return ALL.get(randomIndex);
+        int randomIndex = rand.nextInt(allMyProdcuts.size());
+        return allMyProdcuts.get(randomIndex);
     }
 
     public static Tuple getRandomItem(Tuple[] arr) {
         return arr[new Random().nextInt(arr.length)];
     }
 
+    public static double roundTwoDecimal(double num) {
+        num = Math.round(num * 100);
+        num = num/100;
+        return num;
+    }
+
     public static void main(String[] args) {
 
+        println(ConsolePrinting.COLOR.PURPLE, "Creation Started");
+        println("Params: ", START_DATE_STRING, END_DATE_STRING, CUST_LOW, CUST_HI,
+                PRICE_MULT, MAX_ITEMS, WEEKEND_INCREASE);
         AbstractTimer timer = new SYSTimer(AbstractTimer.TimeUnit.SECONDS);
         timer.start();
 
-        int TOTAL_LINES_IN_DB = 0;
-
-        readTest("C:\\Users\\Bob S\\IdeaProjects\\java_stuff\\src\\GradDataWarehousing\\HW1\\myProducts");
-
-        File file;
-        try {
-            file = new File("." + File.separatorChar + "foo.txt");
-            writer = new BufferedWriter(new FileWriter(file));
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } finally {
-            // comment this out if you want to inspect the files afterward
-            // file.delete();
-        }
+        constructAllProducts(allProductsPath);
+        println("All Products List constructed from...");
+        println(allProductsPath);
 
         try {
-            startDate = formatter.parse(startString);
-            endDate = formatter.parse(endString);
+            startDate = formatter.parse(START_DATE_STRING);
+            endDate = formatter.parse(END_DATE_STRING);
             start = startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
             end = endDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         } catch (ParseException ex) {
@@ -120,26 +121,36 @@ public class HW1 {
         }
 
         try {
+            println("working...");
+            File file = new File(outputPath);
+            writer = new BufferedWriter(new FileWriter(file));
+            Integer sku;
+            double num;
+
             for (LocalDate date = start; date.isBefore(end); date = date.plusDays(1)) {
-                int numCust = randRange(custLow, custHi);
+                int numCust = randRange(CUST_LOW, CUST_HI);
                 if (isWeekend(date)) {
                     numCust += WEEKEND_INCREASE;
                 }
 
                 for (int custCount = 0; custCount < numCust; custCount++) {
-                    int numItems = randRange(1, MAX_ITEMS);
+                    int numItems = randRange(1, MAX_ITEMS+1);
                     int itemsCount = 0;
                     boolean fallThrough = false;
                     if (!fallThrough && randPct() <= 70) {
                         Tuple randMilk = getRandomItem(MILKS);
-                        write(date, custCount, itemsCount, randMilk.getZero(), (Double) randMilk.getOne() * priceMult);
+                        sku = (Integer) randMilk.getZero();
+                        num = roundTwoDecimal((Double) randMilk.getOne() * PRICE_MULT);
+                        write(date, custCount, itemsCount, sku, num);
                         itemsCount++;
                         if (itemsCount >= numItems) {
                             fallThrough = true;
                         }
                         if (!fallThrough && randPct() <= 50) {
                             Tuple randCereal = getRandomItem(CEREALS);
-                            write(date, custCount, itemsCount, randCereal.getZero(), (Double) randCereal.getOne() * priceMult);
+                            sku = (Integer) randCereal.getZero();
+                            num = roundTwoDecimal((Double) randCereal.getOne() * PRICE_MULT);
+                            write(date, custCount, itemsCount, sku, num);
                             itemsCount++;
                             if (itemsCount >= numItems) {
                                 fallThrough = true;
@@ -148,7 +159,9 @@ public class HW1 {
                     } else {
                         if (!fallThrough && randPct() <= 5) {
                             Tuple randCereal = getRandomItem(CEREALS);
-                            write(date, custCount, itemsCount, randCereal.getZero(), (Double) randCereal.getOne() * priceMult);
+                            sku = (Integer) randCereal.getZero();
+                            num = roundTwoDecimal((Double) randCereal.getOne() * PRICE_MULT);
+                            write(date, custCount, itemsCount, sku, num);
                             itemsCount++;
                             if (itemsCount >= numItems) {
                                 fallThrough = true;
@@ -158,14 +171,18 @@ public class HW1 {
 
                     if (!fallThrough && randPct() <= 20) {
                         Tuple randBaby = getRandomItem(BABY_FOODS);
-                        write(date, custCount, itemsCount, randBaby.getZero(), (Double) randBaby.getOne() * priceMult);
+                        sku = (Integer) randBaby.getZero();
+                        num = roundTwoDecimal((Double) randBaby.getOne() * PRICE_MULT);
+                        write(date, custCount, itemsCount, sku, num);
                         itemsCount++;
                         if (itemsCount >= numItems) {
                             fallThrough = true;
                         }
                         if (!fallThrough && randPct() <= 80) {
                             Tuple randDiaper = getRandomItem(DIAPERS);
-                            write(date, custCount, itemsCount, randDiaper.getZero(), (Double) randDiaper.getOne() * priceMult);
+                            sku = (Integer) randDiaper.getZero();
+                            num = roundTwoDecimal((Double) randDiaper.getOne() * PRICE_MULT);
+                            write(date, custCount, itemsCount, sku, num);
                             itemsCount++;
                             if (itemsCount >= numItems) {
                                 fallThrough = true;
@@ -174,7 +191,9 @@ public class HW1 {
                     } else {
                         if (!fallThrough && randPct() <= 1) {
                             Tuple randDiaper = getRandomItem(DIAPERS);
-                            write(date, custCount, itemsCount, randDiaper.getZero(), (Double) randDiaper.getOne() * priceMult);
+                            sku = (Integer) randDiaper.getZero();
+                            num = roundTwoDecimal((Double) randDiaper.getOne() * PRICE_MULT);
+                            write(date, custCount, itemsCount, sku, num);
                             itemsCount++;
                             if (itemsCount >= numItems) {
                                 fallThrough = true;
@@ -184,14 +203,18 @@ public class HW1 {
 
                     if (!fallThrough && randPct() <= 10) {
                         Tuple randPeanut = getRandomItem(PEANUT_BUTTERS);
-                        write(date, custCount, itemsCount, randPeanut.getZero(), (Double) randPeanut.getOne() * priceMult);
+                        sku = (Integer) randPeanut.getZero();
+                        num = roundTwoDecimal((Double) randPeanut.getOne() * PRICE_MULT);
+                        write(date, custCount, itemsCount, sku, num);
                         itemsCount++;
                         if (itemsCount >= numItems) {
                             fallThrough = true;
                         }
                         if (!fallThrough && randPct() <= 90) {
                             Tuple randJJ = getRandomItem(JAM_JELLIES);
-                            write(date, custCount, itemsCount, randJJ.getZero(), (Double) randJJ.getOne() * priceMult);
+                            sku = (Integer) randJJ.getZero();
+                            num = roundTwoDecimal((Double) randJJ.getOne() * PRICE_MULT);
+                            write(date, custCount, itemsCount, sku, num);
                             itemsCount++;
                             if (itemsCount >= numItems) {
                                 fallThrough = true;
@@ -200,7 +223,9 @@ public class HW1 {
                     } else {
                         if (!fallThrough && randPct() <= 5) {
                             Tuple randJJ = getRandomItem(JAM_JELLIES);
-                            write(date, custCount, itemsCount, randJJ.getZero(), (Double) randJJ.getOne() * priceMult);
+                            sku = (Integer) randJJ.getZero();
+                            num = roundTwoDecimal((Double) randJJ.getOne() * PRICE_MULT);
+                            write(date, custCount, itemsCount, sku, num);
                             itemsCount++;
                             if (itemsCount >= numItems) {
                                 fallThrough = true;
@@ -210,19 +235,24 @@ public class HW1 {
 
                     if(!fallThrough && randPct() < 50) {
                         Tuple randBread = getRandomItem(BREADS);
-                        write(date, custCount, itemsCount, randBread.getZero(), (Double) randBread.getOne() * priceMult);
+                        sku = (Integer) randBread.getZero();
+                        num = roundTwoDecimal((Double) randBread.getOne() * PRICE_MULT);
+                        write(date, custCount, itemsCount, sku, num);
                         itemsCount++;
                         if (itemsCount >= numItems) {
                             fallThrough = true;
                         }
                     }
 
-                    for (int remainder = itemsCount; remainder < numItems; remainder++) {
-                        Tuple randAll = getRandomItem();
-                        write(date, custCount, remainder, randAll.getZero(), Double.parseDouble((String) randAll.getOne()) * priceMult);
+                    if(!fallThrough) {
+                        for (int remainder = itemsCount; remainder < numItems; remainder++) {
+                            Tuple randAll = getRandomItem();
+                            sku = Integer.parseInt((String) randAll.getZero());
+                            num = roundTwoDecimal(Double.parseDouble((String) randAll.getOne()) * PRICE_MULT);
+                            write(date, custCount, remainder, sku, num);
+                        }
                     }
-
-                    TOTAL_LINES_IN_DB += numItems;
+                    total_lines_in_db += numItems;
                 }
             }
         } catch (Exception ex) {
@@ -238,7 +268,7 @@ public class HW1 {
 
         timer.stop();
         println(ConsolePrinting.COLOR.CYAN, timer);
-        println("Lines of DB: " + TOTAL_LINES_IN_DB);
+        println(ConsolePrinting.COLOR.YELLOW,"Lines of DB: " + total_lines_in_db);
     }
 
 }
