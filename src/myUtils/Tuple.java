@@ -2,6 +2,7 @@ package myUtils;
 
 import java.util.*;
 
+import static myUtils.ConsolePrinting.print;
 import static myUtils.ConsolePrinting.println;
 
 public class Tuple<T> implements Iterable<T>{
@@ -20,6 +21,10 @@ public class Tuple<T> implements Iterable<T>{
     public T getTwo() { return get(2); }
 
     public T get(int n) { return this.composite[n]; }
+
+    public <E extends T> E get(Class<E> clas, int index) {
+        return clas.cast(get(index));
+    }
 
     public T[] getComposite() { return this.composite; }
 
@@ -69,12 +74,12 @@ public class Tuple<T> implements Iterable<T>{
         boolean three = (boolean) tt.get(3);
         long[] four = (long[]) tt.get(4);
         Tuple five = (Tuple) tt.get(5);
-        println(zero);
-        println(one);
-        println(two);
-        println(three);
+        println(zero, one, two, three, four, five);
         println(four);
-        println(five);
-        println(tt.get(6));
+        try {
+            println(tt.get(6));
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            ex.printStackTrace();
+        }
     }
 }

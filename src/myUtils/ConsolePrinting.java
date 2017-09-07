@@ -1,5 +1,8 @@
 package myUtils;
 
+import myUtils.Measurement.SYSTimer;
+
+import java.lang.reflect.Array;
 import java.util.Arrays;
 
 public class ConsolePrinting {
@@ -45,10 +48,6 @@ public class ConsolePrinting {
         print(decypher(c));
     }
 
-    public static <T> void print(T o) {
-        System.out.print(o.toString());
-    }
-
     public static <T> String wrap(COLOR c, T... args) {
         StringBuffer sb = new StringBuffer();
         sb.append(decypher(c));
@@ -59,14 +58,42 @@ public class ConsolePrinting {
         return sb.toString();
     }
 
+    public static <T> void print(T o) {
+        if(o.getClass().isArray()) {
+            print("[");
+            String delim2 = "";
+            if (o.getClass().getComponentType().isPrimitive()) {
+                int length = Array.getLength(o);
+                for (int i = 0; i < length; i++) {
+                    Object obj = Array.get(o, i);
+                    print(delim2);
+                    print(obj);
+                    delim2 = ", ";
+                }
+            }
+            else {
+                Object[] objects = (Object[]) o;
+                for (Object obj : objects) {
+                    print(obj);
+                    print(delim2);
+                    print(obj);
+                    delim2 = ", ";
+                }
+            }
+            print("]");
+        } else {
+            System.out.print(o);
+        }
+    }
+
     public static <T> void print(T... args) {
         String delim = "";
         for (T elem : args) {
             print(delim);
             print(elem);
             delim = ", ";
+
         }
-        print("");
     }
 
     public static <T> void println(T... args) {
