@@ -189,7 +189,9 @@ public class BinaryHeap<E extends Comparable<? super E>> implements Iterable<E> 
     }
 
     public static void main(String[] args) {
-        BinaryHeap bh = new BinaryHeap(lt, Integer.class);
+        BinaryHeap bh;
+
+        bh = new BinaryHeap(lt, Integer.class);
         bh.push(4);
         bh.push(2);
         bh.push(1);

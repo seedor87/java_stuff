@@ -5,6 +5,8 @@ import myUtils.ConsolePrinting;
 import java.text.DecimalFormat;
 import java.util.Scanner;
 
+import static myUtils.ConsolePrinting.*;
+
 /***
  * Absttract timer that holds capabilities of general use in code timer.
  * when implemented requires instantiation of only the getTime() and getElapsedTime() methods,
@@ -16,7 +18,6 @@ public abstract class AbstractTimer {
      * Special exception for bad state transitions.
      */
     class IllegalStateTransitionException extends RuntimeException {
-
         IllegalStateTransitionException(String msg) {
             super(msg);
         }
@@ -47,13 +48,13 @@ public abstract class AbstractTimer {
 
     /**
      * abstract methods to be overridden.
-     * @return double - get present time per method of measurement, and current value of elapsed time, respectively.
+     * @return double - str present time per method of measurement, and current value of elapsed time, respectively.
      */
     public abstract double getTime();
 
     /**
      * abstract methods to be overridden.
-     * @return double - get present time per method of measurement, and current value of elapsed time, respectively.
+     * @return double - str present time per method of measurement, and current value of elapsed time, respectively.
      */
     public abstract double getElapsedTime(TimeUnit u);
 
@@ -130,7 +131,6 @@ public abstract class AbstractTimer {
             startTime = 0l;
             current_state = State.STOPPED;
         } else {
-            elapsedTime = 0;
             startTime = 0;
             endTime = 0;
         }
@@ -181,7 +181,7 @@ public abstract class AbstractTimer {
         int input;
         AbstractTimer timer = new SYSTimer(TimeUnit.SECONDS);
         String lastAction = "timer application";
-        ConsolePrinting.println(ConsolePrinting.COLOR.RED, timer + " : " + lastAction);
+        ConsolePrinting.println(fgRed, timer + " : " + lastAction);
         do {
             ConsolePrinting.println(commands);
             ConsolePrinting.print(">> ");
@@ -192,29 +192,29 @@ public abstract class AbstractTimer {
                     case 1:
                         timer.start();
                         lastAction = "started";
-                        ConsolePrinting.println(ConsolePrinting.COLOR.GREEN, timer + " : " + lastAction);
+                        ConsolePrinting.println(fgGreen, timer + " : " + lastAction);
                         break;
                     case 2:
                         timer.suspend();
                         lastAction = "suspended";
-                        ConsolePrinting.println(ConsolePrinting.COLOR.YELLOW, timer + " : " + lastAction);
+                        ConsolePrinting.println(fgYellow, timer + " : " + lastAction);
                         break;
                     case 3:
                         timer.resume();
                         lastAction = "resumed";
-                        ConsolePrinting.println(ConsolePrinting.COLOR.CYAN, timer + " : " + lastAction);
+                        ConsolePrinting.println(fgCyan, timer + " : " + lastAction);
 
                         break;
                     case 4:
                         timer.stop();
                         lastAction = "stopped";
-                        ConsolePrinting.println(ConsolePrinting.COLOR.RED, timer + " : " + lastAction);
+                        ConsolePrinting.println(fgRed, timer + " : " + lastAction);
                         break;
                     default:
                         break;
                 }
             } catch (IllegalStateTransitionException ex) {
-                ConsolePrinting.println(ConsolePrinting.COLOR.PURPLE, ex.toString());
+                ConsolePrinting.println(fgPurple, ex.toString());
             }
         } while(0 < input && input < 5);
         ConsolePrinting.print("quiting...");

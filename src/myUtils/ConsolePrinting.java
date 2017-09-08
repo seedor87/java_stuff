@@ -1,64 +1,49 @@
 package myUtils;
 
-import myUtils.Measurement.SYSTimer;
-
 import java.lang.reflect.Array;
 import java.util.*;
 
 public class ConsolePrinting {
 
-    public static final String ANSI_RESET =     "\u001B[0m";
-    public static final String ANSI_BLACK =     "\u001B[30m";
-    public static final String ANSI_RED =       "\u001B[31m";
-    public static final String ANSI_GREEN =     "\u001B[32m";
-    public static final String ANSI_YELLOW =    "\u001B[33m";
-    public static final String ANSI_BLUE =      "\u001B[34m";
-    public static final String ANSI_PURPLE =    "\u001B[35m";
-    public static final String ANSI_CYAN =      "\u001B[36m";
-    public static final String ANSI_WHITE =     "\u001B[37m";
-
-    public enum COLOR {
-        RESET, BLACK, RED, GREEN, YELLOW, BLUE, PURPLE, CYAN, WHITE
+    interface Color {
+        String str();
     }
 
-    private static String decypher(COLOR c) {
-        switch (c) {
-            case BLACK:
-                return ANSI_BLACK;
-            case RED:
-                return ANSI_RED;
-            case GREEN:
-                return ANSI_GREEN;
-            case YELLOW:
-                return ANSI_YELLOW;
-            case BLUE:
-                return ANSI_BLUE;
-            case PURPLE:
-                return ANSI_PURPLE;
-            case CYAN:
-                return ANSI_CYAN;
-            case WHITE:
-                return ANSI_WHITE;
-            default:
-                return ANSI_RESET;
-        }
-    }
+    public static Color fgBlack = () ->    "\u001B[30m";
+    public static Color fgRed = () ->      "\u001B[31m";
+    public static Color fgGreen = () ->    "\u001B[32m";
+    public static Color fgYellow = () ->   "\u001B[33m";
+    public static Color fgBlue = () ->     "\u001B[34m";
+    public static Color fgPurple = () ->   "\u001B[35m";
+    public static Color fgCyan = () ->     "\u001B[36m";
+    public static Color fgWhite = () ->    "\u001B[37m";
 
-    public static void print(COLOR c) {
-        print(decypher(c));
+    public static Color bgBlack = () ->    "\u001B[40m";
+    public static Color bgRed = () ->      "\u001B[41m";
+    public static Color bgGreen = () ->    "\u001B[42m";
+    public static Color bgYellow = () ->   "\u001B[43m";
+    public static Color bgBlue = () ->     "\u001B[44m";
+    public static Color bgPurple = () ->   "\u001B[45m";
+    public static Color bgCyan = () ->     "\u001B[46m";
+    public static Color bgWhite = () ->    "\u001B[47m";
+
+    public static Color reset = () ->      "\u001B[0m";
+
+    public static void print(Color c) {
+        print(c.str());
     }
 
     public static void println() {
         System.out.println();
     }
 
-    public static <T> String wrap(COLOR c, T... args) {
+    public static <T> String wrap(Color c, T... args) {
         StringBuffer sb = new StringBuffer();
-        sb.append(decypher(c));
+        sb.append(c.str());
         for (T elem: args) {
             sb.append(elem.toString());
         }
-        sb.append(ANSI_RESET);
+        sb.append(reset);
         return sb.toString();
     }
 
@@ -86,9 +71,9 @@ public class ConsolePrinting {
         print(">");
     }
 
-    private static <T> void printCollection(T col) {
+    private static <T> void printIterable(T col) {
         String delim = "{";
-        for(Object elem: (Collection) col) {
+        for(Object elem: (Iterable<? extends Object>) col) {
             print(delim);
             print(elem);
             delim = ", ";
@@ -96,18 +81,21 @@ public class ConsolePrinting {
         print("}");
     }
 
+    private static <T> void printChar(T c) {
+        print("'");
+        System.out.print(c);
+        print("'");
+    }
+
     public static <T> void print(T o) {
         if(o.getClass().isArray()) {
            printArray(o);
         } else if (Tuple.class.isInstance(o)) {
             printTuple(o);
-        } else if (Collection.class.isInstance(o)) {
-            printCollection(o);
+        } else if(Iterable.class.isInstance(o)) {
+            printIterable(o);
         } else if (Character.class.isInstance(o)) {
-            print("'");
-            System.out.print(o);
-            print("'");
-
+            printChar(o);
         } else {
             System.out.print(o);
         }
@@ -127,14 +115,26 @@ public class ConsolePrinting {
         println();
     }
 
-    public static <T> void print(COLOR c, T...args) {
+    public static <T> void print(Color c, T...args) {
         print(c);
         print(args);
-        print(ANSI_RESET);
+        print(reset);
     }
 
-    public static <T> void println(COLOR c, T...args) {
+    public static <T> void println(Color c, T...args) {
         print(c, args);
+        println();
+    }
+
+    public static <T> void print(Color c1, Color c2, T...args) {
+        print(c1);
+        print(c2);
+        print(args);
+        print(reset);
+    }
+
+    public static <T> void println(Color c1, Color c2, T...args) {
+        print(c1, c2, args);
         println();
     }
 
@@ -194,12 +194,11 @@ public class ConsolePrinting {
         println(new String[][]{{"mouse", "cheese"}, {"dog", "bone"}, {"pig", "slop"}});
         println(new int[][][]{{{1},{2},{3}}, {{4,5,6}}, {{7}},{{8}},{{9}}});
 
-        println(COLOR.CYAN, Arrays.asList(1, 47, true, 't', "bob", new Tuple<>(7, '8', "9"), new int[]{2,1,1,2}));
-        println(COLOR.WHITE, new char[10]);
-        println(COLOR.BLACK, new Character[]{'a','b','c','d','e','f','g','h','i','j'});
-        println(COLOR.PURPLE, Arrays.asList(Long.MAX_VALUE, Long.MAX_VALUE+1));
-        println(COLOR.BLUE, new char[]{'a','b','c'});
-        println(COLOR.YELLOW, new int[]{'a','b','c'});
+        println(fgCyan, Arrays.asList(1, 47, true, 't', "bob", new Tuple<>(7, '8', "9"), new int[]{2,1,1,2}));
+        println(fgWhite, new char[10]);
+        println(fgBlack, new Character[]{'a','b','c','d','e','f','g','h','i','j'});
+        println(fgPurple, Arrays.asList(Long.MAX_VALUE, Long.MAX_VALUE+1));
+        println(fgBlue, bgYellow, new char[]{'a','b','c'});
+        println(fgYellow, bgBlue, new int[]{'a','b','c'});
     }
-
 }

@@ -16,7 +16,7 @@ import java.util.Date;
 import java.util.Random;
 
 import static GradDataWarehousing.HW1.HW1Resources.*;
-import static myUtils.ConsolePrinting.println;
+import static myUtils.ConsolePrinting.*;
 
 public class HW1 {
 
@@ -101,7 +101,7 @@ public class HW1 {
 
     public static void main(String[] args) {
 
-        println(ConsolePrinting.COLOR.PURPLE, "Creation Started");
+        println(fgPurple, "Creation Started");
         println("Params: ", START_DATE_STRING, END_DATE_STRING, CUST_LOW, CUST_HI,
                 PRICE_MULT, MAX_ITEMS, WEEKEND_INCREASE);
         AbstractTimer timer = new SYSTimer(AbstractTimer.TimeUnit.SECONDS);
@@ -267,8 +267,8 @@ public class HW1 {
         }
 
         timer.stop();
-        println(ConsolePrinting.COLOR.CYAN, timer);
-        println(ConsolePrinting.COLOR.YELLOW,"Lines of DB: " + total_lines_in_db);
+        println(fgCyan, timer);
+        println(fgYellow,"Lines of DB: " + total_lines_in_db);
     }
 
 }
