@@ -2,16 +2,17 @@ package myUtils;
 
 import java.util.*;
 
-import static myUtils.ConsolePrinting.print;
 import static myUtils.ConsolePrinting.println;
 
 public class Tuple<T> implements Iterable<T>{
 
     private T[] composite;
+    public int length;
 
     @SafeVarargs
     public <E extends T> Tuple(E... composite) {
         this.composite = composite;
+        this.length = composite.length;
     }
 
     public T getZero() { return get(0); }
@@ -22,33 +23,16 @@ public class Tuple<T> implements Iterable<T>{
 
     public T get(int n) { return this.composite[n]; }
 
-    public <E extends T> E get(Class<E> clas, int index) {
-        return clas.cast(get(index));
-    }
-
-    public T[] getComposite() { return this.composite; }
+    public T[] toArray() { return this.composite; }
 
     @Override
     public Iterator<T> iterator() {
         return (new LinkedList(Arrays.asList(this.composite))).iterator(); }
 
-    @Override
-    public String toString() {
-        String ret = "";
-        String delim = "<";
-        for(T elem: composite) {
-            ret += delim + elem;
-            delim = ", ";
-        }
-        delim = (delim.equals("<")) ? "<>" : ">";
-        ret+= delim;
-        return ret;
-    }
-
     public static void main(String[] args) {
 
         println("test 0");
-        Tuple tuple0 = new Tuple(1, true, 'a', "test", new int[3]);
+        Tuple tuple0 = new Tuple(2112, true, 'a', "test", new int[3]);
         println(tuple0);
 
         println("test 1");
@@ -61,10 +45,10 @@ public class Tuple<T> implements Iterable<T>{
         println(composite);
         // without param generic
         Tuple tuple2 = new Tuple<>(composite);
-        println(tuple2.getComposite());
+        println(tuple2);
         // with generic
         Tuple<Character> tuple3 = new Tuple<>(composite);
-        println(tuple3.getComposite());
+        println(tuple3);
 
         println("test 3");
         Tuple<Object> tt = new Tuple(1, 'a', "abc", true, new long[5], new Tuple(99, 'a', 3.14));
@@ -75,11 +59,6 @@ public class Tuple<T> implements Iterable<T>{
         long[] four = (long[]) tt.get(4);
         Tuple five = (Tuple) tt.get(5);
         println(zero, one, two, three, four, five);
-        println(four);
-        try {
-            println(tt.get(6));
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            ex.printStackTrace();
-        }
+        println(tt);
     }
 }

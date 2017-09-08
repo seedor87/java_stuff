@@ -3,7 +3,7 @@ package myUtils;
 import myUtils.Measurement.SYSTimer;
 
 import java.lang.reflect.Array;
-import java.util.Arrays;
+import java.util.*;
 
 public class ConsolePrinting {
 
@@ -48,6 +48,10 @@ public class ConsolePrinting {
         print(decypher(c));
     }
 
+    public static void println() {
+        System.out.println();
+    }
+
     public static <T> String wrap(COLOR c, T... args) {
         StringBuffer sb = new StringBuffer();
         sb.append(decypher(c));
@@ -58,29 +62,52 @@ public class ConsolePrinting {
         return sb.toString();
     }
 
+    private static <T> void printArray(T arr) {
+        print("[");
+        String delim = "";
+        for (int i = 0; i < Array.getLength(arr); i++) {
+            Object obj = Array.get(arr, i);
+            print(delim);
+            print(obj);
+            delim = ", ";
+        }
+        print("]");
+    }
+
+    private static <T> void printTuple(T tup) {
+        print("<");
+        String delim = "";
+        for (int i = 0; i < Tuple.class.cast(tup).length; i++) {
+            Object obj = Tuple.class.cast(tup).get(i);
+            print(delim);
+            print(obj);
+            delim = ", ";
+        }
+        print(">");
+    }
+
+    private static <T> void printCollection(T col) {
+        String delim = "{";
+        for(Object elem: (Collection) col) {
+            print(delim);
+            print(elem);
+            delim = ", ";
+        }
+        print("}");
+    }
+
     public static <T> void print(T o) {
         if(o.getClass().isArray()) {
-            print("[");
-            String delim2 = "";
-            if (o.getClass().getComponentType().isPrimitive()) {
-                int length = Array.getLength(o);
-                for (int i = 0; i < length; i++) {
-                    Object obj = Array.get(o, i);
-                    print(delim2);
-                    print(obj);
-                    delim2 = ", ";
-                }
-            }
-            else {
-                Object[] objects = (Object[]) o;
-                for (Object obj : objects) {
-                    print(obj);
-                    print(delim2);
-                    print(obj);
-                    delim2 = ", ";
-                }
-            }
-            print("]");
+           printArray(o);
+        } else if (Tuple.class.isInstance(o)) {
+            printTuple(o);
+        } else if (Collection.class.isInstance(o)) {
+            printCollection(o);
+        } else if (Character.class.isInstance(o)) {
+            print("'");
+            System.out.print(o);
+            print("'");
+
         } else {
             System.out.print(o);
         }
@@ -92,13 +119,12 @@ public class ConsolePrinting {
             print(delim);
             print(elem);
             delim = ", ";
-
         }
     }
 
     public static <T> void println(T... args) {
         print(args);
-        System.out.println();
+        println();
     }
 
     public static <T> void print(COLOR c, T...args) {
@@ -126,7 +152,7 @@ public class ConsolePrinting {
         println();
     }
 
-    public static <T extends Iterable<E>, E extends Object> void printDelim(String delim, T args) {
+    public static <T extends Collection<E>, E extends Object> void printDelim(String delim, T args) {
         String temp = "";
         for (E elem : args) {
             print(temp);
@@ -135,233 +161,45 @@ public class ConsolePrinting {
         }
     }
 
-    public static <T extends Iterable<E>, E extends Object> void printlnDelim(String delim, T args) {
+    public static <T extends Collection<E>, E extends Object> void printlnDelim(String delim, T args) {
         printDelim(delim, args);
         println();
     }
 
-    public static <T extends Iterable> void printDelim(String delim, T[] args) {
+   public static void printDelim(String delim, char[] arr) {
         String temp = "";
-        for (T elem : args) {
+        for(char c : arr) {
             print(temp);
-            print(elem);
+            print(c);
             temp = delim;
         }
-    }
+   }
 
-    public static <T extends Iterable> void printlnDelim(String delim, T[] args) {
-        print(delim, args);
+   public static void printlnDelim(String delim, char[] arr) {
+        printDelim(delim, arr);
         println();
-    }
-
-    public static <T extends Iterable<E>, E extends Object> void print(T o) {
-        String delim = "{";
-        for(E elem: o) {
-            print(delim);
-            print(elem);
-            delim = ", ";
-        }
-        delim = (delim.equals("{")) ? "{}" : "}";
-        print(delim);
-    }
-
-    public static <T extends Iterable<E>, E extends Object> void println(T o) {
-        print(o);
-        println();
-    }
-
-    public static <T extends Iterable<E>, E extends Object> void print(COLOR c, T o) {
-        print(c);
-        print(o);
-        print(ANSI_RESET);
-    }
-
-    public static <T extends Iterable<E>, E extends Object> void println(COLOR c, T o) {
-        print(c, o);
-        println();
-    }
-
-    public static void print(char[] o) {
-        String delim = "{";
-        for(char elem: o) {
-            print(delim + "'");
-            print(elem);
-            print("'");
-            delim = ", ";
-        }
-        delim = (delim.equals("{")) ? "{}" : "}";
-        print(delim);
-    }
-
-    public static void println(char[] o) {
-        print(o);
-        println();
-    }
-
-    public static void print(COLOR c, char[] o) {
-        print(c);
-        print(o);
-    }
-
-    public static void println(COLOR c, char[] o) {
-        print(c, o);
-        println();
-    }
-
-    public static void print(int[] o) {
-        String delim = "{";
-        for(int elem: o) {
-            print(delim);
-            print(elem);
-            delim = ", ";
-        }
-        delim = (delim.equals("{")) ? "{}" : "}";
-        print(delim);
-    }
-
-    public static void println(int[] o) {
-       print(o);
-       println();
-    }
-
-    public static void print(COLOR c, int[] o) {
-        print(c);
-        print(o);
-    }
-
-    public static void println(COLOR c, int[] o) {
-        print(c, o);
-        println();
-    }
-
-    public static void print(double[] o) {
-        String delim = "{";
-        for(double elem: o) {
-            print(delim);
-            print(elem);
-            delim = ", ";
-        }
-        delim = (delim.equals("{")) ? "{}" : "}";
-        print(delim);
-    }
-
-    public static void println(double[] o) {
-        print(o);
-        println();
-    }
-
-    public static void print(COLOR c, double[] o) {
-        print(c);
-        print(o);
-    }
-
-    public static void println(COLOR c, double[] o) {
-        print(c, o);
-        println();
-    }
-
-    public static void print(long[] o) {
-        String delim = "{";
-        for(long elem: o) {
-            print(delim);
-            print(elem);
-            delim = ", ";
-        }
-        delim = (delim.equals("{")) ? "{}" : "}";
-        print(delim);
-    }
-
-    public static void println(long[] o) {
-        print(o);
-        println();
-    }
-
-    public static void print(COLOR c, long[] o) {
-        print(c);
-        print(o);
-    }
-
-    public static void println(COLOR c, long[] o) {
-        print(c, o);
-        println();
-    }
-
-    public static void print(Character[] o) {
-        String delim = "{";
-        for(char elem: o) {
-            print(delim + "'");
-            print(elem);
-            print("'");
-            delim = ", ";
-        }
-        delim = (delim.equals("{")) ? "{}" : "}";
-        print(delim);
-    }
-
-    public static void println(Character[] o) {
-        print(o);
-        println();
-    }
-
-    public static void print(COLOR c, Character[] o) {
-        print(c);
-        print(o);
-    }
-
-    public static void println(COLOR c, Character[] o) {
-        print(c, o);
-        println();
-    }
-
-    public static void printDelim(String delim, int[] arr) {
-        Integer[] temp = Arrays.stream(arr).boxed().toArray( Integer[]::new );
-        printDelim(delim, temp);
-    }
-
-    public static void printlnDelim(String delim, int[] arr) {
-        Integer[] temp = Arrays.stream(arr).boxed().toArray( Integer[]::new );
-        printlnDelim(delim, temp);
-    }
-
-    public static void printDelim(String delim, long[] arr) {
-        Long[] temp = Arrays.stream(arr).boxed().toArray( Long[]::new );
-        printDelim(delim, temp);
-    }
-
-    public static void printlnDelim(String delim, long[] arr) {
-        Long[] temp = Arrays.stream(arr).boxed().toArray( Long[]::new );
-        printlnDelim(delim, temp);
-    }
-
-    public static void printDelim(String delim, double[] arr) {
-        Double[] temp = Arrays.stream(arr).boxed().toArray( Double[]::new );
-        printDelim(delim, temp);
-    }
-
-    public static void printlnDelim(String delim, double[] arr) {
-        Double[] temp = Arrays.stream(arr).boxed().toArray( Double[]::new );
-        printlnDelim(delim, temp);
-    }
+   }
 
     public static void main(String[] args) {
-        printlnDelim(", ", 1, 47, true, 't', "bob", new Tuple<>());
+
+        printlnDelim(", ", 1, 47, true, 't', "bob", new Tuple<>(7, '8', "9"), new int[]{2,1,1,2});
         printlnDelim(" + ", Arrays.asList(1,2,3,4));
+        printlnDelim(" and ", new Character[]{'a','e','i','o','u'});
+        printlnDelim(" & ", new char[]{'a','e','i','o','u'});
+
         println(Arrays.asList(1,2,3,4));
         println(new long[]{Long.MAX_VALUE, Long.MAX_VALUE+1});
-        printlnDelim(". ", new Integer[]{1,2,3});
-        println(new Character[]{'a','b','c'});
+        println(new char[]{'a','b','c'});
         println(new int[]{'a','b','c'});
+        println(new String[][]{{"mouse", "cheese"}, {"dog", "bone"}, {"pig", "slop"}});
+        println(new int[][][]{{{1},{2},{3}}, {{4,5,6}}, {{7}},{{8}},{{9}}});
 
-        print(COLOR.CYAN);
-        printlnDelim(", ", 1, 47, true, 't', "bob", new Tuple<>());
-        print(COLOR.RESET);
-
-        println(COLOR.BLACK, Arrays.asList(1,2,3,4));
-        println(COLOR.PURPLE, new long[]{Long.MAX_VALUE, Long.MAX_VALUE+1});
-        println(COLOR.YELLOW, new Character[]{'a','b','c'});
-        println(COLOR.BLUE, new int[]{'a','b','c'});
-
-        println(new Character[20]);
+        println(COLOR.CYAN, Arrays.asList(1, 47, true, 't', "bob", new Tuple<>(7, '8', "9"), new int[]{2,1,1,2}));
+        println(COLOR.WHITE, new char[10]);
+        println(COLOR.BLACK, new Character[]{'a','b','c','d','e','f','g','h','i','j'});
+        println(COLOR.PURPLE, Arrays.asList(Long.MAX_VALUE, Long.MAX_VALUE+1));
+        println(COLOR.BLUE, new char[]{'a','b','c'});
+        println(COLOR.YELLOW, new int[]{'a','b','c'});
     }
 
 }
