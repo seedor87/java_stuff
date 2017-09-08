@@ -236,6 +236,6 @@ public class BinaryHeap<E extends Comparable<? super E>> implements Iterable<E> 
         bh.push(new test(10));
         bh.push(new test(11));
         println(bh);
-
+// test
     }
 }
