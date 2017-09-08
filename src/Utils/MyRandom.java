@@ -1,10 +1,10 @@
-package myUtils;
+package Utils;
 
 import java.util.Random;
 
-import static myUtils.ConsolePrinting.println;
+import static Utils.ConsolePrinting.println;
 
-public abstract class MyGenerator {
+public abstract class MyRandom {
 
     private static Random generator = new Random();
 

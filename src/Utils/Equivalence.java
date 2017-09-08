@@ -1,4 +1,4 @@
-package myUtils;
+package Utils;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -7,15 +7,15 @@ import java.util.List;
 
 public class Equivalence {
 
-    interface Comparator<T extends Object> {
+    public interface Comparator<T extends Object> {
         boolean compare(T elem1, T elem2);
     }
 
-    static Comparator<Comparable> lt = (Comparable elem1, Comparable elem2) -> elem1.compareTo(elem2) < 0;
-    static Comparator<Comparable> gt = (Comparable elem1, Comparable elem2) -> elem1.compareTo(elem2) > 0;
-    static Comparator<Comparable> lte = (Comparable elem1, Comparable elem2) -> elem1.compareTo(elem2) <= 0;
-    static Comparator<Comparable> gte = (Comparable elem1, Comparable elem2) -> elem1.compareTo(elem2) >= 0;
-    static Comparator<Comparable> eq = (Comparable elem1, Comparable elem2) -> elem1.compareTo(elem2) == 0;
+    static public Comparator<Comparable> lt = (Comparable elem1, Comparable elem2) -> elem1.compareTo(elem2) < 0;
+    static public Comparator<Comparable> gt = (Comparable elem1, Comparable elem2) -> elem1.compareTo(elem2) > 0;
+    static public Comparator<Comparable> lte = (Comparable elem1, Comparable elem2) -> elem1.compareTo(elem2) <= 0;
+    static public Comparator<Comparable> gte = (Comparable elem1, Comparable elem2) -> elem1.compareTo(elem2) >= 0;
+    static public Comparator<Comparable> eq = (Comparable elem1, Comparable elem2) -> elem1.compareTo(elem2) == 0;
 
     public static <T extends Comparable<? super T>> boolean evaluate(Comparator comp, T first, T... rest) {
         if (rest.length < 1) {

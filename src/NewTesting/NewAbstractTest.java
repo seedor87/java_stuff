@@ -1,6 +1,6 @@
 package NewTesting;
 
-import myUtils.Tuple;
+import Utils.Collections.Tuple;
 
 public abstract class NewAbstractTest<T extends Object> {
 

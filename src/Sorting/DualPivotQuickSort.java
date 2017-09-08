@@ -1,10 +1,10 @@
 package Sorting;
 
-import myUtils.MyGenerator;
+import Utils.MyRandom;
 
-import static myUtils.ConsolePrinting.println;
-import static myUtils.Equivalence.lt;
-import static myUtils.Exchange.exchange;
+import static Utils.ConsolePrinting.println;
+import static Utils.Equivalence.lt;
+import static Utils.Exchange.exchange;
 
 public class DualPivotQuickSort {
 
@@ -47,7 +47,7 @@ public class DualPivotQuickSort {
     }
 
     public static void test(int len, int max) {
-        Integer[] itest1 = MyGenerator.randomInts(len, max);
+        Integer[] itest1 = MyRandom.randomInts(len, max);
         quickSort(itest1);
     }
 

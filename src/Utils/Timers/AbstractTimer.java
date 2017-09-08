@@ -1,11 +1,11 @@
-package myUtils.Measurement;
+package Utils.Timers;
 
-import myUtils.ConsolePrinting;
+import Utils.ConsolePrinting;
 
 import java.text.DecimalFormat;
 import java.util.Scanner;
 
-import static myUtils.ConsolePrinting.*;
+import static Utils.ConsolePrinting.*;
 
 /***
  * Absttract timer that holds capabilities of general use in code timer.

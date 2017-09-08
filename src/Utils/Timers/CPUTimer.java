@@ -1,4 +1,4 @@
-package myUtils.Measurement;
+package Utils.Timers;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;

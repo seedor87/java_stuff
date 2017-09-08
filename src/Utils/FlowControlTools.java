@@ -1,4 +1,4 @@
-package myUtils;
+package Utils;
 
 import java.io.IOException;
 

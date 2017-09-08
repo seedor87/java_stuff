@@ -1,6 +1,6 @@
-package Random;
+package RandomStuff;
 
-import myUtils.ConsolePrinting;
+import Utils.ConsolePrinting;
 
 public class FermatNumbers {
 

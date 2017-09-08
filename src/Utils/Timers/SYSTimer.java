@@ -1,4 +1,4 @@
-package myUtils.Measurement;
+package Utils.Timers;
 
 public class SYSTimer extends AbstractTimer {
 

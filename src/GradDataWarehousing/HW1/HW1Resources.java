@@ -1,6 +1,6 @@
 package GradDataWarehousing.HW1;
 
-import myUtils.Tuple;
+import Utils.Collections.Tuple;
 
 public class HW1Resources {
 

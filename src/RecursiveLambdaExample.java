@@ -1,13 +1,13 @@
-import myUtils.ConsolePrinting;
-import myUtils.Tuple;
+import Utils.ConsolePrinting;
+import Utils.Collections.Tuple;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.function.UnaryOperator;
 
-import static Random.FermatNumbers.fermatNumber;
-import static myUtils.Equivalence.eq;
+import static RandomStuff.FermatNumbers.fermatNumber;
+import static Utils.Equivalence.eq;
 
 public class RecursiveLambdaExample<T extends Object> {
 

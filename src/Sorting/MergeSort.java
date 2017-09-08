@@ -1,6 +1,6 @@
 package Sorting;
 
-import static myUtils.ConsolePrinting.println;
+import static Utils.ConsolePrinting.println;
 
 public class MergeSort {
 

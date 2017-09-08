@@ -1,9 +1,9 @@
 package Testing;
 
-import myUtils.Measurement.Spacer;
-import myUtils.Tuple;
+import Utils.Timers.Spacer;
+import Utils.Collections.Tuple;
 
-import static myUtils.ConsolePrinting.println;
+import static Utils.ConsolePrinting.println;
 
 public class MemUseTest extends AbstractTest {
 

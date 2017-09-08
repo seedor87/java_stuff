@@ -1,8 +1,8 @@
-package myUtils;
+package Utils;
 
 import java.util.*;
 
-import static myUtils.ConsolePrinting.*;
+import static Utils.ConsolePrinting.*;
 
 public class Palindromes {
 

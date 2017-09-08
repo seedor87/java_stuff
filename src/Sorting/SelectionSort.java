@@ -1,7 +1,7 @@
 package Sorting;
 
-import static myUtils.ConsolePrinting.println;
-import static myUtils.Exchange.exchange;
+import static Utils.ConsolePrinting.println;
+import static Utils.Exchange.exchange;
 
 public class SelectionSort {
 

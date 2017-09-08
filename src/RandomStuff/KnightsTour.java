@@ -1,4 +1,4 @@
-package Random;
+package RandomStuff;
 
 public class KnightsTour {
 

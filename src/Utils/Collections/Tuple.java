@@ -1,8 +1,8 @@
-package myUtils;
+package Utils.Collections;
 
 import java.util.*;
 
-import static myUtils.ConsolePrinting.println;
+import static Utils.ConsolePrinting.println;
 
 public class Tuple<T> implements Iterable<T>{
 
@@ -31,16 +31,16 @@ public class Tuple<T> implements Iterable<T>{
 
     public static void main(String[] args) {
 
-        println("test 0");
-        Tuple tuple0 = new Tuple(2112, true, 'a', "test", new int[3]);
+        println("MyClass 0");
+        Tuple tuple0 = new Tuple(2112, true, 'a', "MyClass", new int[3]);
         println(tuple0);
 
-        println("test 1");
-//        Tuple<Integer> tuple = new Tuple<>("test");
-        Tuple<Integer> tuple1 = new Tuple("test", "yep");
+        println("MyClass 1");
+//        Tuple<Integer> tuple = new Tuple<>("MyClass");
+        Tuple<Integer> tuple1 = new Tuple("MyClass", "yep");
         println(tuple1);
 
-        println("test 2");
+        println("MyClass 2");
         Character[] composite = new Character[]{'a','b','c'};
         println(composite);
         // without param generic
@@ -50,7 +50,7 @@ public class Tuple<T> implements Iterable<T>{
         Tuple<Character> tuple3 = new Tuple<>(composite);
         println(tuple3);
 
-        println("test 3");
+        println("MyClass 3");
         Tuple<Object> tt = new Tuple(1, 'a', "abc", true, new long[5], new Tuple(99, 'a', 3.14));
         int zero = (int) tt.getZero();
         char one = (char) tt.getOne();

@@ -1,21 +1,18 @@
 package Testing;
 
-import Random.KnightsTour;
-import Random.LargeProduct;
-import Random.MersennePrimes;
-import Random.PerfectNumbers;
+import RandomStuff.MersennePrimes;
+import RandomStuff.PerfectNumbers;
 import Sorting.DualPivotQuickSort;
 import Sorting.QuickSort;
-import myUtils.MyGenerator;
-import myUtils.Primes;
-import myUtils.Tuple;
+import Utils.Primes;
+import Utils.Collections.Tuple;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static myUtils.ConsolePrinting.*;
-import static myUtils.ConsolePrinting.printlnDelim;
-import static myUtils.Equivalence.eq;
+import static Utils.ConsolePrinting.*;
+import static Utils.ConsolePrinting.printlnDelim;
+import static Utils.Equivalence.eq;
 
 public class TestBench {
 

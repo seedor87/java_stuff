@@ -1,7 +1,7 @@
-package Random;
+package RandomStuff;
 
-import static myUtils.ConsolePrinting.*;
-import static myUtils.Primes.isPrime;
+import static Utils.ConsolePrinting.*;
+import static Utils.Primes.isPrime;
 
 public class MersennePrimes {
 

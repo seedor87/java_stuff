@@ -1,9 +1,8 @@
 package GradDataWarehousing.HW1;
 
-import myUtils.ConsolePrinting;
-import myUtils.Measurement.AbstractTimer;
-import myUtils.Measurement.SYSTimer;
-import myUtils.Tuple;
+import Utils.Timers.AbstractTimer;
+import Utils.Timers.SYSTimer;
+import Utils.Collections.Tuple;
 
 import java.io.*;
 import java.text.ParseException;
@@ -16,7 +15,7 @@ import java.util.Date;
 import java.util.Random;
 
 import static GradDataWarehousing.HW1.HW1Resources.*;
-import static myUtils.ConsolePrinting.*;
+import static Utils.ConsolePrinting.*;
 
 public class HW1 {
 

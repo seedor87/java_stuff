@@ -1,10 +1,10 @@
 package Testing;
 
-import myUtils.Measurement.SYSTimer;
-import myUtils.Measurement.AbstractTimer;
-import myUtils.Tuple;
+import Utils.Timers.SYSTimer;
+import Utils.Timers.AbstractTimer;
+import Utils.Collections.Tuple;
 
-import static myUtils.ConsolePrinting.println;
+import static Utils.ConsolePrinting.println;
 
 public class SYSTimeTest extends AbstractTest {
 

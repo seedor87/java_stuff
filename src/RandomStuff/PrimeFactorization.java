@@ -1,11 +1,11 @@
-package Random;
+package RandomStuff;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static myUtils.ConsolePrinting.*;
+import static Utils.ConsolePrinting.*;
 import NewTesting.NewSYSTimeTest;
-import myUtils.Tuple;
+import Utils.Collections.Tuple;
 
 public class PrimeFactorization<T extends Object> extends NewSYSTimeTest<T> {
 

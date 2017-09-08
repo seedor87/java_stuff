@@ -1,10 +1,10 @@
-package myUtils;
+package Utils;
 
 import java.util.ArrayList;
 import java.awt.Toolkit;
 import java.util.List;
 
-import static myUtils.ConsolePrinting.*;
+import static Utils.ConsolePrinting.*;
 
 public class Primes {
 

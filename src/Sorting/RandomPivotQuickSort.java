@@ -2,9 +2,9 @@ package Sorting;
 
 import java.util.Random;
 
-import static myUtils.ConsolePrinting.println;
-import static myUtils.Equivalence.lt;
-import static myUtils.Exchange.exchange;
+import static Utils.ConsolePrinting.println;
+import static Utils.Equivalence.lt;
+import static Utils.Exchange.exchange;
 
 public class RandomPivotQuickSort {
 

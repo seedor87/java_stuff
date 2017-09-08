@@ -1,6 +1,6 @@
 package Testing;
 
-import myUtils.Tuple;
+import Utils.Collections.Tuple;
 
 import java.lang.reflect.Method;
 

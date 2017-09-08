@@ -1,4 +1,6 @@
-package myUtils;
+package Utils;
+
+import Utils.Collections.Tuple;
 
 import java.lang.reflect.Array;
 import java.util.*;
