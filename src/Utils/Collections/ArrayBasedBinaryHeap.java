@@ -2,6 +2,7 @@ package Utils.Collections;
 
 import Utils.Equivalence;
 
+import java.awt.*;
 import java.lang.reflect.Array;
 import java.util.*;
 
@@ -11,6 +12,22 @@ import static Utils.Equivalence.gt;
 import static Utils.Equivalence.lt;
 
 public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> implements Iterable<E> {
+
+    public static class HeapException extends RuntimeException {
+        public HeapException(String message) { super(message); }
+    }
+
+    public static class EmptyHeapException extends HeapException {
+        public EmptyHeapException(String message) {
+            super(message);
+        }
+    }
+
+    public static class FullHeapException extends HeapException {
+        public FullHeapException(String message) {
+            super(message);
+        }
+    }
 
     private int maxSize = 1000;
     private int heapSize = 0;
@@ -47,7 +64,7 @@ public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> implements It
 
     public E peek() {
         if (empty()) {
-            throw new HeapException("Heap is empty");
+            throw new EmptyHeapException("Heap is empty");
         }
         return elements[0];
     }
@@ -79,7 +96,7 @@ public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> implements It
         );
     }
 
-    public class HeapIterator<C extends E> implements Iterator {
+    public class HeapIterator<E extends Comparable<? super E>> implements Iterator {
 
         ArrayBasedBinaryHeap<E> temp;
         HeapIterator(Equivalence.Comparator<E> comp,
@@ -97,7 +114,7 @@ public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> implements It
         public boolean hasNext() {
             try {
                 this.temp.peek();
-            } catch (HeapException ex) {
+            } catch (EmptyHeapException ex) {
                 return false;
             }
             return true;
@@ -109,15 +126,9 @@ public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> implements It
         }
     }
 
-    public static class HeapException extends RuntimeException {
-        public HeapException(String message) {
-            super(message);
-        }
-    }
-
     public void push(E value) {
         if (this.heapSize == elements.length) {
-            throw new HeapException("Heap's underlying storage is overflow");
+            throw new FullHeapException("Heap's underlying storage is overflow");
         }
         this.heapSize++;
         this.elements[this.heapSize - 1] = value;
@@ -153,7 +164,7 @@ public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> implements It
     public E pop() {
         E ret = elements[0];
         if (empty()) {
-            throw new HeapException("Heap is empty");
+            throw new EmptyHeapException("Heap is empty");
         }
         this.elements[0] = this.elements[this.heapSize - 1];
         this.heapSize--;
@@ -220,7 +231,10 @@ public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> implements It
 
         bh = new ArrayBasedBinaryHeap(String.class)
                 .setSize(10000)
-                .setArgs(new HashSet(Arrays.asList("star", "alex", "bob")));
+                .setArgs(new HashSet(Arrays.asList(
+                        "star",
+                        "alex",
+                        "bob")));
         println(bh);
 
         bh.setComp(gt);
