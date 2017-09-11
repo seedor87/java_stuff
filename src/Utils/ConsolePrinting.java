@@ -80,7 +80,8 @@ public class ConsolePrinting {
             print(elem);
             delim = ", ";
         }
-        print("}");
+        delim = delim.equals("{") ? "{}" : "}";
+        print(delim);
     }
 
     private static <T> void printChar(T c) {
