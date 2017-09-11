@@ -11,30 +11,40 @@ import static Utils.Equivalence.evaluate;
 import static Utils.Equivalence.gt;
 import static Utils.Equivalence.lt;
 
-public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> implements Iterable<E> {
+public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> extends BinaryHeap {
 
-    public static class HeapException extends RuntimeException {
-        public HeapException(String message) { super(message); }
-    }
+    public class ArrayBasedHeapIterator<E extends Comparable<? super E>> implements Iterator {
 
-    public static class EmptyHeapException extends HeapException {
-        public EmptyHeapException(String message) {
-            super(message);
+        ArrayBasedBinaryHeap<E> temp;
+        ArrayBasedHeapIterator(Equivalence.Comparator<E> comp,
+                     Class<E> type,
+                     int maxSize,
+                     E[] data,
+                     int heapSize) {
+            this.temp = new ArrayBasedBinaryHeap(type)
+                    .setSize(maxSize)
+                    .setComp(comp)
+                    .setArgs(Arrays.copyOfRange(data, 0, heapSize));
+        }
+
+        @Override
+        public boolean hasNext() {
+            try {
+                this.temp.peek();
+            } catch (EmptyHeapException ex) {
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        public E next() {
+            return this.temp.pop();
         }
     }
 
-    public static class FullHeapException extends HeapException {
-        public FullHeapException(String message) {
-            super(message);
-        }
-    }
-
-    private int maxSize = 1000;
-    private int heapSize = 0;
-    private Equivalence.Comparator comp = lt;
-    private Class type;
-    private E[] elements;
-
+    protected E[] elements;
+    protected Class type;
 
     public <E extends Comparable<? super E>> ArrayBasedBinaryHeap(Class<E> type) {
         this.type = type;
@@ -66,94 +76,55 @@ public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> implements It
         if (empty()) {
             throw new EmptyHeapException("Heap is empty");
         }
-        return elements[0];
+        return (E) elements[0];
     }
 
     public boolean empty() {
         return (this.heapSize == 0);
     }
 
-    private int getLeftChildIndex(int nodeIndex) {
-        return 2 * nodeIndex + 1;
-    }
-
-    private int getRightChildIndex(int nodeIndex) {
-        return 2 * nodeIndex + 2;
-    }
-
-    private int getParentIndex(int nodeIndex) {
-        return (nodeIndex - 1) / 2;
-    }
-
     @Override
-    public Iterator<E> iterator() {
-        return new HeapIterator<E>(
-                this.comp,
-                this.type,
-                this.maxSize,
-                this.elements,
-                this.heapSize
-        );
-    }
-
-    public class HeapIterator<E extends Comparable<? super E>> implements Iterator {
-
-        ArrayBasedBinaryHeap<E> temp;
-        HeapIterator(Equivalence.Comparator<E> comp,
-                     Class<E> type,
-                     int maxSize,
-                     E[] data,
-                     int heapSize) {
-            this.temp = new ArrayBasedBinaryHeap(type)
-                    .setSize(maxSize)
-                    .setComp(comp)
-                    .setArgs(Arrays.copyOfRange(data, 0, heapSize));
-        }
-
-        @Override
-        public boolean hasNext() {
-            try {
-                this.temp.peek();
-            } catch (EmptyHeapException ex) {
-                return false;
-            }
-            return true;
-        }
-
-        @Override
-        public E next() {
-            return this.temp.pop();
-        }
-    }
-
-    public void push(E value) {
+    public void push(Comparable value) {
         if (this.heapSize == elements.length) {
             throw new FullHeapException("Heap's underlying storage is overflow");
         }
         this.heapSize++;
-        this.elements[this.heapSize - 1] = value;
+        this.elements[this.heapSize - 1] = (E) value;
         siftUp(this.heapSize - 1);
     }
 
-    public void push(E... values) {
-        for(E elem : values) {
+    @Override
+    public void push(Comparable... values) {
+        for(Comparable elem : values) {
             push(elem);
         }
     }
 
-    public <C extends Iterable<? extends E>> void push(C values) {
-        for(E elem : values) {
-            push(elem);
+    @Override
+    public void push(Iterable values) {
+        for(Object elem : values) {
+            push((Comparable) elem);
         }
     }
 
-    private void siftUp(int nodeIndex) {
+    @Override
+    public Iterator<E> iterator() {
+        return new ArrayBasedHeapIterator(
+                this.comp,
+                this.type,
+                this.maxSize,
+                (E[]) this.elements,
+                this.heapSize
+        );
+    }
+
+    protected void siftUp(int nodeIndex) {
         int parentIndex;
         E tmp;
         if (nodeIndex != 0) {
             parentIndex = getParentIndex(nodeIndex);
             if (evaluate(this.comp, this.elements[nodeIndex], this.elements[parentIndex])) {
-                tmp = this.elements[parentIndex];
+                tmp = (E) this.elements[parentIndex];
                 this.elements[parentIndex] = this.elements[nodeIndex];
                 this.elements[nodeIndex] = tmp;
                 siftUp(parentIndex);
@@ -162,7 +133,7 @@ public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> implements It
     }
 
     public E pop() {
-        E ret = elements[0];
+        E ret = (E) elements[0];
         if (empty()) {
             throw new EmptyHeapException("Heap is empty");
         }
@@ -174,7 +145,7 @@ public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> implements It
         return ret;
     }
 
-    private void siftDown(int nodeIndex) {
+    protected void siftDown(int nodeIndex) {
         int leftChildIndex, rightChildIndex, minIndex;
         E tmp;
         leftChildIndex = getLeftChildIndex(nodeIndex);
@@ -195,7 +166,7 @@ public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> implements It
         }
 
         if (evaluate(this.comp, this.elements[minIndex], this.elements[nodeIndex])) {
-            tmp = this.elements[minIndex];
+            tmp = (E) this.elements[minIndex];
             this.elements[minIndex] = this.elements[nodeIndex];
             this.elements[nodeIndex] = tmp;
             siftDown(minIndex);

@@ -2,84 +2,19 @@ package Utils.Collections;
 
 import Utils.Equivalence;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 import static Utils.Equivalence.evaluate;
 import static Utils.ConsolePrinting.*;
-import static Utils.Equivalence.lt;
+import static Utils.Equivalence.gt;
 
-public class ListBasedBinaryHeap<E extends Comparable<? super E>> implements Iterable{
+public class ListBasedBinaryHeap<E extends Comparable<? super E>> extends BinaryHeap{
 
-    private final int MAX_SIZE = 10000;
-    private List<E> elements;
-    private int heapSize;
-    private Equivalence.Comparator comp;
-
-    public ListBasedBinaryHeap(int size) {
-        this(lt, size);
-    }
-
-    public ListBasedBinaryHeap(Equivalence.Comparator comp, int size) {
-        this.elements = new ArrayList<>(size);
-        this.heapSize = 0;
-        this.comp = comp;
-    }
-
-    public <T extends E> ListBasedBinaryHeap(T... data) {
-        this(lt, Arrays.asList(data));
-    }
-
-    public <T extends E> ListBasedBinaryHeap(Equivalence.Comparator comp, T... data) {
-        this(comp, Arrays.asList(data));
-    }
-
-    public <T extends E> ListBasedBinaryHeap(Collection<T> data) {
-        this(lt, data);
-    }
-
-    public <T extends E> ListBasedBinaryHeap(Equivalence.Comparator comp, Collection<T> data) {
-        this.elements = new ArrayList<>();
-        this.heapSize = 0;
-        this.comp = comp;
-        for (T e : data ) {
-            push(e);
-        }
-    }
-
-    public E peek() {
-        if (empty()) {
-            throw new HeapException("Heap is empty");
-        }
-        return elements.get(0);
-    }
-
-    public boolean empty() {
-        return (this.heapSize == 0);
-    }
-
-    private int getLeftChildIndex(int nodeIndex) {
-        return 2 * nodeIndex + 1;
-    }
-
-    private int getRightChildIndex(int nodeIndex) {
-        return 2 * nodeIndex + 2;
-    }
-
-    private int getParentIndex(int nodeIndex) {
-        return (nodeIndex - 1) / 2;
-    }
-
-    @Override
-    public Iterator<E> iterator() {
-        return new HeapIterator<E>(this.comp, this.elements);
-    }
-
-    public class HeapIterator<C extends E> implements Iterator {
+    public class ListBasedHeapIterator<C extends E> implements Iterator {
 
         ListBasedBinaryHeap<C> temp;
-        HeapIterator(Equivalence.Comparator<C> comp, List<C> data) {
-            this.temp = new ListBasedBinaryHeap(comp, data);
+        ListBasedHeapIterator(Equivalence.Comparator<C> comp, List<C> data) {
+            this.temp = new ListBasedBinaryHeap().setComp(comp).setArgs(data);
         }
 
         @Override
@@ -98,34 +33,70 @@ public class ListBasedBinaryHeap<E extends Comparable<? super E>> implements Ite
         }
     }
 
+    protected List<E> elements;
+
+    public <E extends Comparable<? super E>> ListBasedBinaryHeap() {
+        this.elements = new ArrayList<>();
+    }
+
+    public ListBasedBinaryHeap<E> setSize(int maxSize) {
+        this.maxSize = maxSize;
+        return this;
+    }
+
+    public ListBasedBinaryHeap<E> setComp(Equivalence.Comparator comp) {
+        this.comp = comp;
+        return this;
+    }
+
+    public <T extends E> ListBasedBinaryHeap<E> setArgs(Collection<T> args) {
+        for (T arg : args) {
+            push(arg);
+        }
+        return this;
+    }
+
+    public <T extends E> ListBasedBinaryHeap<E> setArgs(T... args) {
+        return this.setArgs(Arrays.asList(args));
+    }
+
+    public E peek() {
+        if (empty()) {
+            throw new HeapException("Heap is empty");
+        }
+        return elements.get(0);
+    }
+
+    public boolean empty() {
+        return (this.heapSize == 0);
+    }
+
     public static class HeapException extends RuntimeException {
         public HeapException(String message) {
             super(message);
         }
     }
 
-    public void push(E value) {
-        if (this.heapSize == MAX_SIZE) {
-            throw new HeapException("Heap's underlying storage is overflow");
-        }
+    public void push(Comparable value) {
         this.heapSize++;
-        this.elements.add(value);
+        this.elements.add((E) value);
         siftUp(this.heapSize - 1);
     }
 
-    public void push(E... values) {
-        for(E elem : values) {
+    public void push(Comparable... values) {
+        for(Comparable elem : values) {
             push(elem);
         }
     }
 
-    public <C extends Iterable<? extends E>> void push(C values) {
-        for(E elem : values) {
-            push(elem);
+    @Override
+    public void push(Iterable values) {
+        for(Object elem : values) {
+            push((E) elem);
         }
     }
 
-    private void siftUp(int nodeIndex) {
+    protected void siftUp(int nodeIndex) {
         int parentIndex;
         E tmp;
         if (nodeIndex != 0) {
@@ -142,7 +113,7 @@ public class ListBasedBinaryHeap<E extends Comparable<? super E>> implements Ite
     public E pop() {
         E ret = elements.get(0);
         if (empty()) {
-            throw new HeapException("Heap is empty");
+            throw new EmptyHeapException("Heap is empty");
         }
         this.elements.set(0, this.elements.get(this.heapSize - 1));
         this.heapSize--;
@@ -152,7 +123,14 @@ public class ListBasedBinaryHeap<E extends Comparable<? super E>> implements Ite
         return ret;
     }
 
-    private void siftDown(int nodeIndex) {
+    @Override
+    public Iterator iterator() {
+        return new ListBasedHeapIterator(
+                this.comp,
+                this.elements);
+    }
+
+    protected void siftDown(int nodeIndex) {
         int leftChildIndex, rightChildIndex, minIndex;
         E tmp;
         leftChildIndex = getLeftChildIndex(nodeIndex);
@@ -187,7 +165,7 @@ public class ListBasedBinaryHeap<E extends Comparable<? super E>> implements Ite
 
     public static void main(String[] args) {
 
-        ListBasedBinaryHeap bhi = new ListBasedBinaryHeap(lt);
+        ListBasedBinaryHeap bhi = new ListBasedBinaryHeap();
         bhi.push(4);
         bhi.push(2);
         bhi.push(1);
@@ -200,17 +178,20 @@ public class ListBasedBinaryHeap<E extends Comparable<? super E>> implements Ite
         while(true) {
             try {
                 print(bhi.pop() + " ");
-            } catch (HeapException ex) {
-                ex.printStackTrace();
+            } catch (EmptyHeapException ex) {
+//                ex.printStackTrace();
                 println();
                 break;
             }
         }
 
-        ListBasedBinaryHeap<Character> bhc = new ListBasedBinaryHeap<Character>(Equivalence.gt, 'a','b','c','z');
+        ListBasedBinaryHeap<Character> bhc = new ListBasedBinaryHeap().setComp(gt).setArgs('a','b','c','z');
         println(bhc);
 
-        ListBasedBinaryHeap<String> bhs = new ListBasedBinaryHeap(new HashSet(Arrays.asList("star", "alex", "bob")));
+        ListBasedBinaryHeap<String> bhs = new ListBasedBinaryHeap().setArgs(new HashSet(Arrays.asList("star", "alex", "bob")));
+        println(bhs);
+
+        bhs.setComp(gt);
         println(bhs);
 
 

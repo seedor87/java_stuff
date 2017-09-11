@@ -23,7 +23,7 @@ public class BinaryHeapTests {
     public static void listBasedTest(int n, int max) {
         AbstractTimer timer = new SYSTimer(AbstractTimer.TimeUnit.SECONDS);
         timer.start();
-        ListBasedBinaryHeap<Integer> bh = new ListBasedBinaryHeap<Integer>(n);
+        ListBasedBinaryHeap<Integer> bh = new ListBasedBinaryHeap<Integer>();
         Integer[] ints = MyRandom.randomInts(n, max);
         for(Integer i : ints) {
             bh.push(i);
