@@ -1,14 +1,16 @@
-package Utils.Collections;
+package Utils.Collections.BinaryHeaps;
 
 import Utils.Equivalence;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import static Utils.Equivalence.lt;
 
 /**
  * Created by robertseedorf on 9/9/17.
  */
-public abstract class BinaryHeap<E extends Comparable<? super E>> implements Iterable<E> {
+public abstract class BinaryHeap<E extends Comparable<? super E>> {
 
     public static class HeapException extends RuntimeException {
         public HeapException(String message) { super(message); }
@@ -42,13 +44,8 @@ public abstract class BinaryHeap<E extends Comparable<? super E>> implements Ite
 
     protected abstract void siftUp(int nodeIndex);
     protected abstract void siftDown(int nodeIndex);
-    public abstract E peek();
     public abstract boolean empty();
-    public abstract void push(E value) ;
-    public abstract void push(E... values);
-    public abstract <C extends Iterable<? extends E>> void push(C values);
+    public abstract void push(E value);
+    public abstract E peek();
     public abstract E pop();
-
-    @Override
-    public abstract Iterator<E> iterator();
 }

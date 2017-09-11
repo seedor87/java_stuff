@@ -108,7 +108,7 @@ public class ConsolePrinting {
         for (T elem : args) {
             print(delim);
             print(elem);
-            delim = ", ";
+            delim = " ";
         }
     }
 

@@ -1,4 +1,4 @@
-package Utils.Collections;
+package Utils.Collections.BinaryHeaps;
 
 import Utils.Equivalence;
 
@@ -8,7 +8,7 @@ import static Utils.Equivalence.evaluate;
 import static Utils.ConsolePrinting.*;
 import static Utils.Equivalence.gt;
 
-public class ListBasedBinaryHeap<E extends Comparable<? super E>> extends BinaryHeap{
+public class ListBasedBinaryHeap<E extends Comparable<? super E>> extends BinaryHeap implements Iterable<E>{
 
     public class ListBasedHeapIterator<C extends E> implements Iterator {
 
@@ -37,11 +37,6 @@ public class ListBasedBinaryHeap<E extends Comparable<? super E>> extends Binary
 
     public <E extends Comparable<? super E>> ListBasedBinaryHeap() {
         this.elements = new ArrayList<>();
-    }
-
-    public ListBasedBinaryHeap<E> setSize(int maxSize) {
-        this.maxSize = maxSize;
-        return this;
     }
 
     public ListBasedBinaryHeap<E> setComp(Equivalence.Comparator comp) {
@@ -89,10 +84,9 @@ public class ListBasedBinaryHeap<E extends Comparable<? super E>> extends Binary
         }
     }
 
-    @Override
-    public void push(Iterable values) {
-        for(Object elem : values) {
-            push((E) elem);
+    public void push(Iterable<E> values) {
+        for(E elem : values) {
+            push(elem);
         }
     }
 
@@ -179,25 +173,24 @@ public class ListBasedBinaryHeap<E extends Comparable<? super E>> extends Binary
             try {
                 print(bhi.pop() + " ");
             } catch (EmptyHeapException ex) {
-//                ex.printStackTrace();
                 println();
                 break;
             }
         }
 
-        ListBasedBinaryHeap<Character> bhc = new ListBasedBinaryHeap().setComp(gt).setArgs('a','b','c','z');
+        ListBasedBinaryHeap<Character> bhc = new ListBasedBinaryHeap<Character>().setComp(gt).setArgs('a','b','c','z');
         println(bhc);
 
-        ListBasedBinaryHeap<String> bhs = new ListBasedBinaryHeap().setArgs(new HashSet(Arrays.asList("star", "alex", "bob")));
+        ListBasedBinaryHeap<String> bhs = new ListBasedBinaryHeap<String>().setArgs(new HashSet<>(Arrays.asList("star", "alex", "bob")));
         println(bhs);
 
         bhs.setComp(gt);
         println(bhs);
 
 
-        class test implements Comparable {
+        class MyClass implements Comparable {
             private Integer val;
-            test(int val) {
+            MyClass(int val) {
                 this.val = val;
             }
             public int getVal() {
@@ -206,7 +199,7 @@ public class ListBasedBinaryHeap<E extends Comparable<? super E>> extends Binary
 
             @Override
             public int compareTo(Object o) {
-                return -1 * this.val.compareTo(((test) o).getVal());
+                return -1 * this.val.compareTo(((MyClass) o).getVal());
             }
 
             @Override
@@ -216,9 +209,9 @@ public class ListBasedBinaryHeap<E extends Comparable<? super E>> extends Binary
         }
 
         ListBasedBinaryHeap bht = new ListBasedBinaryHeap();
-        bht.push(new test(9));
-        bht.push(new test(10));
-        bht.push(new test(11));
+        bht.push(new MyClass(9));
+        bht.push(new MyClass(10));
+        bht.push(new MyClass(11));
         println(bht);
     }
 }

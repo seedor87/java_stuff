@@ -1,17 +1,17 @@
-package Utils.Collections;
+package Utils.Collections.BinaryHeaps;
 
 import Utils.Equivalence;
 
-import java.awt.*;
 import java.lang.reflect.Array;
 import java.util.*;
 
+import static Utils.ConsolePrinting.print;
 import static Utils.ConsolePrinting.println;
 import static Utils.Equivalence.evaluate;
 import static Utils.Equivalence.gt;
 import static Utils.Equivalence.lt;
 
-public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> extends BinaryHeap {
+public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> extends BinaryHeap implements Iterable<E> {
 
     public class ArrayBasedHeapIterator<E extends Comparable<? super E>> implements Iterator {
 
@@ -93,14 +93,12 @@ public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> extends Binar
         siftUp(this.heapSize - 1);
     }
 
-    @Override
     public void push(Comparable... values) {
         for(Comparable elem : values) {
             push(elem);
         }
     }
 
-    @Override
     public void push(Iterable values) {
         for(Object elem : values) {
             push((Comparable) elem);
@@ -193,6 +191,15 @@ public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> extends Binar
         bh.pop();
         bh.pop();
         println(bh);
+
+        while(true) {
+            try {
+                print(bh.pop());
+            } catch (HeapException ex) {
+                println();
+                break;
+            }
+        }
 
         bh = new ArrayBasedBinaryHeap(Character.class)
                 .setSize(10000)
