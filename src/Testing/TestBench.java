@@ -92,9 +92,8 @@ public class TestBench {
 
 //        mersennePrimeTest();
 
-        new SYSTimeTest(TestBench.class, "notherTest").exe(Arrays.asList("1", "2", "3"));
-        new SYSTimeTest(TestBench.class, "notherTest").exe(new String[] {"1", "2", "3"});
-
+//        new SYSTimeTest(TestBench.class, "notherTest").exe(Arrays.asList("1", "2", "3"));
+//        new SYSTimeTest(TestBench.class, "notherTest").exe(new String[] {"1", "2", "3"});
 
 //        new SYSTimeTest(
 //                TestBench.class,

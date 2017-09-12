@@ -1,9 +1,6 @@
 package Utils;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 public class Equivalence {
 
@@ -83,7 +80,7 @@ public class Equivalence {
     }
 
 
-    public static <E extends Comparable<? super E>> boolean contains(List<E> arr, E elem1) {
+    public static <E extends Comparable<? super E>> boolean contains(Collection<E> arr, E elem1) {
         for (E elem2 : arr) {
             if (eq(elem1, elem2)) {
                 return true;
@@ -139,6 +136,26 @@ public class Equivalence {
             return true;
         }
         return cnfOr(rest[0], Arrays.copyOfRange(rest, 1, rest.length));
+    }
+
+    public static <T extends Collection<E>, E extends Comparable> Collection<E> intersection(T first, T second) {
+        List<E> ret = new ArrayList<>();
+        for (E elem : first) {
+            if(contains(second, elem)) {
+                ret.add(elem);
+            }
+        }
+        return ret;
+    }
+
+    public static <T extends Collection<E>, E extends Comparable> Collection<E> difference(T first, T second) {
+        List<E> ret = new ArrayList<>();
+        for (E elem : first) {
+            if(!contains(second, elem)) {
+                ret.add(elem);
+            }
+        }
+        return ret;
     }
 
 
