@@ -16,6 +16,7 @@ import java.util.Random;
 
 import static GradDataWarehousing.HW1.HW1Resources.*;
 import static Utils.ConsolePrinting.*;
+import static Utils.StringUtils.padCenter;
 import static Utils.StringUtils.padRight;
 
 public class HW1 {
@@ -117,15 +118,17 @@ public class HW1 {
 
         // Header to address the user with set parameters and start timer.
         println(fgPurple, "Creation Started");
-        print("Params:");
-        final int paddingSize = 20;
-        println(padRight("\nSTART_DATE_STRING ", paddingSize, '*'), START_DATE_STRING,
-                padRight("\nEND_DATE_STRING ", paddingSize, '*'), END_DATE_STRING,
-                padRight("\nCUST_LOW ", paddingSize, '*'), CUST_LOW,
-                padRight("\nCUST_HI ", paddingSize, '*'), CUST_HI,
-                padRight("\nPRICE_MULT ", paddingSize, '*'), PRICE_MULT,
-                padRight("\nMAX_ITEMS ", paddingSize, '*'), MAX_ITEMS,
-                padRight("\nWEEKEND_INCREASE ", paddingSize, '*'), WEEKEND_INCREASE
+        println("Params:");
+        final int paddingSize = 32;
+        final char fill = '*';
+        printlnDelim("\n",
+                padCenter("START_DATE_STRING ",  " " + START_DATE_STRING,   paddingSize, fill),
+                padCenter("END_DATE_STRING ",    " " + END_DATE_STRING,     paddingSize, fill),
+                padCenter("CUST_LOW ",           " " + CUST_LOW,            paddingSize, fill),
+                padCenter("CUST_HI ",            " " + CUST_HI,             paddingSize, fill),
+                padCenter("PRICE_MULT ",         " " + PRICE_MULT,          paddingSize, fill),
+                padCenter("MAX_ITEMS ",          " " + MAX_ITEMS,           paddingSize, fill),
+                padCenter("WEEKEND_INCREASE ",   " " + WEEKEND_INCREASE,    paddingSize, fill)
         );
         AbstractTimer timer = new SYSTimer(AbstractTimer.TimeUnit.SECONDS);
         timer.start();
