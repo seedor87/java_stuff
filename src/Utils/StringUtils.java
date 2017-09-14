@@ -29,37 +29,47 @@ public class StringUtils {
         return ret.toString();
     }
 
-    public static String padRight(String s, int n) {
-        return String.format("%1$-" + n + "s", s);
+    public static String padRight(Object s, int n) {
+        return String.format("%1$-" + n + "s", s.toString());
     }
-    public static String padLeft(String s, int n) {
-        return String.format("%1$" + n + "s", s);
+    public static String padLeft(Object s, int n) {
+        return String.format("%1$" + n + "s", s.toString());
     }
-    public static String padCenter(String l, String r, int n) {
-        return String.format(l + "%1$" + (n-l.length()) + "s", r);
+    public static String padCenter(Object l, Object r, int n) {
+        return String.format(l + "%1$" + (n-l.toString().length()) + "s", r.toString());
+    }
+    public static String padLeftRight(Object s, int n) {
+        return padLeftRight(s, n, ' ');
     }
 
-    public static String padRight(String s, int n, char fill) {
-        String temp = genToLength(s.length());
+    public static String padRight(Object s, int n, char fill) {
+        String temp = genToLength(s.toString().length());
         return padRight(temp, n)
                 .replace(' ', fill)
-                .replace(temp, s);
+                .replace(temp, s.toString());
     }
-
-    public static String padLeft(String s, int n, char fill) {
-        String temp = genToLength(s.length());
+    public static String padLeft(Object s, int n, char fill) {
+        String temp = genToLength(s.toString().length());
         return padLeft(temp, n)
                 .replace(' ', fill)
-                .replace(temp, s);
+                .replace(temp, s.toString());
     }
-
     public static String padCenter(Object l, Object r, int n, char fill) {
-        String ltemp = genToLength(l.toString().length(), '0');
-        String rtemp = genToLength(r.toString().length(), '1');
-        return padCenter(ltemp, rtemp, n)
-                .replace(' ', fill)
-                .replace(ltemp, l.toString())
-                .replace(rtemp, r.toString());
+        int clen = n - (l.toString().length() + r.toString().length());
+        return l.toString() +
+                genToLength(clen, fill) +
+                r.toString();
+    }
+    public static String padLeftRight(Object s, int n, char fill) {
+        int len = s.toString().length();
+        int rside = (n-len) / 2;
+        int lside = rside;
+        if(n % len != 0) {
+            lside += 1;
+        }
+        return genToLength(lside, fill) +
+                s.toString() +
+                genToLength(rside, fill);
     }
 
     public static void main(String[] args) {
@@ -70,6 +80,8 @@ public class StringUtils {
         println(padCenter("left", "right", 20));
         println(padCenter("l ef t", "r igh t", 20, '^'));
         println(genToLength(20, "<^>"));
+        println(padLeftRight("testing", 20));
+        println(padLeftRight("testing", 20, '_'));
     }
 }
 

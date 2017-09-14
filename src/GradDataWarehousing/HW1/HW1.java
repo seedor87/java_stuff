@@ -18,18 +18,17 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static GradDataWarehousing.HW1.HW1Resources.*;
 import static Utils.ConsolePrinting.*;
-import static Utils.StringUtils.genToLength;
-import static Utils.StringUtils.padCenter;
+import static Utils.StringUtils.*;
 
 public class HW1 {
 
-    static String outputPath = "." + File.separatorChar + "output.txt";
+    static String outputPath = "." + File.separatorChar + "output.txt"; //results go here
     static String allProductsFilePath = "." +
             File.separatorChar + "src" +
             File.separatorChar + "GradDataWarehousing" +
             File.separatorChar + "HW1" +
-            File.separatorChar + "myProducts";
-
+            File.separatorChar + "myProducts";  // pre-processed list of skus and prices
+    // student specific params
     static final String START_DATE_STRING = "2017-01-01";
     static final String END_DATE_STRING = "2018-01-01";
     static final int CUST_LOW = 1140;
@@ -37,21 +36,26 @@ public class HW1 {
     static final double PRICE_MULT = 1.1;
     static final int MAX_ITEMS = 70;
     static final int WEEKEND_INCREASE = 50;
-
+    //date format for day iteration
     static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+    // the list of all products created at start to easily index for random sku-price from all
     static ArrayList<Tuple> allMyProdcuts = new ArrayList<>();
-
+    // vars holding the runtime counts for metrics
     static int total_items_bought = 0;
     static int total_customers = 0;
     static double total_sales_USD = 0;
-    static final ConcurrentMap<Tuple, AtomicInteger> skuCountMap = new ConcurrentHashMap<>();
-
+    // map for pairing <sku and price, count>
+    static final ConcurrentMap<Tuple, AtomicInteger> skuPriceMapCount = new ConcurrentHashMap<>();
+    // local variables for specific tasks
     static BufferedWriter writer;
     static LocalDate start;
     static LocalDate end;
     static Date startDate;
     static Date endDate;
 
+    /**
+     * Custom comparator used to sort the map of sku counts to grab most frequent items
+     */
     static class SkuMapComparator implements Comparator {
         Map map;
 
@@ -88,7 +92,7 @@ public class HW1 {
     }
 
     /**
-     * Method to round a double to two (2) decimal places
+     * Method to mathematically round a double to two (2) decimal places
      */
     public static double roundTwoDecimal(double num) {
         num = Math.round(num * 100);
@@ -118,9 +122,13 @@ public class HW1 {
         }
     }
 
+    /**
+     * Method to update the parameterized Tuple-Key Count-Value entry in the sku count map.
+     * @param sku
+     */
     public static void updateSkuMap(Tuple sku) {
-        skuCountMap.putIfAbsent(sku, new AtomicInteger(0));
-        skuCountMap.get(sku).incrementAndGet();
+        skuPriceMapCount.putIfAbsent(sku, new AtomicInteger(0));
+        skuPriceMapCount.get(sku).incrementAndGet();
     }
 
     /**
@@ -142,8 +150,7 @@ public class HW1 {
     public static void main(String[] args) {
 
         // Header to address the user with set parameters and start timer.
-        println(fgPurple, "Creation Started");
-        println("Params:");
+        println(fgPurple, "Creation Started w/ Params:");
         int paddingSize = 32;
         char fill = '*';
         printlnDelim("\n",
@@ -169,8 +176,9 @@ public class HW1 {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        println();
         println("All Products List successfully constructed from...");
-        println(allProductsFilePath);
+        println(fgRed, allProductsFilePath);
 
         // Parse dates and build java 8 date objects for iteration
         try {
@@ -351,30 +359,35 @@ public class HW1 {
             }
         }
 
+        //stop timer ASAP for acc.
         timer.stop();
-        println(fgCyan, "\nDONE", timer, "\n");
+        println(fgGreen, "\nDONE", timer, "\n");
 
-        Map<Tuple, AtomicInteger> sortedSkuCounts = new TreeMap(new SkuMapComparator(skuCountMap));
-        sortedSkuCounts.putAll(skuCountMap);
+        // sort map of <sku-price, counts> by frequency (count)
+        Map<Tuple, AtomicInteger> sortedSkuCounts = new TreeMap(new SkuMapComparator(skuPriceMapCount));
+        sortedSkuCounts.putAll(skuPriceMapCount);
 
+        // all of this nonsense prints the results to answer the questions in the assignment
         paddingSize = 42;
-        fill = '_';
+        fill = '.';
         print(fgYellow);
         printlnDelim("\n",
                 padCenter("Total Items Bought: ", " " + NumberFormat.getIntegerInstance().format(total_items_bought), paddingSize, fill),
                 padCenter("Total Customers: ", " " + NumberFormat.getIntegerInstance().format(total_customers), paddingSize, fill),
                 padCenter("Total sales in USD: ", " $" + String.format("%1$,.2f", total_sales_USD), paddingSize, fill)
         );
-        println("\nTop 10 Items By Count:");
-        println(padCenter("   SKU   |  Price ", "| Count", 42, ' '));
-        println(genToLength(42, '='));
-        for (Object tup : Arrays.copyOfRange(sortedSkuCounts.keySet().toArray(), 0, 10)) {
+        println(padLeftRight("Top 10 Items By Count:", paddingSize));
+        println(genToLength(paddingSize, '='));
+        println(padCenter(" Rank |   SKU    |  Price ", "Count ", paddingSize, ' '));
+        int rank = 1;
+        for (Object skuPrice : Arrays.copyOfRange(sortedSkuCounts.keySet().toArray(), 0, 10)) {
            println(padCenter(
-                   ((Tuple) tup).getZero() + " | ($" + ((Tuple) tup).getOne() + ") ",
-                   " " + sortedSkuCounts.get(tup),
-                   42,
-                   '_')
+                   padLeft(rank, 5) + " | " + ((Tuple) skuPrice).getZero() + " | ($" + ((Tuple) skuPrice).getOne() + ") ",
+                   " " + NumberFormat.getInstance().format(sortedSkuCounts.get(skuPrice)),
+                   paddingSize,
+                   fill)
            );
+           rank++;
         }
         System.exit(0);
     }
