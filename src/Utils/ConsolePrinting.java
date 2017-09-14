@@ -183,6 +183,12 @@ public class ConsolePrinting {
         println();
    }
 
+    public static <T extends Object> void printVars(T... args) {
+        for (T var : args) {
+            println(var.getClass());
+        }
+    }
+
     public static void main(String[] args) {
 
         printlnDelim(", ", 1, 47, true, 't', "bob", new Tuple<>(7, '8', "9"), new int[]{2,1,1,2});
@@ -203,5 +209,7 @@ public class ConsolePrinting {
         println(fgPurple, Arrays.asList(Long.MAX_VALUE, Long.MAX_VALUE+1));
         println(fgBlue, bgYellow, new char[]{'a','b','c'});
         println(fgYellow, bgBlue, new int[]{'a','b','c'});
+
+        printVars("1", 2, '3');
     }
 }

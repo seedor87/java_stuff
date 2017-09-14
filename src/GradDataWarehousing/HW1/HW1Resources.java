@@ -14,7 +14,8 @@ public class HW1Resources {
     };
 
     static final Tuple[] CEREALS = {
-            new Tuple(42091001,6.99),
+            new
+                    Tuple(42091001,6.99),
             new
                     Tuple(42099001,2.5),
             new
