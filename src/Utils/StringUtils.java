@@ -5,15 +5,11 @@ import java.util.Scanner;
 import static Utils.ConsolePrinting.*;
 public class StringUtils {
 
-    public static String genToLength(int n) {
-        StringBuilder ret = new StringBuilder();
-        for(int i = 0; i < n; i++) {
-            ret.append(' ');
-        }
-        return ret.toString();
+    public static String yieldToLength(int n) {
+        return yieldToLength(n, ' ');
     }
 
-    public static String genToLength(int n, char fill) {
+    public static String yieldToLength(int n, char fill) {
         StringBuilder ret = new StringBuilder();
         for(int i = 0; i < n; i++) {
             ret.append(fill);
@@ -21,7 +17,7 @@ public class StringUtils {
         return ret.toString();
     }
 
-    public static String genToLength(int n, String fill) {
+    public static String yieldToLength(int n, String fill) {
         StringBuilder ret = new StringBuilder();
         while(ret.length() < n) {
            ret.append(fill);
@@ -32,29 +28,31 @@ public class StringUtils {
         return ret.toString();
     }
 
-    public static String padRight(int n, Object s) {
-        return padRight(n, ' ', s);
+    public static String padToLeft(int n, Object s) {
+        return padToLeft(n, ' ', s);
     }
-    public static String padLeft(int n, Object s) {
-        return padLeft(n, ' ', s);
-    }
-    public static String padCenter(int n, Object l, Object r) {
-        return padCenter(n, ' ', l, r);
+    public static String padToRight(int n, Object s) {
+        return padToRight(n, ' ', s);
     }
 
-    public static String padRight(int n, char fill, Object s) {
-        String temp = genToLength(n - s.toString().length(), fill);
+    public static String padToLeft(int n, char fill, Object s) {
+        String temp = yieldToLength(n - s.toString().length(), fill);
         return s.toString() + temp;
     }
 
-    public static String padLeft(int n, char fill, Object s) {
-        String temp = genToLength(n - s.toString().length(), fill);
+    public static String padToRight(int n, char fill, Object s) {
+        String temp = yieldToLength(n - s.toString().length(), fill);
         return temp + s.toString();
     }
 
-    public static String padCenter(int n, char fill, Object l, Object r) {
-        String temp = genToLength(n-(l.toString().length() + r.toString().length()), fill);
-        return l.toString() + temp + r.toString();
+    public static String padToLeft(int n, String fill, Object s) {
+        String temp = yieldToLength(n - s.toString().length(), fill);
+        return s.toString() + temp;
+    }
+
+    public static String padToRight(int n, String fill, Object s) {
+        String temp = yieldToLength(n - s.toString().length(), fill);
+        return temp + s.toString();
     }
 
     public static String padContinuous(int n, char fill, Object... objs) {
@@ -73,7 +71,7 @@ public class StringUtils {
         for (Object obj : Arrays.copyOfRange(objs, 0, objs.length-1)) {
             arr[index] = obj.toString();
             index++;
-            arr[index] = genToLength(avgSpacerLen, fill);
+            arr[index] = yieldToLength(avgSpacerLen, fill);
             index++;
         }
         arr[index] = objs[objs.length-1].toString();
@@ -113,23 +111,25 @@ public class StringUtils {
     }
 
     public static void main(String[] args) {
-        println(padLeft(20, "testing"));
-        println(padRight(20, "test ing"));
-        println(padLeft(20, '*', "test   ing"));
-        println(padRight(20, '-', "t e s t i n g"));
-        println(padCenter(20, "left", "right"));
-        println(padCenter(20, '^', "l ef t", "r igh t"));
-        println(genToLength(20, "<^>"));
-        println(padContinuous(20, ' ',"testing"));
-        println(padContinuous(20, '_',"testing"));
+        int len = 50;
+
+        print(fgBlack.str());
+        println(padToRight(len, "testing"));
+        println(padToLeft(len, "test ing"));
+        println(padToRight(len, '*', "test   ing"));
+        println(padToLeft(len, '-', "t e s t i n g"));
+        println(padContinuous(len, ' ',"left", "right"));
+        println(padContinuous(len, '^', "l ef t", "r igh t"));
+        println(yieldToLength(len, "123"));
+        println(padContinuous(len, ' ',"testing"));
+        println(padContinuous(len,'_',"testing"));
 
         println(fgBlue);
         String q;
         Scanner s = new Scanner(System.in);
-        int len = 40;
         do {
-            String[] arr = new String[]{"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th"};
-            StringBuilder sb = new StringBuilder();
+            String[] arr = new String[]{"0th", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th"};
+//            String[] arr = new String[]{"one", "two", "three", "four", "five", "six", "seven", "eight", "nine"};
             for (int i = 0; i < arr.length; i++) {
                 println(padContinuous(len, '_', Arrays.copyOfRange(arr, 0, i + 1)));
             }

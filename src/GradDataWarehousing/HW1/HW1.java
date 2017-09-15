@@ -63,10 +63,10 @@ public class HW1 {
             this.map = map;
         }
 
-        public int compare(Object keyA, Object keyB) {
-            AtomicInteger valueA = (AtomicInteger) map.get((Tuple) keyA);
-            AtomicInteger valueB = (AtomicInteger) map.get((Tuple) keyB);
-            return new Integer(valueB.intValue()).compareTo(valueA.intValue());
+        public int compare(Object pairA, Object pairB) {
+            AtomicInteger countA = (AtomicInteger) map.get((Tuple) pairA);
+            AtomicInteger countB = (AtomicInteger) map.get((Tuple) pairB);
+            return new Integer(countB.intValue()).compareTo(countA.intValue());
         }
     }
 
@@ -154,13 +154,13 @@ public class HW1 {
         int paddingSize = 32;
         char fill = '*';
         printlnDelim("\n",
-                padCenter(paddingSize, fill,     "START_DATE_STRING ",  " " + START_DATE_STRING),
-                padCenter(paddingSize, fill,     "END_DATE_STRING ",    " " + END_DATE_STRING),
-                padCenter(paddingSize, fill,     "CUST_LOW ",           " " + CUST_LOW),
-                padCenter(paddingSize, fill,     "CUST_HI ",            " " + CUST_HI),
-                padCenter(paddingSize, fill,     "PRICE_MULT ",         " " + PRICE_MULT),
-                padCenter(paddingSize, fill,     "MAX_ITEMS ",          " " + MAX_ITEMS),
-                padCenter(paddingSize, fill,     "WEEKEND_INCREASE ",   " " + WEEKEND_INCREASE)
+                padContinuous(paddingSize, fill,     "START_DATE_STRING ",  " " + START_DATE_STRING),
+                padContinuous(paddingSize, fill,     "END_DATE_STRING ",    " " + END_DATE_STRING),
+                padContinuous(paddingSize, fill,     "CUST_LOW ",           " " + CUST_LOW),
+                padContinuous(paddingSize, fill,     "CUST_HI ",            " " + CUST_HI),
+                padContinuous(paddingSize, fill,     "PRICE_MULT ",         " " + PRICE_MULT),
+                padContinuous(paddingSize, fill,     "MAX_ITEMS ",          " " + MAX_ITEMS),
+                padContinuous(paddingSize, fill,     "WEEKEND_INCREASE ",   " " + WEEKEND_INCREASE)
         );
         AbstractTimer timer = new SYSTimer(AbstractTimer.TimeUnit.SECONDS);
         timer.start();
@@ -372,19 +372,19 @@ public class HW1 {
         fill = '.';
         print(fgYellow);
         printlnDelim("\n",
-                padCenter(paddingSize, fill,    "Total Items Bought: ", " " + NumberFormat.getIntegerInstance().format(total_items_bought)),
-                padCenter(paddingSize, fill,    "Total Customers: ", " " + NumberFormat.getIntegerInstance().format(total_customers)),
-                padCenter(paddingSize, fill,    "Total sales in USD: ", " $" + String.format("%1$,.2f", total_sales_USD))
+                padContinuous(paddingSize, fill,    "Total Items Bought: ", " " + NumberFormat.getIntegerInstance().format(total_items_bought)),
+                padContinuous(paddingSize, fill,    "Total Customers: ", " " + NumberFormat.getIntegerInstance().format(total_customers)),
+                padContinuous(paddingSize, fill,    "Total sales in USD: ", " $" + String.format("%1$,.2f", total_sales_USD))
         );
         println(padContinuous(paddingSize, ' ', "Top 10 Items By Count:"));
-        println(genToLength(paddingSize, '='));
-        println(padCenter(paddingSize, ' ', " Rank |   SKU    |  Price ", "Count "));
+        println(yieldToLength(paddingSize, '='));
+        println(padContinuous(paddingSize, ' ', " Rank |   SKU    |  Price ", "Count "));
         int rank = 1;
         for (Object skuPrice : Arrays.copyOfRange(sortedSkuCounts.keySet().toArray(), 0, 10)) {
-           println(padCenter(
+           println(padContinuous(
                    paddingSize,
                    fill,
-                   padLeft(5, rank) + " | " + ((Tuple) skuPrice).getZero() + " | ($" + ((Tuple) skuPrice).getOne() + ") ",
+                   padToRight(5, rank) + " | " + ((Tuple) skuPrice).getZero() + " | ($" + ((Tuple) skuPrice).getOne() + ") ",
                    " " + NumberFormat.getInstance().format(sortedSkuCounts.get(skuPrice)))
            );
            rank++;
