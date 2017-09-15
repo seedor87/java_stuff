@@ -154,13 +154,13 @@ public class HW1 {
         int paddingSize = 32;
         char fill = '*';
         printlnDelim("\n",
-                padCenter("START_DATE_STRING ",  " " + START_DATE_STRING,   paddingSize, fill),
-                padCenter("END_DATE_STRING ",    " " + END_DATE_STRING,     paddingSize, fill),
-                padCenter("CUST_LOW ",           " " + CUST_LOW,            paddingSize, fill),
-                padCenter("CUST_HI ",            " " + CUST_HI,             paddingSize, fill),
-                padCenter("PRICE_MULT ",         " " + PRICE_MULT,          paddingSize, fill),
-                padCenter("MAX_ITEMS ",          " " + MAX_ITEMS,           paddingSize, fill),
-                padCenter("WEEKEND_INCREASE ",   " " + WEEKEND_INCREASE,    paddingSize, fill)
+                padCenter(paddingSize, fill,     "START_DATE_STRING ",  " " + START_DATE_STRING),
+                padCenter(paddingSize, fill,     "END_DATE_STRING ",    " " + END_DATE_STRING),
+                padCenter(paddingSize, fill,     "CUST_LOW ",           " " + CUST_LOW),
+                padCenter(paddingSize, fill,     "CUST_HI ",            " " + CUST_HI),
+                padCenter(paddingSize, fill,     "PRICE_MULT ",         " " + PRICE_MULT),
+                padCenter(paddingSize, fill,     "MAX_ITEMS ",          " " + MAX_ITEMS),
+                padCenter(paddingSize, fill,     "WEEKEND_INCREASE ",   " " + WEEKEND_INCREASE)
         );
         AbstractTimer timer = new SYSTimer(AbstractTimer.TimeUnit.SECONDS);
         timer.start();
@@ -372,20 +372,20 @@ public class HW1 {
         fill = '.';
         print(fgYellow);
         printlnDelim("\n",
-                padCenter("Total Items Bought: ", " " + NumberFormat.getIntegerInstance().format(total_items_bought), paddingSize, fill),
-                padCenter("Total Customers: ", " " + NumberFormat.getIntegerInstance().format(total_customers), paddingSize, fill),
-                padCenter("Total sales in USD: ", " $" + String.format("%1$,.2f", total_sales_USD), paddingSize, fill)
+                padCenter(paddingSize, fill,    "Total Items Bought: ", " " + NumberFormat.getIntegerInstance().format(total_items_bought)),
+                padCenter(paddingSize, fill,    "Total Customers: ", " " + NumberFormat.getIntegerInstance().format(total_customers)),
+                padCenter(paddingSize, fill,    "Total sales in USD: ", " $" + String.format("%1$,.2f", total_sales_USD))
         );
-        println(padLeftRight("Top 10 Items By Count:", paddingSize));
+        println(padContinuous(paddingSize, ' ', "Top 10 Items By Count:"));
         println(genToLength(paddingSize, '='));
-        println(padCenter(" Rank |   SKU    |  Price ", "Count ", paddingSize, ' '));
+        println(padCenter(paddingSize, ' ', " Rank |   SKU    |  Price ", "Count "));
         int rank = 1;
         for (Object skuPrice : Arrays.copyOfRange(sortedSkuCounts.keySet().toArray(), 0, 10)) {
            println(padCenter(
-                   padLeft(rank, 5) + " | " + ((Tuple) skuPrice).getZero() + " | ($" + ((Tuple) skuPrice).getOne() + ") ",
-                   " " + NumberFormat.getInstance().format(sortedSkuCounts.get(skuPrice)),
                    paddingSize,
-                   fill)
+                   fill,
+                   padLeft(5, rank) + " | " + ((Tuple) skuPrice).getZero() + " | ($" + ((Tuple) skuPrice).getOne() + ") ",
+                   " " + NumberFormat.getInstance().format(sortedSkuCounts.get(skuPrice)))
            );
            rank++;
         }
