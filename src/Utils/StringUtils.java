@@ -55,9 +55,9 @@ public class StringUtils {
         return temp + s.toString();
     }
 
-    public static String padContinuous(int n, char fill, Object... objs) {
+    public static String padJustify(int n, char fill, Object... objs) {
         if(objs.length < 2) {
-            return padContinuous(n, fill, "", objs[0], "");
+            return padJustify(n, fill, "", objs[0], "");
         }
         StringBuilder sb = new StringBuilder();
         int totObjsLen = 0;
@@ -110,6 +110,78 @@ public class StringUtils {
         return sb.toString();
     }
 
+    public static String padContinuousLeft(int n, char fill, Object... objs) {
+        if(objs.length > 1) {
+            int n_l = n / 2;
+            int n_r = (n % 2 == 0) ? n_l : n_l + 1;
+            if(objs.length % 2 == 0) {
+                return padContinuousLeft(n_l, fill, Arrays.copyOfRange(objs, 0, objs.length/2)) +
+                        padContinuousLeft(n_r, fill, Arrays.copyOfRange(objs, (objs.length/2), objs.length));
+            } else {
+                n_l = n_l - (objs[objs.length/2].toString().length() / 2);
+                n_r = n_r - (objs[objs.length/2].toString().length() / 2);
+                return padContinuousLeft(n_l, fill, Arrays.copyOfRange(objs, 0, objs.length/2)) +
+                        objs[(objs.length/2)].toString() +
+                        padContinuousLeft(n_r, fill, Arrays.copyOfRange(objs, (objs.length/2) + 1, objs.length));
+            }
+        }
+        return padJustify(n, fill, objs[0].toString());
+    }
+
+    public static String padCenter(int n, char fill, Object... objs) {
+        StringBuilder sb = new StringBuilder();
+        int totObjsLen = 0;
+        for(Object obj : objs) {
+            totObjsLen += obj.toString().length();
+        }
+
+        int numSpacers = objs.length + 1;
+        int avgPerObj = (n - totObjsLen) / numSpacers;
+        String[] arr = new String[numSpacers + objs.length];
+        int index = 0;
+        arr[index] = yieldToLength(avgPerObj, fill);
+        index++;
+        for (Object obj : Arrays.copyOfRange(objs, 0, objs.length)) {
+            arr[index] = obj.toString();
+            index++;
+            arr[index] = yieldToLength(avgPerObj, fill);
+            index++;
+        }
+
+        int remaining = n - (totObjsLen + (avgPerObj * numSpacers));
+        if(numSpacers % 2 == 0) {
+            int i = 1;
+            int j = arr.length-2;
+            while(remaining > 0) {
+                if (remaining % 2 == 0) {
+                    arr[j] += fill;
+                    j -= 2;
+                } else {
+                    arr[i] += fill;
+                    i += 2;
+                }
+                remaining--;
+            }
+        } else {
+            int i = arr.length/2+2;
+            int j = arr.length/2-2;
+            while(remaining > 0) {
+                if (remaining % 2 == 0) {
+                    arr[j] += fill;
+                    j -= 2;
+                } else {
+                    arr[i] += fill;
+                    i += 2;
+                }
+                remaining--;
+            }
+        }
+        for(String str : arr) {
+            sb.append(str);
+        }
+        return sb.toString();
+    }
+
     public static void main(String[] args) {
         int len = 50;
 
@@ -118,27 +190,35 @@ public class StringUtils {
         println(padToLeft(len, "test ing"));
         println(padToRight(len, '*', "test   ing"));
         println(padToLeft(len, '-', "t e s t i n g"));
-        println(padContinuous(len, ' ',"left", "right"));
-        println(padContinuous(len, '^', "l ef t", "r igh t"));
+        println(padJustify(len, ' ',"left", "right"));
+        println(padJustify(len, '^', "l ef t", "r igh t"));
         println(yieldToLength(len, "123"));
-        println(padContinuous(len, ' ',"testing"));
-        println(padContinuous(len,'_',"testing"));
+        println(padJustify(len, ' ',"testing"));
+        println(padJustify(len,'_',"testing"));
 
         println(fgBlue);
         String q;
         Scanner s = new Scanner(System.in);
-        do {
-            String[] arr = new String[]{"0th", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th"};
-//            String[] arr = new String[]{"one", "two", "three", "four", "five", "six", "seven", "eight", "nine"};
-            for (int i = 0; i < arr.length; i++) {
-                println(padContinuous(len, '_', Arrays.copyOfRange(arr, 0, i + 1)));
-            }
-            for (int i = arr.length - 2; i > -1; i--) {
-                println(padContinuous(len, '_', Arrays.copyOfRange(arr, 0, i + 1)));
-            }
-            q = s.nextLine();
-            len++;
-        } while(!q.equals("q"));
+//        do {
+        String[] arr = new String[]{"0th", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th"};
+//        arr = new String[]{"one", "two", "three", "four", "five", "six", "seven", "eight", "nine"};
+        for (int i = 0; i < arr.length; i++) {
+            println(padJustify(len, '_', Arrays.copyOfRange(arr, 0, i + 1)));
+        }
+        for (int i = arr.length - 2; i > -1; i--) {
+            println(padJustify(len, '_', Arrays.copyOfRange(arr, 0, i + 1)));
+        }
+//        q = s.nextLine();
+//        len++;
+//        } while(!q.equals("q"));
+
+        println(fgRed);
+        for (int i = 0; i < arr.length; i++) {
+            println(padCenter(len, '_', Arrays.copyOfRange(arr, 0, i + 1)));
+        }
+        for (int i = arr.length - 2; i > -1; i--) {
+            println(padCenter(len, '_', Arrays.copyOfRange(arr, 0, i + 1)));
+        }
     }
 }
 
