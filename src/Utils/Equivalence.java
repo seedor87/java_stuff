@@ -2,6 +2,9 @@ package Utils;
 
 import java.util.*;
 
+import static Utils.ListUtils.contains;
+import static Utils.ListUtils.distinct;
+
 public class Equivalence {
 
     public interface Comparator<T extends Object> {
@@ -79,45 +82,6 @@ public class Equivalence {
         return true;
     }
 
-
-    public static <E extends Comparable<? super E>> boolean contains(Collection<E> arr, E elem1) {
-        for (E elem2 : arr) {
-            if (eq(elem1, elem2)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static <E extends Comparable<? super E>> boolean contains(E[] arr, E elem1) {
-        for (E elem2 : arr) {
-            if (eq(elem1, elem2)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static <E extends Comparable<? super E>> boolean distinct(E... args) {
-        HashSet<E> set = new HashSet<>();
-        for(E elem : args) {
-            if(!set.add(elem)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public static <E extends Comparable<? super E>> boolean distinct(Collection<E> arr) {
-        HashSet<E> set = new HashSet<>();
-        for(E elem : arr) {
-            if(!set.add(elem)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     public static boolean cnfAnd(boolean first, boolean... rest) {
         if (rest.length < 1) {
             return first;
@@ -162,11 +126,11 @@ public class Equivalence {
     public static <T extends Object> void main(String[] args) {
         Character[] carr1 = {'a','b','c','d'};
         Character[] carr2 = {'d','c','b','a'};
-//        ConsolePrinting.println(equal(carr1, carr2));
+        ConsolePrinting.println(eq(carr1, carr2));
 
         String[] sarr1 = {"bob", "alex", "star", "cammi", "joey"};
         String[] sarr2 = {"joey", "cammi", "star", "alex", "bob"};
-//        ConsolePrinting.println(equal(sarr1, sarr2));
+        ConsolePrinting.println(eq(sarr1, sarr2));
 
 //        ConsolePrinting.println(equal("bob", "bob"));
 
@@ -178,9 +142,6 @@ public class Equivalence {
 
         ConsolePrinting.println(cnfAnd(true, true, false));
         ConsolePrinting.println(cnfOr(false, false, true));
-
-        ConsolePrinting.println(distinct(new Character[]{'a','b','c','d','e','f'}));
-        ConsolePrinting.println(distinct(1,2,3,4,5,6,1));
 
     }
 }
