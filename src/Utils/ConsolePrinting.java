@@ -90,17 +90,25 @@ public class ConsolePrinting {
         print("'");
     }
 
+    private static void printNull() {
+        print(fgRed, "NULL");
+    }
+
     public static <T> void print(T o) {
-        if(o.getClass().isArray()) {
-           printArray(o);
-        } else if (Tuple.class.isInstance(o)) {
-            printTuple(o);
-        } else if(Iterable.class.isInstance(o)) {
-            printIterable(o);
-        } else if (Character.class.isInstance(o)) {
-            printChar(o);
-        } else {
-            System.out.print(o);
+        try {
+            if (o.getClass().isArray()) {
+                printArray(o);
+            } else if (Tuple.class.isInstance(o)) {
+                printTuple(o);
+            } else if (Iterable.class.isInstance(o)) {
+                printIterable(o);
+            } else if (Character.class.isInstance(o)) {
+                printChar(o);
+            } else {
+                System.out.print(o);
+            }
+        } catch (NullPointerException ex) {
+            printNull();
         }
     }
 
@@ -183,13 +191,7 @@ public class ConsolePrinting {
         println();
    }
 
-    public static <T extends Object> void printVars(T... args) {
-        for (T var : args) {
-            println(var.getClass());
-        }
-    }
-
-    public static void main(String[] args) {
+   public static void main(String[] args) {
 
         printlnDelim(", ", 1, 47, true, 't', "bob", new Tuple<>(7, '8', "9"), new int[]{2,1,1,2});
         printlnDelim(" + ", Arrays.asList(1,2,3,4));
@@ -210,6 +212,15 @@ public class ConsolePrinting {
         println(fgBlue, bgYellow, new char[]{'a','b','c'});
         println(fgYellow, bgBlue, new int[]{'a','b','c'});
 
-        printVars("1", 2, '3');
+        Integer[] iarr = new Integer[5];
+        iarr[1] = 1;
+        iarr[3] = 3;
+        println(iarr);
+
+        char[] carr = new char[5];
+        carr[0] = 'a';
+        carr[2] = 'c';
+        carr[4] = 'e';
+        println(carr);
     }
 }

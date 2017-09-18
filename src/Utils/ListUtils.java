@@ -1,20 +1,20 @@
 package Utils;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.IntStream;
 
-import static Utils.ConsolePrinting.println;
+import static Utils.ConsolePrinting.*;
 
 public class ListUtils {
 
-    public static String[] join(String[]... params) {
+    public static Object[] join(Object[]... params) {
         int fullSize = 0;
-        for (String[] param : params) {
+        for (Object[] param : params) {
             fullSize += param.length;
         }
-        String[] result = new String[fullSize];
+        Object[] result = new Object[fullSize];
         int i = 0;
         int j = 0;
         int breaker = 0;
@@ -23,7 +23,7 @@ public class ListUtils {
                 break;
             }
             breaker = 0;
-            for(String[] param : params) {
+            for(Object[] param : params) {
                 try {
                     result[j] = param[i];
                     j++;
@@ -36,8 +36,8 @@ public class ListUtils {
         return result;
     }
 
-    public static List<String> join(List<String>... params) {
-        List<String> result = new ArrayList<>();
+    public static <E extends Object> List<Object> join(List<E>... params) {
+        List<Object> result = new ArrayList<>();
         int i = 0;
         int breaker = 0;
         while(true) {
@@ -45,7 +45,7 @@ public class ListUtils {
                 break;
             }
             breaker = 0;
-            for(List<String> param : params) {
+            for(List<E> param : params) {
                 try {
                     result.add(param.get(i));
                 } catch (IndexOutOfBoundsException e) {
@@ -61,12 +61,18 @@ public class ListUtils {
         String[] array1 = new String[]{"one", "two", "three"};
         String[] array2 = new String[]{"four", "five", "six"};
         String[] array3 = new String[]{"seven", "eight", "nine", "ten", "eleven"};
-        println(join(array1, array2, array3));
+        println(fgRed, join(array1, array2, array3));
 
         List<String> list1 = new ArrayList<>(Arrays.asList("one", "two", "three"));
         List<String> list2 = new ArrayList<>(Arrays.asList("four", "five", "six"));
         List<String> list3 = new ArrayList<>(Arrays.asList("seven", "eight", "nine", "ten", "eleven"));
-        println(join(list1, list2, list3));
+        println(fgBlue, join(list1, list2, list3));
+
+        println(fgGreen, join(
+                new Character[]{'a', 'b'},
+                new Character[]{'c', 'd'},
+                new Character[]{'e', 'f'}
+        ));
     }
 
 }
