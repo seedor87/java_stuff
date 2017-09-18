@@ -6,13 +6,21 @@ import Sorting.DualPivotQuickSort;
 import Sorting.QuickSort;
 import Utils.Primes;
 import Utils.Collections.Tuple;
+import javafx.util.Pair;
 
+import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static Utils.ConsolePrinting.*;
 import static Utils.ConsolePrinting.printlnDelim;
 import static Utils.Equivalence.eq;
+import static Utils.ListUtils.join;
+import static Utils.StringUtils.padCenter;
 
 public class TestBench {
 
@@ -100,5 +108,6 @@ public class TestBench {
 //                "testTest1"
 //        ).exe(100000000);
 
+//        println(padCenter(35, '_', new LinkedList<>(Arrays.asList("Bob", "Alex", "Star"))));
     }
 }

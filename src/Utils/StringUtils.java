@@ -1,5 +1,6 @@
 package Utils;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Scanner;
 
 import static Utils.ConsolePrinting.*;
@@ -55,6 +56,10 @@ public class StringUtils {
         return temp + s.toString();
     }
 
+    public static String padJustify(int n, char fill, Collection<Object> objs) {
+        return padJustify(n, fill, objs.toArray());
+    }
+
     public static String padJustify(int n, char fill, Object... objs) {
         if(objs.length < 2) {
             return padJustify(n, fill, "", objs[0], "");
@@ -64,68 +69,28 @@ public class StringUtils {
         for(Object obj : objs) {
             totObjsLen += obj.toString().length();
         }
-        int numSpacers = objs.length -1;
-        int avgSpacerLen = (n - totObjsLen) / numSpacers;
-        int index = 0;
+        int numSpacers = objs.length - 1;
         String[] arr = new String[numSpacers + objs.length];
+        int avgSpacerLen = (n - totObjsLen) / numSpacers;
+
+        int index = 0;
         for (Object obj : Arrays.copyOfRange(objs, 0, objs.length-1)) {
-            arr[index] = obj.toString();
-            index++;
-            arr[index] = yieldToLength(avgSpacerLen, fill);
-            index++;
+            arr[index++] = obj.toString();
+            arr[index++] = yieldToLength(avgSpacerLen, fill);
         }
         arr[index] = objs[objs.length-1].toString();
 
         int remaining = n - (totObjsLen + (avgSpacerLen * numSpacers));
-        if(numSpacers % 2 == 0) {
-            int i = 1;
-            int j = arr.length-2;
-            while(remaining > 0) {
-                if (remaining % 2 == 0) {
-                    arr[i] += fill;
-                    i += 2;
-                } else {
-                    arr[j] += fill;
-                    j -= 2;
-                }
-                remaining--;
-            }
-        } else {
-            int i = arr.length/2+2;
-            int j = arr.length/2-2;
-            while(remaining > 0) {
-                if (remaining % 2 == 0) {
-                    arr[i] += fill;
-                    i += 2;
-                } else {
-                    arr[j] += fill;
-                    j -= 2;
-                }
-                remaining--;
-            }
-        }
+        arr = fillRemainder(remaining, numSpacers, fill, arr);
+
         for(String str : arr) {
             sb.append(str);
         }
         return sb.toString();
     }
 
-    public static String padContinuousLeft(int n, char fill, Object... objs) {
-        if(objs.length > 1) {
-            int n_l = n / 2;
-            int n_r = (n % 2 == 0) ? n_l : n_l + 1;
-            if(objs.length % 2 == 0) {
-                return padContinuousLeft(n_l, fill, Arrays.copyOfRange(objs, 0, objs.length/2)) +
-                        padContinuousLeft(n_r, fill, Arrays.copyOfRange(objs, (objs.length/2), objs.length));
-            } else {
-                n_l = n_l - (objs[objs.length/2].toString().length() / 2);
-                n_r = n_r - (objs[objs.length/2].toString().length() / 2);
-                return padContinuousLeft(n_l, fill, Arrays.copyOfRange(objs, 0, objs.length/2)) +
-                        objs[(objs.length/2)].toString() +
-                        padContinuousLeft(n_r, fill, Arrays.copyOfRange(objs, (objs.length/2) + 1, objs.length));
-            }
-        }
-        return padJustify(n, fill, objs[0].toString());
+    public static String padCenter(int n, char fill, Collection<Object> objs) {
+        return padCenter(n, fill, objs.toArray());
     }
 
     public static String padCenter(int n, char fill, Object... objs) {
@@ -136,55 +101,59 @@ public class StringUtils {
         }
 
         int numSpacers = objs.length + 1;
-        int avgPerObj = (n - totObjsLen) / numSpacers;
         String[] arr = new String[numSpacers + objs.length];
+        int avgPerObj = (n - totObjsLen) / numSpacers;
+
         int index = 0;
-        arr[index] = yieldToLength(avgPerObj, fill);
-        index++;
+        arr[index++] = yieldToLength(avgPerObj, fill);
         for (Object obj : Arrays.copyOfRange(objs, 0, objs.length)) {
-            arr[index] = obj.toString();
-            index++;
-            arr[index] = yieldToLength(avgPerObj, fill);
-            index++;
+            arr[index++] = obj.toString();
+            arr[index++] = yieldToLength(avgPerObj, fill);
         }
 
         int remaining = n - (totObjsLen + (avgPerObj * numSpacers));
-        if(numSpacers % 2 == 0) {
-            int i = 1;
-            int j = arr.length-2;
-            while(remaining > 0) {
-                if (remaining % 2 == 0) {
-                    arr[j] += fill;
-                    j -= 2;
-                } else {
-                    arr[i] += fill;
-                    i += 2;
-                }
-                remaining--;
-            }
-        } else {
-            int i = arr.length/2+2;
-            int j = arr.length/2-2;
-            while(remaining > 0) {
-                if (remaining % 2 == 0) {
-                    arr[j] += fill;
-                    j -= 2;
-                } else {
-                    arr[i] += fill;
-                    i += 2;
-                }
-                remaining--;
-            }
-        }
+        arr = fillRemainder(remaining, numSpacers, fill, arr);
+
         for(String str : arr) {
             sb.append(str);
         }
         return sb.toString();
     }
 
-    public static void main(String[] args) {
-        int len = 50;
+    private static String[] fillRemainder(int remaining, int numSlots, char fill, String[] arr) {
+        if(numSlots % 2 == 0) {
+            int i = 1;
+            int j = arr.length-2;
+            while(remaining > 0) {
+                if (remaining % 2 == 0) {
+                    arr[i] += fill;
+                    i += 2;
+                } else {
+                    arr[j] += fill;
+                    j -= 2;
+                }
+                remaining--;
+            }
+        } else {
+            int i = (arr.length/2)+2;
+            int j = (arr.length/2)-2;
+            while(remaining > 0) {
+                if (remaining % 2 == 0) {
+                    arr[i] += fill;
+                    i += 2;
+                } else {
+                    arr[j] += fill;
+                    j -= 2;
+                }
+                remaining--;
+            }
+        }
+        return arr;
+    }
 
+    public static void main(String[] args) {
+
+        int len = 60;
         print(fgBlack.str());
         println(padToRight(len, "testing"));
         println(padToLeft(len, "test ing"));
@@ -196,29 +165,19 @@ public class StringUtils {
         println(padJustify(len, ' ',"testing"));
         println(padJustify(len,'_',"testing"));
 
-        println(fgBlue);
-        String q;
-        Scanner s = new Scanner(System.in);
-//        do {
         String[] arr = new String[]{"0th", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th"};
 //        arr = new String[]{"one", "two", "three", "four", "five", "six", "seven", "eight", "nine"};
         for (int i = 0; i < arr.length; i++) {
-            println(padJustify(len, '_', Arrays.copyOfRange(arr, 0, i + 1)));
+            println(fgBlue, padJustify(len, '_', Arrays.copyOfRange(arr, 0, i + 1)));
+            println(fgRed, padCenter(len, '_', Arrays.copyOfRange(arr, 0, i + 1)));
+            println();
         }
-        for (int i = arr.length - 2; i > -1; i--) {
-            println(padJustify(len, '_', Arrays.copyOfRange(arr, 0, i + 1)));
-        }
-//        q = s.nextLine();
-//        len++;
-//        } while(!q.equals("q"));
 
-        println(fgRed);
-        for (int i = 0; i < arr.length; i++) {
-            println(padCenter(len, '_', Arrays.copyOfRange(arr, 0, i + 1)));
-        }
-        for (int i = arr.length - 2; i > -1; i--) {
-            println(padCenter(len, '_', Arrays.copyOfRange(arr, 0, i + 1)));
-        }
+//        for (int i = arr.length - 2; i > -1; i--) {
+//            println(fgBlue, padJustify(len, '_', Arrays.copyOfRange(arr, 0, i + 1)));
+//            println(fgRed, padCenter(len, '_', Arrays.copyOfRange(arr, 0, i + 1)));
+//            println();
+//        }
     }
 }
 
