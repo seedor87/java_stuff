@@ -102,5 +102,26 @@ public class TestBench {
 //        ).exe(100000000);
 
 //        println(padCenter(35, '_', new LinkedList<>(Arrays.asList("Bob", "Alex", "Star"))));
+
+        int x = 0;
+        int z = 0;
+
+        int y = 1; // offset to start at first step;
+
+        for (int i = 0 ; i < x; i++) {  // basically z = x
+            z++;
+        }
+
+        while(z > 0) {
+            if(z != 0) {
+                y--;
+                z--;
+            }
+            if(z != 0) {
+                y++;
+                z--;
+            }
+        }
+        println(y); // y <- y;
     }
 }

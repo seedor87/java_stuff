@@ -34,7 +34,7 @@ public class HW1 {
     static final int CUST_LOW = 1140;
     static final int CUST_HI = 1180;
     static final double PRICE_MULT = 1.1;
-    static final int MAX_ITEMS = 70;
+    static final int MAX_ITEMS = 100;
     static final int WEEKEND_INCREASE = 50;
     //date format for day iteration
     static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -106,7 +106,7 @@ public class HW1 {
     public static void write(Object... args) {
 
         /** Uncomment to print each entry */
-        // println(args);
+//         println(args);
 
         total_items_bought += 1; // count num elements by tracking each atomic entry (or line)
         String delim = "";
