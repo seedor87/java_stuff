@@ -1,5 +1,6 @@
 package Utils;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 import static Utils.ListUtils.contains;
@@ -64,7 +65,31 @@ public class Equivalence {
         return elem1.compareTo(elem2) != 0;
     }
 
-    public static <E extends Comparable<? super E>> boolean eq(List<E> arr1, List<E> arr2) {
+    public static boolean eq(Object a, Object b) {
+        if(!a.getClass().equals(b.getClass())) {
+            return false;
+        }
+        if (a.getClass().isPrimitive()) {
+            return a == b;
+        }
+        if (a.getClass().isArray()) {
+            if(Array.getLength(a) != Array.getLength(b)) {
+                return false;
+            }
+            for(int i = 0; i < Array.getLength(a); i++) {
+                if(!eq(Array.get(a, i), Array.get(b, i))) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        if(a.getClass().isInstance(Collection.class)) {
+            return eq((Collection) a, (Collection) b);
+        }
+        return a.equals(b);
+    }
+
+    public static <E extends Comparable<? super E>> boolean eq(Collection<E> arr1, Collection<E> arr2) {
         for (E elem : arr1) {
             if (!contains(arr2, elem)) {
                 return false;

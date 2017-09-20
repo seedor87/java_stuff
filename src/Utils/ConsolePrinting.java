@@ -49,8 +49,24 @@ public class ConsolePrinting {
         return sb.toString();
     }
 
-    private static <T> void printArray(T arr) {
+    private static <T> void printMap(T obj) {
         print("[");
+        String delim = "";
+        for(Object o : ((Map) obj).entrySet()) {
+            print(delim);
+            Map.Entry entry = (Map.Entry) o;
+            print("<");
+            print(entry.getKey());
+            print(" = ");
+            print(entry.getValue());
+            print(">");
+            delim = ",\n";
+        }
+        print("]");
+    }
+
+    private static <T> void printArray(T arr) {
+        print("{");
         String delim = "";
         for (int i = 0; i < Array.getLength(arr); i++) {
             Object obj = Array.get(arr, i);
@@ -58,11 +74,11 @@ public class ConsolePrinting {
             print(obj);
             delim = ", ";
         }
-        print("]");
+        print("}");
     }
 
     private static <T> void printTuple(T tup) {
-        print("<");
+        print("(");
         String delim = "";
         for (int i = 0; i < Tuple.class.cast(tup).length; i++) {
             Object obj = Tuple.class.cast(tup).get(i);
@@ -70,18 +86,18 @@ public class ConsolePrinting {
             print(obj);
             delim = ", ";
         }
-        print(">");
+        print(")");
     }
 
     private static <T> void printIterable(T col) {
-        String delim = "{";
+        print("[");
+        String delim = "";
         for(Object elem: (Iterable<? extends Object>) col) {
             print(delim);
             print(elem);
             delim = ", ";
         }
-        delim = delim.equals("{") ? "{}" : "}";
-        print(delim);
+        print("]");
     }
 
     private static <T> void printChar(T c) {
@@ -98,6 +114,8 @@ public class ConsolePrinting {
         try {
             if (o.getClass().isArray()) {
                 printArray(o);
+            } else if (Map.class.isInstance(o)) {
+                printMap(o);
             } else if (Tuple.class.isInstance(o)) {
                 printTuple(o);
             } else if (Iterable.class.isInstance(o)) {

@@ -11,7 +11,7 @@ import static Utils.Equivalence.*;
 
 public class ListUtils {
 
-    public static <E extends Comparable<? super E>> boolean contains(Collection<E> arr, E elem1) {
+    public static <E extends Comparable<? super E>> boolean contains(Iterable<E> arr, E elem1) {
         for (E elem2 : arr) {
             if (eq(elem1, elem2)) {
                 return true;
