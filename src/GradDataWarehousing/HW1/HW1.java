@@ -1,5 +1,7 @@
 package GradDataWarehousing.HW1;
 
+// 
+
 import Utils.Timers.AbstractTimer;
 import Utils.Timers.SYSTimer;
 import Utils.Collections.Tuple;
@@ -20,15 +22,15 @@ import static Utils.ConsolePrinting.*;
 public class HW1 {
 
     static String outputPath = "." + File.separatorChar + "output.txt";
-    static String allProductsPath = "C:\\Users\\rseedorf\\IdeaProjects\\java_stuff\\src\\GradDataWarehousing\\HW1\\myProducts";
+    static String allProductsPath = "C:\\Users\\joe\\IdeaProjects\\java_stuff\\src\\GradDataWarehousing\\HW1\\myProducts";
 
     static final String START_DATE_STRING = "2017-01-01";
     static final String END_DATE_STRING = "2018-01-01";
-    static final int CUST_LOW = 1140;
-    static final int CUST_HI = 1180;
-    static final double PRICE_MULT = 1.1;
-    static final int MAX_ITEMS = 70;
+    static final int CUST_LOW = 980;
+    static final int CUST_HI = 1020;
     static final int WEEKEND_INCREASE = 50;
+    static final double PRICE_MULT = 1.1;
+    static final int MAX_ITEMS = 60;
 
     static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     static ArrayList<Tuple> allMyProdcuts = new ArrayList<>();
