@@ -1,6 +1,6 @@
 package GradDataWarehousing.HW1;
 
-// 
+//
 
 import Utils.Timers.AbstractTimer;
 import Utils.Timers.SYSTimer;
