@@ -1,6 +1,6 @@
 package GradDataWarehousing.HW1;
 
-//
+// Team of Bob Seedorf and Joe Alacqua
 
 import Utils.Timers.AbstractTimer;
 import Utils.Timers.SYSTimer;
