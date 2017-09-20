@@ -2,7 +2,6 @@ package GradDataWarehousing.HW1;
 
 import Utils.Timers.AbstractTimer;
 import Utils.Timers.SYSTimer;
-import Utils.Collections.Tuple;
 
 import java.io.*;
 import java.text.NumberFormat;
@@ -39,13 +38,13 @@ public class HW1 {
     //date format for day iteration
     static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     // the list of all products created at start to easily index for random sku-price from all
-    static ArrayList<Tuple> allMyProdcuts = new ArrayList<>();
+    static ArrayList<SkuPrice> allMyProdcuts = new ArrayList<>();
     // vars holding the runtime counts for metrics
     static int total_items_bought = 0;
     static int total_customers = 0;
     static double total_sales_USD = 0;
     // map for pairing <sku and price, count>
-    static final ConcurrentMap<Tuple, AtomicInteger> skuPriceMapCount = new ConcurrentHashMap<>();
+    static final ConcurrentMap<SkuPrice, AtomicInteger> skuPriceMapCount = new ConcurrentHashMap<>();
     // local variables for specific tasks
     static BufferedWriter writer;
     static LocalDate start;
@@ -64,9 +63,9 @@ public class HW1 {
         }
 
         public int compare(Object pairA, Object pairB) {
-            AtomicInteger countA = (AtomicInteger) map.get((Tuple) pairA);
-            AtomicInteger countB = (AtomicInteger) map.get((Tuple) pairB);
-            return new Integer(countB.intValue()).compareTo(countA.intValue());
+            AtomicInteger countA = (AtomicInteger) map.get((SkuPrice) pairA);
+            AtomicInteger countB = (AtomicInteger) map.get((SkuPrice) pairB);
+            return (countB.intValue() < countA.intValue()) ? -1 : 1;
         }
     }
 
@@ -123,10 +122,10 @@ public class HW1 {
     }
 
     /**
-     * Method to update the parameterized Tuple-Key Count-Value entry in the sku count map.
+     * Method to update the parameterized SkuPrice-key Count-Value entry in the sku count map.
      * @param sku
      */
-    public static void updateSkuMap(Tuple sku) {
+    public static void updateSkuMap(SkuPrice sku) {
         skuPriceMapCount.putIfAbsent(sku, new AtomicInteger(0));
         skuPriceMapCount.get(sku).incrementAndGet();
     }
@@ -134,16 +133,16 @@ public class HW1 {
     /**
      * Method to retrieve one (1) random item from the pre-fabbed list of all products.
      */
-    public static Tuple getRandomItem() {
+    public static SkuPrice getRandomItem() {
         Random rand = new Random();
         int randomIndex = rand.nextInt(allMyProdcuts.size());
         return allMyProdcuts.get(randomIndex);
     }
 
     /**
-     * Method to retrieve one (1) random item from the parameterized list of Tuples
+     * Method to retrieve one (1) random item from the parameterized list of SkuPrices
      */
-    public static Tuple getRandomItem(Tuple[] arr) {
+    public static SkuPrice getRandomItem(SkuPrice[] arr) {
         return arr[new Random().nextInt(arr.length)];
     }
 
@@ -171,7 +170,10 @@ public class HW1 {
             BufferedReader br = new BufferedReader(new InputStreamReader(fs));
             String line;
             while((line = br.readLine()) != null) {
-                allMyProdcuts.add(new Tuple(line.split(", ")));
+                String[] pair = line.split(", ");
+                int sku = Integer.parseInt(pair[0]);
+                double price = Double.parseDouble(pair[1]);
+                allMyProdcuts.add(new SkuPrice(sku, price));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -209,10 +211,10 @@ public class HW1 {
                     int itemsCount = 0; // count items per single given customer
                     boolean fallThrough = false;    // boolean switch to fall through execution if/when items count >= numItems
                     if (!fallThrough && randPct() <= 70) {      // if random pct is less than 70%
-                        Tuple randMilk = getRandomItem(MILKS);  // get random milk tuple
-                        sku = (Integer) randMilk.getZero();     // parse sku out of milk tuple
+                        SkuPrice randMilk = getRandomItem(MILKS);  // get random milk SkuPrice
+                        sku = randMilk.getSku();     // parse sku out of milk SkuPrice
                         updateSkuMap(randMilk);
-                        price = roundTwoDecimal((Double) randMilk.getOne() * PRICE_MULT); // parse price out of file and x by factor
+                        price = roundTwoDecimal(randMilk.getPrice() * PRICE_MULT); // parse price out of file and x by factor
                         total_sales_USD += price;               // increment total sales with price
                         write(date, custCount, itemsCount, sku, price); // write to file
                         itemsCount++;                           // increase itemsCount
@@ -220,10 +222,10 @@ public class HW1 {
                             fallThrough = true;                 //...then fallthrough to next customer
                         }
                         if (!fallThrough && randPct() <= 50) {
-                            Tuple randCereal = getRandomItem(CEREALS);
-                            sku = (Integer) randCereal.getZero();
+                            SkuPrice randCereal = getRandomItem(CEREALS);
+                            sku = randCereal.getSku();
                             updateSkuMap(randCereal);
-                            price = roundTwoDecimal((Double) randCereal.getOne() * PRICE_MULT);
+                            price = roundTwoDecimal(randCereal.getPrice() * PRICE_MULT);
                             total_sales_USD += price;
                             write(date, custCount, itemsCount, sku, price);
                             itemsCount++;
@@ -233,10 +235,10 @@ public class HW1 {
                         }
                     } else {
                         if (!fallThrough && randPct() <= 5) {
-                            Tuple randCereal = getRandomItem(CEREALS);
-                            sku = (Integer) randCereal.getZero();
+                            SkuPrice randCereal = getRandomItem(CEREALS);
+                            sku = randCereal.getSku();
                             updateSkuMap(randCereal);
-                            price = roundTwoDecimal((Double) randCereal.getOne() * PRICE_MULT);
+                            price = roundTwoDecimal(randCereal.getPrice() * PRICE_MULT);
                             total_sales_USD += price;
                             write(date, custCount, itemsCount, sku, price);
                             itemsCount++;
@@ -247,10 +249,10 @@ public class HW1 {
                     }
 
                     if (!fallThrough && randPct() <= 20) {
-                        Tuple randBaby = getRandomItem(BABY_FOODS);
-                        sku = (Integer) randBaby.getZero();
+                        SkuPrice randBaby = getRandomItem(BABY_FOODS);
+                        sku = randBaby.getSku();
                         updateSkuMap(randBaby);
-                        price = roundTwoDecimal((Double) randBaby.getOne() * PRICE_MULT);
+                        price = roundTwoDecimal(randBaby.getPrice() * PRICE_MULT);
                         total_sales_USD += price;
                         write(date, custCount, itemsCount, sku, price);
                         itemsCount++;
@@ -258,10 +260,10 @@ public class HW1 {
                             fallThrough = true;
                         }
                         if (!fallThrough && randPct() <= 80) {
-                            Tuple randDiaper = getRandomItem(DIAPERS);
-                            sku = (Integer) randDiaper.getZero();
+                            SkuPrice randDiaper = getRandomItem(DIAPERS);
+                            sku = randDiaper.getSku();
                             updateSkuMap(randDiaper);
-                            price = roundTwoDecimal((Double) randDiaper.getOne() * PRICE_MULT);
+                            price = roundTwoDecimal(randDiaper.getPrice() * PRICE_MULT);
                             total_sales_USD += price;
                             write(date, custCount, itemsCount, sku, price);
                             itemsCount++;
@@ -271,10 +273,10 @@ public class HW1 {
                         }
                     } else {
                         if (!fallThrough && randPct() <= 1) {
-                            Tuple randDiaper = getRandomItem(DIAPERS);
-                            sku = (Integer) randDiaper.getZero();
+                            SkuPrice randDiaper = getRandomItem(DIAPERS);
+                            sku = randDiaper.getSku();
                             updateSkuMap(randDiaper);
-                            price = roundTwoDecimal((Double) randDiaper.getOne() * PRICE_MULT);
+                            price = roundTwoDecimal(randDiaper.getPrice() * PRICE_MULT);
                             total_sales_USD += price;
                             write(date, custCount, itemsCount, sku, price);
                             itemsCount++;
@@ -285,10 +287,10 @@ public class HW1 {
                     }
 
                     if (!fallThrough && randPct() <= 10) {
-                        Tuple randPeanut = getRandomItem(PEANUT_BUTTERS);
-                        sku = (Integer) randPeanut.getZero();
+                        SkuPrice randPeanut = getRandomItem(PEANUT_BUTTERS);
+                        sku = randPeanut.getSku();
                         updateSkuMap(randPeanut);
-                        price = roundTwoDecimal((Double) randPeanut.getOne() * PRICE_MULT);
+                        price = roundTwoDecimal(randPeanut.getPrice() * PRICE_MULT);
                         total_sales_USD += price;
                         write(date, custCount, itemsCount, sku, price);
                         itemsCount++;
@@ -296,10 +298,10 @@ public class HW1 {
                             fallThrough = true;
                         }
                         if (!fallThrough && randPct() <= 90) {
-                            Tuple randJJ = getRandomItem(JAM_JELLIES);
-                            sku = (Integer) randJJ.getZero();
+                            SkuPrice randJJ = getRandomItem(JAM_JELLIES);
+                            sku = randJJ.getSku();
                             updateSkuMap(randJJ);
-                            price = roundTwoDecimal((Double) randJJ.getOne() * PRICE_MULT);
+                            price = roundTwoDecimal(randJJ.getPrice() * PRICE_MULT);
                             total_sales_USD += price;
                             write(date, custCount, itemsCount, sku, price);
                             itemsCount++;
@@ -309,10 +311,10 @@ public class HW1 {
                         }
                     } else {
                         if (!fallThrough && randPct() <= 5) {
-                            Tuple randJJ = getRandomItem(JAM_JELLIES);
-                            sku = (Integer) randJJ.getZero();
+                            SkuPrice randJJ = getRandomItem(JAM_JELLIES);
+                            sku = randJJ.getSku();
                             updateSkuMap(randJJ);
-                            price = roundTwoDecimal((Double) randJJ.getOne() * PRICE_MULT);
+                            price = roundTwoDecimal(randJJ.getPrice() * PRICE_MULT);
                             total_sales_USD += price;
                             write(date, custCount, itemsCount, sku, price);
                             itemsCount++;
@@ -323,10 +325,10 @@ public class HW1 {
                     }
 
                     if(!fallThrough && randPct() < 50) {
-                        Tuple randBread = getRandomItem(BREADS);
-                        sku = (Integer) randBread.getZero();
+                        SkuPrice randBread = getRandomItem(BREADS);
+                        sku = randBread.getSku();
                         updateSkuMap(randBread);
-                        price = roundTwoDecimal((Double) randBread.getOne() * PRICE_MULT);
+                        price = roundTwoDecimal(randBread.getPrice() * PRICE_MULT);
                         total_sales_USD += price;
                         write(date, custCount, itemsCount, sku, price);
                         itemsCount++;
@@ -337,10 +339,10 @@ public class HW1 {
 
                     if(!fallThrough) {
                         for ( ; itemsCount < numItems; itemsCount++) {
-                            Tuple randAll = getRandomItem();
-                            sku = Integer.parseInt((String) randAll.getZero());
+                            SkuPrice randAll = getRandomItem();
+                            sku = randAll.getSku();
                             updateSkuMap(randAll);
-                            price = roundTwoDecimal(Double.parseDouble((String) randAll.getOne()) * PRICE_MULT);
+                            price = roundTwoDecimal(randAll.getPrice() * PRICE_MULT);
                             total_sales_USD += price;
                             write(date, custCount, itemsCount, sku, price);
                         }
@@ -364,7 +366,7 @@ public class HW1 {
         println(fgGreen, "\nDONE", timer, "\n");
 
         // sort map of <sku-price, counts> by frequency (count)
-        Map<Tuple, AtomicInteger> sortedSkuCounts = new TreeMap(new SkuMapComparator(skuPriceMapCount));
+        Map<SkuPrice, AtomicInteger> sortedSkuCounts = new TreeMap(new SkuMapComparator(skuPriceMapCount));
         sortedSkuCounts.putAll(skuPriceMapCount);
 
         // all of this nonsense prints the results to answer the questions in the assignment
@@ -380,14 +382,17 @@ public class HW1 {
         println(yieldToLength(paddingSize, '='));
         println(padJustify(paddingSize, ' ', " Rank |   SKU    |  Price ", "Count "));
         int rank = 1;
-        for (Object skuPrice : Arrays.copyOfRange(sortedSkuCounts.keySet().toArray(), 0, 10)) {
-           println(padJustify(
+        for (Map.Entry<SkuPrice, AtomicInteger> entry : sortedSkuCounts.entrySet()) {
+            if( rank > 10 ) {
+                break;
+            }
+            println(padJustify(
                    paddingSize,
                    fill,
-                   padToRight(5, rank) + " | " + ((Tuple) skuPrice).getZero() + " | ($" + ((Tuple) skuPrice).getOne() + ") ",
-                   " " + NumberFormat.getInstance().format(sortedSkuCounts.get(skuPrice)))
-           );
-           rank++;
+                   padToRight(5, rank) + " | " + entry.getKey().getSku() + " | ($" + entry.getKey().getPrice() + ") ",
+                   " " + NumberFormat.getInstance().format(entry.getValue().intValue()))
+            );
+            rank++;
         }
         System.exit(0);
     }
