@@ -165,7 +165,8 @@ public class StringUtils {
         println(padJustify(len, ' ',"testing"));
         println(padJustify(len,'_',"testing"));
 
-        String[] arr = new String[]{"0th", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th"};
+        String[] arr = new String[]{"0th", "1st", "2nd", "3rd", "4th", "5th", "6th",
+                "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"};
 //        arr = new String[]{"one", "two", "three", "four", "five", "six", "seven", "eight", "nine"};
         for (int i = 0; i < arr.length; i++) {
             println(fgBlue, padJustify(len, '_', Arrays.copyOfRange(arr, 0, i + 1)));

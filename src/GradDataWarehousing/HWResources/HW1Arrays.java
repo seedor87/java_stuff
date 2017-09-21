@@ -1,8 +1,9 @@
-package GradDataWarehousing.HW1;
+package GradDataWarehousing.HWResources;
 
-public class HW1Resources {
 
-    static final SkuPrice[] MILKS = {
+public class HW1Arrays {
+
+    public static final SkuPrice[] MILKS = {
             new SkuPrice(42355001, 3.69),
             new SkuPrice(42356001, 1.89),
             new SkuPrice(42357001, 3.69),
@@ -11,7 +12,7 @@ public class HW1Resources {
             new SkuPrice(42360001, 1.69)
     };
 
-    static final SkuPrice[] CEREALS = {
+    public static final SkuPrice[] CEREALS = {
             new SkuPrice(42091001,6.99),
             new SkuPrice(42099001,2.5),
             new SkuPrice(42336001,2.49),
@@ -107,7 +108,7 @@ public class HW1Resources {
             new SkuPrice(44131001,5.49)
     };
 
-    static final SkuPrice[] BABY_FOODS= {
+    public static final SkuPrice[] BABY_FOODS= {
             new SkuPrice(43253001, 2.79),
             new SkuPrice(43254001, 2.79),
             new SkuPrice(43255001, 1.79),
@@ -272,7 +273,7 @@ public class HW1Resources {
             new SkuPrice(44046001, 1.29)
     };
 
-    static final SkuPrice[] DIAPERS = {
+    public static final SkuPrice[] DIAPERS = {
             new SkuPrice(42149001, 7.99),
             new SkuPrice(42150001, 14.99),
             new SkuPrice(42151001, 16.99),
@@ -357,7 +358,7 @@ public class HW1Resources {
             new SkuPrice(43218001, 21.99)
     };
 
-    static final SkuPrice[] PEANUT_BUTTERS = {
+    public static final SkuPrice[] PEANUT_BUTTERS = {
             new SkuPrice(42249001, 0.99),
             new SkuPrice(42251001, 1.48),
             new SkuPrice(42252001, 3.62),
@@ -380,52 +381,17 @@ public class HW1Resources {
             new SkuPrice(44052001, 2.78)
     };
 
-    static final SkuPrice[] JAM_JELLIES = {
+    public static final SkuPrice[] JAM_JELLIES = {
             new SkuPrice(42311001, 2.29),
             new SkuPrice(42312001, 3.09),
             new SkuPrice(42313001, 2.29),
             new SkuPrice(42314001, 2.14)
     };
 
-    static final SkuPrice[] BREADS = {
+    public static final SkuPrice[] BREADS = {
             new SkuPrice(44122001, 3.49),
             new SkuPrice(44123001, 3.49),
             new SkuPrice(44124001, 3.49),
             new SkuPrice(44125001, 3.49)
     };
-}
-
-class SkuPrice {
-    private int sku;
-    private double price;
-
-    public SkuPrice(int sku, double price) {
-        this.sku = sku;
-        this.price = price;
-    }
-
-    public int getSku() {
-        return this.sku;
-    }
-
-    public double getPrice() {
-        return this.price;
-    }
-
-    @Override
-    public String toString() {
-        return this.sku + " " + this.price;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return this.sku == ((SkuPrice) obj).getSku() &&
-                this.price == ((SkuPrice) obj).getPrice();
-    }
-
-    @Override
-    public int hashCode() {
-        return this.sku;
-    }
-
 }
