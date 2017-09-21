@@ -5,7 +5,7 @@ import Utils.Timers.AbstractTimer;
 import Utils.Timers.SYSTimer;
 
 import java.io.*;
-import java.text.ParseException;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -15,24 +15,20 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static Utils.ConsolePrinting.*;
+import static Utils.StringUtils.padCenter;
+import static Utils.StringUtils.padJustify;
+import static Utils.StringUtils.padToRight;
 
 public class HW2 {
 
-    static String outputPath = "." + File.separatorChar + "output2.txt"; //results go here
-    static String inputPath = "." + File.separatorChar + "output.txt";   // start from this file
-    static String allProductsFilePath = "." +
-            File.separatorChar + "src" +
-            File.separatorChar + "GradDataWarehousing" +
-            File.separatorChar + "HW1" +
-            File.separatorChar + "myProducts";  // pre-processed list of skus and prices
-
     static final String DELIM = " \\| ";
-    static final int NUM_WEEKS = 2;
+    static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     static final ConcurrentMap<SkuPrice, AtomicInteger> skuPriceMapCount = new ConcurrentHashMap<>();
+    static final String OUTPUT_PATH = "." + File.separatorChar + "output2.txt"; //results go here
+    static final String INPUT_PATH = "." + File.separatorChar + "output1.txt";   // start from this file
+    static final int NUM_WEEKS = 2;
 
     static String start_date_string;
-    static String end_date_string;
-    static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     static BufferedReader reader;
     static BufferedWriter writer;
     static LocalDate start;
@@ -58,48 +54,97 @@ public class HW2 {
         skuPriceMapCount.get(sku).incrementAndGet();
     }
 
+    public static void write(Object... args) {
+
+        /** Uncomment to print each entry */
+//         println(args);
+
+        String delim = "";
+        try {
+            for (Object o : args) {
+                writer.write(delim);
+                writer.write(o.toString());
+                delim = " | ";
+            }
+            writer.write("\n");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) {
 
+        println(fgPurple, "working...");
+        int paddingSize = 30;
+        char fill = '*';
+        printlnDelim("\n",
+                padJustify(paddingSize, fill,   "INPUT_PATH ",    " " + INPUT_PATH),
+                padJustify(paddingSize, fill,   "OUTPUT_PATH ",   " " + OUTPUT_PATH),
+                padJustify(paddingSize, fill,   "NUM_WEEKS ",     " " + NUM_WEEKS)
+        );
         AbstractTimer timer = new SYSTimer(AbstractTimer.TimeUnit.SECONDS);
         timer.start();
 
         try {
-            writer = new BufferedWriter(new FileWriter(outputPath));
-            reader = new BufferedReader(new FileReader(inputPath));
+            writer = new BufferedWriter(new FileWriter(OUTPUT_PATH));
+            reader = new BufferedReader(new FileReader(INPUT_PATH));
             String line = reader.readLine();
-            start_date_string = line.split("\\|")[0];
+            start_date_string = line.split(DELIM)[0];
             startDate = formatter.parse(start_date_string);
             start = startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
             end = start.plusDays(NUM_WEEKS * 7);
-
+            String dateString;
             for (LocalDate date = start; date.isBefore(end); ) {
                 line = reader.readLine();
                 String[] fields = line.split(DELIM);
-                end_date_string = fields[0];
+                dateString = fields[0];
                 int sku = Integer.parseInt(fields[3]);
                 double price = Double.parseDouble(fields[4]);
                 updateSkuMap(new SkuPrice(sku, price));
-                date = formatter.parse(end_date_string).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                date = formatter.parse(dateString).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
             }
 
             // sort map of <sku-price, avg> by avg count per day;
-            Map<SkuPrice, AtomicInteger> sortedSkuCounts = new TreeMap(new SkuMapComparator(skuPriceMapCount));
-            for(Map.Entry<SkuPrice, AtomicInteger> entry : skuPriceMapCount.entrySet()) {
+            Map<SkuPrice, Integer> sortedSkuCounts = new TreeMap(new SkuMapComparator(skuPriceMapCount));
+            for (Map.Entry<SkuPrice, AtomicInteger> entry : skuPriceMapCount.entrySet()) {
                 SkuPrice skuPrice = entry.getKey();
-                AtomicInteger avgCountPerDay = new AtomicInteger(entry.getValue().intValue() / (NUM_WEEKS * 7));
+                int avgCountPerDay = entry.getValue().intValue() / (NUM_WEEKS * 7);
                 sortedSkuCounts.put(skuPrice, avgCountPerDay);
+            }
+
+            try {
+                write("sku", "price", "avg/day");
+                for (Map.Entry<SkuPrice, Integer> entry : sortedSkuCounts.entrySet()) {
+                    write(entry.getKey().getSku(), entry.getKey().getPrice(), entry.getValue());
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            } finally {
+                writer.flush();
+                writer.close();
             }
 
             timer.stop();
             println(fgGreen, "DONE", timer);
 
-            println(sortedSkuCounts);
-
-        } catch (IOException ex) {
+            println(fgYellow);
+            println(padJustify(paddingSize, ' ', "Rank", "   Sku   ", "    Price", padToRight(10, ' ', "  Avg/Day")));
+            int rank = 1;
+            for (Map.Entry<SkuPrice, Integer> entry : sortedSkuCounts.entrySet()) {
+                if( rank > 10 ) {
+                    break;
+                }
+                println(padCenter(
+                        paddingSize,
+                        ' ',
+                        padToRight(2, rank) + " | " + entry.getKey().getSku() + " | ($" + entry.getKey().getPrice() + ") ",
+                        "| " + padToRight(5, ' ', NumberFormat.getInstance().format(entry.getValue().intValue())))
+                );
+                rank++;
+            }
+            System.exit(0);
+        } catch (Exception ex) {
             ex.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
         }
-
     }
 }
