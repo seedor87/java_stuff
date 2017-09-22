@@ -1,16 +1,15 @@
 package Utils;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Scanner;
 
 import static Utils.ConsolePrinting.*;
 public class StringUtils {
 
-    public static String yieldToLength(int n) {
-        return yieldToLength(n, ' ');
+    public static String padToLength(int len) {
+        return padToLength(len, ' ');
     }
 
-    public static String yieldToLength(int n, char fill) {
+    public static String padToLength(int n, char fill) {
         StringBuilder ret = new StringBuilder();
         for(int i = 0; i < n; i++) {
             ret.append(fill);
@@ -18,51 +17,51 @@ public class StringUtils {
         return ret.toString();
     }
 
-    public static String yieldToLength(int n, String fill) {
+    public static String padToLength(int len, String fill) {
         StringBuilder ret = new StringBuilder();
-        while(ret.length() < n) {
+        while(ret.length() < len) {
            ret.append(fill);
-            if(ret.length() >= n-fill.length()) {
-                ret.append(fill.substring(0, n-ret.length()));
+            if(ret.length() >= len-fill.length()) {
+                ret.append(fill.substring(0, len-ret.length()));
             }
         }
         return ret.toString();
     }
 
-    public static String padToLeft(int n, Object s) {
-        return padToLeft(n, ' ', s);
+    public static String padToLeft(int len, Object s) {
+        return padToLeft(len, ' ', s);
     }
-    public static String padToRight(int n, Object s) {
-        return padToRight(n, ' ', s);
+    public static String padToRight(int len, Object s) {
+        return padToRight(len, ' ', s);
     }
 
-    public static String padToLeft(int n, char fill, Object s) {
-        String temp = yieldToLength(n - s.toString().length(), fill);
+    public static String padToLeft(int len, char fill, Object s) {
+        String temp = padToLength(len - s.toString().length(), fill);
         return s.toString() + temp;
     }
 
-    public static String padToRight(int n, char fill, Object s) {
-        String temp = yieldToLength(n - s.toString().length(), fill);
+    public static String padToRight(int len, char fill, Object s) {
+        String temp = padToLength(len - s.toString().length(), fill);
         return temp + s.toString();
     }
 
-    public static String padToLeft(int n, String fill, Object s) {
-        String temp = yieldToLength(n - s.toString().length(), fill);
+    public static String padToLeft(int len, String fill, Object s) {
+        String temp = padToLength(len - s.toString().length(), fill);
         return s.toString() + temp;
     }
 
-    public static String padToRight(int n, String fill, Object s) {
-        String temp = yieldToLength(n - s.toString().length(), fill);
+    public static String padToRight(int len, String fill, Object s) {
+        String temp = padToLength(len - s.toString().length(), fill);
         return temp + s.toString();
     }
 
-    public static String padJustify(int n, char fill, Collection<Object> objs) {
-        return padJustify(n, fill, objs.toArray());
+    public static String padJustify(int len, char fill, Collection<Object> objs) {
+        return padJustify(len, fill, objs.toArray());
     }
 
-    public static String padJustify(int n, char fill, Object... objs) {
+    public static String padJustify(int len, char fill, Object... objs) {
         if(objs.length < 2) {
-            return padJustify(n, fill, "", objs[0], "");
+            return padJustify(len, fill, "", objs[0], "");
         }
         StringBuilder sb = new StringBuilder();
         int totObjsLen = 0;
@@ -71,16 +70,16 @@ public class StringUtils {
         }
         int numSpacers = objs.length - 1;
         String[] arr = new String[numSpacers + objs.length];
-        int avgSpacerLen = (n - totObjsLen) / numSpacers;
+        int avgSpacerLen = (len - totObjsLen) / numSpacers;
 
         int index = 0;
         for (Object obj : Arrays.copyOfRange(objs, 0, objs.length-1)) {
             arr[index++] = obj.toString();
-            arr[index++] = yieldToLength(avgSpacerLen, fill);
+            arr[index++] = padToLength(avgSpacerLen, fill);
         }
         arr[index] = objs[objs.length-1].toString();
 
-        int remaining = n - (totObjsLen + (avgSpacerLen * numSpacers));
+        int remaining = len - (totObjsLen + (avgSpacerLen * numSpacers));
         arr = fillRemainder(remaining, numSpacers, fill, arr);
 
         for(String str : arr) {
@@ -105,10 +104,10 @@ public class StringUtils {
         int avgPerObj = (n - totObjsLen) / numSpacers;
 
         int index = 0;
-        arr[index++] = yieldToLength(avgPerObj, fill);
+        arr[index++] = padToLength(avgPerObj, fill);
         for (Object obj : Arrays.copyOfRange(objs, 0, objs.length)) {
             arr[index++] = obj.toString();
-            arr[index++] = yieldToLength(avgPerObj, fill);
+            arr[index++] = padToLength(avgPerObj, fill);
         }
 
         int remaining = n - (totObjsLen + (avgPerObj * numSpacers));
@@ -158,34 +157,35 @@ public class StringUtils {
         println(padToRight(len, "testing"));
         println(padToLeft(len, "test ing"));
         println(padToRight(len, '*', "test   ing"));
-        println(padToLeft(len, '-', "t e s t i n g"));
+        println(padToLeft(len, "__$__", "t e s t i n g"));
         println(padJustify(len, ' ',"left", "right"));
         println(padJustify(len, '^', "l ef t", "r igh t"));
-        println(yieldToLength(len, "123"));
+        println(padToLength(len, "123"));
         println(padJustify(len, ' ',"testing"));
         println(padJustify(len,'_',"testing"));
 
-        String[] arr = new String[]{"0th", "1st", "2nd", "3rd", "4th", "5th", "6th",
-                "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"};
+        Character[] carr = new Character[]{'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q'};
 //        arr = new String[]{"one", "two", "three", "four", "five", "six", "seven", "eight", "nine"};
-        for (int i = 0; i < arr.length; i++) {
-            println(fgBlue, padJustify(len, '_', Arrays.copyOfRange(arr, 0, i + 1)));
-            println(fgRed, padCenter(len, '_', Arrays.copyOfRange(arr, 0, i + 1)));
-            println();
-        }
-
-        Character[] carr = new Character[]{'0','1', '2', '3','4','5','6','7','8','9'};
         for (int i = 0; i < carr.length; i++) {
-            println(fgGreen, padJustify(len, '_', Arrays.copyOfRange(carr, 0, i + 1)));
-            println(fgYellow, padCenter(len, '_', Arrays.copyOfRange(carr, 0, i + 1)));
-            println();
+            println(fgBlue, padJustify(len, '_', Arrays.copyOfRange(carr, 0, i + 1)));
+            println(fgRed, padCenter(len, '_', Arrays.copyOfRange(carr, 0, i + 1)));
         }
 
-//        for (int i = arr.length - 2; i > -1; i--) {
-//            println(fgBlue, padJustify(len, '_', Arrays.copyOfRange(arr, 0, i + 1)));
-//            println(fgRed, padCenter(len, '_', Arrays.copyOfRange(arr, 0, i + 1)));
-//            println();
-//        }
+
+        String[] sarr = new String[]{"0th","1st","2nd","3rd","4th","5th","6th","7th","8th","9th"};
+        for (int i = 0; i < sarr.length; i++) {
+            println(fgCyan, padJustify(len, '-', Arrays.copyOfRange(sarr, 0, i + 1)));
+        }
+        for (int i = sarr.length - 2; i > -1; i--) {
+            println(fgCyan, padJustify(len, '-', Arrays.copyOfRange(sarr, 0, i + 1)));
+        }
+
+        for (int i = 0; i < sarr.length; i++) {
+            println(fgYellow, padCenter(len, '-', Arrays.copyOfRange(sarr, 0, i + 1)));
+        }
+        for (int i = sarr.length - 2; i > -1; i--) {
+            println(fgYellow, padCenter(len, '-', Arrays.copyOfRange(sarr, 0, i + 1)));
+        }
     }
 }
 

@@ -379,7 +379,7 @@ public class HW1 {
                 padJustify(paddingSize, fill,    "Total sales in USD: ", " $" + String.format("%1$,.2f", total_sales_USD))
         );
         println(padJustify(paddingSize, ' ', "Top 10 Items By Count:"));
-        println(yieldToLength(paddingSize, '='));
+        println(padToLength(paddingSize, '='));
         println(padJustify(paddingSize, ' ', " Rank |   SKU    |  Price ", "Count "));
         int rank = 1;
         for (Map.Entry<SkuPrice, AtomicInteger> entry : sortedSkuCounts.entrySet()) {
