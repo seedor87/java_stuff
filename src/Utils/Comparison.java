@@ -1,12 +1,7 @@
 package Utils;
 
-import java.lang.reflect.Array;
 import java.util.*;
-
-import static Utils.ListUtils.contains;
-import static Utils.ListUtils.distinct;
-
-public class Equivalence {
+public class Comparison {
 
     public interface Comparator<T extends Object> {
         boolean compare(T elem1, T elem2);
@@ -30,7 +25,7 @@ public class Equivalence {
         }
         return false;
 
-        /** alt way without recursion **/
+        /** alt way, without recursion **/
 //        T temp = rest[0];
 //        for (T elem : Arrays.copyOfRange(rest, 1, rest.length)) {
 //            if(!lt(temp, elem)) {
@@ -65,48 +60,6 @@ public class Equivalence {
         return elem1.compareTo(elem2) != 0;
     }
 
-    public static boolean eq(Object a, Object b) {
-        if(!a.getClass().equals(b.getClass())) {
-            return false;
-        }
-        if (a.getClass().isPrimitive()) {
-            return a == b;
-        }
-        if (a.getClass().isArray()) {
-            if(Array.getLength(a) != Array.getLength(b)) {
-                return false;
-            }
-            for(int i = 0; i < Array.getLength(a); i++) {
-                if(!eq(Array.get(a, i), Array.get(b, i))) {
-                    return false;
-                }
-            }
-            return true;
-        }
-        if(a.getClass().isInstance(Collection.class)) {
-            return eq((Collection) a, (Collection) b);
-        }
-        return a.equals(b);
-    }
-
-    public static <E extends Comparable<? super E>> boolean eq(Collection<E> arr1, Collection<E> arr2) {
-        for (E elem : arr1) {
-            if (!contains(arr2, elem)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public static <E extends Comparable<? super E>> boolean eq(E[] arr1, E[] arr2) {
-        for (E elem : arr1) {
-            if (!contains(arr2, elem)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     public static boolean cnfAnd(boolean first, boolean... rest) {
         if (rest.length < 1) {
             return first;
@@ -127,35 +80,7 @@ public class Equivalence {
         return cnfOr(rest[0], Arrays.copyOfRange(rest, 1, rest.length));
     }
 
-    public static <T extends Collection<E>, E extends Comparable> Collection<E> intersection(T first, T second) {
-        List<E> ret = new ArrayList<>();
-        for (E elem : first) {
-            if(contains(second, elem)) {
-                ret.add(elem);
-            }
-        }
-        return ret;
-    }
-
-    public static <T extends Collection<E>, E extends Comparable> Collection<E> difference(T first, T second) {
-        List<E> ret = new ArrayList<>();
-        for (E elem : first) {
-            if(!contains(second, elem)) {
-                ret.add(elem);
-            }
-        }
-        return ret;
-    }
-
-
     public static <T extends Object> void main(String[] args) {
-        Character[] carr1 = {'a','b','c','d'};
-        Character[] carr2 = {'d','c','b','a'};
-        ConsolePrinting.println(eq(carr1, carr2));
-
-        String[] sarr1 = {"bob", "alex", "star", "cammi", "joey"};
-        String[] sarr2 = {"joey", "cammi", "star", "alex", "bob"};
-        ConsolePrinting.println(eq(sarr1, sarr2));
 
 //        ConsolePrinting.println(equal("bob", "bob"));
 

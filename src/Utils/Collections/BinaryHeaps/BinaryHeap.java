@@ -1,11 +1,8 @@
 package Utils.Collections.BinaryHeaps;
 
-import Utils.Equivalence;
+import Utils.Comparison;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-import static Utils.Equivalence.lt;
+import static Utils.Comparison.lt;
 
 /**
  * Created by robertseedorf on 9/9/17.
@@ -30,7 +27,7 @@ public abstract class BinaryHeap<E extends Comparable<? super E>> {
 
     protected int maxSize = 1000;
     protected int heapSize = 0;
-    protected Equivalence.Comparator comp = lt;
+    protected Comparison.Comparator comp = lt;
 
     protected int getLeftChildIndex(int nodeIndex) {
         return 2 * nodeIndex + 1;

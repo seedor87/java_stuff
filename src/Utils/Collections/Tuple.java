@@ -1,11 +1,10 @@
 package Utils.Collections;
 
-import java.lang.reflect.Array;
+import Utils.Equivocation;
+
 import java.util.*;
 
 import static Utils.ConsolePrinting.println;
-import static Utils.Equivalence.eq;
-import static Utils.Equivalence.neq;
 
 public class Tuple<T> implements Iterable<T>{
 
@@ -40,7 +39,7 @@ public class Tuple<T> implements Iterable<T>{
             return false;
         }
         for (int i = 0; i < length; i++) {
-            if(!eq(this.get(i), temp.get(i))) {
+            if(!Equivocation.equal(this.get(i), temp.get(i))) {
                 return false;
             }
         }
@@ -79,10 +78,10 @@ public class Tuple<T> implements Iterable<T>{
         println(zero, one, two, three, four, five);
         println(tt);
 
-        println(tuple0.equals(tuple1));
-        println(tuple0.equals(tuple0));
-        println(tuple0.equals(new Tuple(2112, true, 'a', "MyClass", new int[3])));
-        println(tt.equals(new Tuple(1, 'a', "abc", true, new long[5], new Tuple(99, 'a', 3.14))));
+        println(tuple0, " == ", tuple1, " : ", tuple0.equals(tuple1));
+        println(tuple0, " == ", tuple0, " : ", tuple0.equals(tuple0));
+        println(tuple0, " == ", tuple0, " : ", tuple0.equals(new Tuple(2112, true, 'a', "MyClass", new int[3])));
+        println(tt, " == ", tt, " : ", tt.equals(new Tuple(1, 'a', "abc", true, new long[5], new Tuple(99, 'a', 3.14))));
 
         Map<Tuple, Integer> myMap = new HashMap<>();
         myMap.put(tt, 2);

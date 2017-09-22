@@ -1,3 +1,5 @@
+package RandomStuff;
+
 import Utils.ConsolePrinting;
 import Utils.Collections.Tuple;
 
@@ -7,7 +9,7 @@ import java.util.HashSet;
 import java.util.function.UnaryOperator;
 
 import static RandomStuff.FermatNumbers.fermatNumber;
-import static Utils.Equivalence.eq;
+import static Utils.Comparison.eq;
 
 public class RecursiveLambdaExample<T extends Object> {
 

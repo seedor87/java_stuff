@@ -4,6 +4,7 @@ import RandomStuff.MersennePrimes;
 import RandomStuff.PerfectNumbers;
 import Sorting.DualPivotQuickSort;
 import Sorting.QuickSort;
+import Utils.Equivocation;
 import Utils.Primes;
 import Utils.Collections.Tuple;
 
@@ -11,9 +12,7 @@ import java.util.List;
 
 import static Utils.ConsolePrinting.*;
 import static Utils.ConsolePrinting.printlnDelim;
-import static Utils.Equivalence.eq;
-import static Utils.ListUtils.inLineZip;
-import static Utils.StringUtils.padCenter;
+import static Utils.Equivocation.equal;
 
 public class TestBench {
 
@@ -36,7 +35,7 @@ public class TestBench {
         try {
             List<Double> res1 = (List) new SYSTimeTest(PerfectNumbers.class, "generatePerfectNumbers").exe(lim).get(0);
             List<Double> res2 = (List) new SYSTimeTest(PerfectNumbers.class, "findPerfectNumbers").exe(lim).get(0);
-            result = eq(res1, res2);
+            result = Equivocation.equal(res1, res2);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

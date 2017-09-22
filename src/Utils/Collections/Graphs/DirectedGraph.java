@@ -5,10 +5,8 @@ import javafx.util.Pair;
 
 import java.util.*;
 
-import static Utils.Equivalence.difference;
-import static Utils.Equivalence.intersection;
-
 import static Utils.ConsolePrinting.println;
+import static Utils.Equivocation.difference;
 
 /**
  * source:

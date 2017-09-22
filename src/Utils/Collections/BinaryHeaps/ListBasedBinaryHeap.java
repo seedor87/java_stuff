@@ -1,19 +1,19 @@
 package Utils.Collections.BinaryHeaps;
 
-import Utils.Equivalence;
+import Utils.Comparison;
 
 import java.util.*;
 
-import static Utils.Equivalence.evaluate;
+import static Utils.Comparison.evaluate;
 import static Utils.ConsolePrinting.*;
-import static Utils.Equivalence.gt;
+import static Utils.Comparison.gt;
 
 public class ListBasedBinaryHeap<E extends Comparable<? super E>> extends BinaryHeap implements Iterable<E>{
 
     public class ListBasedHeapIterator<C extends E> implements Iterator {
 
         ListBasedBinaryHeap<C> temp;
-        ListBasedHeapIterator(Equivalence.Comparator<C> comp, List<C> data) {
+        ListBasedHeapIterator(Comparison.Comparator<C> comp, List<C> data) {
             this.temp = new ListBasedBinaryHeap().setComp(comp).setArgs(data);
         }
 
@@ -39,7 +39,7 @@ public class ListBasedBinaryHeap<E extends Comparable<? super E>> extends Binary
         this.elements = new ArrayList<>();
     }
 
-    public ListBasedBinaryHeap<E> setComp(Equivalence.Comparator comp) {
+    public ListBasedBinaryHeap<E> setComp(Comparison.Comparator comp) {
         this.comp = comp;
         return this;
     }
@@ -137,7 +137,7 @@ public class ListBasedBinaryHeap<E extends Comparable<? super E>> extends Binary
             }
         } else {
             if (evaluate(this.comp, this.elements.get(leftChildIndex), this.elements.get(rightChildIndex))
-                    || evaluate(Equivalence.eq, this.elements.get(leftChildIndex), this.elements.get(rightChildIndex))) {
+                    || evaluate(Comparison.eq, this.elements.get(leftChildIndex), this.elements.get(rightChildIndex))) {
                 minIndex = leftChildIndex;
             } else {
                 minIndex = rightChildIndex;

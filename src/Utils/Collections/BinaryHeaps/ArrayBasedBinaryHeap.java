@@ -1,26 +1,26 @@
 package Utils.Collections.BinaryHeaps;
 
-import Utils.Equivalence;
+import Utils.Comparison;
 
 import java.lang.reflect.Array;
 import java.util.*;
 
 import static Utils.ConsolePrinting.print;
 import static Utils.ConsolePrinting.println;
-import static Utils.Equivalence.evaluate;
-import static Utils.Equivalence.gt;
-import static Utils.Equivalence.lt;
+import static Utils.Comparison.evaluate;
+import static Utils.Comparison.gt;
+import static Utils.Comparison.lt;
 
 public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> extends BinaryHeap implements Iterable<E> {
 
     public class ArrayBasedHeapIterator<E extends Comparable<? super E>> implements Iterator {
 
         ArrayBasedBinaryHeap<E> temp;
-        ArrayBasedHeapIterator(Equivalence.Comparator<E> comp,
-                     Class<E> type,
-                     int maxSize,
-                     E[] data,
-                     int heapSize) {
+        ArrayBasedHeapIterator(Comparison.Comparator<E> comp,
+                               Class<E> type,
+                               int maxSize,
+                               E[] data,
+                               int heapSize) {
             this.temp = new ArrayBasedBinaryHeap(type)
                     .setSize(maxSize)
                     .setComp(comp)
@@ -56,7 +56,7 @@ public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> extends Binar
         return this;
     }
 
-    public ArrayBasedBinaryHeap setComp(Equivalence.Comparator comp) {
+    public ArrayBasedBinaryHeap setComp(Comparison.Comparator comp) {
         this.comp = comp;
         return this;
     }
@@ -156,7 +156,7 @@ public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> extends Binar
             }
         } else {
             if (evaluate(this.comp, this.elements[leftChildIndex], this.elements[rightChildIndex])
-                    || evaluate(Equivalence.eq, this.elements[leftChildIndex], this.elements[rightChildIndex])) {
+                    || evaluate(Comparison.eq, this.elements[leftChildIndex], this.elements[rightChildIndex])) {
                 minIndex = leftChildIndex;
             } else {
                 minIndex = rightChildIndex;

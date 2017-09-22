@@ -1,13 +1,11 @@
 package Utils;
 
 import Utils.Collections.Tuple;
-import com.sun.org.apache.xerces.internal.xs.datatypes.ObjectList;
-import sun.awt.image.ImageWatched;
 
 import java.util.*;
 
 import static Utils.ConsolePrinting.*;
-import static Utils.Equivalence.*;
+import static Utils.Comparison.*;
 
 public class ListUtils {
 
@@ -29,25 +27,7 @@ public class ListUtils {
         return false;
     }
 
-    public static <E extends Comparable<? super E>> boolean distinct(E... args) {
-        HashSet<E> set = new HashSet<>();
-        for(E elem : args) {
-            if(!set.add(elem)) {
-                return false;
-            }
-        }
-        return true;
-    }
 
-    public static <E extends Comparable<? super E>> boolean distinct(Collection<E> arr) {
-        HashSet<E> set = new HashSet<>();
-        for(E elem : arr) {
-            if(!set.add(elem)) {
-                return false;
-            }
-        }
-        return true;
-    }
 
     public static Object[] inLineZip(Object[]... params) {
         int fullSize = 0;
@@ -136,7 +116,7 @@ public class ListUtils {
         return result;
     }
 
-    private static <E extends Comparable<? super E>> E most(Equivalence.Comparator comp, E... params) {
+    private static <E extends Comparable<? super E>> E most(Comparison.Comparator comp, E... params) {
         E hold = params[0];
         for (E elem : params) {
             if(evaluate(comp, elem, hold)) {
@@ -169,9 +149,6 @@ public class ListUtils {
                 new Character[]{'c', 'd'},
                 new Character[]{'e', 'f'}
         ));
-
-        ConsolePrinting.println(distinct(new Character[]{'a','b','c','d','e','f'}));
-        ConsolePrinting.println(distinct(1,2,3,4,5,6,1));
 
         ConsolePrinting.println(max(1,2,3,4,5));
         ConsolePrinting.println(min(1,2,3,4,5,0));

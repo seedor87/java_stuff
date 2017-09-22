@@ -3,7 +3,7 @@ package Sorting;
 import Utils.MyRandom;
 
 import static Utils.ConsolePrinting.println;
-import static Utils.Equivalence.lt;
+import static Utils.Comparison.lt;
 import static Utils.Exchange.exchange;
 
 public class DualPivotQuickSort {
