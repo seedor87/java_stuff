@@ -17,7 +17,7 @@ public class Equivocation<T extends Object> {
         if (first.getClass().isArray()) {
             return (Array.getLength(first) > Array.getLength(second)) ? equalArray(first, second) : equalArray(second, first);
         }
-        if(Iterable.class.isInstance(first)) {
+        if (Iterable.class.isInstance(first)) {
             return equalIterable(first, second);
         }
         return first.equals(second);
@@ -59,25 +59,83 @@ public class Equivocation<T extends Object> {
         return true;
     }
 
-    public static <T extends Collection<E>, E extends Comparable> Collection<E> intersection(T first, T second) {
+
+    public static <T extends Collection<E>, E extends Comparable> Collection<E> union(T first, T second) {
+        Collection<E> ret = new ArrayList<>();
+        ret.addAll(first);
+        ret.addAll(second);
+        return ret;
+    }
+
+    public static <E extends Comparable> E[] union(E[] first, E[] second) {
+        int size = Array.getLength(first) + Array.getLength(second);
+        E[] ret = (E[]) Array.newInstance(first.getClass().getComponentType(), size);
+        int i = 0;
+        for(E elem : first) {
+            ret[i] = elem;
+            i++;
+        }
+        for(E elem : second) {
+            ret[i] = elem;
+            i++;
+        }
+        return ret;
+    }
+
+    public static <T extends Collection<E>, E extends Comparable> Set<E> intersection(T first, T second) {
         List<E> ret = new ArrayList<>();
         for (E elem : first) {
             if(contains(second, elem)) {
                 ret.add(elem);
             }
         }
-        return ret;
+        return new HashSet<>(ret);
     }
 
-    public static <T extends Collection<E>, E extends Comparable> Collection<E> difference(T first, T second) {
+    public static <E extends Comparable> Set<E> intersection(E[] first, E[] second) {
+        List<E> ret = new ArrayList<>();
+        for (E elem : first) {
+            if(contains(second, elem)) {
+                ret.add(elem);
+            }
+        }
+        return new HashSet<>(ret);
+    }
+
+    public static <T extends Collection<E>, E extends Comparable> Set<E> bilateralDifference(T first, T second) {
+        List<E> ret = new ArrayList<>();
+        ret.addAll(difference(first, second));
+        ret.addAll(difference(second, first));
+        return new HashSet<>(ret);
+    }
+
+    public static <E extends Comparable> Set<E> bilateralDifference(E[] first, E[] second) {
+        List<E> ret = new ArrayList<>();
+        ret.addAll(difference(first, second));
+        ret.addAll(difference(second, first));
+        return new HashSet<>(ret);
+    }
+
+    public static <T extends Collection<E>, E extends Comparable> Set<E> difference(T first, T second) {
         List<E> ret = new ArrayList<>();
         for (E elem : first) {
             if(!contains(second, elem)) {
                 ret.add(elem);
             }
         }
-        return ret;
+        return new HashSet<>(ret);
     }
+
+    public static <E extends Comparable> Set<E> difference(E[] first, E[] second) {
+        List<E> ret = new ArrayList<>();
+        for (E elem : first) {
+            if(!contains(second, elem)) {
+                ret.add(elem);
+            }
+        }
+        return new HashSet<>(ret);
+    }
+
 
     public static <E extends Comparable<? super E>> boolean distinct(Collection<E> arr) {
         HashSet<E> set = new HashSet<>();
@@ -101,11 +159,19 @@ public class Equivocation<T extends Object> {
 
     public static void main(String[] args) {
 
-        ConsolePrinting.println(equal(5, new Integer(5)));
         ConsolePrinting.println(equal(
-                new char[]{'a'},
-                new char[]{'a','b'})
+                (int) 5.0,
+                new Integer(5))
         );
+        ConsolePrinting.println(equal(
+                new Boolean(false),
+                new Boolean("false"))
+        );
+        ConsolePrinting.println(equal(
+                new char[]{'a', 'c'},
+                new char[]{'a', 'b'})
+        );
+
 
         Character[] carr1 = {'a','b','c','d'};
         Character[] carr2 = {'d','c','b','a'};
@@ -122,13 +188,41 @@ public class Equivocation<T extends Object> {
         ConsolePrinting.println("distinct?", distinct(new LinkedList(Arrays.asList('a','b','c','d','e','f'))));
         ConsolePrinting.println("distinct?", distinct(1,2,3,4,5,6,1));
 
+
+        // first \/ second
+        ConsolePrinting.println("union :" , union(
+           new Integer[]{1,2,3},
+           new Integer[]{4,5,6})
+        );
+        // first /\ second
         ConsolePrinting.println("intersection :", intersection(
                 new ArrayList<>(Arrays.asList(1,2,3)),
                 new ArrayList<>(Arrays.asList(1,3)))
         );
+        // first - second
         ConsolePrinting.println("difference :", difference(
                 new ArrayList<>(Arrays.asList(1,2,3)),
                 new ArrayList<>(Arrays.asList(1,3)))
+        );
+        // first - second
+        ConsolePrinting.println("difference :", difference(
+                new Character[]{'a','b','d','e'},
+                new Character[]{'a','b','c','d'})
+        );
+        // first - second
+        ConsolePrinting.println("difference :", difference(
+                new Long[]{Long.MAX_VALUE, Long.MAX_VALUE+1},
+                new Long[]{Long.MIN_VALUE, Long.MIN_VALUE-1})
+        );
+        // (first - second) \/ (second - first)
+       ConsolePrinting.println("bilateralDifference :",  bilateralDifference(
+                new Character[]{'a','b','d','e'},
+                new Character[]{'a','b','c','d'})
+       );
+        // (first - second) \/ (second - first)
+        ConsolePrinting.println("bilateralDifference :", bilateralDifference(
+                new LinkedList<>(Arrays.asList(1,2,3)),
+                new LinkedList<>(Arrays.asList(4,5,6)))
         );
     }
 }
