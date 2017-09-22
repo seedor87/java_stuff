@@ -7,42 +7,52 @@ import static Utils.ListUtils.contains;
 
 public class Equivocation<T extends Object> {
 
-    public static <T> boolean equal(T a, T b) {
-        if(!a.getClass().equals(b.getClass())) {
+    public static <T> boolean equal(T first, T second) {
+        if(!first.getClass().equals(second.getClass())) {
             return false;
         }
-        if (a.getClass().isPrimitive()) {
-            return a == b;
+        if (first.getClass().isPrimitive()) {
+            return first == second;
         }
-        if (a.getClass().isArray()) {
-            if(Array.getLength(a) != Array.getLength(b)) {
-                return false;
-            }
-            for(int i = 0; i < Array.getLength(a); i++) {
-                if(!equal(Array.get(a, i), Array.get(b, i))) {
-                    return false;
-                }
-            }
-            return true;
+        if (first.getClass().isArray()) {
+            return (Array.getLength(first) > Array.getLength(second)) ? equalArray(first, second) : equalArray(second, first);
         }
-        if(a.getClass().isInstance(Iterable.class)) {
-            return equal((Collection) a, (Collection) b);
+        if(Iterable.class.isInstance(first)) {
+            return equalIterable(first, second);
         }
-        return a.equals(b);
+        return first.equals(second);
     }
 
-    public static <E extends Comparable<? super E>> boolean equal(Collection<E> arr1, Collection<E> arr2) {
-        for (E elem : arr1) {
-            if (!contains(arr2, elem)) {
+    private static <T> boolean equalArray(T first, T second) {
+        int i = 0;
+        while(i < Array.getLength(first)) {
+            int j = 0;
+            boolean found = false;
+            while(j < Array.getLength(second) && !found) {
+                if(equal(Array.get(first, i), Array.get(second, j))) {
+                    found = true;
+                    break;
+                }
+                j++;
+            }
+            if (!found) {
                 return false;
             }
+            i++;
         }
         return true;
     }
 
-    public static <E extends Comparable<? super E>> boolean equal(E[] arr1, E[] arr2) {
-        for (E elem : arr1) {
-            if (!contains(arr2, elem)) {
+    private static <T> boolean equalIterable(T first, T second) {
+        boolean found = false;
+        for (Object elem1 : (Iterable) first) {
+            for (Object elem2 : (Iterable) second) {
+                if (equal(elem1, elem2)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
                 return false;
             }
         }
@@ -90,6 +100,13 @@ public class Equivocation<T extends Object> {
     }
 
     public static void main(String[] args) {
+
+        ConsolePrinting.println(equal(5, new Integer(5)));
+        ConsolePrinting.println(equal(
+                new char[]{'a'},
+                new char[]{'a','b'})
+        );
+
         Character[] carr1 = {'a','b','c','d'};
         Character[] carr2 = {'d','c','b','a'};
         ConsolePrinting.println(carr1, " == ", carr2, equal(carr1, carr2));
@@ -102,7 +119,16 @@ public class Equivocation<T extends Object> {
         List<Integer> ilist2 = new LinkedList<>(Arrays.asList(4,3,2,1));
         ConsolePrinting.println(ilist1, " == ", ilist2, equal(ilist1, ilist2));
 
-        ConsolePrinting.println("distinct?", distinct(new Character[]{'a','b','c','d','e','f'}));
+        ConsolePrinting.println("distinct?", distinct(new LinkedList(Arrays.asList('a','b','c','d','e','f'))));
         ConsolePrinting.println("distinct?", distinct(1,2,3,4,5,6,1));
+
+        ConsolePrinting.println("intersection :", intersection(
+                new ArrayList<>(Arrays.asList(1,2,3)),
+                new ArrayList<>(Arrays.asList(1,3)))
+        );
+        ConsolePrinting.println("difference :", difference(
+                new ArrayList<>(Arrays.asList(1,2,3)),
+                new ArrayList<>(Arrays.asList(1,3)))
+        );
     }
 }

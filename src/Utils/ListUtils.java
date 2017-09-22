@@ -27,8 +27,6 @@ public class ListUtils {
         return false;
     }
 
-
-
     public static Object[] inLineZip(Object[]... params) {
         int fullSize = 0;
         for (Object[] param : params) {

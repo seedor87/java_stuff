@@ -174,6 +174,13 @@ public class StringUtils {
             println();
         }
 
+        Character[] carr = new Character[]{'0','1', '2', '3','4','5','6','7','8','9'};
+        for (int i = 0; i < carr.length; i++) {
+            println(fgGreen, padJustify(len, '_', Arrays.copyOfRange(carr, 0, i + 1)));
+            println(fgYellow, padCenter(len, '_', Arrays.copyOfRange(carr, 0, i + 1)));
+            println();
+        }
+
 //        for (int i = arr.length - 2; i > -1; i--) {
 //            println(fgBlue, padJustify(len, '_', Arrays.copyOfRange(arr, 0, i + 1)));
 //            println(fgRed, padCenter(len, '_', Arrays.copyOfRange(arr, 0, i + 1)));
