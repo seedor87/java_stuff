@@ -15,16 +15,14 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static Utils.ConsolePrinting.*;
-import static Utils.StringUtils.padCenter;
-import static Utils.StringUtils.padJustify;
-import static Utils.StringUtils.padToRight;
+import static Utils.StringUtils.*;
 
 public class HW2 {
 
     static final String DELIM = " \\| ";
     static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     static final ConcurrentMap<SkuPrice, AtomicInteger> skuPriceMapCount = new ConcurrentHashMap<>();
-    static final String OUTPUT_PATH = "." + File.separatorChar + "output2.txt"; //results go here
+    static final String OUTPUT_PATH = "." + File.separatorChar + "output2.csv"; //results go here
     static final String INPUT_PATH = "." + File.separatorChar + "output1.txt";   // start from this file
     static final int NUM_WEEKS = 2;
 
@@ -64,7 +62,7 @@ public class HW2 {
             for (Object o : args) {
                 writer.write(delim);
                 writer.write(o.toString());
-                delim = " | ";
+                delim = ", ";
             }
             writer.write("\n");
         } catch (IOException ex) {
@@ -113,7 +111,7 @@ public class HW2 {
             }
 
             try {
-                write("sku", "price", "avg/day");
+                write("sku", "price (USD)", "avg per day");
                 for (Map.Entry<SkuPrice, Integer> entry : sortedSkuCounts.entrySet()) {
                     write(entry.getKey().getSku(), entry.getKey().getPrice(), entry.getValue());
                 }
@@ -127,19 +125,27 @@ public class HW2 {
             timer.stop();
             println(fgGreen, "DONE", timer);
 
+            Map<Integer, String> skuNameMap = ProductParserForNames.generateSkuNameMap();
+
             println(fgYellow);
-            println(padJustify(paddingSize, ' ', "Rank", "   Sku   ", "    Price", padToRight(10, ' ', "  Avg/Day")));
+            println(padToRight(6, ' ', "Rank |"),
+                    padCenter(8, ' ', "Sku"), "|",
+                    padCenter(60, ' ', "Name"),
+                    "|", padCenter(5, ' ', "Price"), "|",
+                    padToRight(4, ' ', "Avg Per Day"));
             int rank = 1;
             for (Map.Entry<SkuPrice, Integer> entry : sortedSkuCounts.entrySet()) {
-                if( rank > 10 ) {
-                    break;
-                }
-                println(padCenter(
-                        paddingSize,
-                        ' ',
-                        padToRight(2, rank) + " | " + entry.getKey().getSku() + " | ($" + entry.getKey().getPrice() + ") ",
-                        "| " + padToRight(5, ' ', NumberFormat.getInstance().format(entry.getValue().intValue())))
-                );
+//                if(rank > 10 ) {
+//                    break;
+//                }
+                Integer sku = entry.getKey().getSku();
+                Double price = entry.getKey().getPrice();
+                String name = skuNameMap.get(sku);
+                println(padToRight(6, ' ', rank + " |"),
+                        padCenter(8, ' ', sku + " |"),
+                        padCenter(60, ' ', name),
+                        "| " + padCenter(5, ' ', price) + " |",
+                        padToRight(4, ' ', NumberFormat.getInstance().format(entry.getValue().intValue())));
                 rank++;
             }
             System.exit(0);
