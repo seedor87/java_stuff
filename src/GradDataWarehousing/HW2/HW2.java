@@ -110,11 +110,34 @@ public class HW2 {
                 sortedSkuCounts.put(skuPrice, avgCountPerDay);
             }
 
+            Map<Integer, String> skuNameMap = ProductParserForNames.generateSkuNameMap();
+
             try {
-                write("sku", "price (USD)", "avg per day");
+
+                println(fgYellow);
+                println(padToRight(6, ' ', "Rank |"),
+                        padCenter(8, ' ', "Sku"), "|",
+                        padCenter(70, ' ', "Name"),
+                        "|", padCenter(5, ' ', "Price"), "|",
+                        padToRight(4, ' ', "Avg Per Day"));
+                write("sku", "name", "price", "avg per day");
+
+                int rank = 1;
                 for (Map.Entry<SkuPrice, Integer> entry : sortedSkuCounts.entrySet()) {
-                    write(entry.getKey().getSku(), entry.getKey().getPrice(), entry.getValue());
+//                    if(rank > 10 ) { break; }     // UNCOMMENT TO STOP AFTER TOP 10
+                    Integer sku = entry.getKey().getSku();
+                    Double price = entry.getKey().getPrice();
+                    String name = skuNameMap.get(sku);
+                    String avgPerDay = NumberFormat.getInstance().format(entry.getValue().intValue());
+                    println(padToRight(6, ' ', rank + " |"),
+                            padCenter(8, ' ', sku + " |"),
+                            padCenter(70, ' ', name),
+                            "| " + padCenter(5, ' ', price) + " |",
+                            padToRight(4, ' ', avgPerDay));
+                    rank++;
+                    write(sku, name, price, avgPerDay);
                 }
+
             } catch (Exception ex) {
                 ex.printStackTrace();
             } finally {
@@ -123,31 +146,8 @@ public class HW2 {
             }
 
             timer.stop();
-            println(fgGreen, "DONE", timer);
+            println(fgGreen, "\nDONE", timer, "\nsee file: ", OUTPUT_PATH);
 
-            Map<Integer, String> skuNameMap = ProductParserForNames.generateSkuNameMap();
-
-            println(fgYellow);
-            println(padToRight(6, ' ', "Rank |"),
-                    padCenter(8, ' ', "Sku"), "|",
-                    padCenter(60, ' ', "Name"),
-                    "|", padCenter(5, ' ', "Price"), "|",
-                    padToRight(4, ' ', "Avg Per Day"));
-            int rank = 1;
-            for (Map.Entry<SkuPrice, Integer> entry : sortedSkuCounts.entrySet()) {
-//                if(rank > 10 ) {
-//                    break;
-//                }
-                Integer sku = entry.getKey().getSku();
-                Double price = entry.getKey().getPrice();
-                String name = skuNameMap.get(sku);
-                println(padToRight(6, ' ', rank + " |"),
-                        padCenter(8, ' ', sku + " |"),
-                        padCenter(60, ' ', name),
-                        "| " + padCenter(5, ' ', price) + " |",
-                        padToRight(4, ' ', NumberFormat.getInstance().format(entry.getValue().intValue())));
-                rank++;
-            }
             System.exit(0);
         } catch (Exception ex) {
             ex.printStackTrace();
