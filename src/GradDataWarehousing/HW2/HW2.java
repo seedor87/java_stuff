@@ -91,6 +91,10 @@ public class HW2 {
             startDate = formatter.parse(start_date_string);
             start = startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
             end = start.plusDays(NUM_WEEKS * 7);
+
+            println(padJustify(paddingSize, fill, "start date ", " " + start));
+            println(padJustify(paddingSize, fill, "end date ", " " + end));
+
             String dateString;
             for (LocalDate date = start; date.isBefore(end); ) {
                 line = reader.readLine();
@@ -115,11 +119,11 @@ public class HW2 {
             try {
 
                 println(fgYellow);
-                println(padToRight(6, ' ', "Rank |"),
-                        padCenter(8, ' ', "Sku"), "|",
+                println("Rank  ",
+                        "   Sku     ",
                         padCenter(70, ' ', "Name"),
-                        "|", padCenter(5, ' ', "Price"), "|",
-                        padToRight(4, ' ', "Avg Per Day"));
+                        "Price",
+                        " Avg Per Day");
                 write("sku", "name", "price", "avg per day");
 
                 int rank = 1;
@@ -133,7 +137,7 @@ public class HW2 {
                             padCenter(8, ' ', sku + " |"),
                             padCenter(70, ' ', name),
                             "| " + padCenter(5, ' ', price) + " |",
-                            padToRight(4, ' ', avgPerDay));
+                            padToRight(3, ' ', avgPerDay));
                     rank++;
                     write(sku, name, price, avgPerDay);
                 }
