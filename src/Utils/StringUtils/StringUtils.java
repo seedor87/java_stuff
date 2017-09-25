@@ -1,4 +1,4 @@
-package Utils;
+package Utils.StringUtils;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -119,42 +119,6 @@ public class StringUtils {
         return sb.toString();
     }
 
-    public static String padAroundChar(int padding, String sep, Object... params) {
-        int maxl = 0;
-        int maxr = 0;
-        String[] lefts = new String[params.length];
-        String[] rights = new String[params.length];
-        for(int i = 0; i < params.length; i++) {
-            int div = params[i].toString().lastIndexOf(sep);
-            String left = params[i].toString().substring(0, div);
-            String right = params[i].toString().substring(div+1);
-            lefts[i] = left;
-            rights[i] = right;
-            if(left.length() > maxl) { maxl = left.length(); }
-            if(right.length() > maxr) { maxr = right.length(); }
-        }
-        maxl += padding;
-        maxr += padding;
-        StringBuilder sb = new StringBuilder();
-        for(int i = 0; i < params.length; i++) {
-            sb.append(padToRight(maxl, ' ', lefts[i]));
-            sb.append(sep);
-            sb.append(padToLeft(maxr, ' ', rights[i]));
-            sb.append("\n");
-        }
-        return sb.toString();
-
-//        int div = s.lastIndexOf(sep);
-//        if(div >= 0 && div <= s.length()) {
-//            String left = s.substring(0, div);
-//            String right = s.substring(div+1);
-//            return padToLeft(l, ' ', left) +
-//                    sep +
-//                    padToRight(r, ' ', right);
-//        }
-//        throw new RuntimeException("delimiter not found");
-    }
-
     private static String[] fillRemainder(int remaining, int numSlots, char fill, String[] arr) {
         if(numSlots % 2 == 0) {
             int i = 1;
@@ -189,18 +153,18 @@ public class StringUtils {
     public static void main(String[] args) {
 
         int len = 60;
-        print(fgBlack.str());
+        print(fgBlack);
         println(padToRight(len, "testing"));
         println(padToLeft(len, "test ing"));
         println(padToRight(len, '*', "test   ing"));
         println(padToLeft(len, "__$__", "t e s t i n g"));
-        println(padJustify(len, ' ',"left", "right"));
+        println(padJustify(len, ' ', "left", "right"));
         println(padJustify(len, '^', "l ef t", "r igh t"));
         println(padToLength(len, "123"));
-        println(padJustify(len, ' ',"testing"));
-        println(padJustify(len,'_',"testing"));
+        println(padJustify(len, ' ', "testing"));
+        println(padJustify(len, '_', "testing"));
 
-        Character[] carr = new Character[]{'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q'};
+        Character[] carr = new Character[]{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q'};
 //        arr = new String[]{"one", "two", "three", "four", "five", "six", "seven", "eight", "nine"};
         for (int i = 0; i < carr.length; i++) {
             println(fgBlue, padJustify(len, '_', Arrays.copyOfRange(carr, 0, i + 1)));
@@ -208,7 +172,7 @@ public class StringUtils {
         }
 
 
-        String[] sarr = new String[]{"0th","1st","2nd","3rd","4th","5th","6th","7th","8th","9th"};
+        String[] sarr = new String[]{"0th", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th"};
         for (int i = 0; i < sarr.length; i++) {
             println(fgCyan, padJustify(len, '-', Arrays.copyOfRange(sarr, 0, i + 1)));
         }
@@ -222,21 +186,6 @@ public class StringUtils {
         for (int i = sarr.length - 2; i > -1; i--) {
             println(fgYellow, padCenter(len, '-', Arrays.copyOfRange(sarr, 0, i + 1)));
         }
-
-        println(padAroundChar(3, "/",
-                "some/abstract/path/to/a_file.py",
-                "another/path/to/a_file.py",
-                "yet/another/path/to/a_file.py",
-                "a/path/to/my_file.py",
-                "not/a/path/to/my_file.py"));
-        println(padAroundChar(0, ".",
-                "12.09",
-                "3.59",
-                "1.3",
-                "0.75",
-                ".69",
-                "10.5",
-                ".1"));
     }
 }
 

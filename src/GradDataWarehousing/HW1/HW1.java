@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import GradDataWarehousing.HWResources.*;
 import static Utils.ConsolePrinting.*;
-import static Utils.StringUtils.*;
+import static Utils.StringUtils.StringUtils.*;
 
 public class HW1 {
 
