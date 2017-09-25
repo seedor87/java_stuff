@@ -88,11 +88,11 @@ public class StringUtils {
         return sb.toString();
     }
 
-    public static String padCenter(int n, char fill, Collection<Object> objs) {
-        return padCenter(n, fill, objs.toArray());
+    public static String padCenter(int len, char fill, Collection<Object> objs) {
+        return padCenter(len, fill, objs.toArray());
     }
 
-    public static String padCenter(int n, char fill, Object... objs) {
+    public static String padCenter(int len, char fill, Object... objs) {
         StringBuilder sb = new StringBuilder();
         int totObjsLen = 0;
         for(Object obj : objs) {
@@ -101,7 +101,7 @@ public class StringUtils {
 
         int numSpacers = objs.length + 1;
         String[] arr = new String[numSpacers + objs.length];
-        int avgPerObj = (n - totObjsLen) / numSpacers;
+        int avgPerObj = (len - totObjsLen) / numSpacers;
 
         int index = 0;
         arr[index++] = padToLength(avgPerObj, fill);
@@ -110,13 +110,49 @@ public class StringUtils {
             arr[index++] = padToLength(avgPerObj, fill);
         }
 
-        int remaining = n - (totObjsLen + (avgPerObj * numSpacers));
+        int remaining = len - (totObjsLen + (avgPerObj * numSpacers));
         arr = fillRemainder(remaining, numSpacers, fill, arr);
 
         for(String str : arr) {
             sb.append(str);
         }
         return sb.toString();
+    }
+
+    public static String padAroundChar(int padding, String sep, Object... params) {
+        int maxl = 0;
+        int maxr = 0;
+        String[] lefts = new String[params.length];
+        String[] rights = new String[params.length];
+        for(int i = 0; i < params.length; i++) {
+            int div = params[i].toString().lastIndexOf(sep);
+            String left = params[i].toString().substring(0, div);
+            String right = params[i].toString().substring(div+1);
+            lefts[i] = left;
+            rights[i] = right;
+            if(left.length() > maxl) { maxl = left.length(); }
+            if(right.length() > maxr) { maxr = right.length(); }
+        }
+        maxl += padding;
+        maxr += padding;
+        StringBuilder sb = new StringBuilder();
+        for(int i = 0; i < params.length; i++) {
+            sb.append(padToRight(maxl, ' ', lefts[i]));
+            sb.append(sep);
+            sb.append(padToLeft(maxr, ' ', rights[i]));
+            sb.append("\n");
+        }
+        return sb.toString();
+
+//        int div = s.lastIndexOf(sep);
+//        if(div >= 0 && div <= s.length()) {
+//            String left = s.substring(0, div);
+//            String right = s.substring(div+1);
+//            return padToLeft(l, ' ', left) +
+//                    sep +
+//                    padToRight(r, ' ', right);
+//        }
+//        throw new RuntimeException("delimiter not found");
     }
 
     private static String[] fillRemainder(int remaining, int numSlots, char fill, String[] arr) {
@@ -186,6 +222,21 @@ public class StringUtils {
         for (int i = sarr.length - 2; i > -1; i--) {
             println(fgYellow, padCenter(len, '-', Arrays.copyOfRange(sarr, 0, i + 1)));
         }
+
+        println(padAroundChar(3, "/",
+                "some/abstract/path/to/a_file.py",
+                "another/path/to/a_file.py",
+                "yet/another/path/to/a_file.py",
+                "a/path/to/my_file.py",
+                "not/a/path/to/my_file.py"));
+        println(padAroundChar(0, ".",
+                "12.09",
+                "3.59",
+                "1.3",
+                "0.75",
+                ".69",
+                "10.5",
+                ".1"));
     }
 }
 
