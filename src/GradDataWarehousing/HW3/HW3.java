@@ -1,5 +1,8 @@
-package GradDataWarehousing.HW1;
+package GradDataWarehousing.HW3;
 
+import GradDataWarehousing.HWResources.HW1Arrays;
+import GradDataWarehousing.HWResources.SkuMapComparator;
+import GradDataWarehousing.HWResources.SkuPrice;
 import Utils.Timers.AbstractTimer;
 import Utils.Timers.SYSTimer;
 
@@ -15,14 +18,16 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import GradDataWarehousing.HWResources.*;
 import static Utils.ConsolePrinting.*;
-import static Utils.StringUtils.StringUtils.*;
+import static Utils.ConsolePrinting.println;
+import static Utils.StringUtils.StringUtils.padJustify;
+import static Utils.StringUtils.StringUtils.padToLength;
+import static Utils.StringUtils.StringUtils.padToRight;
 
-public class HW1 {
+public class HW3 {
 
-    static String outputPath = "." + File.separatorChar + "output1.txt"; //results go here
-    static String allProductsFilePath = "." +
+    static final String OUTPUT_PATH = "." + File.separatorChar + "output3.txt"; //results go here
+    static final String ALL_PRODUCTS_PATH = "." +
             File.separatorChar + "src" +
             File.separatorChar + "GradDataWarehousing" +
             File.separatorChar + "HW1" +
@@ -142,14 +147,15 @@ public class HW1 {
                 padJustify(paddingSize, fill,     "CUST_HI ",            " " + CUST_HI),
                 padJustify(paddingSize, fill,     "PRICE_MULT ",         " " + PRICE_MULT),
                 padJustify(paddingSize, fill,     "MAX_ITEMS ",          " " + MAX_ITEMS),
-                padJustify(paddingSize, fill,     "WEEKEND_INCREASE ",   " " + WEEKEND_INCREASE)
+                padJustify(paddingSize, fill,     "WEEKEND_INCREASE ",   " " + WEEKEND_INCREASE),
+                padJustify(paddingSize, fill,     "OUTPUT FILE ",        " " + OUTPUT_PATH)
         );
         AbstractTimer timer = new SYSTimer(AbstractTimer.TimeUnit.SECONDS);
         timer.start();
 
         // Build array of all products for rand access later
         try {
-            FileInputStream fs= new FileInputStream(allProductsFilePath);
+            FileInputStream fs= new FileInputStream(ALL_PRODUCTS_PATH);
             BufferedReader br = new BufferedReader(new InputStreamReader(fs));
             String line;
             while((line = br.readLine()) != null) {
@@ -163,7 +169,7 @@ public class HW1 {
         }
         println();
         println("All Products List successfully constructed from...");
-        println(fgRed, allProductsFilePath);
+        println(fgRed, ALL_PRODUCTS_PATH);
 
         // Parse dates and build java 8 date objects for iteration
         try {
@@ -178,7 +184,7 @@ public class HW1 {
         // Main body of work
         try {
             println("working...");
-            File file = new File(outputPath);
+            File file = new File(OUTPUT_PATH);
             writer = new BufferedWriter(new FileWriter(file));
             Integer sku;
             double price;
@@ -370,10 +376,10 @@ public class HW1 {
                 break;
             }
             println(padJustify(
-                   paddingSize,
-                   fill,
-                   padToRight(5, rank) + " | " + entry.getKey().getSku() + " | ($" + entry.getKey().getPrice() + ") ",
-                   " " + NumberFormat.getInstance().format(entry.getValue().intValue()))
+                    paddingSize,
+                    fill,
+                    padToRight(5, rank) + " | " + entry.getKey().getSku() + " | ($" + entry.getKey().getPrice() + ") ",
+                    " " + NumberFormat.getInstance().format(entry.getValue().intValue()))
             );
             rank++;
         }

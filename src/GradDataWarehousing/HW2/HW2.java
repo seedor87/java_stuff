@@ -1,5 +1,6 @@
 package GradDataWarehousing.HW2;
 
+import GradDataWarehousing.HWResources.SkuMapComparator;
 import GradDataWarehousing.HWResources.SkuPrice;
 import Utils.Timers.AbstractTimer;
 import Utils.Timers.SYSTimer;
@@ -32,20 +33,6 @@ public class HW2 {
     static LocalDate start;
     static LocalDate end;
     static Date startDate;
-
-    static class SkuMapComparator implements Comparator {
-        Map map;
-
-        public SkuMapComparator(Map map) {
-            this.map = map;
-        }
-
-        public int compare(Object pairA, Object pairB) {
-            AtomicInteger countA = (AtomicInteger) map.get((SkuPrice) pairA);
-            AtomicInteger countB = (AtomicInteger) map.get((SkuPrice) pairB);
-            return (countB.intValue() < countA.intValue()) ? -1 : 1;
-        }
-    }
 
     public static void updateSkuMap(SkuPrice sku) {
         skuPriceMapCount.putIfAbsent(sku, new AtomicInteger(0));
