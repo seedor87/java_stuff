@@ -49,7 +49,7 @@ public class HW2 {
             for (Object o : args) {
                 writer.write(delim);
                 writer.write(o.toString());
-                delim = ", ";
+                delim = " , ";
             }
             writer.write("\n");
         } catch (IOException ex) {

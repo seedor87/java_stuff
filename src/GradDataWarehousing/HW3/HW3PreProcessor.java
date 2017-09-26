@@ -13,6 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static GradDataWarehousing.HWResources.Utils.isMilkSku;
 import static Utils.ConsolePrinting.*;
 import static Utils.ConsolePrinting.fgGreen;
 import static Utils.ConsolePrinting.println;
@@ -20,7 +21,7 @@ import static Utils.StringUtils.StringUtils.padJustify;
 
 public class HW3PreProcessor {
 
-    static final String DELIM = ", ";
+    static final String DELIM = " , ";
     static final ConcurrentMap<SkuPrice, AtomicInteger> skuPriceMapCount = new ConcurrentHashMap<>();
     static final String OUTPUT_PATH = "." + File.separatorChar + "output3.txt"; //results go here
     static final String INPUT_PATH = "." + File.separatorChar + "output2.csv";   // start from this file
@@ -82,6 +83,9 @@ public class HW3PreProcessor {
                 String[] fields = line.split(DELIM);
                 Integer sku = Integer.parseInt(fields[0]);
                 Integer avg = Integer.parseInt(fields[3]);
+                if (isMilkSku(sku)) {
+                    println(sku, avg, "is milk");
+                }
                 inventoryMap.put(sku, avg);
             }
         } catch (Exception e) {
@@ -98,4 +102,5 @@ public class HW3PreProcessor {
         println(fgGreen, "\nDONE", timer, "\nsee file: ", OUTPUT_PATH);
         System.exit(0);
     }
+
 }
