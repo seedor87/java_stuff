@@ -49,7 +49,9 @@ public class HW3 {
     static int total_customers = 0;
     static double total_sales_USD = 0;
     // map for pairing <sku and price, count>
-    static final ConcurrentMap<SkuPrice, AtomicInteger> skuPriceMapCount = new ConcurrentHashMap<>();
+    static final ConcurrentMap<SkuPrice, AtomicInteger> SKU_PRICE_MAP_COUNT = new ConcurrentHashMap<>();
+    // map to keep constant track of inventory
+    static final ConcurrentMap<Integer, Integer> MY_INVENTORY = new ConcurrentHashMap<>();
     // local variables for specific tasks
     static BufferedWriter writer;
     static LocalDate start;
@@ -114,14 +116,14 @@ public class HW3 {
      * @param sku
      */
     public static void updateSkuMap(SkuPrice sku) {
-        skuPriceMapCount.putIfAbsent(sku, new AtomicInteger(0));
-        skuPriceMapCount.get(sku).incrementAndGet();
+        SKU_PRICE_MAP_COUNT.putIfAbsent(sku, new AtomicInteger(0));
+        SKU_PRICE_MAP_COUNT.get(sku).incrementAndGet();
     }
 
     /**
      * Method to retrieve one (1) random item from the pre-fabbed list of all products.
      */
-    public static SkuPrice getRandomItem() {
+    public static SkuPrice getRandomItemFromAll() {
         Random rand = new Random();
         int randomIndex = rand.nextInt(allMyProdcuts.size());
         return allMyProdcuts.get(randomIndex);
@@ -130,8 +132,8 @@ public class HW3 {
     /**
      * Method to retrieve one (1) random item from the parameterized list of SkuPrices
      */
-    public static SkuPrice getRandomItem(SkuPrice[] arr) {
-        return arr[new Random().nextInt(arr.length)];
+    public static SkuPrice getRandomItemFromArray(SkuPrice[] array) {
+        return array[new Random().nextInt(array.length)];
     }
 
     public static void main(String[] args) {
@@ -171,6 +173,11 @@ public class HW3 {
         println("All Products List successfully constructed from...");
         println(fgRed, ALL_PRODUCTS_PATH);
 
+        // Init inventory from parsed file of avg bi-weekly sales
+        MY_INVENTORY.putAll(HW3PreProcessor.exe());
+        println("Inventory Initialized from:");
+        println(fgCyan, HW3PreProcessor.INPUT_PATH);
+
         // Parse dates and build java 8 date objects for iteration
         try {
             startDate = formatter.parse(START_DATE_STRING);
@@ -200,7 +207,7 @@ public class HW3 {
                     int itemsCount = 0; // count items per single given customer
                     boolean fallThrough = false;    // boolean switch to fall through execution if/when items count >= numItems
                     if (!fallThrough && randPct() <= 70) {      // if random pct is less than 70%
-                        SkuPrice randMilk = getRandomItem(HW1Arrays.MILKS);  // get random milk SkuPrice
+                        SkuPrice randMilk = getRandomItemFromArray(HW1Arrays.MILKS);  // get random milk SkuPrice
                         sku = randMilk.getSku();     // parse sku out of milk SkuPrice
                         updateSkuMap(randMilk);
                         price = roundTwoDecimal(randMilk.getPrice() * PRICE_MULT); // parse price out of file and x by factor
@@ -211,7 +218,7 @@ public class HW3 {
                             fallThrough = true;                 //...then fallthrough to next customer
                         }
                         if (!fallThrough && randPct() <= 50) {
-                            SkuPrice randCereal = getRandomItem(HW1Arrays.CEREALS);
+                            SkuPrice randCereal = getRandomItemFromArray(HW1Arrays.CEREALS);
                             sku = randCereal.getSku();
                             updateSkuMap(randCereal);
                             price = roundTwoDecimal(randCereal.getPrice() * PRICE_MULT);
@@ -224,7 +231,7 @@ public class HW3 {
                         }
                     } else {
                         if (!fallThrough && randPct() <= 5) {
-                            SkuPrice randCereal = getRandomItem(HW1Arrays.CEREALS);
+                            SkuPrice randCereal = getRandomItemFromArray(HW1Arrays.CEREALS);
                             sku = randCereal.getSku();
                             updateSkuMap(randCereal);
                             price = roundTwoDecimal(randCereal.getPrice() * PRICE_MULT);
@@ -238,7 +245,7 @@ public class HW3 {
                     }
 
                     if (!fallThrough && randPct() <= 20) {
-                        SkuPrice randBaby = getRandomItem(HW1Arrays.BABY_FOODS);
+                        SkuPrice randBaby = getRandomItemFromArray(HW1Arrays.BABY_FOODS);
                         sku = randBaby.getSku();
                         updateSkuMap(randBaby);
                         price = roundTwoDecimal(randBaby.getPrice() * PRICE_MULT);
@@ -249,7 +256,7 @@ public class HW3 {
                             fallThrough = true;
                         }
                         if (!fallThrough && randPct() <= 80) {
-                            SkuPrice randDiaper = getRandomItem(HW1Arrays.DIAPERS);
+                            SkuPrice randDiaper = getRandomItemFromArray(HW1Arrays.DIAPERS);
                             sku = randDiaper.getSku();
                             updateSkuMap(randDiaper);
                             price = roundTwoDecimal(randDiaper.getPrice() * PRICE_MULT);
@@ -262,7 +269,7 @@ public class HW3 {
                         }
                     } else {
                         if (!fallThrough && randPct() <= 1) {
-                            SkuPrice randDiaper = getRandomItem(HW1Arrays.DIAPERS);
+                            SkuPrice randDiaper = getRandomItemFromArray(HW1Arrays.DIAPERS);
                             sku = randDiaper.getSku();
                             updateSkuMap(randDiaper);
                             price = roundTwoDecimal(randDiaper.getPrice() * PRICE_MULT);
@@ -276,7 +283,7 @@ public class HW3 {
                     }
 
                     if (!fallThrough && randPct() <= 10) {
-                        SkuPrice randPeanut = getRandomItem(HW1Arrays.PEANUT_BUTTERS);
+                        SkuPrice randPeanut = getRandomItemFromArray(HW1Arrays.PEANUT_BUTTERS);
                         sku = randPeanut.getSku();
                         updateSkuMap(randPeanut);
                         price = roundTwoDecimal(randPeanut.getPrice() * PRICE_MULT);
@@ -287,7 +294,7 @@ public class HW3 {
                             fallThrough = true;
                         }
                         if (!fallThrough && randPct() <= 90) {
-                            SkuPrice randJJ = getRandomItem(HW1Arrays.JAM_JELLIES);
+                            SkuPrice randJJ = getRandomItemFromArray(HW1Arrays.JAM_JELLIES);
                             sku = randJJ.getSku();
                             updateSkuMap(randJJ);
                             price = roundTwoDecimal(randJJ.getPrice() * PRICE_MULT);
@@ -300,7 +307,7 @@ public class HW3 {
                         }
                     } else {
                         if (!fallThrough && randPct() <= 5) {
-                            SkuPrice randJJ = getRandomItem(HW1Arrays.JAM_JELLIES);
+                            SkuPrice randJJ = getRandomItemFromArray(HW1Arrays.JAM_JELLIES);
                             sku = randJJ.getSku();
                             updateSkuMap(randJJ);
                             price = roundTwoDecimal(randJJ.getPrice() * PRICE_MULT);
@@ -314,7 +321,7 @@ public class HW3 {
                     }
 
                     if(!fallThrough && randPct() < 50) {
-                        SkuPrice randBread = getRandomItem(HW1Arrays.BREADS);
+                        SkuPrice randBread = getRandomItemFromArray(HW1Arrays.BREADS);
                         sku = randBread.getSku();
                         updateSkuMap(randBread);
                         price = roundTwoDecimal(randBread.getPrice() * PRICE_MULT);
@@ -328,7 +335,7 @@ public class HW3 {
 
                     if(!fallThrough) {
                         for ( ; itemsCount < numItems; itemsCount++) {
-                            SkuPrice randAll = getRandomItem();
+                            SkuPrice randAll = getRandomItemFromAll();
                             sku = randAll.getSku();
                             updateSkuMap(randAll);
                             price = roundTwoDecimal(randAll.getPrice() * PRICE_MULT);
@@ -355,8 +362,8 @@ public class HW3 {
         println(fgGreen, "\nDONE", timer, "\n");
 
         // sort map of <sku-price, counts> by frequency (count)
-        Map<SkuPrice, AtomicInteger> sortedSkuCounts = new TreeMap(new SkuMapComparator(skuPriceMapCount));
-        sortedSkuCounts.putAll(skuPriceMapCount);
+        Map<SkuPrice, AtomicInteger> sortedSkuCounts = new TreeMap(new SkuMapComparator(SKU_PRICE_MAP_COUNT));
+        sortedSkuCounts.putAll(SKU_PRICE_MAP_COUNT);
 
         // all of this nonsense prints the results to answer the questions in the assignment
         paddingSize = 42;
