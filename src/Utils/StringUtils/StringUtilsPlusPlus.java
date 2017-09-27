@@ -173,7 +173,7 @@ public class StringUtilsPlusPlus {
                 "me@hotmail.com",
                 "you@apple.com",
                 "someone@yahoo.com",
-                "test@gmail.om",
+                "Test@gmail.om",
                 "no.reply@domain.name.com"
         };
         println(splitAndJustifyOnSeparator(2, "@", '_', someEmailAddresses));
