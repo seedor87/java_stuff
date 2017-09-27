@@ -1,5 +1,9 @@
 package GradDataWarehousing.HWResources;
 
+import java.util.Comparator;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class SkuPrice {
     private int sku;
     private double price;
@@ -32,4 +36,20 @@ public class SkuPrice {
         return this.sku;
     }
 
+    /**
+     * Custom comparator used to sort the map of sku counts to grab most frequent items
+     */
+    public static class SkuMapComparator implements Comparator {
+        Map<SkuPrice, AtomicInteger> map;
+
+        public SkuMapComparator(Map<SkuPrice, AtomicInteger> map) {
+            this.map = map;
+        }
+
+        public int compare(Object pairA, Object pairB) {
+            AtomicInteger countA = map.get(pairA);
+            AtomicInteger countB = map.get(pairB);
+            return (countB.intValue() < countA.intValue()) ? -1 : 1;
+        }
+    }
 }

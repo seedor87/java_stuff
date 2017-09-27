@@ -1,6 +1,5 @@
 package GradDataWarehousing.HW2;
 
-import GradDataWarehousing.HWResources.SkuMapComparator;
 import GradDataWarehousing.HWResources.SkuPrice;
 import Utils.Timers.AbstractTimer;
 import Utils.Timers.SYSTimer;
@@ -94,7 +93,7 @@ public class HW2 {
             }
 
             // sort map of <sku-price, avg> by avg count per day;
-            Map<SkuPrice, Integer> sortedSkuCounts = new TreeMap(new SkuMapComparator(skuPriceMapCount));
+            Map<SkuPrice, Integer> sortedSkuCounts = new TreeMap(new SkuPrice.SkuMapComparator(skuPriceMapCount));
             for (Map.Entry<SkuPrice, AtomicInteger> entry : skuPriceMapCount.entrySet()) {
                 SkuPrice skuPrice = entry.getKey();
                 int avgCountPerDay = entry.getValue().intValue() / (NUM_WEEKS * 7);

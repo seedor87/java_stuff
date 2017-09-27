@@ -349,7 +349,7 @@ public class HW1 {
         println(fgGreen, "\nDONE", timer, "\n");
 
         // sort map of <sku-price, counts> by frequency (count)
-        Map<SkuPrice, AtomicInteger> sortedSkuCounts = new TreeMap(new SkuMapComparator(skuPriceMapCount));
+        Map<SkuPrice, AtomicInteger> sortedSkuCounts = new TreeMap(new SkuPrice.SkuMapComparator(skuPriceMapCount));
         sortedSkuCounts.putAll(skuPriceMapCount);
 
         // all of this nonsense prints the results to answer the questions in the assignment
