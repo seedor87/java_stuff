@@ -21,9 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static GradDataWarehousing.HWResources.Utils.isMilkSku;
 import static Utils.ConsolePrinting.*;
 import static Utils.ConsolePrinting.println;
-import static Utils.StringUtils.StringUtils.padJustify;
-import static Utils.StringUtils.StringUtils.padToLength;
-import static Utils.StringUtils.StringUtils.padToRight;
+import static Utils.StringUtils.StringUtils.*;
 
 public class HW3 {
 
@@ -507,17 +505,20 @@ public class HW3 {
         );
         println(padJustify(paddingSize, ' ', "Top 10 Items By Count:"));
         println(padToLength(paddingSize, '='));
-        println(padJustify(paddingSize, ' ', " Rank |   SKU    |  Price", padToLength(9), "| Count |", " Cases YTD"));
+        println(padJustify(paddingSize, ' ', " Rank |   SKU    |  Price  ", padToLength(7, '.'), " Count  |", " Cases YTD"));
         int rank = 1;
         for (Map.Entry<SkuPrice, AtomicInteger> entry : sortedSkuCounts.entrySet()) {
-            if( rank > 10 ) {
-                break;
-            }
+            int sku = entry.getKey().getSku();
+            double price = entry.getKey().getPrice();
+            int count = entry.getValue().intValue();
+//            if( rank > 10 ) {
+//                break;
+//            }
             println(padJustify(
                     paddingSize,
                     fill,
-                    padToRight(5, rank) + " | " + entry.getKey().getSku() + " | ($" + entry.getKey().getPrice() + ") ",
-                    " " + NumberFormat.getInstance().format(entry.getValue().intValue()) + "  | " + YTD_CASES.get(entry.getKey().getSku()))
+                    padToRight(5, rank) + " | " + sku + " | ($" + padToLeft(4, '0', price) + ") ",
+                    " " + NumberFormat.getInstance().format(entry.getValue().intValue()) + " | " + YTD_CASES.get(entry.getKey().getSku()))
             );
             rank++;
         }
