@@ -55,6 +55,8 @@ public class HW3 {
     static final ConcurrentMap<Integer, Integer> MY_INVENTORY = new ConcurrentHashMap<>();
     // map to store sku-avg pairs for inventory readjustment and ordering
     static final ConcurrentHashMap<Integer, Integer> SKU_AVG_MAP = new ConcurrentHashMap<>();
+    // map to store the year to date num cases ordered so far, per sku
+    static final ConcurrentHashMap<Integer, Integer> YTD_CASES = new ConcurrentHashMap<>();
     // local variables for specific tasks
     static BufferedWriter writer;
     static LocalDate start;
@@ -198,6 +200,9 @@ public class HW3 {
         InventoryBuilder.buildInventory();
         MY_INVENTORY.putAll(InventoryBuilder.inventoryMap);
         SKU_AVG_MAP.putAll(InventoryBuilder.avgsMap);
+        for(Map.Entry<Integer, Integer> entry : SKU_AVG_MAP.entrySet()) {
+            YTD_CASES.putIfAbsent(entry.getKey(), 0);
+        }
         println("Inventory Initialized from:");
         println(fgCyan, InventoryBuilder.INPUT_PATH);
 
@@ -221,31 +226,40 @@ public class HW3 {
 
             for (LocalDate date = start; date.isBefore(end); date = date.plusDays(1)) {
 
-                if(isDeliveryDay(date)) {
-                    for(Map.Entry<Integer, Integer> entry : MY_INVENTORY.entrySet()) {
-                        sku = entry.getKey();
-                        int currentStock = MY_INVENTORY.get(sku);
-                        int avgDailyStock = SKU_AVG_MAP.get(sku);
-                        if(!isMilkSku(entry.getKey()) && currentStock < (3 * avgDailyStock)) {
-                            int quantityOrdered = (3 * avgDailyStock) - currentStock;
-                            MY_INVENTORY.replace(sku, currentStock + quantityOrdered);
-                        }
-                    }
-                }
-
                 for(Map.Entry<Integer, Integer> entry : MY_INVENTORY.entrySet()) {
                     sku = entry.getKey();
                     int currentStock = MY_INVENTORY.get(sku);
                     int avgDailyStock = SKU_AVG_MAP.get(sku);
-                    if(isMilkSku(entry.getKey()) && currentStock < (1.5 * avgDailyStock)) {
-                        int quantityOrdered = (int) (1.5 * avgDailyStock) - currentStock;
-                        MY_INVENTORY.replace(sku, currentStock + quantityOrdered);
+                    if(isDeliveryDay(date) && !isMilkSku(sku)) {
+                        if (currentStock < (3 * avgDailyStock)) {
+                            int quantityOrdered = (3 * avgDailyStock) - currentStock;
+                            int leftOver = quantityOrdered % 12;
+                            int numCases = quantityOrdered / 12;
+                            if(leftOver != 0) {
+                                numCases += 1;
+                            }
+                            MY_INVENTORY.replace(sku, currentStock + numCases * 12);
+                            YTD_CASES.putIfAbsent(sku, numCases);
+                            YTD_CASES.replace(sku, YTD_CASES.get(sku) + numCases);
+                        }
+                    }
+                    if(isMilkSku(sku)) {
+                        if(isMilkSku(entry.getKey()) && currentStock < (1.5 * avgDailyStock)) {
+                            int quantityOrdered = (int) (1.5 * avgDailyStock) - currentStock;
+                            int leftOver = quantityOrdered % 12;
+                            int numCases = quantityOrdered / 12;
+                            if(leftOver != 0) {
+                                numCases += 1;
+                            }
+                            MY_INVENTORY.replace(sku, currentStock + numCases * 12);
+                            YTD_CASES.putIfAbsent(sku, numCases);
+                            YTD_CASES.replace(sku, YTD_CASES.get(sku) + numCases);
+                        }
                     }
                 }
 
-
                 int numCust = randRange(CUST_LOW, CUST_HI);
-                if (isWeekend(date)) {  //if sat or sunday, boost numCustomers
+                if (isWeekend(date)) {  //if sat or sun, boost numCustomers
                     numCust += WEEKEND_INCREASE;
                 }
 
@@ -260,9 +274,12 @@ public class HW3 {
                         if(MY_INVENTORY.get(sku) -1 > -1) {
                             updateSkuMap(new SkuPrice(sku, price));
                             total_sales_USD += price;               // increment total sales with price
-                            write(date, custCount, itemsCount, sku, price); // write to file
                             itemsCount++;                           // increase itemsCount
-                            MY_INVENTORY.replace(sku, MY_INVENTORY.get(sku)-1);
+                            int currentQuantity = MY_INVENTORY.get(sku);
+                            currentQuantity--;
+                            int casesYTD = YTD_CASES.get(sku);
+                            MY_INVENTORY.replace(sku, currentQuantity);
+                            write(date, custCount, itemsCount, sku, price, currentQuantity, casesYTD); // write to file
                         }
                         if (itemsCount >= numItems) {           // if this customer's shopping lists has already been fulfilled...
                         fallThrough = true;                 //...then fallthrough to next customer
@@ -274,9 +291,12 @@ public class HW3 {
                             if(MY_INVENTORY.get(sku) -1 > -1) {
                                 updateSkuMap(new SkuPrice(sku, price));
                                 total_sales_USD += price;
-                                write(date, custCount, itemsCount, sku, price);
                                 itemsCount++;
-                                MY_INVENTORY.replace(sku, MY_INVENTORY.get(sku)-1);
+                                int currentQuantity = MY_INVENTORY.get(sku);
+                                currentQuantity--;
+                                int casesYTD = YTD_CASES.get(sku);
+                                MY_INVENTORY.replace(sku, currentQuantity);
+                                write(date, custCount, itemsCount, sku, price, currentQuantity, casesYTD);
                             }
                             if (itemsCount >= numItems) {
                                 fallThrough = true;
@@ -290,9 +310,12 @@ public class HW3 {
                             if(MY_INVENTORY.get(sku) -1 > -1) {
                                 updateSkuMap(new SkuPrice(sku, price));
                                 total_sales_USD += price;
-                                write(date, custCount, itemsCount, sku, price);
                                 itemsCount++;
-                                MY_INVENTORY.replace(sku, MY_INVENTORY.get(sku)-1);
+                                int currentQuantity = MY_INVENTORY.get(sku);
+                                currentQuantity--;
+                                int casesYTD = YTD_CASES.get(sku);
+                                MY_INVENTORY.replace(sku, currentQuantity);
+                                write(date, custCount, itemsCount, sku, price, currentQuantity, casesYTD);
                             }
                             if (itemsCount >= numItems) {
                                 fallThrough = true;
@@ -307,9 +330,12 @@ public class HW3 {
                         if(MY_INVENTORY.get(sku) -1 > -1) {
                             updateSkuMap(new SkuPrice(sku, price));
                             total_sales_USD += price;
-                            write(date, custCount, itemsCount, sku, price);
                             itemsCount++;
-                            MY_INVENTORY.replace(sku, MY_INVENTORY.get(sku)-1);
+                            int currentQuantity = MY_INVENTORY.get(sku);
+                            currentQuantity--;
+                            int casesYTD = YTD_CASES.get(sku);
+                            MY_INVENTORY.replace(sku, currentQuantity);
+                            write(date, custCount, itemsCount, sku, price, currentQuantity, casesYTD);
                         }
                         if (itemsCount >= numItems) {
                             fallThrough = true;
@@ -321,9 +347,12 @@ public class HW3 {
                             if(MY_INVENTORY.get(sku) -1 > -1) {
                                 updateSkuMap(new SkuPrice(sku, price));
                                 total_sales_USD += price;
-                                write(date, custCount, itemsCount, sku, price);
                                 itemsCount++;
-                                MY_INVENTORY.replace(sku, MY_INVENTORY.get(sku)-1);
+                                int currentQuantity = MY_INVENTORY.get(sku);
+                                currentQuantity--;
+                                int casesYTD = YTD_CASES.get(sku);
+                                MY_INVENTORY.replace(sku, currentQuantity);
+                                write(date, custCount, itemsCount, sku, price, currentQuantity, casesYTD);
                             }
                             if (itemsCount >= numItems) {
                                 fallThrough = true;
@@ -337,9 +366,12 @@ public class HW3 {
                             if(MY_INVENTORY.get(sku) -1 > -1) {
                                 updateSkuMap(new SkuPrice(sku, price));
                                 total_sales_USD += price;
-                                write(date, custCount, itemsCount, sku, price);
                                 itemsCount++;
-                                MY_INVENTORY.replace(sku, MY_INVENTORY.get(sku)-1);
+                                int currentQuantity = MY_INVENTORY.get(sku);
+                                currentQuantity--;
+                                int casesYTD = YTD_CASES.get(sku);
+                                MY_INVENTORY.replace(sku, currentQuantity);
+                                write(date, custCount, itemsCount, sku, price, currentQuantity, casesYTD);
                             }
                             if (itemsCount >= numItems) {
                                 fallThrough = true;
@@ -354,9 +386,12 @@ public class HW3 {
                         if(MY_INVENTORY.get(sku) -1 > -1) {
                             updateSkuMap(new SkuPrice(sku, price));
                             total_sales_USD += price;
-                            write(date, custCount, itemsCount, sku, price);
                             itemsCount++;
-                            MY_INVENTORY.replace(sku, MY_INVENTORY.get(sku)-1);
+                            int currentQuantity = MY_INVENTORY.get(sku);
+                            currentQuantity--;
+                            int casesYTD = YTD_CASES.get(sku);
+                            MY_INVENTORY.replace(sku, currentQuantity);
+                            write(date, custCount, itemsCount, sku, price, currentQuantity, casesYTD);
                         }
                         if (itemsCount >= numItems) {
                             fallThrough = true;
@@ -368,9 +403,12 @@ public class HW3 {
                             if(MY_INVENTORY.get(sku) -1 > -1) {
                                 updateSkuMap(new SkuPrice(sku, price));
                                 total_sales_USD += price;
-                                write(date, custCount, itemsCount, sku, price);
                                 itemsCount++;
-                                MY_INVENTORY.replace(sku, MY_INVENTORY.get(sku)-1);
+                                int currentQuantity = MY_INVENTORY.get(sku);
+                                currentQuantity--;
+                                int casesYTD = YTD_CASES.get(sku);
+                                MY_INVENTORY.replace(sku, currentQuantity);
+                                write(date, custCount, itemsCount, sku, price, currentQuantity, casesYTD);
                             }
                             if (itemsCount >= numItems) {
                                 fallThrough = true;
@@ -384,9 +422,12 @@ public class HW3 {
                             if(MY_INVENTORY.get(sku) -1 > -1) {
                                 updateSkuMap(new SkuPrice(sku, price));
                                 total_sales_USD += price;
-                                write(date, custCount, itemsCount, sku, price);
                                 itemsCount++;
-                                MY_INVENTORY.replace(sku, MY_INVENTORY.get(sku)-1);
+                                int currentQuantity = MY_INVENTORY.get(sku);
+                                currentQuantity--;
+                                int casesYTD = YTD_CASES.get(sku);
+                                MY_INVENTORY.replace(sku, currentQuantity);
+                                write(date, custCount, itemsCount, sku, price, currentQuantity, casesYTD);
                             }
                             if (itemsCount >= numItems) {
                                 fallThrough = true;
@@ -401,9 +442,12 @@ public class HW3 {
                         if(MY_INVENTORY.get(sku) -1 > -1) {
                             updateSkuMap(new SkuPrice(sku, price));
                             total_sales_USD += price;
-                            write(date, custCount, itemsCount, sku, price);
                             itemsCount++;
-                            MY_INVENTORY.replace(sku, MY_INVENTORY.get(sku)-1);
+                            int currentQuantity = MY_INVENTORY.get(sku);
+                            currentQuantity--;
+                            int casesYTD = YTD_CASES.get(sku);
+                            MY_INVENTORY.replace(sku, currentQuantity);
+                            write(date, custCount, itemsCount, sku, price, currentQuantity, casesYTD);
                         }
                         if (itemsCount >= numItems) {
                             fallThrough = true;
@@ -421,9 +465,12 @@ public class HW3 {
                             if(MY_INVENTORY.get(sku) -1 > -1) {
                                 updateSkuMap(new SkuPrice(sku, price));
                                 total_sales_USD += price;
-                                write(date, custCount, itemsCount, sku, price);
                                 itemsCount++;
-                                MY_INVENTORY.replace(sku, MY_INVENTORY.get(sku)-1);
+                                int currentQuantity = MY_INVENTORY.get(sku);
+                                currentQuantity--;
+                                int casesYTD = YTD_CASES.get(sku);
+                                MY_INVENTORY.replace(sku, currentQuantity);
+                                write(date, custCount, itemsCount, sku, price, currentQuantity, casesYTD);
                             }
                         }
                     }
@@ -450,7 +497,7 @@ public class HW3 {
         sortedSkuCounts.putAll(SKU_PRICE_MAP_COUNT);
 
         // all of this nonsense prints the results to answer the questions in the assignment
-        paddingSize = 42;
+        paddingSize = 48;
         fill = '.';
         print(fgYellow);
         printlnDelim("\n",
@@ -460,7 +507,7 @@ public class HW3 {
         );
         println(padJustify(paddingSize, ' ', "Top 10 Items By Count:"));
         println(padToLength(paddingSize, '='));
-        println(padJustify(paddingSize, ' ', " Rank |   SKU    |  Price ", "Count "));
+        println(padJustify(paddingSize, ' ', " Rank |   SKU    |  Price", padToLength(9), "| Count |", " Cases YTD"));
         int rank = 1;
         for (Map.Entry<SkuPrice, AtomicInteger> entry : sortedSkuCounts.entrySet()) {
             if( rank > 10 ) {
@@ -470,10 +517,11 @@ public class HW3 {
                     paddingSize,
                     fill,
                     padToRight(5, rank) + " | " + entry.getKey().getSku() + " | ($" + entry.getKey().getPrice() + ") ",
-                    " " + NumberFormat.getInstance().format(entry.getValue().intValue()))
+                    " " + NumberFormat.getInstance().format(entry.getValue().intValue()) + "  | " + YTD_CASES.get(entry.getKey().getSku()))
             );
             rank++;
         }
+
         System.exit(0);
     }
 }
