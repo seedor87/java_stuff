@@ -11,25 +11,25 @@ public class ConsolePrinting {
         String str();
     }
 
-    public static Color fgBlack = () ->    "\u001B[30m";
-    public static Color fgRed = () ->      "\u001B[31m";
-    public static Color fgGreen = () ->    "\u001B[32m";
-    public static Color fgYellow = () ->   "\u001B[33m";
-    public static Color fgBlue = () ->     "\u001B[34m";
-    public static Color fgPurple = () ->   "\u001B[35m";
-    public static Color fgCyan = () ->     "\u001B[36m";
-    public static Color fgWhite = () ->    "\u001B[37m";
+    public static Color FGBLACK = () ->    "\u001B[30m";
+    public static Color FGRED = () ->      "\u001B[31m";
+    public static Color FGGREEN = () ->    "\u001B[32m";
+    public static Color FGYELLOW = () ->   "\u001B[33m";
+    public static Color FGBLUE = () ->     "\u001B[34m";
+    public static Color FGPURPLE = () ->   "\u001B[35m";
+    public static Color FGCYAN = () ->     "\u001B[36m";
+    public static Color FGWHITE = () ->    "\u001B[37m";
 
-    public static Color bgBlack = () ->    "\u001B[40m";
-    public static Color bgRed = () ->      "\u001B[41m";
-    public static Color bgGreen = () ->    "\u001B[42m";
-    public static Color bgYellow = () ->   "\u001B[43m";
-    public static Color bgBlue = () ->     "\u001B[44m";
-    public static Color bgPurple = () ->   "\u001B[45m";
-    public static Color bgCyan = () ->     "\u001B[46m";
-    public static Color bgWhite = () ->    "\u001B[47m";
+    public static Color BGBLACK = () ->    "\u001B[40m";
+    public static Color BGRED = () ->      "\u001B[41m";
+    public static Color BGGREEN = () ->    "\u001B[42m";
+    public static Color BGYELLOW = () ->   "\u001B[43m";
+    public static Color BGBLUE = () ->     "\u001B[44m";
+    public static Color BGPURPLE = () ->   "\u001B[45m";
+    public static Color BGCYAN = () ->     "\u001B[46m";
+    public static Color BGWHITE = () ->    "\u001B[47m";
 
-    public static Color reset = () ->      "\u001B[0m";
+    public static Color RESET = () ->      "\u001B[0m";
 
     public static void print(Color c) {
         print(c.str());
@@ -45,7 +45,7 @@ public class ConsolePrinting {
         for (T elem: args) {
             sb.append(elem.toString());
         }
-        sb.append(reset);
+        sb.append(RESET);
         return sb.toString();
     }
 
@@ -107,7 +107,7 @@ public class ConsolePrinting {
     }
 
     private static void printNull() {
-        print(fgRed, "NULL");
+        print(FGRED, "NULL");
     }
 
     public static <T> void print(T o) {
@@ -147,7 +147,7 @@ public class ConsolePrinting {
     public static <T> void print(Color c, T...args) {
         print(c);
         print(args);
-        print(reset);
+        print(RESET);
     }
 
     public static <T> void println(Color c, T...args) {
@@ -159,7 +159,7 @@ public class ConsolePrinting {
         print(c1);
         print(c2);
         print(args);
-        print(reset);
+        print(RESET);
     }
 
     public static <T> void println(Color c1, Color c2, T...args) {
@@ -223,12 +223,12 @@ public class ConsolePrinting {
         println(new String[][]{{"mouse", "cheese"}, {"dog", "bone"}, {"pig", "slop"}});
         println(new int[][][]{{{1},{2},{3}}, {{4,5,6}}, {{7}},{{8}},{{9}}});
 
-        println(fgCyan, Arrays.asList(1, 47, true, 't', "bob", new Tuple<>(7, '8', "9"), new int[]{2,1,1,2}));
-        println(fgWhite, new char[10]);
-        println(fgBlack, new Character[]{'a','b','c','d','e','f','g','h','i','j'});
-        println(fgPurple, Arrays.asList(Long.MAX_VALUE, Long.MAX_VALUE+1));
-        println(fgBlue, bgYellow, new char[]{'a','b','c'});
-        println(fgYellow, bgBlue, new int[]{'a','b','c'});
+        println(FGCYAN, Arrays.asList(1, 47, true, 't', "bob", new Tuple<>(7, '8', "9"), new int[]{2,1,1,2}));
+        println(FGWHITE, new char[10]);
+        println(FGBLACK, new Character[]{'a','b','c','d','e','f','g','h','i','j'});
+        println(FGPURPLE, Arrays.asList(Long.MAX_VALUE, Long.MAX_VALUE+1));
+        println(FGBLUE, BGYELLOW, new char[]{'a','b','c'});
+        println(FGYELLOW, BGBLUE, new int[]{'a','b','c'});
 
         Integer[] iarr = new Integer[5];
         iarr[1] = 1;

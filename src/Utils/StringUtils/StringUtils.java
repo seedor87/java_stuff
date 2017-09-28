@@ -153,7 +153,7 @@ public class StringUtils {
     public static void main(String[] args) {
 
         int len = 60;
-        print(fgBlack);
+        print(FGBLACK);
         println(padToRight(len, "testing"));
         println(padToLeft(len, "Test ing"));
         println(padToRight(len, '*', "Test   ing"));
@@ -167,24 +167,24 @@ public class StringUtils {
         Character[] carr = new Character[]{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q'};
 //        arr = new String[]{"one", "two", "three", "four", "five", "six", "seven", "eight", "nine"};
         for (int i = 0; i < carr.length; i++) {
-            println(fgBlue, padJustify(len, '_', Arrays.copyOfRange(carr, 0, i + 1)));
-            println(fgRed, padCenter(len, '_', Arrays.copyOfRange(carr, 0, i + 1)));
+            println(FGBLUE, padJustify(len, '_', Arrays.copyOfRange(carr, 0, i + 1)));
+            println(FGRED, padCenter(len, '_', Arrays.copyOfRange(carr, 0, i + 1)));
         }
 
 
         String[] sarr = new String[]{"0th", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th"};
         for (int i = 0; i < sarr.length; i++) {
-            println(fgCyan, padJustify(len, '-', Arrays.copyOfRange(sarr, 0, i + 1)));
+            println(FGCYAN, padJustify(len, '-', Arrays.copyOfRange(sarr, 0, i + 1)));
         }
         for (int i = sarr.length - 2; i > -1; i--) {
-            println(fgCyan, padJustify(len, '-', Arrays.copyOfRange(sarr, 0, i + 1)));
+            println(FGCYAN, padJustify(len, '-', Arrays.copyOfRange(sarr, 0, i + 1)));
         }
 
         for (int i = 0; i < sarr.length; i++) {
-            println(fgYellow, padCenter(len, '-', Arrays.copyOfRange(sarr, 0, i + 1)));
+            println(FGYELLOW, padCenter(len, '-', Arrays.copyOfRange(sarr, 0, i + 1)));
         }
         for (int i = sarr.length - 2; i > -1; i--) {
-            println(fgYellow, padCenter(len, '-', Arrays.copyOfRange(sarr, 0, i + 1)));
+            println(FGYELLOW, padCenter(len, '-', Arrays.copyOfRange(sarr, 0, i + 1)));
         }
     }
 }

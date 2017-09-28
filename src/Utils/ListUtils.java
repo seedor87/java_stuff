@@ -135,14 +135,14 @@ public class ListUtils {
         String[] array1 = new String[]{"one", "two", "three"};
         String[] array2 = new String[]{"four", "five", "six"};
         String[] array3 = new String[]{"seven", "eight", "nine", "ten", "eleven"};
-        println(fgRed, inLineZip(array1, array2, array3));
+        println(FGRED, inLineZip(array1, array2, array3));
 
         List<String> list1 = new ArrayList<>(Arrays.asList("one", "two", "three"));
         List<String> list2 = new ArrayList<>(Arrays.asList("four", "five", "six"));
         List<String> list3 = new ArrayList<>(Arrays.asList("seven", "eight", "nine", "ten", "eleven"));
-        println(fgBlue, inLineZip(list1, list2, list3));
+        println(FGBLUE, inLineZip(list1, list2, list3));
 
-        println(fgGreen, inLineZip(
+        println(FGGREEN, inLineZip(
                 new Character[]{'a', 'b'},
                 new Character[]{'c', 'd'},
                 new Character[]{'e', 'f'}

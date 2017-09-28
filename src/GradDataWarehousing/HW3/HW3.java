@@ -49,14 +49,18 @@ public class HW3 {
     // map to store the year to date num cases ordered so far, per sku
     static final ConcurrentHashMap<Integer, Integer> YTD_CASES = new ConcurrentHashMap<>();
 
+    // Max size for an given collection of all the products
+    static int max_all_items;
     //date format for day iteration
     static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     // the list of all products created at start to easily index for random sku-price from all
-    static ArrayList<SkuPrice> allMyProdcuts = new ArrayList<>();
+    static SkuPrice[] allMyProdcuts;
     // vars holding the runtime counts for metrics
     static int total_items_bought = 0;
     static int total_customers = 0;
     static double total_sales_USD = 0;
+    // class wide access to variable that allows us to fall through main body if number items bough so far > items allotted to customer
+    static boolean fallThrough = false;
     // local variables for specific tasks
     static BufferedWriter writer;
     static LocalDate start;
@@ -67,6 +71,11 @@ public class HW3 {
     static Integer sku;
     // reusable value for price tracking
     static double price;
+    static int currentQuantity;
+    static int casesYTD;
+    static LocalDate date;
+    static int itemsCount;
+    static int custCount;
 
     /**
      * Method to generate one (1) random integer between low (inclusive) and hi (exclusive)
@@ -143,15 +152,6 @@ public class HW3 {
     }
 
     /**
-     * Method to retrieve one (1) random item from the pre-fabbed list of all products.
-     */
-    public static SkuPrice getRandomItemFromAll() {
-        Random rand = new Random();
-        int randomIndex = rand.nextInt(allMyProdcuts.size());
-        return allMyProdcuts.get(randomIndex);
-    }
-
-    /**
      * Method to retrieve one (1) random item from the parameterized list of SkuPrices
      */
     public static SkuPrice getRandomItemFromArray(SkuPrice[] array) {
@@ -208,12 +208,33 @@ public class HW3 {
         }
     }
 
+    /**
+     * Method to allow a customer to attempt to but an item based ont he given array of items.
+     * This is used across the main body's nested if's to limit the size of the program.
+     */
+    public static boolean buyItem(SkuPrice[] array) {
+        SkuPrice randMilk = getRandomItemFromArray(array);  // get random milk SkuPrice
+        sku = randMilk.getSku();     // parse sku out of milk SkuPrice
+        price = roundTwoDecimal(randMilk.getPrice() * PRICE_MULT); // parse price out of file and x by factor
+        if(MY_INVENTORY.get(sku) -1 > -1) {
+            updateSkuMap(new SkuPrice(sku, price));
+            total_sales_USD += price;               // increment total sales with price
+            currentQuantity = MY_INVENTORY.get(sku);
+            currentQuantity--;
+            casesYTD = YTD_CASES.get(sku);
+            MY_INVENTORY.replace(sku, currentQuantity);
+            return true;
+        }
+        return false;
+    }
+
     public static void main(String[] args) {
 
         // Header to message the user with set parameters and start timer.
-        println(fgPurple, "Creation Started w/ Params:");
+        println("Creation Started w/ Params:");
         int paddingSize = 32;
         char fill = '*';
+        print(FGPURPLE);
         printlnDelim("\n",
                 padJustify(paddingSize, fill,     "START_DATE_STRING ",  " " + START_DATE_STRING),
                 padJustify(paddingSize, fill,     "END_DATE_STRING ",    " " + END_DATE_STRING),
@@ -224,26 +245,9 @@ public class HW3 {
                 padJustify(paddingSize, fill,     "WEEKEND_INCREASE ",   " " + WEEKEND_INCREASE),
                 padJustify(paddingSize, fill,     "OUTPUT FILE ",        " " + OUTPUT_PATH)
         );
+        print(RESET);
         AbstractTimer timer = new SYSTimer(AbstractTimer.TimeUnit.SECONDS);
         timer.start();
-
-        // Build array of all products for rand access later
-        try {
-            FileInputStream fs = new FileInputStream(ALL_PRODUCTS_PATH);
-            BufferedReader br = new BufferedReader(new InputStreamReader(fs));
-            String line;
-            while((line = br.readLine()) != null) {
-                String[] pair = line.split(", ");
-                int sku = Integer.parseInt(pair[0]);
-                double price = Double.parseDouble(pair[1]);
-                allMyProdcuts.add(new SkuPrice(sku, price));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        println();
-        println("All Products List successfully constructed from...");
-        println(fgBlue, ALL_PRODUCTS_PATH);
 
         // Init inventory, avg.s map, and ytd cases map from parsed file of avg bi-weekly sales
         InventoryBuilder.buildInventory();
@@ -252,8 +256,32 @@ public class HW3 {
         for(Map.Entry<Integer, Integer> entry : SKU_AVG_MAP.entrySet()) {
             YTD_CASES.putIfAbsent(entry.getKey(), 0);   // init the YTD_CASES map to all zeroes
         }
-        println("Inventory Initialized from...");
-        println(fgCyan, InventoryBuilder.INPUT_PATH);
+        println("\nInventory Initialized from...");
+        println(FGCYAN, InventoryBuilder.INPUT_PATH);
+
+        // set max to size determined by all skus maps
+        max_all_items = SKU_AVG_MAP.size();
+
+        // Build array of all my products for rand access later
+        try {
+            allMyProdcuts = new SkuPrice[max_all_items];
+            FileInputStream fs = new FileInputStream(ALL_PRODUCTS_PATH);
+            BufferedReader br = new BufferedReader(new InputStreamReader(fs));
+            String line;
+            int i = 0;
+            while((line = br.readLine()) != null) {
+                String[] pair = line.split(", ");
+                sku = Integer.parseInt(pair[0]);
+                price = Double.parseDouble(pair[1]);
+                allMyProdcuts[i] = new SkuPrice(sku, price);
+                i++;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        println();
+        println("All Products List successfully constructed from...");
+        println(FGBLUE, ALL_PRODUCTS_PATH);
 
         // Parse dates and build java 8 date objects for iteration
         try {
@@ -267,72 +295,47 @@ public class HW3 {
 
         // Main body of work
         try {
-            println("working...");
+            println("\nworking...");
             File file = new File(OUTPUT_PATH);
             writer = new BufferedWriter(new FileWriter(file));
+            int numCust;
+            int numItems;
 
-            for (LocalDate date = start; date.isBefore(end); date = date.plusDays(1)) {
+            for (date = start; date.isBefore(end); date = date.plusDays(1)) {
 
-                // every day see if we can bolster inventory of milk, all (on acceptable dates), or both
+                /* every day see if we can bolster inventory of milk, all (on acceptable dates), or both */
                 bolsterInventory(date);
 
                 // generate random num of customers for today
-                int numCust = randRange(CUST_LOW, CUST_HI);
+                numCust = randRange(CUST_LOW, CUST_HI);
                 if (isWeekend(date)) {  //if sat or sun, boost numCustomers
                     numCust += WEEKEND_INCREASE;
                 }
 
-                for (int custCount = 0; custCount < numCust; custCount++) {
-                    int numItems = randRange(1, MAX_ITEMS+1);   // rand numItems between 0 and MAX_ITEMS+1 (non inclusive)
-                    int itemsCount = 0; // count items per single given customer
-                    boolean fallThrough = false;    // boolean switch to fall through execution if/when items count >= numItems
+                for (custCount = 0; custCount < numCust; custCount++) {
+                    numItems = randRange(1, MAX_ITEMS+1);   // rand numItems between 0 and MAX_ITEMS+1 (non inclusive)
+                    itemsCount = 0; // count items per single given customer
+                    fallThrough = false;    // re-set fallthrough for this customer
                     if (!fallThrough && randPct() <= 70) {      // if random pct is less than 70%
-                        SkuPrice randMilk = getRandomItemFromArray(HW1Arrays.MILKS);  // get random milk SkuPrice
-                        sku = randMilk.getSku();     // parse sku out of milk SkuPrice
-                        price = roundTwoDecimal(randMilk.getPrice() * PRICE_MULT); // parse price out of file and x by factor
-                        if(MY_INVENTORY.get(sku) -1 > -1) {
-                            updateSkuMap(new SkuPrice(sku, price));
-                            total_sales_USD += price;               // increment total sales with price
-                            int currentQuantity = MY_INVENTORY.get(sku);
-                            currentQuantity--;
-                            int casesYTD = YTD_CASES.get(sku);
-                            MY_INVENTORY.replace(sku, currentQuantity);
-                            write(date, custCount, itemsCount, sku, price, currentQuantity, casesYTD); // write to file
-                            itemsCount++;                           // increase itemsCount
+                        if(buyItem(HW1Arrays.MILKS)) {          // if the customer successfully buys the item from the given array
+                            write(date, custCount, itemsCount, sku, price, currentQuantity, casesYTD); // then we write to file
+                            itemsCount++;                           // and increase itemsCount
                         }
-                        if (itemsCount >= numItems) {           // if this customer's shopping lists has already been fulfilled...
+                        if (itemsCount >= numItems) {           // If this customer's shopping lists has already been fulfilled...
                         fallThrough = true;                 //...then fallthrough to next customer
                         }
                         if (!fallThrough && randPct() <= 50) {
-                            SkuPrice randCereal = getRandomItemFromArray(HW1Arrays.CEREALS);
-                            sku = randCereal.getSku();
-                            price = roundTwoDecimal(randCereal.getPrice() * PRICE_MULT);
-                            if(MY_INVENTORY.get(sku) -1 > -1) {
-                                updateSkuMap(new SkuPrice(sku, price));
-                                total_sales_USD += price;
-                                int currentQuantity = MY_INVENTORY.get(sku);
-                                currentQuantity--;
-                                int casesYTD = YTD_CASES.get(sku);
-                                MY_INVENTORY.replace(sku, currentQuantity);
-                                write(date, custCount, itemsCount, sku, price, currentQuantity, casesYTD);
-                                itemsCount++;
-                            }
+                           if(buyItem(HW1Arrays.CEREALS)) {
+                               write(date, custCount, itemsCount, sku, price, currentQuantity, casesYTD);
+                               itemsCount++;
+                           }
                             if (itemsCount >= numItems) {
                                 fallThrough = true;
                             }
                         }
                     } else {
                         if (!fallThrough && randPct() <= 5) {
-                            SkuPrice randCereal = getRandomItemFromArray(HW1Arrays.CEREALS);
-                            sku = randCereal.getSku();
-                            price = roundTwoDecimal(randCereal.getPrice() * PRICE_MULT);
-                            if(MY_INVENTORY.get(sku) -1 > -1) {
-                                updateSkuMap(new SkuPrice(sku, price));
-                                total_sales_USD += price;
-                                int currentQuantity = MY_INVENTORY.get(sku);
-                                currentQuantity--;
-                                int casesYTD = YTD_CASES.get(sku);
-                                MY_INVENTORY.replace(sku, currentQuantity);
+                            if(buyItem(HW1Arrays.CEREALS)) {
                                 write(date, custCount, itemsCount, sku, price, currentQuantity, casesYTD);
                                 itemsCount++;
                             }
@@ -343,16 +346,7 @@ public class HW3 {
                     }
 
                     if (!fallThrough && randPct() <= 20) {
-                        SkuPrice randBaby = getRandomItemFromArray(HW1Arrays.BABY_FOODS);
-                        sku = randBaby.getSku();
-                        price = roundTwoDecimal(randBaby.getPrice() * PRICE_MULT);
-                        if(MY_INVENTORY.get(sku) -1 > -1) {
-                            updateSkuMap(new SkuPrice(sku, price));
-                            total_sales_USD += price;
-                            int currentQuantity = MY_INVENTORY.get(sku);
-                            currentQuantity--;
-                            int casesYTD = YTD_CASES.get(sku);
-                            MY_INVENTORY.replace(sku, currentQuantity);
+                        if(buyItem(HW1Arrays.BABY_FOODS)) {
                             write(date, custCount, itemsCount, sku, price, currentQuantity, casesYTD);
                             itemsCount++;
                         }
@@ -360,16 +354,7 @@ public class HW3 {
                             fallThrough = true;
                         }
                         if (!fallThrough && randPct() <= 80) {
-                            SkuPrice randDiaper = getRandomItemFromArray(HW1Arrays.DIAPERS);
-                            sku = randDiaper.getSku();
-                            price = roundTwoDecimal(randDiaper.getPrice() * PRICE_MULT);
-                            if(MY_INVENTORY.get(sku) -1 > -1) {
-                                updateSkuMap(new SkuPrice(sku, price));
-                                total_sales_USD += price;
-                                int currentQuantity = MY_INVENTORY.get(sku);
-                                currentQuantity--;
-                                int casesYTD = YTD_CASES.get(sku);
-                                MY_INVENTORY.replace(sku, currentQuantity);
+                            if(buyItem(HW1Arrays.DIAPERS)) {
                                 write(date, custCount, itemsCount, sku, price, currentQuantity, casesYTD);
                                 itemsCount++;
                             }
@@ -379,16 +364,7 @@ public class HW3 {
                         }
                     } else {
                         if (!fallThrough && randPct() <= 1) {
-                            SkuPrice randDiaper = getRandomItemFromArray(HW1Arrays.DIAPERS);
-                            sku = randDiaper.getSku();
-                            price = roundTwoDecimal(randDiaper.getPrice() * PRICE_MULT);
-                            if(MY_INVENTORY.get(sku) -1 > -1) {
-                                updateSkuMap(new SkuPrice(sku, price));
-                                total_sales_USD += price;
-                                int currentQuantity = MY_INVENTORY.get(sku);
-                                currentQuantity--;
-                                int casesYTD = YTD_CASES.get(sku);
-                                MY_INVENTORY.replace(sku, currentQuantity);
+                            if(buyItem(HW1Arrays.DIAPERS)) {
                                 write(date, custCount, itemsCount, sku, price, currentQuantity, casesYTD);
                                 itemsCount++;
                             }
@@ -399,16 +375,7 @@ public class HW3 {
                     }
 
                     if (!fallThrough && randPct() <= 10) {
-                        SkuPrice randPeanut = getRandomItemFromArray(HW1Arrays.PEANUT_BUTTERS);
-                        sku = randPeanut.getSku();
-                        price = roundTwoDecimal(randPeanut.getPrice() * PRICE_MULT);
-                        if(MY_INVENTORY.get(sku) -1 > -1) {
-                            updateSkuMap(new SkuPrice(sku, price));
-                            total_sales_USD += price;
-                            int currentQuantity = MY_INVENTORY.get(sku);
-                            currentQuantity--;
-                            int casesYTD = YTD_CASES.get(sku);
-                            MY_INVENTORY.replace(sku, currentQuantity);
+                        if(buyItem(HW1Arrays.PEANUT_BUTTERS)) {
                             write(date, custCount, itemsCount, sku, price, currentQuantity, casesYTD);
                             itemsCount++;
                         }
@@ -416,16 +383,7 @@ public class HW3 {
                             fallThrough = true;
                         }
                         if (!fallThrough && randPct() <= 90) {
-                            SkuPrice randJJ = getRandomItemFromArray(HW1Arrays.JAM_JELLIES);
-                            sku = randJJ.getSku();
-                            price = roundTwoDecimal(randJJ.getPrice() * PRICE_MULT);
-                            if(MY_INVENTORY.get(sku) -1 > -1) {
-                                updateSkuMap(new SkuPrice(sku, price));
-                                total_sales_USD += price;
-                                int currentQuantity = MY_INVENTORY.get(sku);
-                                currentQuantity--;
-                                int casesYTD = YTD_CASES.get(sku);
-                                MY_INVENTORY.replace(sku, currentQuantity);
+                            if(buyItem(HW1Arrays.JAM_JELLIES)) {
                                 write(date, custCount, itemsCount, sku, price, currentQuantity, casesYTD);
                                 itemsCount++;
                             }
@@ -435,16 +393,7 @@ public class HW3 {
                         }
                     } else {
                         if (!fallThrough && randPct() <= 5) {
-                            SkuPrice randJJ = getRandomItemFromArray(HW1Arrays.JAM_JELLIES);
-                            sku = randJJ.getSku();
-                            price = roundTwoDecimal(randJJ.getPrice() * PRICE_MULT);
-                            if(MY_INVENTORY.get(sku) -1 > -1) {
-                                updateSkuMap(new SkuPrice(sku, price));
-                                total_sales_USD += price;
-                                int currentQuantity = MY_INVENTORY.get(sku);
-                                currentQuantity--;
-                                int casesYTD = YTD_CASES.get(sku);
-                                MY_INVENTORY.replace(sku, currentQuantity);
+                            if(buyItem(HW1Arrays.JAM_JELLIES)) {
                                 write(date, custCount, itemsCount, sku, price, currentQuantity, casesYTD);
                                 itemsCount++;
                             }
@@ -455,16 +404,7 @@ public class HW3 {
                     }
 
                     if(!fallThrough && randPct() < 50) {
-                        SkuPrice randBread = getRandomItemFromArray(HW1Arrays.BREADS);
-                        sku = randBread.getSku();
-                        price = roundTwoDecimal(randBread.getPrice() * PRICE_MULT);
-                        if(MY_INVENTORY.get(sku) -1 > -1) {
-                            updateSkuMap(new SkuPrice(sku, price));
-                            total_sales_USD += price;
-                            int currentQuantity = MY_INVENTORY.get(sku);
-                            currentQuantity--;
-                            int casesYTD = YTD_CASES.get(sku);
-                            MY_INVENTORY.replace(sku, currentQuantity);
+                        if(buyItem(HW1Arrays.BREADS)) {
                             write(date, custCount, itemsCount, sku, price, currentQuantity, casesYTD);
                             itemsCount++;
                         }
@@ -480,19 +420,10 @@ public class HW3 {
                                  * This is a special check to avoid halting problem that occurs when the inventory is empty, but we continue to try to extract items regardless.
                                  * To avoid this we try a cursory check to see if there is at least one of any item to sell.
                                  */
-                                println(fgRed,"INVENTORY OUT");
+                                println(FGRED,"INVENTORY SOLD OUT");
                                 break;
                             }
-                            SkuPrice randAll = getRandomItemFromAll();
-                            sku = randAll.getSku();
-                            price = roundTwoDecimal(randAll.getPrice() * PRICE_MULT);
-                            if(MY_INVENTORY.get(sku) -1 > -1) {
-                                updateSkuMap(new SkuPrice(sku, price));
-                                total_sales_USD += price;
-                                int currentQuantity = MY_INVENTORY.get(sku);
-                                currentQuantity--;
-                                int casesYTD = YTD_CASES.get(sku);
-                                MY_INVENTORY.replace(sku, currentQuantity);
+                            if(buyItem(allMyProdcuts)) {
                                 write(date, custCount, itemsCount, sku, price, currentQuantity, casesYTD);
                                 itemsCount++;
                             }
@@ -514,16 +445,16 @@ public class HW3 {
 
         //stop timer ASAP for accuracy
         timer.stop();
-        println(fgGreen, "\nDONE", timer, "\n");
+        println(FGGREEN, "\nDONE", timer, "\n");
 
         // sort map of <sku-price, counts> by frequency (count)
         Map<SkuPrice, AtomicInteger> sortedSkuCounts = new TreeMap(new SkuPrice.SkuMapComparator(SKU_PRICE_MAP_COUNT));
         sortedSkuCounts.putAll(SKU_PRICE_MAP_COUNT);
 
         // all of this nonsense prints the results to answer the questions in the assignment
-        paddingSize = 48;
+        paddingSize = 55;
         fill = '.';
-        print(fgYellow);
+        print(FGYELLOW);
         printlnDelim("\n",
                 padJustify(paddingSize, fill,    "Total Items Bought: ", " " + NumberFormat.getIntegerInstance().format(total_items_bought)),
                 padJustify(paddingSize, fill,    "Total Customers: ", " " + NumberFormat.getIntegerInstance().format(total_customers)),
@@ -531,12 +462,13 @@ public class HW3 {
         );
         println(padJustify(paddingSize, ' ', "Top 10 Items By Count:"));
         println(padToLength(paddingSize, '='));
-        println(padJustify(paddingSize, ' ', " Rank |   SKU    |  Price  ", padToLength(7, '.'), " Count  |", " Cases YTD"));
-        int rank = 1;
+        println(padJustify(paddingSize, ' ', " Rank |   SKU    |  Price  ", padToLength(12, '.'), " Count  |", " Cases YTD"));
+        int rank = 1;   // value to to count the items as the are printed to verify length and order
         for (Map.Entry<SkuPrice, AtomicInteger> entry : sortedSkuCounts.entrySet()) {
             sku = entry.getKey().getSku();
             price = entry.getKey().getPrice();
             int count = entry.getValue().intValue();
+            /* Uncomment to break after top 10 */
 //            if( rank > 10 ) {
 //                break;
 //            }
@@ -544,7 +476,7 @@ public class HW3 {
                     paddingSize,
                     fill,
                     padToRight(5, rank) + " | " + sku + " | ($" + padToLeft(4, '0', price) + ") ",
-                    " " + NumberFormat.getInstance().format(entry.getValue().intValue()) + " | " + YTD_CASES.get(entry.getKey().getSku()))
+                    " " + NumberFormat.getInstance().format(count) + " | " + YTD_CASES.get(sku))
             );
             rank++;
         }

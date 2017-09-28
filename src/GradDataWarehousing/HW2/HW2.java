@@ -58,7 +58,7 @@ public class HW2 {
 
     public static void main(String[] args) {
 
-        println(fgPurple, "working...");
+        println(FGPURPLE, "working...");
         int paddingSize = 30;
         char fill = '*';
         printlnDelim("\n",
@@ -104,7 +104,7 @@ public class HW2 {
 
             try {
 
-                println(fgYellow);
+                println(FGYELLOW);
                 println("Rank  ",
                         "   Sku     ",
                         padCenter(70, ' ', "Name"),
@@ -136,7 +136,7 @@ public class HW2 {
             }
 
             timer.stop();
-            println(fgGreen, "\nDONE", timer, "\nsee file: ", OUTPUT_PATH);
+            println(FGGREEN, "\nDONE", timer, "\nsee file: ", OUTPUT_PATH);
 
             System.exit(0);
         } catch (Exception ex) {

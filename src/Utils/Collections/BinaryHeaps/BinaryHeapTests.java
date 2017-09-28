@@ -53,7 +53,7 @@ public class BinaryHeapTests {
             total_time += timer.getElapsedTime();
             println(timer);
         }
-        println(fgGreen, total_time, ":", total_time / (i-1));
+        println(FGGREEN, total_time, ":", total_time / (i-1));
 
     }
 }

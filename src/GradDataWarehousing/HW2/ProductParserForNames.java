@@ -7,7 +7,6 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
-import static Utils.ConsolePrinting.fgRed;
 import static Utils.ConsolePrinting.println;
 import static Utils.ConsolePrinting.printlnDelim;
 

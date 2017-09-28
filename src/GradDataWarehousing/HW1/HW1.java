@@ -132,7 +132,7 @@ public class HW1 {
     public static void main(String[] args) {
 
         // Header to address the user with set parameters and start timer.
-        println(fgPurple, "Creation Started w/ Params:");
+        println(FGPURPLE, "Creation Started w/ Params:");
         int paddingSize = 32;
         char fill = '*';
         printlnDelim("\n",
@@ -163,7 +163,7 @@ public class HW1 {
         }
         println();
         println("All Products List successfully constructed from...");
-        println(fgRed, allProductsFilePath);
+        println(FGRED, allProductsFilePath);
 
         // Parse dates and build java 8 date objects for iteration
         try {
@@ -346,7 +346,7 @@ public class HW1 {
 
         //stop timer ASAP for acc.
         timer.stop();
-        println(fgGreen, "\nDONE", timer, "\n");
+        println(FGGREEN, "\nDONE", timer, "\n");
 
         // sort map of <sku-price, counts> by frequency (count)
         Map<SkuPrice, AtomicInteger> sortedSkuCounts = new TreeMap(new SkuPrice.SkuMapComparator(skuPriceMapCount));
@@ -355,7 +355,7 @@ public class HW1 {
         // all of this nonsense prints the results to answer the questions in the assignment
         paddingSize = 42;
         fill = '.';
-        print(fgYellow);
+        print(FGYELLOW);
         printlnDelim("\n",
                 padJustify(paddingSize, fill,    "Total Items Bought: ", " " + NumberFormat.getIntegerInstance().format(total_items_bought)),
                 padJustify(paddingSize, fill,    "Total Customers: ", " " + NumberFormat.getIntegerInstance().format(total_customers)),
