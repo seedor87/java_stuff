@@ -46,6 +46,20 @@ public class Tuple<T> implements Iterable<T>{
         return true;
     }
 
+    @Override
+    public String toString() {
+        String ret = "(";
+        String delim = "";
+        for (int i = 0; i < this.toArray().length; i++) {
+            Object obj = this.get(i);
+            ret += delim;
+            ret += obj.toString();
+            delim = ", ";
+        }
+        ret += ")";
+        return ret;
+    }
+
     public static void main(String[] args) {
 
         println("MyClass 0");
