@@ -71,7 +71,7 @@ public class HW3 {
     static Integer sku;
     // reusable value for price tracking
     static double price;
-    static int currentQuantity;
+    static int currQuant;
     static int casesYTD;
     static LocalDate date;
     static int itemsCount;
@@ -144,7 +144,7 @@ public class HW3 {
     }
 
     /**
-     * Method to update the parameterized SkuPrice-key Count-Value entry in the sku count map.
+     * Method to update the parametrized SkuPrice-key Count-Value entry in the sku count map.
      */
     public static void updateSkuMap(SkuPrice sku) {
         SKU_PRICE_MAP_COUNT.putIfAbsent(sku, new AtomicInteger(0));
@@ -219,10 +219,10 @@ public class HW3 {
         if(MY_INVENTORY.get(sku) -1 > -1) {
             updateSkuMap(new SkuPrice(sku, price));
             total_sales_USD += price;               // increment total sales with price
-            currentQuantity = MY_INVENTORY.get(sku);
-            currentQuantity--;
+            currQuant = MY_INVENTORY.get(sku);
+            currQuant--;
             casesYTD = YTD_CASES.get(sku);
-            MY_INVENTORY.replace(sku, currentQuantity);
+            MY_INVENTORY.replace(sku, currQuant);
             return true;
         }
         return false;
@@ -243,7 +243,7 @@ public class HW3 {
                 padJustify(paddingSize, fill,     "PRICE_MULT ",         " " + PRICE_MULT),
                 padJustify(paddingSize, fill,     "MAX_ITEMS ",          " " + MAX_ITEMS),
                 padJustify(paddingSize, fill,     "WEEKEND_INCREASE ",   " " + WEEKEND_INCREASE),
-                padJustify(paddingSize, fill,     "OUTPUT FILE ",        " " + OUTPUT_PATH)
+                padJustify(paddingSize, fill,     "OUTPUT_PATH ",        " " + OUTPUT_PATH)
         );
         print(RESET);
         AbstractTimer timer = new SYSTimer(AbstractTimer.TimeUnit.SECONDS);
@@ -253,9 +253,7 @@ public class HW3 {
         InventoryBuilder.buildInventory();
         MY_INVENTORY.putAll(InventoryBuilder.inventoryMap);
         SKU_AVG_MAP.putAll(InventoryBuilder.avgsMap);
-        for(Map.Entry<Integer, Integer> entry : SKU_AVG_MAP.entrySet()) {
-            YTD_CASES.putIfAbsent(entry.getKey(), 0);   // init the YTD_CASES map to all zeroes
-        }
+        YTD_CASES.putAll(InventoryBuilder.casesYTD);
         println("\nInventory Initialized from...");
         println(FGCYAN, InventoryBuilder.INPUT_PATH);
 
@@ -298,6 +296,8 @@ public class HW3 {
             println("\nworking...");
             File file = new File(OUTPUT_PATH);
             writer = new BufferedWriter(new FileWriter(file));
+            String[] header = {"Date", "Customer#", "SKU", "Price", "ItemsLeft", "TotalCasesOrdered"};
+            write(header);
             int numCust;
             int numItems;
 
@@ -314,19 +314,19 @@ public class HW3 {
 
                 for (custCount = 0; custCount < numCust; custCount++) {
                     numItems = randRange(1, MAX_ITEMS+1);   // rand numItems between 0 and MAX_ITEMS+1 (non inclusive)
-                    itemsCount = 0; // count items per single given customer
-                    fallThrough = false;    // re-set fallthrough for this customer
-                    if (!fallThrough && randPct() <= 70) {      // if random pct is less than 70%
-                        if(buyItem(HW1Arrays.MILKS)) {          // if the customer successfully buys the item from the given array
-                            write(date, custCount, itemsCount, sku, price, currentQuantity, casesYTD); // then we write to file
-                            itemsCount++;                           // and increase itemsCount
+                    itemsCount = 0;                                 // count items per single given customer
+                    fallThrough = false;                            // re-set fallthrough for this customer
+                    if (!fallThrough && randPct() <= 70) {          // if random pct is less than 70%
+                        if(buyItem(HW1Arrays.MILKS)) {              // if the customer successfully buys the item from the given array
+                            write(date, custCount, itemsCount, sku, price, currQuant, casesYTD); // then we write to file
+                            itemsCount++;                           // and increase itemsCount for this customer
                         }
-                        if (itemsCount >= numItems) {           // If this customer's shopping lists has already been fulfilled...
-                        fallThrough = true;                 //...then fallthrough to next customer
+                        if (itemsCount >= numItems) {               // If this customer's shopping lists has already been fulfilled...
+                        fallThrough = true;                         //...then fallthrough to next customer
                         }
                         if (!fallThrough && randPct() <= 50) {
                            if(buyItem(HW1Arrays.CEREALS)) {
-                               write(date, custCount, itemsCount, sku, price, currentQuantity, casesYTD);
+                               write(date, custCount, itemsCount, sku, price, currQuant, casesYTD);
                                itemsCount++;
                            }
                             if (itemsCount >= numItems) {
@@ -336,7 +336,7 @@ public class HW3 {
                     } else {
                         if (!fallThrough && randPct() <= 5) {
                             if(buyItem(HW1Arrays.CEREALS)) {
-                                write(date, custCount, itemsCount, sku, price, currentQuantity, casesYTD);
+                                write(date, custCount, itemsCount, sku, price, currQuant, casesYTD);
                                 itemsCount++;
                             }
                             if (itemsCount >= numItems) {
@@ -347,7 +347,7 @@ public class HW3 {
 
                     if (!fallThrough && randPct() <= 20) {
                         if(buyItem(HW1Arrays.BABY_FOODS)) {
-                            write(date, custCount, itemsCount, sku, price, currentQuantity, casesYTD);
+                            write(date, custCount, itemsCount, sku, price, currQuant, casesYTD);
                             itemsCount++;
                         }
                         if (itemsCount >= numItems) {
@@ -355,7 +355,7 @@ public class HW3 {
                         }
                         if (!fallThrough && randPct() <= 80) {
                             if(buyItem(HW1Arrays.DIAPERS)) {
-                                write(date, custCount, itemsCount, sku, price, currentQuantity, casesYTD);
+                                write(date, custCount, itemsCount, sku, price, currQuant, casesYTD);
                                 itemsCount++;
                             }
                             if (itemsCount >= numItems) {
@@ -365,7 +365,7 @@ public class HW3 {
                     } else {
                         if (!fallThrough && randPct() <= 1) {
                             if(buyItem(HW1Arrays.DIAPERS)) {
-                                write(date, custCount, itemsCount, sku, price, currentQuantity, casesYTD);
+                                write(date, custCount, itemsCount, sku, price, currQuant, casesYTD);
                                 itemsCount++;
                             }
                             if (itemsCount >= numItems) {
@@ -376,7 +376,7 @@ public class HW3 {
 
                     if (!fallThrough && randPct() <= 10) {
                         if(buyItem(HW1Arrays.PEANUT_BUTTERS)) {
-                            write(date, custCount, itemsCount, sku, price, currentQuantity, casesYTD);
+                            write(date, custCount, itemsCount, sku, price, currQuant, casesYTD);
                             itemsCount++;
                         }
                         if (itemsCount >= numItems) {
@@ -384,7 +384,7 @@ public class HW3 {
                         }
                         if (!fallThrough && randPct() <= 90) {
                             if(buyItem(HW1Arrays.JAM_JELLIES)) {
-                                write(date, custCount, itemsCount, sku, price, currentQuantity, casesYTD);
+                                write(date, custCount, itemsCount, sku, price, currQuant, casesYTD);
                                 itemsCount++;
                             }
                             if (itemsCount >= numItems) {
@@ -394,7 +394,7 @@ public class HW3 {
                     } else {
                         if (!fallThrough && randPct() <= 5) {
                             if(buyItem(HW1Arrays.JAM_JELLIES)) {
-                                write(date, custCount, itemsCount, sku, price, currentQuantity, casesYTD);
+                                write(date, custCount, itemsCount, sku, price, currQuant, casesYTD);
                                 itemsCount++;
                             }
                             if (itemsCount >= numItems) {
@@ -405,7 +405,7 @@ public class HW3 {
 
                     if(!fallThrough && randPct() < 50) {
                         if(buyItem(HW1Arrays.BREADS)) {
-                            write(date, custCount, itemsCount, sku, price, currentQuantity, casesYTD);
+                            write(date, custCount, itemsCount, sku, price, currQuant, casesYTD);
                             itemsCount++;
                         }
                         if (itemsCount >= numItems) {
@@ -424,7 +424,7 @@ public class HW3 {
                                 break;
                             }
                             if(buyItem(allMyProdcuts)) {
-                                write(date, custCount, itemsCount, sku, price, currentQuantity, casesYTD);
+                                write(date, custCount, itemsCount, sku, price, currQuant, casesYTD);
                                 itemsCount++;
                             }
                         }
@@ -452,7 +452,7 @@ public class HW3 {
         sortedSkuCounts.putAll(SKU_PRICE_MAP_COUNT);
 
         // all of this nonsense prints the results to answer the questions in the assignment
-        paddingSize = 55;
+        paddingSize = 50;
         fill = '.';
         print(FGYELLOW);
         printlnDelim("\n",
@@ -462,7 +462,7 @@ public class HW3 {
         );
         println(padJustify(paddingSize, ' ', "Top 10 Items By Count:"));
         println(padToLength(paddingSize, '='));
-        println(padJustify(paddingSize, ' ', " Rank |   SKU    |  Price  ", padToLength(12, '.'), " Count  |", " Cases YTD"));
+        println(padJustify(paddingSize, ' ', " Rank |   SKU    |  Price  ", padToLength(7, '.'), " YTD Sold |", " YTD Cases"));
         int rank = 1;   // value to to count the items as the are printed to verify length and order
         for (Map.Entry<SkuPrice, AtomicInteger> entry : sortedSkuCounts.entrySet()) {
             sku = entry.getKey().getSku();

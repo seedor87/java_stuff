@@ -12,6 +12,7 @@ public class InventoryBuilder {
     static final String INPUT_PATH = "." + File.separatorChar + "output2.csv";   // start from this file
     static Map<Integer, Integer> inventoryMap = new HashMap<>();
     static Map<Integer, Integer> avgsMap = new HashMap<>();
+    static Map<Integer, Integer> casesYTD = new HashMap<>();
 
     public static Map<Integer, Integer> buildInventory() {
 
@@ -23,12 +24,22 @@ public class InventoryBuilder {
                 String[] fields = line.split(DELIM);
                 Integer sku = Integer.parseInt(fields[0]);
                 Integer avg = Integer.parseInt(fields[3]);
+                int quantityOrdered;
                 if (isMilkSku(sku)) {
-                    inventoryMap.put(sku, (int) (1.5 * avg));
+                    quantityOrdered = (int) 1.5 * avg;
+
                 } else {
-                    inventoryMap.put(sku, 3 * avg);
+                    quantityOrdered = (int) 3 * avg;
                 }
+                int leftOver = quantityOrdered % 12;
+                int numCases = quantityOrdered / 12;
+                if(leftOver != 0) {
+                    numCases += 1;
+                }
+                inventoryMap.putIfAbsent(sku, numCases * 12);
+                casesYTD.putIfAbsent(sku, numCases);
                 avgsMap.put(sku, avg);
+
             }
         } catch (Exception e) {
             e.printStackTrace();
