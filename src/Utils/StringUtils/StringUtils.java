@@ -9,12 +9,8 @@ public class StringUtils {
         return padToLength(len, ' ');
     }
 
-    public static String padToLength(int n, char fill) {
-        StringBuilder ret = new StringBuilder();
-        for(int i = 0; i < n; i++) {
-            ret.append(fill);
-        }
-        return ret.toString();
+    public static String padToLength(int len, char fill) {
+        return padToLength(len, "" + fill);
     }
 
     public static String padToLength(int len, String fill) {

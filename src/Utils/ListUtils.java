@@ -114,6 +114,26 @@ public class ListUtils {
         return result;
     }
 
+    public static <E extends Object> List<E> unzip(List<Tuple<E>> list) {
+        List<E> ret = new ArrayList<>();
+        for (Tuple<E> tup : list) {
+            for(E elem : tup) {
+                ret.add(elem);
+            }
+        }
+        return ret;
+    }
+
+    public static <E extends Object> E[] unzip(Tuple[] list) {
+        List<E> ret = new ArrayList<>();
+        for (Tuple<E> tup : list) {
+            for(E elem : tup) {
+                ret.add(elem);
+            }
+        }
+        return (E[]) ret.toArray();
+    }
+
     private static <E extends Comparable<? super E>> E most(Comparison.Comparator comp, E... params) {
         E hold = params[0];
         for (E elem : params) {
@@ -151,17 +171,21 @@ public class ListUtils {
         ConsolePrinting.println(max(1,2,3,4,5));
         ConsolePrinting.println(min(1,2,3,4,5,0));
 
-        ConsolePrinting.println(zip(
+        Tuple<Object>[] zippedOne = zip(
                 new Object[]{1,2,3},
                 new Object[]{'a','b','c'},
                 new Object[]{"do", "re", "mi"}
-                ));
+                );
+        println(FGCYAN, zippedOne);
+        println(FGPURPLE, unzip(zippedOne));
 
-        ConsolePrinting.println(zip(
+        List<Tuple<Object>> zippedTwo = zip(
                 new LinkedList<>(Arrays.asList(1,2,3)),
                 new LinkedList<>(Arrays.asList('a','b','c')),
                 new LinkedList<>(Arrays.asList("do", "re", "mi"))
-        ));
+        );
+        println(FGCYAN, zippedTwo);
+        println(FGPURPLE, unzip(zippedTwo));
     }
 
 }
