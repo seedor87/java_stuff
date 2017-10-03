@@ -102,34 +102,5 @@ public class TestBench {
 
 //        println(padCenter(35, '_', new LinkedList<>(Arrays.asList("Bob", "Alex", "Star"))));
 
-        // x1 > x2
-        int x1 = 1;
-        int x2 = 0;
-        int y = 0;
-
-        int u = x2; // x2
-        int v = x1; // x1
-
-        while (true) {
-            if(u - 1 > -1) {
-                u--;
-            }
-            if(v - 1 > -1) {
-                v--;
-            }
-            if(u <= 0) {
-                break;
-            }
-        }
-        if(v == 0) {
-            y++;
-        }
-
-        if (y != 0) {
-            print(" x1 <= x2");
-        }
-        else {
-            print(" x1 > x2");
-        }
     }
 }
