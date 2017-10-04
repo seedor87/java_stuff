@@ -4,32 +4,73 @@ import static Utils.ConsolePrinting.println;
 
 public class Functions {
 
+    public static Variable n = new Variable(0);
+
     public static Variable alpha(Variable x) {
         if(x.value != 0) {
-            return new Variable(0);
+            return n(x);
         }
         return new Variable(1);
     }
 
-    public static Variable monus(Variable x1, Variable x2) {
-        if (lte(x2, x1).value != 0) {
-            return new Variable(x1.value - x2.value);
+    public static Variable n(Variable x) {
+        return n;
+    }
+
+    public static Variable sum(Variable x1, Variable x2) {
+        Variable y = new Variable(x1);
+        Variable temp = new Variable(x2);
+        while(neq(temp, n).value > 0) {
+            y.incr();
+            temp.decr();
         }
-        return new Variable(0);
+        return y;
+    }
+
+    public static Variable mult(Variable x1, Variable x2) {
+        Variable y = new Variable(n);
+        Variable temp = new Variable(x2);
+        while(neq(temp, n).value > 0) {
+            y = sum(y, x1);
+            temp.decr();
+        }
+        return y;
+    }
+
+    public static Variable monus(Variable x1, Variable x2) {
+        return (x2.value <= x1.value) ? new Variable(x1.value - x2.value) : n(x1);
+    }
+
+    public static Variable div(Variable x1, Variable x2) {
+        Variable y = new Variable(0);
+        Variable temp = new Variable(x1);
+        while(gte(temp, x2).value > 0) {
+            temp = monus(temp, x2);
+            y.incr();
+        }
+        return y;
+    }
+
+    public static Variable mod(Variable x1, Variable x2) {
+        Variable temp = new Variable(x1);
+        while(gte(temp, x2).value > 0) {
+            temp = monus(temp, x2);
+        }
+        return temp;
     }
 
     public static Variable and(Variable x1, Variable x2) {
         if(x1.value > 0 && x2.value > 0) {
-            return new Variable(1);
+            return alpha(n(x1));
         }
-        return new Variable(0);
+        return n(x1);
     }
 
     public static Variable or(Variable x1, Variable x2) {
         if(x1.value > 0 || x2.value > 0) {
-            return new Variable(1);
+            return alpha(n(x1));
         }
-        return new Variable(0);
+        return n(x1);
     }
 
     public static Variable lte(Variable x1, Variable x2) {
@@ -48,9 +89,9 @@ public class Functions {
         }
 
         if (y.value != 0) {
-            return new Variable(1);
+            return alpha(n(x1));
         }
-        return new Variable(0);
+        return n(x1);
     }
 
     public static Variable gt(Variable x1, Variable x2) {
@@ -65,19 +106,65 @@ public class Functions {
         return lte(x2, x1);
     }
 
+    public static Variable eq(Variable x1, Variable x2) {
+        return and(alpha(gt(x1, x2)), alpha(lt(x1, x2)));
+    }
+
+    public static Variable neq(Variable x1, Variable x2) {
+        return alpha(eq(x1, x2));
+    }
+
+    public static Variable gcd(Variable x1, Variable x2) {
+        if(or(lte(x1, n), lte(x2, n)).value > n.value) {
+            return n;
+        }
+        while(neq(x1, x2).value > 0) {
+            while(gt(x1, x2).value > 0) {
+                x1 = monus(x1, x2);
+            }
+            while(gt(x2, x1).value > 0) {
+                x2 = monus(x2, x1);
+            }
+        }
+        return x1;
+    }
+
     // left off on page 42
     public static void main(String[] args) {
-        Variable x1 = new Variable(6);
+        Variable x1 = new Variable(4);
         Variable x2 = new Variable(5);
-        println(x1, "<=" , x2, "=", lte(x1, x2));
-        println(x2, "<=" , x1, "=", lte(x2, x1));
-        println(x1, "<=" , x2, "=", alpha(monus(x1, x2)));
-        println(x2, "<=" , x1, "=", alpha(monus(x2, x1)));
-        println(x1, ">=" , x2, "=", gte(x1, x2));
-        println(x2, ">=" , x1, "=", gte(x2, x1));
-        println(x1, " >" , x2, "=", gt(x1, x2));
-        println(x2, " >" , x1, "=", gt(x2, x1));
-        println(x1, " <" , x2, "=", lt(x1, x2));
-        println(x2, " <" , x1, "=", lt(x2, x1));
+        Variable x3 = new Variable(6);
+        Variable x4 = new Variable(8);
+
+        println(x1, "+", x2, "=", sum(x1, x2));
+        println(x1, "+", n, "=", sum(x1, n));
+        println(x2, "*", x1, "=", mult(x1, x2));
+        println(n, "*", x3, "=", mult(n, x3));
+        println(x2, "-", x1, "=", monus(x1, x2));
+        println(n, "-", x3, "=", monus(x1, x3));
+        println(x3, "/", x1, "=", div(x3, x1));
+        println(x3, "%", x1, "=", mod(x3, x1));
+        println(x1, "/", x3, "=", div(x1, x3));
+        println(x1, "%", x3, "=", mod(x1, x3));
+        println(x4, "/", x1, "=", div(x4, x1));
+        println(x4, "%", x1, "=", mod(x4, x1));
+
+        println(x1, "<=", x2, "=", lte(x1, x2));
+        println(x2, "<=", x1, "=", lte(x2, x1));
+        println(x1, "<=", x2, "=", alpha(monus(x1, x2)));
+        println(x2, "<=", x1, "=", alpha(monus(x2, x1)));
+        println(x1, ">=", x2, "=", gte(x1, x2));
+        println(x2, ">=", x1, "=", gte(x2, x1));
+        println(x1, ">", x2, "=", gt(x1, x2));
+        println(x2, ">", x1, "=", gt(x2, x1));
+        println(x1, "<", x2, "=", lt(x1, x2));
+        println(x2, "<", x1, "=", lt(x2, x1));
+
+        println(x1, "==", x2, "=", eq(x1, x2));
+        println(x1, "==", x1, "=", eq(x1, x1));
+        println(x1, "!=", x2, "=", neq(x1, x2));
+
+        println("gcd(", x1, ",", x3, ") =", gcd(x1, x3));
+        println("gcd(", x1, ",", x2, ") =", gcd(x1, x2));
     }
 }

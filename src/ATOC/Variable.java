@@ -1,7 +1,5 @@
 package ATOC;
 
-import static Utils.ConsolePrinting.print;
-
 public class Variable {
     public int value;
 
@@ -28,6 +26,10 @@ public class Variable {
             return true;
         }
         return false;
+    }
+
+    public boolean equals(Object o) {
+        return this.value == ((Variable) o).value;
     }
 
     public String toString() {
