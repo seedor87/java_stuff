@@ -37,6 +37,18 @@ public class Functions {
         return y;
     }
 
+    public static Variable exp(Variable x1, Variable x2) {
+        Variable y = new Variable(1);
+        Variable temp = new Variable(x2);
+        while(neq(temp, n).value > 0) {
+            y = mult(y, x1);
+            temp.decr();
+        }
+        return y;
+    }
+
+    public static Variable sqrt(Variable x) {return x;}
+
     public static Variable monus(Variable x1, Variable x2) {
         return (x2.value <= x1.value) ? new Variable(x1.value - x2.value) : n(x1);
     }
@@ -148,6 +160,9 @@ public class Functions {
         println(x1, "%", x3, "=", mod(x1, x3));
         println(x4, "/", x1, "=", div(x4, x1));
         println(x4, "%", x1, "=", mod(x4, x1));
+        println(x1, "^", x2, "=", exp(x1, x2));
+        println(x2, "^", x1, "=", exp(x2, x1));
+        println(n, "^", n, "=", exp(n, n));
 
         println(x1, "<=", x2, "=", lte(x1, x2));
         println(x2, "<=", x1, "=", lte(x2, x1));
