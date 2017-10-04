@@ -24,8 +24,8 @@ public class SkuPrice {
 
     @Override
     public boolean equals(Object obj) {
-        return this.sku == ((SkuPrice) obj).getSku() &&
-                this.price == ((SkuPrice) obj).getPrice();
+        return this.sku == ((SkuPrice) obj).getSku();
+            //&& this.price == ((SkuPrice) obj).getPrice();
     }
 
     @Override

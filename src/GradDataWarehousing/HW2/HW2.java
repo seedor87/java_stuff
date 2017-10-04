@@ -23,13 +23,35 @@ public class HW2 {
     static final String DELIM = " \\| ";
     static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     static final ConcurrentMap<SkuPrice, AtomicInteger> skuPriceMapCount = new ConcurrentHashMap<>();
-    static final String OUTPUT_PATH = "." + File.separatorChar + "output2.csv"; //results go here
-    static final String INPUT_PATH = "." + File.separatorChar + "output1.txt";   // start from this file
-    static final int NUM_WEEKS = 2;
 
+    static final String INPUT_PATH = "." + File.separatorChar + "output1.txt";   // start from this file
+    static final String OUTPUT_PATH = "." + File.separatorChar + "output2.csv"; //results go here
+
+    static final String MILK_PATH = "." + File.separatorChar + "milk.csv"; //only milk
+    static final String BABY_FOOD_PATH = "." + File.separatorChar + "baby.food.csv"; //only baby food
+    static final String BREAD_PATH = "." + File.separatorChar + "bread.csv"; //only bread
+    static final String PEANUT_BUTTER_PATH = "." + File.separatorChar + "peanut.butter.csv"; //only peanut butter
+    static final String OTHER_PATH = "." + File.separatorChar + "other.csv"; //everything else
+
+    static final int NUM_WEEKS = 2;
     static String start_date_string;
+
     static BufferedReader reader;
     static BufferedWriter writer;
+
+    static BufferedWriter milkWriter;
+    static BufferedWriter babyFoodWriter;
+    static BufferedWriter breadWriter;
+    static BufferedWriter peanutButterWriter;
+    static BufferedWriter otherWriter;
+
+    static int outputRecCounter = 0;
+    static int milkRecCounter = 0;
+    static int babyFoodRecCounter = 0;
+    static int breadRecCounter = 0;
+    static int peanutButterRecCounter = 0;
+    static int otherRecCounter = 0;
+
     static LocalDate start;
     static LocalDate end;
     static Date startDate;
@@ -39,7 +61,7 @@ public class HW2 {
         skuPriceMapCount.get(sku).incrementAndGet();
     }
 
-    public static void write(Object... args) {
+    public static void write(BufferedWriter dest, Object... args) {
 
         /** Uncomment to print each entry */
 //         println(args);
@@ -47,11 +69,11 @@ public class HW2 {
         String delim = "";
         try {
             for (Object o : args) {
-                writer.write(delim);
-                writer.write(o.toString());
+                dest.write(delim);
+                dest.write(o.toString());
                 delim = " , ";
             }
-            writer.write("\n");
+            dest.write("\n");
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -65,14 +87,26 @@ public class HW2 {
         printlnDelim("\n",
                 padJustify(paddingSize, fill,   "INPUT_PATH ",    " " + INPUT_PATH),
                 padJustify(paddingSize, fill,   "OUTPUT_PATH ",   " " + OUTPUT_PATH),
+                padJustify(paddingSize, fill,   "MILK_PATH ",   " " + MILK_PATH),
+                padJustify(paddingSize, fill,   "BABY_FOOD_PATH ",   " " + BABY_FOOD_PATH),
+                padJustify(paddingSize, fill,   "BREAD_PATH ",   " " + BREAD_PATH),
+                padJustify(paddingSize, fill,   "PEANUT_BUTTER_PATH ",   " " + PEANUT_BUTTER_PATH),
+                padJustify(paddingSize, fill,   "OTHER_PATH ",   " " + OTHER_PATH),
                 padJustify(paddingSize, fill,   "NUM_WEEKS ",     " " + NUM_WEEKS)
         );
         AbstractTimer timer = new SYSTimer(AbstractTimer.TimeUnit.SECONDS);
         timer.start();
 
         try {
-            writer = new BufferedWriter(new FileWriter(OUTPUT_PATH));
             reader = new BufferedReader(new FileReader(INPUT_PATH));
+            writer = new BufferedWriter(new FileWriter(OUTPUT_PATH));
+
+            milkWriter = new BufferedWriter(new FileWriter(MILK_PATH));
+            babyFoodWriter = new BufferedWriter(new FileWriter(BABY_FOOD_PATH));
+            breadWriter = new BufferedWriter(new FileWriter(BREAD_PATH));
+            peanutButterWriter = new BufferedWriter(new FileWriter(PEANUT_BUTTER_PATH));
+            otherWriter = new BufferedWriter(new FileWriter(OTHER_PATH));
+
             String line = reader.readLine();
             start_date_string = line.split(DELIM)[0];
             startDate = formatter.parse(start_date_string);
@@ -102,6 +136,7 @@ public class HW2 {
             }
 
             Map<Integer, String> skuNameMap = ProductParserForNames.generateSkuNameMap();
+            Map<Integer, String> skuItemTypeMap = ProductParserForItemTypes.generateSkuItemTypeMap();
 
             try {
 
@@ -109,9 +144,21 @@ public class HW2 {
                 println("Rank  ",
                         "   Sku     ",
                         padCenter(70, ' ', "Name"),
+                        padCenter(70, ' ', "Item Type"),
                         "Price",
                         " Avg Per Day");
-                write("sku", "name", "price", "avg per day");
+                write(writer,"sku", "name", "item type", "price", "avg per day");
+                outputRecCounter++;
+                write(milkWriter,"sku", "name", "item type", "price", "avg per day");
+                milkRecCounter++;
+                write(babyFoodWriter,"sku", "name", "item type", "price", "avg per day");
+                babyFoodRecCounter++;
+                write(breadWriter,"sku", "name", "item type", "price", "avg per day");
+                breadRecCounter++;
+                write(peanutButterWriter,"sku", "name", "item type", "price", "avg per day");
+                peanutButterRecCounter++;
+                write(otherWriter,"sku", "name", "item type", "price", "avg per day");
+                otherRecCounter++;
 
                 int rank = 1;
                 for (Map.Entry<SkuPrice, Integer> entry : sortedSkuCounts.entrySet()) {
@@ -119,25 +166,74 @@ public class HW2 {
                     Integer sku = entry.getKey().getSku();
                     Double price = entry.getKey().getPrice();
                     String name = skuNameMap.get(sku);
+                    String itemType = skuItemTypeMap.get(sku);
                     String avgPerDay = NumberFormat.getInstance().format(entry.getValue().intValue());
                     println(padToRight(6, ' ', rank + " |"),
                             padCenter(8, ' ', sku + " |"),
                             padCenter(70, ' ', name),
+                            padCenter(70, ' ', itemType),
                             "| " + padCenter(5, ' ', price) + " |",
                             padToRight(3, ' ', avgPerDay));
                     rank++;
-                    write(sku, name, price, avgPerDay);
+                    write(writer, sku, name, itemType, price, avgPerDay);
+                    outputRecCounter++;
+
+                    switch (itemType.toLowerCase())
+                    {
+                        case "milk":
+                            write(milkWriter, sku, name, itemType, price, avgPerDay);
+                            milkRecCounter++;
+                            break;
+                        case "baby food":
+                            write(babyFoodWriter, sku, name, itemType, price, avgPerDay);
+                            babyFoodRecCounter++;
+                            break;
+                        case "bread":
+                            write(breadWriter, sku, name, itemType, price, avgPerDay);
+                            breadRecCounter++;
+                            break;
+                        case "peanut butter":
+                            write(peanutButterWriter, sku, name, itemType, price, avgPerDay);
+                            peanutButterRecCounter++;
+                            break;
+                        default:
+                            write(otherWriter, sku, name, itemType, price, avgPerDay);
+                            otherRecCounter++;
+                            break;
+                    }
+
                 }
 
             } catch (Exception ex) {
                 ex.printStackTrace();
             } finally {
                 writer.flush();
+                milkWriter.flush();
+                babyFoodWriter.flush();
+                breadWriter.flush();
+                peanutButterWriter.flush();
+                otherWriter.flush();
+
                 writer.close();
+                milkWriter.close();
+                babyFoodWriter.close();
+                breadWriter.close();
+                peanutButterWriter.close();
+                otherWriter.close();
             }
 
             timer.stop();
             println(fgGreen, "\nDONE", timer, "\nsee file: ", OUTPUT_PATH);
+            println(fgGreen, outputRecCounter, " output records");
+            println(fgGreen, milkRecCounter, " milk records");
+            println(fgGreen, babyFoodRecCounter, " baby food records");
+            println(fgGreen, breadRecCounter, " bread records");
+            println(fgGreen, peanutButterRecCounter, " peanut butter records");
+            println(fgGreen, otherRecCounter, " other records");
+
+            println(fgGreen,
+                    milkRecCounter + babyFoodRecCounter + breadRecCounter + peanutButterRecCounter + otherRecCounter,
+                    " records in breakout files");
 
             System.exit(0);
         } catch (Exception ex) {

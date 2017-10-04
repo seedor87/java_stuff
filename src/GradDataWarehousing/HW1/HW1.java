@@ -30,10 +30,10 @@ public class HW1 {
     // student specific params
     static final String START_DATE_STRING = "2017-01-01";
     static final String END_DATE_STRING = "2018-01-01";
-    static final int CUST_LOW = 1140;
-    static final int CUST_HI = 1180;
+    static final int CUST_LOW = 980;
+    static final int CUST_HI = 1020;
     static final double PRICE_MULT = 1.1;
-    static final int MAX_ITEMS = 100;
+    static final int MAX_ITEMS = 60;
     static final int WEEKEND_INCREASE = 50;
     //date format for day iteration
     static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
