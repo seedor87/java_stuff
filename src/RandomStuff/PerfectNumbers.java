@@ -68,7 +68,6 @@ public class PerfectNumbers {
         return total;
     }
 
-
     public static boolean isPerfectNumber(int n) {
         return sum(allFactors(n)) == n;
     }
@@ -85,6 +84,8 @@ public class PerfectNumbers {
         println(sum(ret));
         return ret;
     }
+
+
 
     public static void main(String[] args) throws IOException {
 

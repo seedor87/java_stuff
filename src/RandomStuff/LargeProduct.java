@@ -1,8 +1,10 @@
 package RandomStuff;
 
+import static Utils.ConsolePrinting.*;
+
 public class LargeProduct {
 
-    public boolean test1() {
+    public static boolean test1() {
         double res1, res2;
         int[] arr = new int[]{6,5,4};
         res1 = myWay(arr);
@@ -10,7 +12,7 @@ public class LargeProduct {
         return res1 == res2;
     }
 
-    public boolean test2() {
+    public static boolean test2() {
         double res1, res2;
         int[] arr = new int[]{6,5,4,3};
         res1 = myWay(arr);
@@ -32,8 +34,10 @@ public class LargeProduct {
             prod *= arr[i];
         }
         double min = Math.pow(prod, (1.0 / arr.length));
-       return (double) Math.round(min);
+        return (double) Math.round(min);
     }
 
-    public static void main(String[] args) {}
+    public static void main(String[] args) {
+        println(test1());
+    }
 }
