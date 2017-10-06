@@ -136,14 +136,12 @@ public class PrimeFactorization<T extends Object> extends NewSYSTimeTest<T> {
         return ret;
     }
 
-    @Override
-    public Tuple runThis(Object... params) {
-        printlnDelim(" + ", params);
-        return new Tuple();
+    public static void main(String[] args) {
+       isPerfectPowerTest(1000);
     }
 
-    public static void main(String[] args) {
-        PrimeFactorization pf = new PrimeFactorization();
-        println(pf.test(new String[]{"1", "2", "3"}));
+    @Override
+    public Tuple runThis(Object... params) {
+        return null;
     }
 }

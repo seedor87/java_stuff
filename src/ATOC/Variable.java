@@ -7,6 +7,10 @@ public class Variable {
         this.value = val;
     }
 
+    Variable(boolean val) {
+        this.value = (val) ? 1 : 0;
+    }
+
     Variable() {
         this(0);
     }
@@ -15,17 +19,16 @@ public class Variable {
         this(v.value);
     }
 
-    public boolean incr() {
+    public Variable incr() {
         this.value += 1;
-        return true;
+        return new Variable(this.value);
     }
 
-    public boolean decr() {
+    public Variable decr() {
         if (this.value - 1 > -1) {
             this.value -= 1;
-            return true;
         }
-        return false;
+        return new Variable(this.value);
     }
 
     public boolean equals(Object o) {

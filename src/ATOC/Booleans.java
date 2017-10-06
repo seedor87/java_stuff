@@ -1,0 +1,108 @@
+package ATOC;
+
+import static ATOC.Arithmetic.*;
+import static ATOC.Basic.*;
+
+public class Booleans {
+
+    public static boolean prime(Variable x) {
+        Variable count = new Variable(2);
+        Variable bound = new Variable(sqrt(x));
+        while(lte(count, bound)) {
+            if(eq(mod(x, count), n)) {
+                return false;
+            }
+            count.incr();
+        }
+        return true;
+    }
+
+    public static boolean smith(Variable x) {
+        return eq(sumDigits(x), sumPrimeFactors(x));
+    }
+
+    public static boolean perfectPow(Variable x) {
+        Variable count = new Variable(2);
+        Variable t;
+        while (lte(mult(count, count), x)) {
+            t = new Variable(x);
+            while (eq(mod(t, count), n)) {
+                t = div(t, count);
+            }
+            if (eq(t, new Variable(1))) {
+                return true;
+            }
+            count.incr();
+        }
+        return false;
+    }
+
+    public static boolean mersenne(Variable x) {
+        Variable count = new Variable(0);
+        if (prime(count)) {
+            while (lte(pow(new Variable(2), count), add(x, new Variable(1)))) {
+                if (eq(monus(pow(new Variable(2), count), new Variable(1)), n)) {
+                    return true;
+                }
+                count.incr();
+            }
+        }
+        return false;
+    }
+
+    public static boolean and(Variable x1, Variable x2) {
+        if(x1.value > 0 && x2.value > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean or(Variable x1, Variable x2) {
+        if(x1.value > 0 || x2.value > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean lte(Variable x1, Variable x2) {
+        Variable u = new Variable(x2);
+        Variable v = new Variable(x1);
+        Variable y = new Variable();
+        while (true) {
+            if(u.value <= 0) {
+                break;
+            }
+            v.decr();
+            u.decr();
+        }
+        if(v.value <= 0) {
+            y.incr();
+        }
+
+        if (y.value != 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean gt(Variable x1, Variable x2) {
+        return !lte(x1, x2);
+    }
+
+    public static boolean lt (Variable x1, Variable x2) {
+        return gt(x2, x1);
+    }
+
+    public static boolean gte(Variable x1, Variable x2) {
+        return lte(x2, x1);
+    }
+
+    public static boolean eq(Variable x1, Variable x2) {
+        return !gt(x1, x2) && !lt(x1, x2);
+    }
+
+    public static boolean neq(Variable x1, Variable x2) {
+        return !eq(x1, x2);
+    }
+
+}
