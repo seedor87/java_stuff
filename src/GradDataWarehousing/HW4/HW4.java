@@ -1,4 +1,4 @@
-package GradDataWarehousing.HW3;
+package GradDataWarehousing.HW4;
 
 import GradDataWarehousing.HWResources.HW1Arrays;
 import GradDataWarehousing.HWResources.SkuPrice;
@@ -12,19 +12,22 @@ import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.Date;
+import java.util.Map;
+import java.util.Random;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static GradDataWarehousing.HW4.MyMysqlDataSource.insert;
 import static GradDataWarehousing.HWResources.Utils.isMilkSku;
 import static Utils.ConsolePrinting.*;
-import static Utils.ConsolePrinting.println;
 import static Utils.StringUtils.StringUtils.*;
 
-public class HW3 {
+public class HW4 {
 
-    static final String OUTPUT_PATH = "." + File.separatorChar + "output3.csv"; //results go here
+    static final String OUTPUT_PATH = "." + File.separatorChar + "output4.txt"; //results go here
     static final String ALL_PRODUCTS_PATH = "." +
             File.separatorChar + "src" +
             File.separatorChar + "GradDataWarehousing" +
@@ -129,13 +132,16 @@ public class HW3 {
         /** Uncomment to print each entry */
 //         println(args);
 
+        /** insert into the db*/
+        insert(args);
+
         total_items_bought += 1; // count num elements by tracking each atomic entry (or line)
         String delim = "";
         try {
             for (Object o : args) {
                 writer.write(delim);
                 writer.write(o.toString());
-                delim = ",";
+                delim = " | ";
             }
             writer.write("\n");
         } catch (IOException ex) {
@@ -260,6 +266,11 @@ public class HW3 {
         // set max to size determined by all skus maps
         max_all_items = SKU_AVG_MAP.size();
 
+
+        // build and instantiate new MysqlConnection for db insertion
+        new MyMysqlDataSource();
+
+
         // Build array of all my products for rand access later
         try {
             allMyProdcuts = new SkuPrice[max_all_items];
@@ -296,8 +307,20 @@ public class HW3 {
             println("\nworking...");
             File file = new File(OUTPUT_PATH);
             writer = new BufferedWriter(new FileWriter(file));
+
             String[] header = {"Date", "Customer#", "Item#", "SKU", "Price", "ItemsLeft", "TotalCasesOrdered"};
-            write(header);
+            String delim = "";
+            try {
+                for (Object o : header) {
+                    writer.write(delim);
+                    writer.write(o.toString());
+                    delim = " | ";
+                }
+                writer.write("\n");
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+
             int numCust;
             int numItems;
 

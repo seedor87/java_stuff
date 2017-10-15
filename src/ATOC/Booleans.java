@@ -1,5 +1,7 @@
 package ATOC;
 
+import Utils.GCD;
+
 import static ATOC.Arithmetic.*;
 import static ATOC.Basic.*;
 
@@ -46,6 +48,13 @@ public class Booleans {
                 }
                 count.incr();
             }
+        }
+        return false;
+    }
+
+    public static boolean coprime(Variable x1, Variable x2) {
+        if(eq(gcd(x1, x2), new Variable(1))) {
+            return true;
         }
         return false;
     }

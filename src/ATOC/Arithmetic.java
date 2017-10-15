@@ -93,6 +93,33 @@ public class Arithmetic {
         return x1;
     }
 
+    public static boolean perfectSq(Variable x) {
+        Variable T = sqrt(x);
+        return eq(mult(T, T), x);
+    }
+
+    public static Variable SMSQ(Variable x) {
+        Variable sum;
+        Variable first = new Variable(n);
+        Variable second;
+        while(neq(first, x)) {
+            second = new Variable(n);
+            while(neq(second, x)) {
+                sum = add(first, second);
+                if(perfectSq(first)) {
+                    if (perfectSq(second)) {
+                        if (eq(sum, x)) {
+                            return new Variable(1);
+                        }
+                    }
+                }
+                second.incr();
+            }
+            first.incr();
+        }
+        return new Variable(0);
+    }
+
     public static void main(String[] args) {
         Variable x1 = new Variable(4);
         Variable x2 = new Variable(5);
@@ -184,10 +211,11 @@ public class Arithmetic {
 
         println("fermat(", x1, ") =", fermat(x1));
 
-        for(int i = 0; i < 1000; i++) {
-            if(mersenne(new Variable(i))) {
-                println(i);
-            }
-        }
+        println("SMSQ(", x2, ") =", SMSQ(x2));
+        println("SMSQ(", x3, ") =", SMSQ(x3));
+
+        println("coprime(", x1, ",", x2, ") =", coprime(x1, x2));
+        println("coprime(", x1, ",", x3, ") =", coprime(x1, x3));
+
     }
 }
