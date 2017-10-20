@@ -1,9 +1,8 @@
 package ATOC;
 
-import Utils.GCD;
-
 import static ATOC.Arithmetic.*;
 import static ATOC.Basic.*;
+import static Utils.ConsolePrinting.println;
 
 public class Booleans {
 
@@ -59,6 +58,27 @@ public class Booleans {
         return false;
     }
 
+    public static Variable isPrime(Variable x) {
+        return isPrime(x, new Variable(2));
+    }
+
+    public static Variable isPrime(Variable x, Variable t) {
+        if(neq(t, x)) {
+            return mult(alpha(alpha(mod(x, t))), isPrime(x, add(t, new Variable(1))));
+        } return new Variable(1);
+    }
+
+    public static Variable E(Variable x) {
+        return E(x, new Variable(x));
+    }
+
+    public static Variable E(Variable x, Variable t) {
+        if(eq(t, n)) {
+            return x;
+        }
+        return pow(x, E(x, t.decr()));
+    }
+
     public static boolean and(Variable x1, Variable x2) {
         if(x1.value > 0 && x2.value > 0) {
             return true;
@@ -112,6 +132,15 @@ public class Booleans {
 
     public static boolean neq(Variable x1, Variable x2) {
         return !eq(x1, x2);
+    }
+
+    public static void main(String[] args) {
+        println(alpha(mod(new Variable(3), new Variable(3))));
+        println(isPrime(new Variable(2)));
+        println(isPrime(new Variable(4)));
+        println(isPrime(new Variable(5)));
+        println(isPrime(new Variable(6)));
+        println(isPrime(new Variable(9)));
     }
 
 }

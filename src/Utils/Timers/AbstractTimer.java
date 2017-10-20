@@ -8,7 +8,7 @@ import java.util.Scanner;
 import static Utils.ConsolePrinting.*;
 
 /***
- * Absttract timer that holds capabilities of general use in code timer.
+ * Abstract timer that holds capabilities of general use in code timer.
  * when implemented requires instantiation of only the getTime() and getElapsedTime() methods,
  * All other work is done in this class.
  */
@@ -35,7 +35,7 @@ public abstract class AbstractTimer {
      * Used post measurement to save state and transition, or throw away and resume.
      */
     public enum State {
-        STOPPED, STARTED, SUSPENDED, RESUMMED
+        STOPPED, STARTED, SUSPENDED, RESUMED
     }
 
     /**
@@ -117,10 +117,10 @@ public abstract class AbstractTimer {
         if(current_state == State.SUSPENDED) {
             startTime = hold;
             endTime = 01;
-            current_state = State.RESUMMED;
+            current_state = State.RESUMED;
             return startTime;
         }
-        throw new IllegalStateTransitionException(current_state + " -> " + State.RESUMMED);
+        throw new IllegalStateTransitionException(current_state + " -> " + State.RESUMED);
     }
 
     public double stop () {
@@ -139,7 +139,7 @@ public abstract class AbstractTimer {
 
     public boolean isRunning () {
         return current_state == State.STARTED
-                || current_state == State.RESUMMED;
+                || current_state == State.RESUMED;
     }
 
     public boolean isStopped() {

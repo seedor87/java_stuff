@@ -93,6 +93,10 @@ public class Arithmetic {
         return x1;
     }
 
+    public static Variable lcm(Variable x1, Variable x2) {
+        return div(mult(x1, x2), gcd(x1, x2));
+    }
+
     public static boolean perfectSq(Variable x) {
         Variable T = sqrt(x);
         return eq(mult(T, T), x);
@@ -217,5 +221,7 @@ public class Arithmetic {
         println("coprime(", x1, ",", x2, ") =", coprime(x1, x2));
         println("coprime(", x1, ",", x3, ") =", coprime(x1, x3));
 
+        println("lcm(", x1, ",", x2, ") =", lcm(x1, x2));
+        println("lcm(", x1, ",", x4, ") =", lcm(x1, x4));
     }
 }
