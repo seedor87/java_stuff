@@ -7,6 +7,9 @@ import java.util.*;
 
 public class ConsolePrinting {
 
+    public static final String NL = "\n";
+    public static final String RN = "\r";
+
     interface Color {
         String str();
     }
@@ -19,7 +22,6 @@ public class ConsolePrinting {
     public static Color FGPURPLE = () ->   "\u001B[35m";
     public static Color FGCYAN = () ->     "\u001B[36m";
     public static Color FGWHITE = () ->    "\u001B[37m";
-
     public static Color BGBLACK = () ->    "\u001B[40m";
     public static Color BGRED = () ->      "\u001B[41m";
     public static Color BGGREEN = () ->    "\u001B[42m";
@@ -28,7 +30,6 @@ public class ConsolePrinting {
     public static Color BGPURPLE = () ->   "\u001B[45m";
     public static Color BGCYAN = () ->     "\u001B[46m";
     public static Color BGWHITE = () ->    "\u001B[47m";
-
     public static Color RESET = () ->      "\u001B[0m";
 
     public static void print(Color c) {
@@ -36,8 +37,9 @@ public class ConsolePrinting {
     }
 
     public static void println() {
-        System.out.println();
+        print(NL);
     }
+    public static void printrn() { print(RN); }
 
     public static <T> String wrap(Color c, T... args) {
         StringBuffer sb = new StringBuffer();
@@ -60,7 +62,7 @@ public class ConsolePrinting {
             print(" = ");
             print(entry.getValue());
             print(">");
-            delim = ",\n";
+            delim = " , ";
         }
         print("]");
     }
@@ -92,7 +94,7 @@ public class ConsolePrinting {
     private static <T> void printIterable(T col) {
         print("[");
         String delim = "";
-        for(Object elem: (Iterable<? extends Object>) col) {
+        for(Object elem: (Iterable<T>) col) {
             print(delim);
             print(elem);
             delim = ", ";
@@ -144,6 +146,11 @@ public class ConsolePrinting {
         println();
     }
 
+    public static <T> void printrn(T... args) {
+        printrn();
+        print(args);
+    }
+
     public static <T> void print(Color c, T...args) {
         print(c);
         print(args);
@@ -153,6 +160,11 @@ public class ConsolePrinting {
     public static <T> void println(Color c, T...args) {
         print(c, args);
         println();
+    }
+
+    public static <T> void printrn(Color c, T...args) {
+        printrn();
+        print(c, args);
     }
 
     public static <T> void print(Color c1, Color c2, T...args) {
@@ -165,6 +177,11 @@ public class ConsolePrinting {
     public static <T> void println(Color c1, Color c2, T...args) {
         print(c1, c2, args);
         println();
+    }
+
+    public static <T> void printrn(Color c1, Color c2, T...args) {
+        printrn();
+        print(c1, c2, args);
     }
 
     public static <T> void printDelim(String delim, T... args) {
@@ -181,6 +198,11 @@ public class ConsolePrinting {
         println();
     }
 
+    public static <T> void printrnDelim(String delim, T... args) {
+        printrn();
+        printDelim(delim, args);
+    }
+
     public static <T extends Collection<E>, E extends Object> void printDelim(String delim, T args) {
         String temp = "";
         for (E elem : args) {
@@ -193,6 +215,11 @@ public class ConsolePrinting {
     public static <T extends Collection<E>, E extends Object> void printlnDelim(String delim, T args) {
         printDelim(delim, args);
         println();
+    }
+
+    public static <T extends Collection<E>, E extends Object> void printrnDelim(String delim, T args) {
+        printrn();
+        printDelim(delim, args);
     }
 
    public static void printDelim(String delim, char[] arr) {
@@ -208,6 +235,11 @@ public class ConsolePrinting {
         printDelim(delim, arr);
         println();
    }
+
+    public static void printrnDelim(String delim, char[] arr) {
+        printrn();
+        printDelim(delim, arr);
+    }
 
    public static void main(String[] args) {
 
@@ -240,5 +272,23 @@ public class ConsolePrinting {
         carr[2] = 'c';
         carr[4] = 'e';
         println(carr);
+
+        try {
+            int count = 0;
+            while(true) {
+                Thread t;
+                printrn(count);
+                Thread.sleep(2000);
+                printrn("first");
+                Thread.sleep(2000);
+                printrn(FGRED, "second");
+                Thread.sleep(2000);
+                printrnDelim(" - ", new Integer[]{1, 2, 3, 4});
+                Thread.sleep(2000);
+                count++;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

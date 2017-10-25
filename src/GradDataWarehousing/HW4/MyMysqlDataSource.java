@@ -1,9 +1,13 @@
 package GradDataWarehousing.HW4;
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.*;
 
-import static Utils.ConsolePrinting.print;
+import static Utils.ConsolePrinting.*;
 
 
 /**
@@ -11,14 +15,15 @@ import static Utils.ConsolePrinting.print;
  */
 public class MyMysqlDataSource {
 
+    public static String INPUT_FILE = "C:\\Users\\rseedorf\\IdeaProjects\\java_stuff\\output3.txt";
     private static ResultSet result_set = null;
     private static Connection connection = null;
     private static Statement statement = null;
 
-    private static final String DB = "seedor87";
-    private static final String SERVER = "elvis.rowan.edu";
-    private static final String USER = "seedor87";
-    private static final String PASSWORD = "penguin";
+//    private static final String DB = "seedor87";
+//    private static final String SERVER = "elvis.rowan.edu";
+//    private static final String USER = "seedor87";
+//    private static final String PASSWORD = "penguin";
     private static com.mysql.jdbc.jdbc2.optional.MysqlDataSource DATA_SOURCE;
 
     /**
@@ -45,17 +50,13 @@ public class MyMysqlDataSource {
         }
     }
 
-    public static void insert(Object... params) {
-        try {
-            String query = String.format("insert into Transactions values (?, ?, ?, ?, ?, ?, ?)");
-            PreparedStatement preparedStmt = connection.prepareStatement(query);
-            for (int i = 1; i <= params.length; i++) {
-                preparedStmt.setString(i, params[i-1].toString());
-            }
-            preparedStmt.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
+    public static void insert(Object... params) throws SQLException{
+        String query = String.format("insert into Transactions values (?, ?, ?, ?, ?, ?, ?)");
+        PreparedStatement preparedStmt = connection.prepareStatement(query);
+        for (int i = 1; i <= params.length; i++) {
+            preparedStmt.setString(i, params[i-1].toString());
         }
+        preparedStmt.execute();
     }
 
     public static void insert(String date_of_purchase,
@@ -79,24 +80,18 @@ public class MyMysqlDataSource {
         preparedStmt.execute();
     }
 
-    public static void printResSet(ResultSet set) {
-        try {
-            ResultSetMetaData metadata = set.getMetaData();
-            int numberOfColumns = metadata.getColumnCount();
-            while (set.next()) {
-                int i = 1;
-                while(i <= numberOfColumns) {
-                    print(set.getString(i++), "");
-                }
+    public static void printResSet(ResultSet set) throws SQLException {
+        ResultSetMetaData metadata = set.getMetaData();
+        int numberOfColumns = metadata.getColumnCount();
+        while (set.next()) {
+            int i = 1;
+            while(i <= numberOfColumns) {
+                print(set.getString(i++), "");
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 
-    public static void main(String args[]) {
-        new MyMysqlDataSource();
-
+    public static void demo() {
         try {
             insert("20170101", "1", "1", "000000000", "101.10", "69", "777");
         } catch (SQLException e) {
@@ -106,9 +101,46 @@ public class MyMysqlDataSource {
         try {
             String query = String.format("select * from Transactions");
             result_set = statement.executeQuery(query);
+            printResSet(result_set);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        printResSet(result_set);
+    }
+
+    public static void execute() {
+        BufferedReader br = null;
+        String line = "";
+        String cvsSplitBy = ",";
+
+        try {
+
+            br = new BufferedReader(new FileReader(INPUT_FILE));
+            line = br.readLine();   // throw away header
+            println(line);
+            while ((line = br.readLine()) != null) {
+                // use comma as separator
+                String[] fields = line.split(cvsSplitBy);
+                insert(fields);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+    public static void main(String args[]) {
+        new MyMysqlDataSource();
+        execute();
     }
 }

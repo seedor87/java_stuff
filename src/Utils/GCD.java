@@ -45,18 +45,24 @@ public class GCD {
         if(n-1 <= 0) {
             return 1;
         }
-        return fac(n-1) * n;
+        return n * fac(n-1);
+    }
 
-//        int ret = 1;
-//        for(int i = 1; i <= n; i++) {
-//            ret *= i;
-//        }
-//        return ret;
+    public static int fib(int n) {
+        if (n-1 <= 0) {
+            return 1;
+        }
+        return fib(n-1) + fib(n-2);
     }
 
     public static void main(String[] args) {
 
-        AbstractTimer timer = new SYSTimer(AbstractTimer.TimeUnit.NANO);
+        for(int i = 0 ; i < 20; i++) {
+            println(fib(i));
+        }
+
+
+        AbstractTimer timer = new SYSTimer(AbstractTimer.TimeUnit.MILLI);
         if(!true) {
             timer. start();
             println(gcdRecur(1, 1234567890));

@@ -2,7 +2,6 @@ package ATOC;
 
 import static ATOC.Booleans.*;
 import static ATOC.Booleans.gte;
-import static Utils.ConsolePrinting.*;
 
 public class Basic {
 
@@ -91,11 +90,11 @@ public class Basic {
     }
 
     public static Variable mod(Variable x1, Variable x2) {
-        return monus(x1, mult(div(x1, x2), x2));
-//        Variable y = new Variable(x1);
-//        while(gte(y, x2)) {
-//            y = monus(y, x2);
-//        }
-//        return y;
+//        return monus(x1, mult(div(x1, x2), x2));
+        Variable y = new Variable(x1);
+        while(lte(x2, y)) {
+            y = monus(y, x2);
+        }
+        return y;
     }
 }
