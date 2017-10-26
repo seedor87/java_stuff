@@ -1,4 +1,4 @@
-package GradDataWarehousing.HW3;
+package GradDataWarehousing.HW4;
 
 import GradDataWarehousing.HWResources.HW1Arrays;
 import GradDataWarehousing.HWResources.InventoryBuilder;
@@ -13,19 +13,21 @@ import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.Date;
+import java.util.Map;
+import java.util.Random;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static GradDataWarehousing.HWResources.Utils.isMilkSku;
 import static Utils.ConsolePrinting.*;
-import static Utils.ConsolePrinting.println;
 import static Utils.StringUtils.StringUtils.*;
 
-public class HW3 {
+public class HW4 {
 
-    static final String OUTPUT_PATH = "." + File.separatorChar + "output3.csv"; //results go here
+    static final String OUTPUT_PATH = "." + File.separatorChar + "output4.csv"; //results go here
     static final String ALL_PRODUCTS_PATH = "." +
             File.separatorChar + "src" +
             File.separatorChar + "GradDataWarehousing" +
@@ -33,7 +35,7 @@ public class HW3 {
             File.separatorChar + "myProducts";  // pre-processed list of skus and prices
 
     // student specific params
-    static final String START_DATE_STRING = "2017-01-01";
+    static final String START_DATE_STRING = "2017-12-01";
     static final String END_DATE_STRING = "2018-01-01";
     static final int CUST_LOW = 1140;
     static final int CUST_HI = 1180;
@@ -125,23 +127,19 @@ public class HW3 {
     /**
      * Method to write particular line to txt file now
      */
-    public static void write(Object... args) {
+    public static void write(Object... args) throws IOException{
 
         /** Uncomment to print each entry */
 //         println(args);
 
         total_items_bought += 1; // count num elements by tracking each atomic entry (or line)
         String delim = "";
-        try {
-            for (Object o : args) {
-                writer.write(delim);
-                writer.write(o.toString());
-                delim = ",";
-            }
-            writer.write("\n");
-        } catch (IOException ex) {
-            ex.printStackTrace();
+        for (Object o : args) {
+            writer.write(delim);
+            writer.write(o.toString());
+            delim = ",";
         }
+        writer.write("\n");
     }
 
     /**
@@ -297,10 +295,7 @@ public class HW3 {
             println("\nworking...");
             File file = new File(OUTPUT_PATH);
             writer = new BufferedWriter(new FileWriter(file));
-            String[] header = {"Date", "Customer#", "Item#", "SKU", "Price", "ItemsLeft", "TotalCasesOrdered"};
-            write(header);
-            int numCust;
-            int numItems;
+            int numCust, numItems;
 
             for (date = start; date.isBefore(end); date = date.plusDays(1)) {
 
@@ -319,7 +314,6 @@ public class HW3 {
                     fallThrough = false;                            // re-set fallthrough for this customer
                     if (!fallThrough && randPct() <= 70) {          // if random pct is less than 70%
                         if(buyItem(HW1Arrays.MILKS)) {              // if the customer successfully buys the item from the given array
-                            write(date, custCount, itemsCount, sku, price, currQuant, casesYTD); // then we write to file
                             itemsCount++;                           // and increase itemsCount for this customer
                         }
                         if (itemsCount >= numItems) {               // If this customer's shopping lists has already been fulfilled...
@@ -327,7 +321,6 @@ public class HW3 {
                         }
                         if (!fallThrough && randPct() <= 50) {
                            if(buyItem(HW1Arrays.CEREALS)) {
-                               write(date, custCount, itemsCount, sku, price, currQuant, casesYTD);
                                itemsCount++;
                            }
                             if (itemsCount >= numItems) {
@@ -337,7 +330,6 @@ public class HW3 {
                     } else {
                         if (!fallThrough && randPct() <= 5) {
                             if(buyItem(HW1Arrays.CEREALS)) {
-                                write(date, custCount, itemsCount, sku, price, currQuant, casesYTD);
                                 itemsCount++;
                             }
                             if (itemsCount >= numItems) {
@@ -348,7 +340,6 @@ public class HW3 {
 
                     if (!fallThrough && randPct() <= 20) {
                         if(buyItem(HW1Arrays.BABY_FOODS)) {
-                            write(date, custCount, itemsCount, sku, price, currQuant, casesYTD);
                             itemsCount++;
                         }
                         if (itemsCount >= numItems) {
@@ -356,7 +347,6 @@ public class HW3 {
                         }
                         if (!fallThrough && randPct() <= 80) {
                             if(buyItem(HW1Arrays.DIAPERS)) {
-                                write(date, custCount, itemsCount, sku, price, currQuant, casesYTD);
                                 itemsCount++;
                             }
                             if (itemsCount >= numItems) {
@@ -366,7 +356,6 @@ public class HW3 {
                     } else {
                         if (!fallThrough && randPct() <= 1) {
                             if(buyItem(HW1Arrays.DIAPERS)) {
-                                write(date, custCount, itemsCount, sku, price, currQuant, casesYTD);
                                 itemsCount++;
                             }
                             if (itemsCount >= numItems) {
@@ -377,7 +366,6 @@ public class HW3 {
 
                     if (!fallThrough && randPct() <= 10) {
                         if(buyItem(HW1Arrays.PEANUT_BUTTERS)) {
-                            write(date, custCount, itemsCount, sku, price, currQuant, casesYTD);
                             itemsCount++;
                         }
                         if (itemsCount >= numItems) {
@@ -385,7 +373,6 @@ public class HW3 {
                         }
                         if (!fallThrough && randPct() <= 90) {
                             if(buyItem(HW1Arrays.JAM_JELLIES)) {
-                                write(date, custCount, itemsCount, sku, price, currQuant, casesYTD);
                                 itemsCount++;
                             }
                             if (itemsCount >= numItems) {
@@ -395,7 +382,6 @@ public class HW3 {
                     } else {
                         if (!fallThrough && randPct() <= 5) {
                             if(buyItem(HW1Arrays.JAM_JELLIES)) {
-                                write(date, custCount, itemsCount, sku, price, currQuant, casesYTD);
                                 itemsCount++;
                             }
                             if (itemsCount >= numItems) {
@@ -406,7 +392,6 @@ public class HW3 {
 
                     if(!fallThrough && randPct() < 50) {
                         if(buyItem(HW1Arrays.BREADS)) {
-                            write(date, custCount, itemsCount, sku, price, currQuant, casesYTD);
                             itemsCount++;
                         }
                         if (itemsCount >= numItems) {
@@ -425,7 +410,7 @@ public class HW3 {
                                 break;
                             }
                             if(buyItem(allMyProdcuts)) {
-                                write(date, custCount, itemsCount, sku, price, currQuant, casesYTD);
+//                                write(date, custCount, itemsCount, sku, price, currQuant, casesYTD);
                                 itemsCount++;
                             }
                         }
@@ -435,18 +420,7 @@ public class HW3 {
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-        } finally {
-            try {
-                writer.flush(); // clean up writer to make sure we get every last drop
-                writer.close();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
         }
-
-        //stop timer ASAP for accuracy
-        timer.stop();
-        println(FGGREEN, "\nDONE", timer, "\n");
 
         // sort map of <sku-price, counts> by frequency (count)
         Map<SkuPrice, AtomicInteger> sortedSkuCounts = new TreeMap(new SkuPrice.SkuMapComparator(SKU_PRICE_MAP_COUNT));
@@ -481,6 +455,31 @@ public class HW3 {
             );
             rank++;
         }
+
+        try {
+            write("Sku", "Name"); //, "Name", "Price", "Total Sold", "YTD Cases Sold");
+            for (Map.Entry<SkuPrice, AtomicInteger> entry : sortedSkuCounts.entrySet()) {
+                sku = entry.getKey().getSku();
+//                price = entry.getKey().getPrice();
+//                int count = entry.getValue().intValue();
+//                int ytd_cases = YTD_CASES.get(sku);
+                String name = InventoryBuilder.namesMap.get(sku);
+                write(sku, name); //, price, count, ytd_cases);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                writer.flush(); // clean up writer to make sure we get every last drop
+                writer.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        //stop timer ASAP for accuracy
+        timer.stop();
+        println(FGGREEN, "\nDONE", timer, "\n");
 
         System.exit(0);
     }

@@ -1,4 +1,4 @@
-package GradDataWarehousing.HW3;
+package GradDataWarehousing.HWResources;
 
 import java.io.*;
 import java.util.HashMap;
@@ -8,11 +8,12 @@ import static GradDataWarehousing.HWResources.Utils.isMilkSku;
 
 public class InventoryBuilder {
 
-    static final String DELIM = " , ";
-    static final String INPUT_PATH = "." + File.separatorChar + "output2.csv";   // start from this file
-    static Map<Integer, Integer> inventoryMap = new HashMap<>();
-    static Map<Integer, Integer> avgsMap = new HashMap<>();
-    static Map<Integer, Integer> casesYTD = new HashMap<>();
+    public static final String DELIM = " , ";
+    public static final String INPUT_PATH = "." + File.separatorChar + "output2.csv";   // start from this file
+    public static Map<Integer, Integer> inventoryMap = new HashMap<>();
+    public static Map<Integer, Integer> avgsMap = new HashMap<>();
+    public static Map<Integer, Integer> casesYTD = new HashMap<>();
+    public static Map<Integer, String> namesMap = new HashMap<>();
 
     public static Map<Integer, Integer> buildInventory() {
 
@@ -23,6 +24,8 @@ public class InventoryBuilder {
             while((line = br.readLine()) != null) {
                 String[] fields = line.split(DELIM);
                 Integer sku = Integer.parseInt(fields[0]);
+                String name = fields[1];
+                Double price = Double.parseDouble(fields[2]);
                 Integer avg = Integer.parseInt(fields[3]);
                 int quantityOrdered;
                 if (isMilkSku(sku)) {
@@ -39,6 +42,7 @@ public class InventoryBuilder {
                 inventoryMap.putIfAbsent(sku, numCases * 12);
                 casesYTD.putIfAbsent(sku, numCases);
                 avgsMap.put(sku, avg);
+                namesMap.put(sku, name);
 
             }
         } catch (Exception e) {
