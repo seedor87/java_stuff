@@ -104,7 +104,7 @@ public class HW4 {
      */
     public static boolean isDeliveryDay(LocalDate date) {
         int c = Character.getNumericValue(Character.toLowerCase(Your_Last_Name.charAt(0)));
-        if (c >  9 && c < 23) {
+        if (c >  9 && c < 23) { // 'a' <= c <= 'm'
             return date.getDayOfWeek() == DayOfWeek.MONDAY ||
                     date.getDayOfWeek() == DayOfWeek.WEDNESDAY ||
                     date.getDayOfWeek() == DayOfWeek.FRIDAY;
@@ -131,7 +131,6 @@ public class HW4 {
         /** Uncomment to print each entry */
 //         println(args);
 
-        total_items_bought += 1; // count num elements by tracking each atomic entry (or line)
         String delim = "";
         for (Object o : args) {
             writer.write(delim);
@@ -216,7 +215,8 @@ public class HW4 {
         price = roundTwoDecimal(randMilk.getPrice() * Price_Mult); // parse price out of file and x by factor
         if(MY_INVENTORY.get(sku) -1 > -1) {
             updateSkuMap(new SkuPrice(sku, price));
-            total_sales_USD += price;               // increment total sales with price
+            total_sales_USD += price;   // increment total sales with price
+            total_items_bought += 1;    // count num elements by tracking each atomic entry (or line)
             currQuant = MY_INVENTORY.get(sku);
             currQuant--;
             casesYTD = YTD_CASES.get(sku);
@@ -226,6 +226,10 @@ public class HW4 {
         return false;
     }
 
+    /**
+     * Method used once to set the params that determine run length, price mult, customer min and max, and item bound for a customer.
+     * Uses the parameterized last name to case check and set static variables.
+     */
     public static void setDefaultParams(String Your_Last_Name) {
         switch(Character.toLowerCase(Your_Last_Name.charAt(0))) {
             case 'a': case 'b': case 'c': case 'd': case 'e': case 'f':
