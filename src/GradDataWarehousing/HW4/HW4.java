@@ -35,15 +35,6 @@ public class HW4 {
             File.separatorChar + "myProducts";  // pre-processed list of skus and prices
     static final String START_DATE_STRING = "2017-12-01";
     static final String END_DATE_STRING = "2018-01-01";
-
-    // student specific params
-    static String Your_Last_Name;   // Args Last Name
-    static int CUST_LOW;            // Low cust limit
-    static int CUST_HI;             // Hi cust limit
-    static double PRICE_MULT;       // Price Multiplier
-    static int MAX_ITEMS;           // max items limit per customer
-    static int WEEKEND_INCREASE;    // Weekend Price Increase
-
     // map for pairing <sku and price, count>
     static final ConcurrentMap<SkuPrice, AtomicInteger> SKU_PRICE_MAP_COUNT = new ConcurrentHashMap<>();
     // map to keep constant track of inventory
@@ -52,6 +43,14 @@ public class HW4 {
     static final ConcurrentHashMap<Integer, Integer> SKU_AVG_MAP = new ConcurrentHashMap<>();
     // map to store the year to date num cases ordered so far, per sku
     static final ConcurrentHashMap<Integer, Integer> YTD_CASES = new ConcurrentHashMap<>();
+
+    // student specific params
+    static String Your_Last_Name;   // Args Last Name
+    static int Cust_Low;            // Low cust limit
+    static int Cust_Hi;             // Hi cust limit
+    static double Price_Mult;       // Price Multiplier
+    static int Max_Items;           // max items limit per customer
+    static int Weekend_Increase;    // Weekend Price Increase
 
     // Max size for an given collection of all the products
     static int max_all_items;
@@ -69,15 +68,13 @@ public class HW4 {
     static BufferedWriter writer;
     static LocalDate start;
     static LocalDate end;
-    static Date startDate;
-    static Date endDate;
+    static LocalDate date;
     // reusable value for sku tracking
     static Integer sku;
     // reusable value for price tracking
     static double price;
     static int currQuant;
     static int casesYTD;
-    static LocalDate date;
     static int itemsCount;
     static int custCount;
 
@@ -106,11 +103,12 @@ public class HW4 {
      * Method to check if is Delivery Day for student unique case
      */
     public static boolean isDeliveryDay(LocalDate date) {
-        // Alt case for other students
-        /* return date.getDayOfWeek() == DayOfWeek.MONDAY ||
-                date.getDayOfWeek() == DayOfWeek.WEDNESDAY ||
-                date.getDayOfWeek() == DayOfWeek.FRIDAY;
-        */
+        int c = Character.getNumericValue(Character.toLowerCase(Your_Last_Name.charAt(0)));
+        if (c >  9 && c < 23) {
+            return date.getDayOfWeek() == DayOfWeek.MONDAY ||
+                    date.getDayOfWeek() == DayOfWeek.WEDNESDAY ||
+                    date.getDayOfWeek() == DayOfWeek.FRIDAY;
+        }
         return date.getDayOfWeek() == DayOfWeek.TUESDAY ||
                 date.getDayOfWeek() == DayOfWeek.THURSDAY ||
                 date.getDayOfWeek() == DayOfWeek.SATURDAY;
@@ -215,7 +213,7 @@ public class HW4 {
     public static boolean buyItem(SkuPrice[] array) {
         SkuPrice randMilk = getRandomItemFromArray(array);  // get random milk SkuPrice
         sku = randMilk.getSku();     // parse sku out of milk SkuPrice
-        price = roundTwoDecimal(randMilk.getPrice() * PRICE_MULT); // parse price out of file and x by factor
+        price = roundTwoDecimal(randMilk.getPrice() * Price_Mult); // parse price out of file and x by factor
         if(MY_INVENTORY.get(sku) -1 > -1) {
             updateSkuMap(new SkuPrice(sku, price));
             total_sales_USD += price;               // increment total sales with price
@@ -231,46 +229,46 @@ public class HW4 {
     public static void setDefaultParams(String Your_Last_Name) {
         switch(Character.toLowerCase(Your_Last_Name.charAt(0))) {
             case 'a': case 'b': case 'c': case 'd': case 'e': case 'f':
-                CUST_LOW = 980;
-                CUST_HI = 1020;
-                WEEKEND_INCREASE = 50;
-                PRICE_MULT = 1.1;
-                MAX_ITEMS = 60;
+                Cust_Low = 980;
+                Cust_Hi = 1020;
+                Weekend_Increase = 50;
+                Price_Mult = 1.1;
+                Max_Items = 60;
                 break;
             case 'g': case 'h': case 'i': case 'j': case 'k':
-                CUST_LOW = 1000;
-                CUST_HI = 1040;
-                WEEKEND_INCREASE = 50;
-                PRICE_MULT = 1.05;
-                MAX_ITEMS = 70;
+                Cust_Low = 1000;
+                Cust_Hi = 1040;
+                Weekend_Increase = 50;
+                Price_Mult = 1.05;
+                Max_Items = 70;
                 break;
             case 'l': case 'm': case 'n': case 'o':
-                CUST_LOW = 1020;
-                CUST_HI = 1060;
-                WEEKEND_INCREASE = 50;
-                PRICE_MULT = 1.2;
-                MAX_ITEMS = 80;
+                Cust_Low = 1020;
+                Cust_Hi = 1060;
+                Weekend_Increase = 50;
+                Price_Mult = 1.2;
+                Max_Items = 80;
                 break;
             case 'p': case 'q': case 'r':
-                CUST_LOW = 1100;
-                CUST_HI = 1150;
-                WEEKEND_INCREASE = 50;
-                PRICE_MULT = 1.07;
-                MAX_ITEMS = 90;
+                Cust_Low = 1100;
+                Cust_Hi = 1150;
+                Weekend_Increase = 50;
+                Price_Mult = 1.07;
+                Max_Items = 90;
                 break;
             case 's': case 't': case 'u':
-                CUST_LOW = 1140;
-                CUST_HI = 1180;
-                WEEKEND_INCREASE = 50;
-                PRICE_MULT = 1.1;
-                MAX_ITEMS = 100;
+                Cust_Low = 1140;
+                Cust_Hi = 1180;
+                Weekend_Increase = 50;
+                Price_Mult = 1.1;
+                Max_Items = 100;
                 break;
             case 'v': case 'w': case 'x': case 'y': case 'z':
-                CUST_LOW = 1200;
-                CUST_HI = 1250;
-                WEEKEND_INCREASE = 50;
-                PRICE_MULT = 1.11;
-                MAX_ITEMS = 65;
+                Cust_Low = 1200;
+                Cust_Hi = 1250;
+                Weekend_Increase = 50;
+                Price_Mult = 1.11;
+                Max_Items = 65;
                 break;
             default:
                 throw new RuntimeException("Invalid Last Name: " + Your_Last_Name);
@@ -296,11 +294,11 @@ public class HW4 {
         printlnDelim("\n",
                 padJustify(paddingSize, fill,     "START_DATE_STRING ",  " " + START_DATE_STRING),
                 padJustify(paddingSize, fill,     "END_DATE_STRING ",    " " + END_DATE_STRING),
-                padJustify(paddingSize, fill,     "CUST_LOW ",           " " + CUST_LOW),
-                padJustify(paddingSize, fill,     "CUST_HI ",            " " + CUST_HI),
-                padJustify(paddingSize, fill,     "PRICE_MULT ",         " " + PRICE_MULT),
-                padJustify(paddingSize, fill,     "MAX_ITEMS ",          " " + MAX_ITEMS),
-                padJustify(paddingSize, fill,     "WEEKEND_INCREASE ",   " " + WEEKEND_INCREASE),
+                padJustify(paddingSize, fill,     "CUST_LOW ",           " " + Cust_Low),
+                padJustify(paddingSize, fill,     "CUST_HI ",            " " + Cust_Hi),
+                padJustify(paddingSize, fill,     "PRICE_MULT ",         " " + Price_Mult),
+                padJustify(paddingSize, fill,     "MAX_ITEMS ",          " " + Max_Items),
+                padJustify(paddingSize, fill,     "WEEKEND_INCREASE ",   " " + Weekend_Increase),
                 padJustify(paddingSize, fill,     "OUTPUT_PATH ",        " " + OUTPUT_PATH)
         );
         print(RESET);
@@ -341,8 +339,8 @@ public class HW4 {
 
         // Parse dates and build java 8 date objects for iteration
         try {
-            startDate = formatter.parse(START_DATE_STRING);
-            endDate = formatter.parse(END_DATE_STRING);
+            Date startDate = formatter.parse(START_DATE_STRING);
+            Date endDate = formatter.parse(END_DATE_STRING);
             start = startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
             end = endDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         } catch (ParseException ex) {
@@ -362,13 +360,13 @@ public class HW4 {
                 bolsterInventory(date);
 
                 // generate random num of customers for today
-                numCust = randRange(CUST_LOW, CUST_HI);
+                numCust = randRange(Cust_Low, Cust_Hi);
                 if (isWeekend(date)) {  //if sat or sun, boost numCustomers
-                    numCust += WEEKEND_INCREASE;
+                    numCust += Weekend_Increase;
                 }
 
                 for (custCount = 0; custCount < numCust; custCount++) {
-                    numItems = randRange(1, MAX_ITEMS+1);   // rand numItems between 0 and MAX_ITEMS+1 (non inclusive)
+                    numItems = randRange(1, Max_Items+1);   // rand numItems between 0 and MAX_ITEMS+1 (non inclusive)
                     itemsCount = 0;                                 // count items per single given customer
                     fallThrough = false;                            // re-set fallthrough for this customer
                     if (!fallThrough && randPct() <= 70) {          // if random pct is less than 70%
