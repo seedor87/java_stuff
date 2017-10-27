@@ -33,15 +33,16 @@ public class HW4 {
             File.separatorChar + "GradDataWarehousing" +
             File.separatorChar + "HW1" +
             File.separatorChar + "myProducts";  // pre-processed list of skus and prices
-
-    // student specific params
     static final String START_DATE_STRING = "2017-12-01";
     static final String END_DATE_STRING = "2018-01-01";
-    static final int CUST_LOW = 1140;
-    static final int CUST_HI = 1180;
-    static final double PRICE_MULT = 1.1;
-    static final int MAX_ITEMS = 100;
-    static final int WEEKEND_INCREASE = 50;
+
+    // student specific params
+    static String Your_Last_Name;   // Args Last Name
+    static int CUST_LOW;            // Low cust limit
+    static int CUST_HI;             // Hi cust limit
+    static double PRICE_MULT;       // Price Multiplier
+    static int MAX_ITEMS;           // max items limit per customer
+    static int WEEKEND_INCREASE;    // Weekend Price Increase
 
     // map for pairing <sku and price, count>
     static final ConcurrentMap<SkuPrice, AtomicInteger> SKU_PRICE_MAP_COUNT = new ConcurrentHashMap<>();
@@ -227,12 +228,70 @@ public class HW4 {
         return false;
     }
 
+    public static void setDefaultParams(String Your_Last_Name) {
+        switch(Character.toLowerCase(Your_Last_Name.charAt(0))) {
+            case 'a': case 'b': case 'c': case 'd': case 'e': case 'f':
+                CUST_LOW = 980;
+                CUST_HI = 1020;
+                WEEKEND_INCREASE = 50;
+                PRICE_MULT = 1.1;
+                MAX_ITEMS = 60;
+                break;
+            case 'g': case 'h': case 'i': case 'j': case 'k':
+                CUST_LOW = 1000;
+                CUST_HI = 1040;
+                WEEKEND_INCREASE = 50;
+                PRICE_MULT = 1.05;
+                MAX_ITEMS = 70;
+                break;
+            case 'l': case 'm': case 'n': case 'o':
+                CUST_LOW = 1020;
+                CUST_HI = 1060;
+                WEEKEND_INCREASE = 50;
+                PRICE_MULT = 1.2;
+                MAX_ITEMS = 80;
+                break;
+            case 'p': case 'q': case 'r':
+                CUST_LOW = 1100;
+                CUST_HI = 1150;
+                WEEKEND_INCREASE = 50;
+                PRICE_MULT = 1.07;
+                MAX_ITEMS = 90;
+                break;
+            case 's': case 't': case 'u':
+                CUST_LOW = 1140;
+                CUST_HI = 1180;
+                WEEKEND_INCREASE = 50;
+                PRICE_MULT = 1.1;
+                MAX_ITEMS = 100;
+                break;
+            case 'v': case 'w': case 'x': case 'y': case 'z':
+                CUST_LOW = 1200;
+                CUST_HI = 1250;
+                WEEKEND_INCREASE = 50;
+                PRICE_MULT = 1.11;
+                MAX_ITEMS = 65;
+                break;
+            default:
+                throw new RuntimeException("Invalid Last Name: " + Your_Last_Name);
+        }
+    }
+
     public static void main(String[] args) {
+
+        // set params according to last name of user
+        try {
+            Your_Last_Name = args[0];
+        } catch (Exception e) {
+            throw new RuntimeException("\n\nPlease Give a last name as arg[0]");
+        }
+        setDefaultParams(Your_Last_Name);
 
         // Header to message the user with set parameters and start timer.
         println("Creation Started w/ Params:");
         int paddingSize = 32;
         char fill = '*';
+        println(FGGREEN, padJustify(paddingSize, fill,     "Your_Last_Name ",     " " + Your_Last_Name));
         print(FGPURPLE);
         printlnDelim("\n",
                 padJustify(paddingSize, fill,     "START_DATE_STRING ",  " " + START_DATE_STRING),
@@ -443,10 +502,9 @@ public class HW4 {
             sku = entry.getKey().getSku();
             price = entry.getKey().getPrice();
             int count = entry.getValue().intValue();
-            /* Uncomment to break after top 10 */
-//            if( rank > 10 ) {
-//                break;
-//            }
+            if( rank > 25 ) {
+                break;
+            }
             println(padJustify(
                     paddingSize,
                     fill,
@@ -455,16 +513,17 @@ public class HW4 {
             );
             rank++;
         }
+        print(RESET);
 
         try {
-            write("Sku", "Name"); //, "Name", "Price", "Total Sold", "YTD Cases Sold");
+            write("Sku", "Name");
             for (Map.Entry<SkuPrice, AtomicInteger> entry : sortedSkuCounts.entrySet()) {
                 sku = entry.getKey().getSku();
 //                price = entry.getKey().getPrice();
 //                int count = entry.getValue().intValue();
 //                int ytd_cases = YTD_CASES.get(sku);
                 String name = InventoryBuilder.namesMap.get(sku);
-                write(sku, name); //, price, count, ytd_cases);
+                write(sku, name);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -476,8 +535,10 @@ public class HW4 {
                 ex.printStackTrace();
             }
         }
+        println("Written to File: ");
+        print(FGPURPLE);
+        println(OUTPUT_PATH);
 
-        //stop timer ASAP for accuracy
         timer.stop();
         println(FGGREEN, "\nDONE", timer, "\n");
 
