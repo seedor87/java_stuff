@@ -1,7 +1,5 @@
 package GradDataWarehousing.Lecture4;
 
-import GradDataWarehousing.HWResources.SkuPrice;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,9 +25,13 @@ public class ReParser {
             String line;
             while((line = br.readLine()) != null) {
                 String[] fields = line.split("\\|");
-                if(fields[3].equals("Bread")) {
-                    println("new SkuPrice(" + fields[4] + ", " + fields[5].substring(1, fields[5].length()) + "),");
-                }
+                String manufacturer = fields[0];
+                String name = fields[1];
+                String size = fields[2];
+                String type = fields[3];
+                String sku = fields[4];
+                String price = fields[5];
+                println(fields);
             }
         } catch (Exception e) {
             e.printStackTrace();
