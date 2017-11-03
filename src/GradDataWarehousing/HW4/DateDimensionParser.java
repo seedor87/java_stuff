@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.time.ZoneId;
 import java.util.Date;
+import static Utils.ConsolePrinting.*;
 
 /**
  * Created by robertseedorf on 11/2/17.
