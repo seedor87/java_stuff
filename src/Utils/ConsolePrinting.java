@@ -274,18 +274,14 @@ public class ConsolePrinting {
         println(carr);
 
         try {
-            int count = 0;
             while(true) {
                 Thread t;
-                printrn(count);
+                Date date = new Date();
+                printrn(FGRED, date.toString());
                 Thread.sleep(2000);
-                printrn("first");
+                date = new Date();
+                printrn(FGRED, date.toInstant());
                 Thread.sleep(2000);
-                printrn(FGRED, "second");
-                Thread.sleep(2000);
-                printrnDelim(" - ", new Integer[]{1, 2, 3, 4});
-                Thread.sleep(2000);
-                count++;
             }
         } catch (Exception e) {
             e.printStackTrace();

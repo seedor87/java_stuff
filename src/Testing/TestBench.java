@@ -21,9 +21,9 @@ public class TestBench {
         for(int i = 10; i < len; i*=10) {
             try {
                 print("DP Sort: ");
-                new SYSTimeTest(DualPivotQuickSort.class, "Test").exe(i,max);
+                new SYSTimeTest(DualPivotQuickSort.class, "DBTest").exe(i,max);
                 print("Reg qs: ");
-                new SYSTimeTest(QuickSort.class, "Test").exe(i,max);
+                new SYSTimeTest(QuickSort.class, "DBTest").exe(i,max);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

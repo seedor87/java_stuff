@@ -151,8 +151,8 @@ public class StringUtils {
         int len = 60;
         print(FGBLACK);
         println(padToRight(len, "testing"));
-        println(padToLeft(len, "Test ing"));
-        println(padToRight(len, '*', "Test   ing"));
+        println(padToLeft(len, "DBTest ing"));
+        println(padToRight(len, '*', "DBTest   ing"));
         println(padToLeft(len, "__$__", "t e s t i n g"));
         println(padJustify(len, ' ', "left", "right"));
         println(padJustify(len, '^', "l ef t", "r igh t"));

@@ -6,7 +6,7 @@ import java.sql.SQLException;
 /**
  * Created by robertseedorf on 9/26/17.
  */
-public class Test {
+public class DBTest {
 
     /**
      * Connect to a sample database
@@ -15,7 +15,7 @@ public class Test {
         Connection conn = null;
         try {
             // db parameters
-            String url = "./Test.db";
+            String url = "./DBTest.db";
             // create a connection to the database
             conn = DriverManager.getConnection(url);
 
