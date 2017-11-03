@@ -48,7 +48,15 @@ public class StoreDimensionParser {
                     "Store Phone",
                     "Store State");
 
+
+            store_key = 105;
             // Insert you values for all fields here
+            store_manager = "Bob Seedorf";
+            store_street_address = "515 Mullica Hill Rd.";
+            store_town = "Pleasantville";
+            store_zip = "08028";
+            store_phone = "609-867-5309";
+            store_state = "NJ";
             write(store_key,
                     store_manager,
                     store_street_address,
@@ -56,7 +64,14 @@ public class StoreDimensionParser {
                     store_zip,
                     store_phone,
                     store_state);
-            // Insert you values for all fields here
+
+            store_key = 111;
+            store_manager = "Bob Seedorf";
+            store_street_address = "515 Mullica Hill Rd.";
+            store_town = "Pleasantville";
+            store_zip = "08028";
+            store_phone = "609-867-5309";
+            store_state = "NJ";
             write(store_key,
                     store_manager,
                     store_street_address,
@@ -64,7 +79,15 @@ public class StoreDimensionParser {
                     store_zip,
                     store_phone,
                     store_state);
+
+            store_key = 113;
             // Insert you values for all fields here
+            store_manager = "Bob Seedorf";
+            store_street_address = "515 Mullica Hill Rd.";
+            store_town = "Pleasantville";
+            store_zip = "08028";
+            store_phone = "609-867-5309";
+            store_state = "NJ";
             write(store_key,
                     store_manager,
                     store_street_address,

@@ -1,6 +1,7 @@
 package GradDataWarehousing.HW4;
 
 import java.io.*;
+import java.util.Random;
 
 /**
  * Created by robertseedorf on 11/2/17.
@@ -22,7 +23,7 @@ public class MetaDataParser {
     static String type;
     static String sku;
     static String price;
-    static enum sources {
+    enum sources {
         original, mapped, matched
     }
     static sources source;
@@ -45,6 +46,13 @@ public class MetaDataParser {
         bw.write("\n");
     }
 
+    /**
+     * Method to generate one (1) random integer between low (inclusive) and hi (exclusive)
+     */
+    public static int randRange(int low, int hi) {
+        return new Random().nextInt(hi-low) + low;
+    }
+
     public static void main(String[] args) {
         try {
             FileInputStream fis= new FileInputStream(ALL_PRODUCTS_PATH);
@@ -55,14 +63,15 @@ public class MetaDataParser {
                     "Source");
             String line = br.readLine(); // throw away first line
             while((line = br.readLine()) != null) {
-                switch(flag % 3) {
-                    case 0:
+                flag = randRange(1,4);
+                switch(flag) {
+                    case 1:
                         source = sources.original;
                         break;
-                    case 1:
+                    case 2:
                         source = sources.mapped;
                         break;
-                    case 2:
+                    case 3:
                         source = sources.matched;
                         break;
                     default:

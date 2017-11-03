@@ -2,6 +2,8 @@ package GradDataWarehousing.HW4;
 
 import java.io.*;
 
+import static GradDataWarehousing.HWResources.Utils.isMilkSku;
+
 /**
  * Created by robertseedorf on 9/26/17.
  */
@@ -76,9 +78,15 @@ public class ProductDimensionParser {
                 manufacturer = fields[0];
                 product_name = fields[1];
                 size = fields[2];
-                type = fields[3];
+                category = fields[3];
                 sku = fields[4];
                 price = fields[5];
+
+                if(isMilkSku(Integer.parseInt(sku))) {
+                    supplier = "Rowan Dairy";
+                } else {
+                    supplier = "Rowan Grocery";
+                }
                 write(product_key,
                         sku,
                         product_name,
