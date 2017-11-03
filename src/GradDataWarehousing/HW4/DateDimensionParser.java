@@ -20,26 +20,27 @@ public class DateDimensionParser {
     static final String sep = ", ";
     static BufferedWriter bw;
 
+    // federal holidays
     private static final String holidays[] = {
-            "2017-01-02",
-            "2017-01-16",
-            "2017-02-20",
-            "2017-05-29",
-            "2017-07-04",
-            "2017-09-04",
-            "2017-10-09",
-            "2017-11-10",
-            "2017-11-23",
-            "2017-12-25",
+            "2017-01-02",   // New Year's Day
+            "2017-01-16",   // G.W.'s B-Day
+            "2017-02-20",   // MLK Day
+            "2017-05-29",   // Memorial Day
+            "2017-07-04",   // The 4th
+            "2017-09-04",   // Labour Day
+            "2017-10-09",   // Columbus Day
+            "2017-11-10",   // Armistice Day
+            "2017-11-23",   // Turkey Day
+            "2017-12-25",   // Jesus's B-Day
     };
 
     private static final String seasons[] = {
-            "NA",
-            "Winter", "Winter",
-            "Spring", "Spring", "Spring",
-            "Summer", "Summer", "Summer",
-            "Fall", "Fall", "Fall",
-            "Winter"
+            "NA",                           // cannot index at position 0
+            "Winter", "Winter",             // jan and feb
+            "Spring", "Spring", "Spring",   // march, april, may
+            "Summer", "Summer", "Summer",   // june, july, august
+            "Fall", "Fall", "Fall",         // sep, oct, nov
+            "Winter"                        // december
     };
 
     //date format for day iteration
@@ -49,9 +50,9 @@ public class DateDimensionParser {
     static LocalDate date;
 
     static int date_key = 0;
-    static int day_num_in_month = 1;
-    static int day_num_in_year = 1;
-    static int week_num_in_year = 1;
+    static int day_num_in_month = 0;
+    static int day_num_in_year = 0;
+    static int week_num_in_year = 0;    // we start on a sunday this year...
     static int n_month = 1;
     static String month = "";
     static int quarter = 1;
@@ -62,7 +63,7 @@ public class DateDimensionParser {
     static String season = "";
 
     /**
-     * Method to write particular line to txt file now
+     *  Method to write particular line to txt file now
      */
     public static void write(Object... args) throws IOException {
 
@@ -76,37 +77,6 @@ public class DateDimensionParser {
             delim = sep;
         }
         bw.write("\n");
-    }
-
-    public static int getNMonth(Month month) {
-        switch(month) {
-            case JANUARY:
-                return 1;
-            case FEBRUARY:
-                return 2;
-            case MARCH:
-                return 3;
-            case APRIL:
-                return 4;
-            case MAY:
-                return 5;
-            case JUNE:
-                return 6;
-            case JULY:
-                return 7;
-            case AUGUST:
-                return 8;
-            case SEPTEMBER:
-                return 9;
-            case OCTOBER:
-                return 10;
-            case NOVEMBER:
-                return 11;
-            case DECEMBER:
-                return 12;
-            default:
-                return 0;
-        }
     }
 
     /**
@@ -131,7 +101,7 @@ public class DateDimensionParser {
     }
 
     public static String getSeason(LocalDate date) {
-        return seasons[ getNMonth(date.getMonth()) ];
+        return seasons[date.getMonth().getValue()];
     }
 
     public static int getQuarter(LocalDate date) {
@@ -174,7 +144,7 @@ public class DateDimensionParser {
                 if(date.getDayOfWeek() == DayOfWeek.SUNDAY) {
                     week_num_in_year++;
                 }
-                n_month = getNMonth(date.getMonth());
+                n_month = date.getMonth().getValue();
                 month = date.getMonth().toString();
                 quarter = getQuarter(date);
                 if(date.isBefore(fiscalYearEnd)) {

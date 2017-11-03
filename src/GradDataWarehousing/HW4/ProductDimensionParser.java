@@ -21,13 +21,12 @@ public class ProductDimensionParser {
     static String manufacturer;
     static String product_name;
     static String size;
-    static String type;
+    static String category;
     static String sku;
     static String price;
     static int product_key = 0;
     static int product_class_id = 0;
     static String subcategory = "";
-    static String category = "";
     static String department = "";
     static String family = "";
     static int num_per_case = 12;
