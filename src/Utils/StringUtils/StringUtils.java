@@ -5,6 +5,13 @@ import java.util.Collection;
 import static Utils.ConsolePrinting.*;
 public class StringUtils {
 
+    public static String trim(String str, int len) {
+        if(str.length() > len) {
+            return padToLeft(len, '.', str.substring(0, len-3));
+        }
+        return padToLeft(len, ' ', str);
+    }
+
     public static String padToLength(int len) {
         return padToLength(len, ' ');
     }

@@ -3,7 +3,6 @@ package GradDataWarehousing.HW4;
 import GradDataWarehousing.HWResources.HW1Arrays;
 import GradDataWarehousing.HWResources.InventoryBuilder;
 import GradDataWarehousing.HWResources.SkuPrice;
-import Utils.Exchange;
 import Utils.Timers.AbstractTimer;
 import Utils.Timers.SYSTimer;
 
@@ -14,10 +13,7 @@ import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Date;
-import java.util.Map;
-import java.util.Random;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -28,15 +24,21 @@ import static Utils.StringUtils.StringUtils.*;
 
 public class HW4 {
 
-    static final String OUTPUT_PATH = "." + File.separatorChar + "output4.csv"; //results go here
-    static final String OUTPUT_PATH_2 = "." + File.separatorChar + "output4-1.csv";
+    static final String OUTPUT_PATH = "." + File.separatorChar + "output4.csv"; // results of fact table go here
+    static final String OUTPUT_PATH_2 = "." + File.separatorChar + "output4-1.csv"; // results of top ranked go here
 
     static final String ALL_PRODUCTS_PATH = "." +
             File.separatorChar + "src" +
             File.separatorChar + "GradDataWarehousing" +
             File.separatorChar + "HW1" +
-            File.separatorChar + "myProducts";  // pre-processed list of skus and prices
-    static final String START_DATE_STRING = "2017-12-01";
+            File.separatorChar + "Products";  // pre-processed list of skus and prices
+
+    /* This is the flag that can be used to allow the
+    purchase of items from one of the ten special categories,
+    during the purchase of random items iteration */
+    static final boolean DISALLOW_DUPE_PURCH = true;
+
+    static final String START_DATE_STRING = "2017-01-01";
     static final String END_DATE_STRING = "2018-01-01";
     // map for pairing <sku and price, count>
     static final ConcurrentMap<SkuPrice, AtomicInteger> SKU_PRICE_MAP_COUNT = new ConcurrentHashMap<>();
@@ -60,7 +62,8 @@ public class HW4 {
     //date format for day iteration
     static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     // the list of all products created at start to easily index for random sku-price from all
-    static SkuPrice[] allMyProdcuts;
+    static List<SkuPrice> allMyProdcuts;
+    static SkuPrice[] ALL;
     // vars holding the runtime counts for metrics
     static int total_items_bought = 0;
     static int total_customers = 0;
@@ -73,9 +76,9 @@ public class HW4 {
     static LocalDate start;
     static LocalDate end;
     static LocalDate date;
-    // reusable value for sku tracking
+    // reusable values for transaction tracking
     static Integer sku;
-    // reusable value for price tracking
+    static String name;
     static double price;
     static int currQuant;
     static int casesYTD;
@@ -162,9 +165,9 @@ public class HW4 {
     /**
      * Method to check if inventory map is empty, that is to say if all sku's is at count of 0
      */
-    public static boolean isInvEmpty(){
-        for(Map.Entry entry : MY_INVENTORY.entrySet()) {
-            if ((int) entry.getValue() > 0) {
+    public static boolean isInvEmpty(SkuPrice[] all){
+        for(SkuPrice sp : all) {
+            if(MY_INVENTORY.get(sp.getSku()) > 0) {
                 return false;
             }
         }
@@ -213,10 +216,10 @@ public class HW4 {
      * Method to allow a customer to attempt to but an item based ont he given array of items.
      * This is used across the main body's nested if's to limit the size of the program.
      */
-    public static boolean buyItem(SkuPrice[] array) {
-        SkuPrice randMilk = getRandomItemFromArray(array);  // get random milk SkuPrice
-        sku = randMilk.getSku();     // parse sku out of milk SkuPrice
-        price = roundTwoDecimal(randMilk.getPrice() * Price_Mult); // parse price out of file and x by factor
+    public static boolean buyItem(SkuPrice[] array) throws IOException{
+        SkuPrice randSkuPrice = getRandomItemFromArray(array);  // get random SkuPrice
+        sku = randSkuPrice.getSku();     // parse sku out of SkuPrice
+        price = roundTwoDecimal(randSkuPrice.getPrice() * Price_Mult); // parse price out of file and x by factor
         if(MY_INVENTORY.get(sku) -1 > -1) {
             updateSkuMap(new SkuPrice(sku, price));
             total_sales_USD += price;   // increment total sales with price
@@ -225,6 +228,8 @@ public class HW4 {
             currQuant--;
             casesYTD = YTD_CASES.get(sku);
             MY_INVENTORY.replace(sku, currQuant);
+            name = InventoryBuilder.namesMap.get(sku);
+            write(date, custCount, itemsCount, sku, name, price, currQuant, casesYTD);
             return true;
         }
         return false;
@@ -289,7 +294,7 @@ public class HW4 {
         try {
             Your_Last_Name = args[0];
         } catch (Exception e) {
-            throw new RuntimeException("\n\nPlease Give a last name as arg[0]");
+            throw new RuntimeException("\nPlease Give a last name as arg[0]\n");
         }
         setDefaultParams(Your_Last_Name);
 
@@ -300,14 +305,15 @@ public class HW4 {
         println(FGGREEN, padJustify(paddingSize, fill,     "Your_Last_Name ",     " " + Your_Last_Name));
         print(FGPURPLE);
         printlnDelim("\n",
-                padJustify(paddingSize, fill,     "START_DATE_STRING ",  " " + START_DATE_STRING),
-                padJustify(paddingSize, fill,     "END_DATE_STRING ",    " " + END_DATE_STRING),
-                padJustify(paddingSize, fill,     "CUST_LOW ",           " " + Cust_Low),
-                padJustify(paddingSize, fill,     "CUST_HI ",            " " + Cust_Hi),
-                padJustify(paddingSize, fill,     "PRICE_MULT ",         " " + Price_Mult),
-                padJustify(paddingSize, fill,     "MAX_ITEMS ",          " " + Max_Items),
-                padJustify(paddingSize, fill,     "WEEKEND_INCREASE ",   " " + Weekend_Increase),
-                padJustify(paddingSize, fill,     "OUTPUT_PATH ",        " " + OUTPUT_PATH)
+                padJustify(paddingSize, fill,     "DISALLOW_DUPLICATE_PURCH ",    " " + DISALLOW_DUPE_PURCH),
+                padJustify(paddingSize, fill,     "START_DATE_STRING ",         " " + START_DATE_STRING),
+                padJustify(paddingSize, fill,     "END_DATE_STRING ",           " " + END_DATE_STRING),
+                padJustify(paddingSize, fill,     "CUST_LOW ",                  " " + Cust_Low),
+                padJustify(paddingSize, fill,     "CUST_HI ",                   " " + Cust_Hi),
+                padJustify(paddingSize, fill,     "PRICE_MULT ",                " " + Price_Mult),
+                padJustify(paddingSize, fill,     "MAX_ITEMS ",                 " " + Max_Items),
+                padJustify(paddingSize, fill,     "WEEKEND_INCREASE ",          " " + Weekend_Increase),
+                padJustify(paddingSize, fill,     "OUTPUT_PATH ",               " " + OUTPUT_PATH)
         );
         print(RESET);
         AbstractTimer timer = new SYSTimer(AbstractTimer.TimeUnit.SECONDS);
@@ -326,18 +332,30 @@ public class HW4 {
 
         // Build array of all my products for rand access later
         try {
-            allMyProdcuts = new SkuPrice[max_all_items];
-            FileInputStream fs = new FileInputStream(ALL_PRODUCTS_PATH);
+            allMyProdcuts = new ArrayList<>();
+            FileInputStream fs= new FileInputStream(ALL_PRODUCTS_PATH);
             BufferedReader br = new BufferedReader(new InputStreamReader(fs));
-            String line;
-            int i = 0;
+            String line = br.readLine(); // throw away
             while((line = br.readLine()) != null) {
-                String[] pair = line.split(", ");
-                sku = Integer.parseInt(pair[0]);
-                price = Double.parseDouble(pair[1]);
-                allMyProdcuts[i] = new SkuPrice(sku, price);
-                i++;
+                String[] fields = line.split("\\|");
+                int sku = Integer.parseInt(fields[4]);
+                double price = Double.parseDouble(fields[5].substring(1));
+                String type = fields[3];
+                if(DISALLOW_DUPE_PURCH) {
+                    if (type.equals("Milk") ||
+                            type.equals("Cereal") ||
+                            type.equals("Baby Food") ||
+                            type.equals("Diapers") ||
+                            type.equals("Jelly/Jam") ||
+                            type.equals("Bread") ||
+                            type.equals("Peanut Butter")
+                            ) {
+                        continue;
+                    }
+                }
+                allMyProdcuts.add(new SkuPrice(sku, price));
             }
+            ALL = allMyProdcuts.toArray(new SkuPrice[allMyProdcuts.size()]);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -360,10 +378,10 @@ public class HW4 {
             println("\nworking...");
             File file = new File(OUTPUT_PATH);
             writer = new BufferedWriter(new FileWriter(file));
+            write("Date", "Cust#", "Item#", "SKU", "Name", "Price", "Quant Left", "YTD Cases");
             int numCust, numItems;
 
             for (date = start; date.isBefore(end); date = date.plusDays(1)) {
-
                 /* every day see if we can bolster inventory of milk, all (on acceptable dates), or both */
                 bolsterInventory(date);
 
@@ -466,16 +484,15 @@ public class HW4 {
 
                     if(!fallThrough) {
                         while (itemsCount < numItems) {
-                            if(isInvEmpty()) {
+                            if(isInvEmpty(ALL)) {
                                 /**
                                  * This is a special check to avoid halting problem that occurs when the inventory is empty, but we continue to try to extract items regardless.
                                  * To avoid this we try a cursory check to see if there is at least one of any item to sell.
                                  */
-                                println(FGRED,"INVENTORY SOLD OUT");
+//                                println(FGRED,"INVENTORY SOLD OUT");
                                 break;
                             }
-                            if(buyItem(allMyProdcuts)) {
-//                                write(date, custCount, itemsCount, sku, price, currQuant, casesYTD);
+                            if(buyItem(ALL)) {
                                 itemsCount++;
                             }
                         }
@@ -492,7 +509,7 @@ public class HW4 {
         sortedSkuCounts.putAll(SKU_PRICE_MAP_COUNT);
 
         // all of this nonsense prints the results to answer the questions in the assignment
-        paddingSize = 50;
+        paddingSize = 80;
         fill = '.';
         print(FGYELLOW);
         printlnDelim("\n",
@@ -502,25 +519,27 @@ public class HW4 {
         );
         println(padJustify(paddingSize, ' ', "Top 10 Items By Count:"));
         println(padToLength(paddingSize, '='));
-        println(padJustify(paddingSize, ' ', " Rank |   SKU    |  Price  ", padToLength(7, '.'), " YTD Sold |", " YTD Cases"));
+        println(padJustify(paddingSize, ' ', " Rank |   SKU    |" + padJustify(30, ' ',"Name") + "|  Price  ", padToRight(12, fill, " YTD Sold |"), " YTD Cases"));
         try {
             File file = new File(OUTPUT_PATH_2);
             writer2 = new BufferedWriter(new FileWriter(file));
-            writer2.write("Rank, SKU, Price, YTD Sold, YTD Cases");
+            writer2.write("Rank, SKU, Name, Price, YTD Sold, YTD Cases");
             int rank = 1;   // value to to count the items as the are printed to verify length and order
             for (Map.Entry<SkuPrice, AtomicInteger> entry : sortedSkuCounts.entrySet()) {
                 sku = entry.getKey().getSku();
                 price = entry.getKey().getPrice();
+                name = InventoryBuilder.namesMap.get(sku);
+                casesYTD = YTD_CASES.get(sku);
                 int count = entry.getValue().intValue();
 //                if( rank > 25 ) {
 //                    break;
 //                }
-                writer2.write("\n" + rank + ", " + sku + ", " + price + ", " + count + ", " + YTD_CASES.get(sku));
+                writer2.write("\n" + rank + ", " + sku + ", " + name + ", " + price + ", " + count + ", " + casesYTD);
                 println(padJustify(
                         paddingSize,
                         fill,
-                        padToRight(5, rank) + " | " + sku + " | ($" + padToLeft(4, '0', price) + ") ",
-                        " " + NumberFormat.getInstance().format(count) + " | " + YTD_CASES.get(sku))
+                        padToRight(5, rank) + " | " + sku + " | " + trim(name, 28) + " | ($" + padToLeft(4, '0', price) + ") ",
+                        " " + NumberFormat.getInstance().format(count) + " | " + padToRight(9, ' ', casesYTD))
                 );
                 rank++;
             }
@@ -538,26 +557,27 @@ public class HW4 {
 
         print(RESET);
 
-        try {
-            write("Sku", "Name");
-            for (Map.Entry<SkuPrice, AtomicInteger> entry : sortedSkuCounts.entrySet()) {
-                sku = entry.getKey().getSku();
+        /* used to write names, now defunct */
+//        try {
+//            write("Sku", "Name");
+//            for (Map.Entry<SkuPrice, AtomicInteger> entry : sortedSkuCounts.entrySet()) {
+//                sku = entry.getKey().getSku();
 //                price = entry.getKey().getPrice();
 //                int count = entry.getValue().intValue();
 //                int ytd_cases = YTD_CASES.get(sku);
-                String name = InventoryBuilder.namesMap.get(sku);
-                write(sku, name);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                writer.flush(); // clean up writer to make sure we get every last drop
-                writer.close();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
+//                String name = InventoryBuilder.namesMap.get(sku);
+//                write(sku, name);
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        } finally {
+//            try {
+//                writer.flush(); // clean up writer to make sure we get every last drop
+//                writer.close();
+//            } catch (IOException ex) {
+//                ex.printStackTrace();
+//            }
+//        }
         println("Written to File: ");
         print(FGPURPLE);
         println(OUTPUT_PATH);

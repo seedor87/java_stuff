@@ -26,7 +26,7 @@ public class HW1 {
             File.separatorChar + "src" +
             File.separatorChar + "GradDataWarehousing" +
             File.separatorChar + "HW1" +
-            File.separatorChar + "myProducts";  // pre-processed list of skus and prices
+            File.separatorChar + "Products";  // pre-processed list of skus and prices
     // student specific params
     static final String START_DATE_STRING = "2017-01-01";
     static final String END_DATE_STRING = "2018-01-01";
@@ -151,11 +151,11 @@ public class HW1 {
         try {
             FileInputStream fs= new FileInputStream(allProductsFilePath);
             BufferedReader br = new BufferedReader(new InputStreamReader(fs));
-            String line;
+            String line = br.readLine(); // throw away
             while((line = br.readLine()) != null) {
-                String[] pair = line.split(", ");
-                int sku = Integer.parseInt(pair[0]);
-                double price = Double.parseDouble(pair[1]);
+                String[] fields = line.split("\\|");
+                int sku = Integer.parseInt(fields[4]);
+                double price = Double.parseDouble(fields[5].substring(1));
                 allMyProdcuts.add(new SkuPrice(sku, price));
             }
         } catch (Exception e) {
@@ -366,9 +366,9 @@ public class HW1 {
         println(padJustify(paddingSize, ' ', " Rank |   SKU    |  Price ", "Count "));
         int rank = 1;
         for (Map.Entry<SkuPrice, AtomicInteger> entry : sortedSkuCounts.entrySet()) {
-            if( rank > 10 ) {
-                break;
-            }
+//            if( rank > 100 ) {
+//                break;
+//            }
             println(padJustify(
                    paddingSize,
                    fill,

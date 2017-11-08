@@ -4,9 +4,6 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static Utils.ConsolePrinting.println;
-
-
 /**
  * Created by robertseedorf on 11/3/17.
  */

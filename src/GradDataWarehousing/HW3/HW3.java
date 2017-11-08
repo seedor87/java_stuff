@@ -30,7 +30,7 @@ public class HW3 {
             File.separatorChar + "src" +
             File.separatorChar + "GradDataWarehousing" +
             File.separatorChar + "HW1" +
-            File.separatorChar + "myProducts";  // pre-processed list of skus and prices
+            File.separatorChar + "Products";  // pre-processed list of skus and prices
 
     // student specific params
     static final String START_DATE_STRING = "2017-01-01";
@@ -266,16 +266,16 @@ public class HW3 {
             allMyProdcuts = new SkuPrice[max_all_items];
             FileInputStream fs = new FileInputStream(ALL_PRODUCTS_PATH);
             BufferedReader br = new BufferedReader(new InputStreamReader(fs));
-            String line;
-            int i = 0;
+            String line = br.readLine(); // throw away
+            int index = 0;
             while((line = br.readLine()) != null) {
-                String[] pair = line.split(", ");
-                sku = Integer.parseInt(pair[0]);
-                price = Double.parseDouble(pair[1]);
-                allMyProdcuts[i] = new SkuPrice(sku, price);
-                i++;
+                String[] fields = line.split("\\|");
+                int sku = Integer.parseInt(fields[4]);
+                double price = Double.parseDouble(fields[5].substring(1));
+                allMyProdcuts[index] = new SkuPrice(sku, price);
+                index++;
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         println();
