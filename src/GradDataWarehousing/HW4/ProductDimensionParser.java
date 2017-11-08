@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.Scanner;
 
 import static GradDataWarehousing.HWResources.Utils.isMilkSku;
+import static Utils.ConsolePrinting.FGCYAN;
 import static Utils.ConsolePrinting.print;
 import static Utils.ConsolePrinting.println;
 
@@ -21,7 +22,8 @@ public class ProductDimensionParser {
     static final String sep = ", ";
     static BufferedWriter bw;
     static int index;
-    static boolean fallThrough = false;
+    static boolean skip = false;
+    static ProductsClassParser pcp;
 
     static String manufacturer;
     static String product_name;
@@ -38,8 +40,24 @@ public class ProductDimensionParser {
     static int num_per_case = 12;
     static String brand_name = "";
     static String supplier = "";
+    static int source = 0;
 
 
+    public static boolean attemptToCategorize(String name, String type, String manuf) {
+        for (int i = 0; i < pcp.PRODUCT_CATEGORY.length; i++) {
+            if(name.contains(pcp.PRODUCT_CATEGORY[i]) || type.contains(pcp.PRODUCT_CATEGORY[i]) || manuf.contains(pcp.PRODUCT_CATEGORY[i]) ||
+                    name.contains(pcp.PRODUCT_SUBCATEGORY[i]) || type.contains(pcp.PRODUCT_SUBCATEGORY[i]) || manuf.contains(pcp.PRODUCT_SUBCATEGORY[i]) ||
+                    name.contains(pcp.PRODUCT_DEPARTMENT[i]) || type.contains(pcp.PRODUCT_DEPARTMENT[i]) || manuf.contains(pcp.PRODUCT_DEPARTMENT[i])) {
+                product_class_id =  pcp.PRODUCT_CLASS_ID[i];
+                subcategory =       pcp.PRODUCT_SUBCATEGORY[i];
+                category =          pcp.PRODUCT_CATEGORY[i];
+                department =        pcp.PRODUCT_DEPARTMENT[i];
+                family =            pcp.PRODUCT_FAMILY[i];
+                return true;
+            }
+        }
+        return false;
+    }
     /**
      * Method to write particular line to txt file now
      */
@@ -75,13 +93,17 @@ public class ProductDimensionParser {
                     "Num Per Case",
                     "Brand Name",
                     "Manufacturer",
-                    "Supplier");
+                    "Supplier",
+                    "Source");
 
-            ProductsClassParser pcp = new ProductsClassParser();
+            pcp = new ProductsClassParser();
             Scanner scan = new Scanner(System.in);
 
             String line = br.readLine(); // throw away first line
             while((line = br.readLine()) != null) {
+
+                skip = false;
+
                 product_key++;
                 String[] fields = line.split("\\|");
                 manufacturer = fields[0];
@@ -92,34 +114,32 @@ public class ProductDimensionParser {
                 sku = fields[4];
                 price = fields[5];
 
-                if(!fallThrough) {
+                boolean res = attemptToCategorize(product_name, type, manufacturer);
+                if(!res) {
+                    print(FGCYAN, product_key, "");
                     println(fields);
                     print("Please Choose which from the key: ");
                     index = scan.nextInt() - 1;
                     scan.nextLine();
 
                     if (index < 0) {
-                        fallThrough = true;
+                        skip = true;
                     }
                 }
 
-                if(!fallThrough) {
-                    product_class_id =  pcp.PRODUCT_CLASS_ID[index];
-                    subcategory =       pcp.PRODUCT_SUBCATEGORY[index];
-                    category =          pcp.PRODUCT_CATEGORY[index];
-                    department =        pcp.PRODUCT_DEPARTMENT[index];
-                    family =            pcp.PRODUCT_FAMILY[index];
-                } else {
+                if(skip) {
                     product_class_id = "";
                     subcategory = "";
                     category = "";
                     department = "";
                     family = "";
-                    brand_name = "";
-                    supplier = "";
                 }
 
-
+                if(res) {
+                    source = 3;
+                } else {
+                    source = 2;
+                }
 
                 if(isMilkSku(Integer.parseInt(sku))) {
                     supplier = "Rowan Dairy";
@@ -138,7 +158,8 @@ public class ProductDimensionParser {
                         num_per_case,
                         brand_name,
                         manufacturer,
-                        supplier);
+                        supplier,
+                        source);
             }
         } catch (Exception e) {
             e.printStackTrace();

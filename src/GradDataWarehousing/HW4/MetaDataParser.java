@@ -13,7 +13,7 @@ public class MetaDataParser {
             File.separatorChar + "GradDataWarehousing" +
             File.separatorChar + "HW1" +
             File.separatorChar + "Products";  // list of skus and prices
-    static final String OUTPUT_PATH = "." + File.separatorChar + "MetaDataTable.csv"; //results go here
+    static final String OUTPUT_PATH = "." + File.separatorChar + "ProductDimensionTable.csv"; //results go here
     static final String sep = ", ";
     static BufferedWriter bw;
 

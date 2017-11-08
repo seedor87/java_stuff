@@ -1,31 +1,31 @@
-//package GradDataWarehousing.HW4;
-//import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
-//
-//import java.io.BufferedReader;
-//import java.io.FileNotFoundException;
-//import java.io.FileReader;
-//import java.io.IOException;
-//import java.sql.*;
-//
-//import static Utils.ConsolePrinting.*;
-//
-//
-///**
-// * This class is used to store the hard-coded values that the database (db) needs to know for connection utilities.
-// */
-//public class MyMysqlDataSource {
-//
-//    public static String INPUT_FILE = "C:\\Users\\rseedorf\\IdeaProjects\\java_stuff\\output3.txt";
-//    private static ResultSet result_set = null;
-//    private static Connection connection = null;
-//    private static Statement statement = null;
-//
-////    private static final String DB = "seedor87";
-////    private static final String SERVER = "elvis.rowan.edu";
-////    private static final String USER = "seedor87";
-////    private static final String PASSWORD = "penguin";
-//    private static com.mysql.jdbc.jdbc2.optional.MysqlDataSource DATA_SOURCE;
-//
+package GradDataWarehousing.HW4;
+import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.sql.*;
+import java.util.Calendar;
+
+import static Utils.ConsolePrinting.*;
+
+
+/**
+ * This class is used to store the hard-coded values that the database (db) needs to know for connection utilities.
+ */
+public class MyMysqlDataSource {
+
+    public static String INPUT_FILE = "C:\\Users\\rseedorf\\IdeaProjects\\java_stuff\\output3.txt";
+    private static ResultSet result_set = null;
+    private static Connection connection = null;
+    private static Statement statement = null;
+
+    private static final String SERVER = "jdbc:mysql://localhost/test";
+    private static final String USER = "root";
+    private static final String PASSWORD = "";
+    private static com.mysql.jdbc.jdbc2.optional.MysqlDataSource DATA_SOURCE;
+
 //    /**
 //     * static method that returns one DataSource instance that encapsulates the connection to the db.
 //     *
@@ -143,4 +143,41 @@
 //        new MyMysqlDataSource();
 //        execute();
 //    }
-//}
+
+    public static void main(String[] args) {
+        try
+        {
+            // create a mysql database connection
+            String myDriver = "org.gjt.mm.mysql.Driver";
+            String myUrl = "jdbc:mysql://localhost/DW";
+            Class.forName(myDriver);
+            Connection conn = DriverManager.getConnection(myUrl, "root", "");
+
+            // create a sql date object so we can use it in our INSERT statement
+            Calendar calendar = Calendar.getInstance();
+            java.sql.Date startDate = new java.sql.Date(calendar.getTime().getTime());
+
+            // the mysql insert statement
+            String query = " insert into temp (first_name, last_name, date_created, is_admin, num_points)"
+                    + " values (?, ?, ?, ?, ?)";
+
+            // create the mysql insert preparedstatement
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setString (1, "Barney");
+            preparedStmt.setString (2, "Rubble");
+            preparedStmt.setDate   (3, startDate);
+            preparedStmt.setBoolean(4, false);
+            preparedStmt.setInt    (5, 5000);
+
+            // execute the preparedstatement
+            preparedStmt.execute();
+
+            conn.close();
+        }
+        catch (Exception e)
+        {
+            System.err.println("Got an exception!");
+            System.err.println(e.getMessage());
+        }
+    }
+}

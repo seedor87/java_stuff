@@ -3,6 +3,7 @@ package GradDataWarehousing.HW4;
 import GradDataWarehousing.HWResources.HW1Arrays;
 import GradDataWarehousing.HWResources.InventoryBuilder;
 import GradDataWarehousing.HWResources.SkuPrice;
+import Utils.Exchange;
 import Utils.Timers.AbstractTimer;
 import Utils.Timers.SYSTimer;
 
@@ -28,6 +29,8 @@ import static Utils.StringUtils.StringUtils.*;
 public class HW4 {
 
     static final String OUTPUT_PATH = "." + File.separatorChar + "output4.csv"; //results go here
+    static final String OUTPUT_PATH_2 = "." + File.separatorChar + "output4-1.csv";
+
     static final String ALL_PRODUCTS_PATH = "." +
             File.separatorChar + "src" +
             File.separatorChar + "GradDataWarehousing" +
@@ -66,6 +69,7 @@ public class HW4 {
     static boolean fallThrough = false;
     // local variables for specific tasks
     static BufferedWriter writer;
+    static BufferedWriter writer2;
     static LocalDate start;
     static LocalDate end;
     static LocalDate date;
@@ -499,22 +503,39 @@ public class HW4 {
         println(padJustify(paddingSize, ' ', "Top 10 Items By Count:"));
         println(padToLength(paddingSize, '='));
         println(padJustify(paddingSize, ' ', " Rank |   SKU    |  Price  ", padToLength(7, '.'), " YTD Sold |", " YTD Cases"));
-        int rank = 1;   // value to to count the items as the are printed to verify length and order
-        for (Map.Entry<SkuPrice, AtomicInteger> entry : sortedSkuCounts.entrySet()) {
-            sku = entry.getKey().getSku();
-            price = entry.getKey().getPrice();
-            int count = entry.getValue().intValue();
-            if( rank > 25 ) {
-                break;
+        try {
+            File file = new File(OUTPUT_PATH_2);
+            writer2 = new BufferedWriter(new FileWriter(file));
+            writer2.write("Rank, SKU, Price, YTD Sold, YTD Cases");
+            int rank = 1;   // value to to count the items as the are printed to verify length and order
+            for (Map.Entry<SkuPrice, AtomicInteger> entry : sortedSkuCounts.entrySet()) {
+                sku = entry.getKey().getSku();
+                price = entry.getKey().getPrice();
+                int count = entry.getValue().intValue();
+//                if( rank > 25 ) {
+//                    break;
+//                }
+                writer2.write("\n" + rank + ", " + sku + ", " + price + ", " + count + ", " + YTD_CASES.get(sku));
+                println(padJustify(
+                        paddingSize,
+                        fill,
+                        padToRight(5, rank) + " | " + sku + " | ($" + padToLeft(4, '0', price) + ") ",
+                        " " + NumberFormat.getInstance().format(count) + " | " + YTD_CASES.get(sku))
+                );
+                rank++;
             }
-            println(padJustify(
-                    paddingSize,
-                    fill,
-                    padToRight(5, rank) + " | " + sku + " | ($" + padToLeft(4, '0', price) + ") ",
-                    " " + NumberFormat.getInstance().format(count) + " | " + YTD_CASES.get(sku))
-            );
-            rank++;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                writer2.flush();
+                writer2.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+
         }
+
         print(RESET);
 
         try {
