@@ -21,6 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static GradDataWarehousing.HWResources.Utils.isMilkSku;
 import static Utils.ConsolePrinting.*;
 import static Utils.StringUtils.StringUtils.*;
+import static Utils.StringUtils.StringUtilsRequiem.trim;
 
 public class HW4 {
 
