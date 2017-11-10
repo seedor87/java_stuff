@@ -235,7 +235,7 @@ public class HW3 {
         println("Creation Started w/ Params:");
         int paddingSize = 32;
         char fill = '*';
-        print(FGPURPLE);
+        print(FG_MAGENTA);
         printlnDelim("\n",
                 padJustify(paddingSize, fill,     "START_DATE_STRING ",  " " + START_DATE_STRING),
                 padJustify(paddingSize, fill,     "END_DATE_STRING ",    " " + END_DATE_STRING),
@@ -256,7 +256,7 @@ public class HW3 {
         SKU_AVG_MAP.putAll(InventoryBuilder.avgsMap);
         YTD_CASES.putAll(InventoryBuilder.casesYTD);
         println("\nInventory Initialized from...");
-        println(FGCYAN, InventoryBuilder.INPUT_PATH);
+        println(FG_CYAN, InventoryBuilder.INPUT_PATH);
 
         // set max to size determined by all skus maps
         max_all_items = SKU_AVG_MAP.size();
@@ -280,7 +280,7 @@ public class HW3 {
         }
         println();
         println("All Products List successfully constructed from...");
-        println(FGBLUE, ALL_PRODUCTS_PATH);
+        println(FG_BLUE, ALL_PRODUCTS_PATH);
 
         // Parse dates and build java 8 date objects for iteration
         try {
@@ -421,7 +421,7 @@ public class HW3 {
                                  * This is a special check to avoid halting problem that occurs when the inventory is empty, but we continue to try to extract items regardless.
                                  * To avoid this we try a cursory check to see if there is at least one of any item to sell.
                                  */
-                                println(FGRED,"INVENTORY SOLD OUT");
+                                println(FG_RED,"INVENTORY SOLD OUT");
                                 break;
                             }
                             if(buyItem(allMyProdcuts)) {
@@ -446,7 +446,7 @@ public class HW3 {
 
         //stop timer ASAP for accuracy
         timer.stop();
-        println(FGGREEN, "\nDONE", timer, "\n");
+        println(FG_GREEN, "\nDONE", timer, "\n");
 
         // sort map of <sku-price, counts> by frequency (count)
         Map<SkuPrice, AtomicInteger> sortedSkuCounts = new TreeMap(new SkuPrice.SkuMapComparator(SKU_PRICE_MAP_COUNT));
@@ -455,7 +455,7 @@ public class HW3 {
         // all of this nonsense prints the results to answer the questions in the assignment
         paddingSize = 50;
         fill = '.';
-        print(FGYELLOW);
+        print(FG_YELLOW);
         printlnDelim("\n",
                 padJustify(paddingSize, fill,    "Total Items Bought: ", " " + NumberFormat.getIntegerInstance().format(total_items_bought)),
                 padJustify(paddingSize, fill,    "Total Customers: ", " " + NumberFormat.getIntegerInstance().format(total_customers)),

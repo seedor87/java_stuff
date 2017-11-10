@@ -303,8 +303,8 @@ public class HW4 {
         println("Creation Started w/ Params:");
         int paddingSize = 32;
         char fill = '*';
-        println(FGGREEN, padJustify(paddingSize, fill,     "Your_Last_Name ",     " " + Your_Last_Name));
-        print(FGPURPLE);
+        println(FG_GREEN, padJustify(paddingSize, fill,     "Your_Last_Name ",     " " + Your_Last_Name));
+        print(FG_MAGENTA);
         printlnDelim("\n",
                 padJustify(paddingSize, fill,     "DISALLOW_DUPLICATE_PURCH ",    " " + DISALLOW_DUPE_PURCH),
                 padJustify(paddingSize, fill,     "START_DATE_STRING ",         " " + START_DATE_STRING),
@@ -326,7 +326,7 @@ public class HW4 {
         SKU_AVG_MAP.putAll(InventoryBuilder.avgsMap);
         YTD_CASES.putAll(InventoryBuilder.casesYTD);
         println("\nInventory Initialized from...");
-        println(FGCYAN, InventoryBuilder.INPUT_PATH);
+        println(FG_CYAN, InventoryBuilder.INPUT_PATH);
 
         // set max to size determined by all skus maps
         max_all_items = SKU_AVG_MAP.size();
@@ -362,7 +362,7 @@ public class HW4 {
         }
         println();
         println("All Products List successfully constructed from...");
-        println(FGBLUE, ALL_PRODUCTS_PATH);
+        println(FG_BLUE, ALL_PRODUCTS_PATH);
 
         // Parse dates and build java 8 date objects for iteration
         try {
@@ -512,7 +512,7 @@ public class HW4 {
         // all of this nonsense prints the results to answer the questions in the assignment
         paddingSize = 80;
         fill = '.';
-        print(FGYELLOW);
+        print(FG_YELLOW);
         printlnDelim("\n",
                 padJustify(paddingSize, fill,    "Total Items Bought: ", " " + NumberFormat.getIntegerInstance().format(total_items_bought)),
                 padJustify(paddingSize, fill,    "Total Customers: ", " " + NumberFormat.getIntegerInstance().format(total_customers)),
@@ -580,11 +580,11 @@ public class HW4 {
 //            }
 //        }
         println("Written to File: ");
-        print(FGPURPLE);
+        print(FG_MAGENTA);
         println(OUTPUT_PATH);
 
         timer.stop();
-        println(FGGREEN, "\nDONE", timer, "\n");
+        println(FG_BRIGHT_GREEN, "\nDONE", timer, "\n");
 
         System.exit(0);
     }

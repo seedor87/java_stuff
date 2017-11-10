@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.Scanner;
 
 import static GradDataWarehousing.HWResources.Utils.isMilkSku;
-import static Utils.ConsolePrinting.FGCYAN;
+import static Utils.ConsolePrinting.FG_CYAN;
 import static Utils.ConsolePrinting.print;
 import static Utils.ConsolePrinting.println;
 
@@ -116,7 +116,7 @@ public class ProductDimensionParser {
 
                 boolean res = attemptToCategorize(product_name, type, manufacturer);
                 if(!res) {
-                    print(FGCYAN, product_key, "");
+                    print(FG_CYAN, product_key, "");
                     println(fields);
                     print("Please Choose which from the key: ");
                     index = scan.nextInt() - 1;

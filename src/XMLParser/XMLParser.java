@@ -15,7 +15,6 @@ import org.w3c.dom.Node;
 
 import static Utils.ConsolePrinting.print;
 import static Utils.ConsolePrinting.println;
-import static Utils.StringUtils.StringUtilsRequiem.replaceChar;
 
 public class XMLParser {
 
@@ -60,7 +59,6 @@ public class XMLParser {
                         write(padding + nNode.getNodeName() + " : '" + nNode.getNodeValue() + "'\n");
                     }
                 }
-
                 printXML(nNode, padding);
             }
         } catch (NullPointerException ex) {}

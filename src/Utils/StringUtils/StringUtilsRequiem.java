@@ -5,11 +5,15 @@ import static Utils.ConsolePrinting.*;
 
 public class StringUtilsRequiem {
 
-    public static String replaceChar(String str, char oldCh) {
-        return replaceChar(str, oldCh, '\0');
+    public static String remove(String str, char oldCh) {
+        return replace(str, oldCh, '\0');
     }
 
-    public static String replaceChar(String str, char oldCh, char newCh) {
+    public static String replace(String str, String subString, String newString) {
+        return str.replace(subString, newString);
+    }
+
+    public static String replace(String str, char oldCh, char newCh) {
         StringBuilder sb = new StringBuilder();
         for(char ch: str.toCharArray()) {
             sb.append((ch != oldCh) ? ch : newCh);
@@ -25,6 +29,10 @@ public class StringUtilsRequiem {
     }
 
     public static void main(String[] args) {
-        println(replaceChar("test\ntest", '\n', '-'));
+
+        println(replace("test\ntest", '\n', '-'));
+        for (int i = 0; i < 128; i++) {
+            System.out.println(i + " \u001B[" + i + "mText goes here\u001B[0m");
+        }
     }
 }

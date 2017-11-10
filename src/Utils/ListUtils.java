@@ -155,14 +155,14 @@ public class ListUtils {
         String[] array1 = new String[]{"one", "two", "three"};
         String[] array2 = new String[]{"four", "five", "six"};
         String[] array3 = new String[]{"seven", "eight", "nine", "ten", "eleven"};
-        println(FGRED, inLineZip(array1, array2, array3));
+        println(FG_RED, inLineZip(array1, array2, array3));
 
         List<String> list1 = new ArrayList<>(Arrays.asList("one", "two", "three"));
         List<String> list2 = new ArrayList<>(Arrays.asList("four", "five", "six"));
         List<String> list3 = new ArrayList<>(Arrays.asList("seven", "eight", "nine", "ten", "eleven"));
-        println(FGBLUE, inLineZip(list1, list2, list3));
+        println(FG_BLUE, inLineZip(list1, list2, list3));
 
-        println(FGGREEN, inLineZip(
+        println(FG_GREEN, inLineZip(
                 new Character[]{'a', 'b'},
                 new Character[]{'c', 'd'},
                 new Character[]{'e', 'f'}
@@ -176,16 +176,16 @@ public class ListUtils {
                 new Object[]{'a','b','c'},
                 new Object[]{"do", "re", "mi"}
                 );
-        println(FGCYAN, zippedOne);
-        println(FGPURPLE, unzip(zippedOne));
+        println(FG_CYAN, zippedOne);
+        println(FG_MAGENTA, unzip(zippedOne));
 
         List<Tuple<Object>> zippedTwo = zip(
                 new LinkedList<>(Arrays.asList(1,2,3)),
                 new LinkedList<>(Arrays.asList('a','b','c')),
                 new LinkedList<>(Arrays.asList("do", "re", "mi"))
         );
-        println(FGCYAN, zippedTwo);
-        println(FGPURPLE, unzip(zippedTwo));
+        println(FG_CYAN, zippedTwo);
+        println(FG_MAGENTA, unzip(zippedTwo));
     }
 
 }

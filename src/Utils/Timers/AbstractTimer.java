@@ -181,7 +181,7 @@ public abstract class AbstractTimer {
         int input;
         AbstractTimer timer = new SYSTimer(TimeUnit.SECONDS);
         String lastAction = "timer application";
-        ConsolePrinting.println(FGRED, timer + " : " + lastAction);
+        ConsolePrinting.println(FG_BRIGHT_RED, timer + " : " + lastAction);
         do {
             ConsolePrinting.println(commands);
             ConsolePrinting.print(">> ");
@@ -192,29 +192,29 @@ public abstract class AbstractTimer {
                     case 1:
                         timer.start();
                         lastAction = "started";
-                        ConsolePrinting.println(FGGREEN, timer + " : " + lastAction);
+                        ConsolePrinting.println(FG_BRIGHT_GREEN, timer + " : " + lastAction);
                         break;
                     case 2:
                         timer.suspend();
                         lastAction = "suspended";
-                        ConsolePrinting.println(FGYELLOW, timer + " : " + lastAction);
+                        ConsolePrinting.println(FG_BRIGHT_YELLOW, timer + " : " + lastAction);
                         break;
                     case 3:
                         timer.resume();
                         lastAction = "resumed";
-                        ConsolePrinting.println(FGCYAN, timer + " : " + lastAction);
+                        ConsolePrinting.println(FG_BRIGHT_CYAN, timer + " : " + lastAction);
 
                         break;
                     case 4:
                         timer.stop();
                         lastAction = "stopped";
-                        ConsolePrinting.println(FGRED, timer + " : " + lastAction);
+                        ConsolePrinting.println(FG_BRIGHT_RED, timer + " : " + lastAction);
                         break;
                     default:
                         break;
                 }
             } catch (IllegalStateTransitionException ex) {
-                ConsolePrinting.println(FGPURPLE, ex.toString());
+                ConsolePrinting.println(FG_BRIGHT_MAGENTA, ex.toString());
             }
         } while(0 < input && input < 5);
         ConsolePrinting.print("quiting...");

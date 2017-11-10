@@ -10,29 +10,52 @@ public class ConsolePrinting {
     public static final String NL = "\n";
     public static final String RN = "\r";
 
-    interface Color {
+    interface Special {
         String str();
     }
 
-    public static Color FGBLACK = () ->    "\u001B[30m";
-    public static Color FGRED = () ->      "\u001B[31m";
-    public static Color FGGREEN = () ->    "\u001B[32m";
-    public static Color FGYELLOW = () ->   "\u001B[33m";
-    public static Color FGBLUE = () ->     "\u001B[34m";
-    public static Color FGPURPLE = () ->   "\u001B[35m";
-    public static Color FGCYAN = () ->     "\u001B[36m";
-    public static Color FGWHITE = () ->    "\u001B[37m";
-    public static Color BGBLACK = () ->    "\u001B[40m";
-    public static Color BGRED = () ->      "\u001B[41m";
-    public static Color BGGREEN = () ->    "\u001B[42m";
-    public static Color BGYELLOW = () ->   "\u001B[43m";
-    public static Color BGBLUE = () ->     "\u001B[44m";
-    public static Color BGPURPLE = () ->   "\u001B[45m";
-    public static Color BGCYAN = () ->     "\u001B[46m";
-    public static Color BGWHITE = () ->    "\u001B[47m";
-    public static Color RESET = () ->      "\u001B[0m";
+    public static Special BOLD = () ->              "\u001B[1m";
+    public static Special UNDER = () ->             "\u001B[4m";
+    public static Special INVER = () ->             "\u001B[7m";
 
-    public static void print(Color c) {
+    public static Special FG_BLACK = () ->     "\u001B[30m";
+    public static Special FG_RED = () ->       "\u001B[31m";
+    public static Special FG_GREEN = () ->     "\u001B[32m";
+    public static Special FG_YELLOW = () ->    "\u001B[33m";
+    public static Special FG_BLUE = () ->      "\u001B[34m";
+    public static Special FG_MAGENTA = () ->    "\u001B[35m";
+    public static Special FG_CYAN = () ->      "\u001B[36m";
+    public static Special FG_GRAY = () ->     "\u001B[37m";
+
+    public static Special BG_BLACK = () ->     "\u001B[40m";
+    public static Special BG_RED = () ->       "\u001B[41m";
+    public static Special BG_GREEN = () ->     "\u001B[42m";
+    public static Special BG_YELLOW = () ->    "\u001B[43m";
+    public static Special BG_BLUE = () ->      "\u001B[44m";
+    public static Special BG_MAGENTA = () ->    "\u001B[45m";
+    public static Special BG_CYAN = () ->      "\u001B[46m";
+    public static Special BG_GRAY = () ->     "\u001B[47m";
+
+    public static Special FG_DARK_GRAY = () ->     "\u001B[90m";
+    public static Special FG_BRIGHT_RED = () ->       "\u001B[91m";
+    public static Special FG_BRIGHT_GREEN = () ->     "\u001B[92m";
+    public static Special FG_BRIGHT_YELLOW = () ->    "\u001B[93m";
+    public static Special FG_BRIGHT_BLUE = () ->      "\u001B[94m";
+    public static Special FG_BRIGHT_MAGENTA = () ->    "\u001B[95m";
+    public static Special FG_BRIGHT_CYAN = () ->      "\u001B[96m";
+    public static Special FG_WHITE = () ->     "\u001B[97m";
+    public static Special BG_DARK_GRAY = () ->     "\u001B[100m";
+    public static Special BG_BRIGHT_RED = () ->       "\u001B[101m";
+    public static Special BG_BRIGHT_GREEN = () ->     "\u001B[102m";
+    public static Special BG_BRIGHT_YELLOW = () ->    "\u001B[103m";
+    public static Special BG_BRIGHT_BLUE = () ->      "\u001B[104m";
+    public static Special BG_BRIGHT_MAGENTA = () ->    "\u001B[105m";
+    public static Special BG_BRIGHT_CYAN = () ->      "\u001B[106m";
+    public static Special BG_WHITE = () ->     "\u001B[107m";
+
+    public static Special RESET = () ->      "\u001B[0m";
+
+    public static void print(Special c) {
         print(c.str());
     }
 
@@ -41,7 +64,7 @@ public class ConsolePrinting {
     }
     public static void printrn() { print(RN); }
 
-    public static <T> String wrap(Color c, T... args) {
+    public static <T> String wrap(Special c, T... args) {
         StringBuffer sb = new StringBuffer();
         sb.append(c.str());
         for (T elem: args) {
@@ -109,7 +132,7 @@ public class ConsolePrinting {
     }
 
     private static void printNull() {
-        print(FGRED, "NULL");
+        print(FG_BRIGHT_RED, "NULL");
     }
 
     public static <T> void print(T o) {
@@ -151,35 +174,35 @@ public class ConsolePrinting {
         print(args);
     }
 
-    public static <T> void print(Color c, T...args) {
+    public static <T> void print(Special c, T...args) {
         print(c);
         print(args);
         print(RESET);
     }
 
-    public static <T> void println(Color c, T...args) {
+    public static <T> void println(Special c, T...args) {
         print(c, args);
         println();
     }
 
-    public static <T> void printrn(Color c, T...args) {
+    public static <T> void printrn(Special c, T...args) {
         printrn();
         print(c, args);
     }
 
-    public static <T> void print(Color c1, Color c2, T...args) {
+    public static <T> void print(Special c1, Special c2, T...args) {
         print(c1);
         print(c2);
         print(args);
         print(RESET);
     }
 
-    public static <T> void println(Color c1, Color c2, T...args) {
+    public static <T> void println(Special c1, Special c2, T...args) {
         print(c1, c2, args);
         println();
     }
 
-    public static <T> void printrn(Color c1, Color c2, T...args) {
+    public static <T> void printrn(Special c1, Special c2, T...args) {
         printrn();
         print(c1, c2, args);
     }
@@ -255,12 +278,12 @@ public class ConsolePrinting {
         println(new String[][]{{"mouse", "cheese"}, {"dog", "bone"}, {"pig", "slop"}});
         println(new int[][][]{{{1},{2},{3}}, {{4,5,6}}, {{7}},{{8}},{{9}}});
 
-        println(FGCYAN, Arrays.asList(1, 47, true, 't', "bob", new Tuple<>(7, '8', "9"), new int[]{2,1,1,2}));
-        println(FGWHITE, new char[10]);
-        println(FGBLACK, new Character[]{'a','b','c','d','e','f','g','h','i','j'});
-        println(FGPURPLE, Arrays.asList(Long.MAX_VALUE, Long.MAX_VALUE+1));
-        println(FGBLUE, BGYELLOW, new char[]{'a','b','c'});
-        println(FGYELLOW, BGBLUE, new int[]{'a','b','c'});
+        println(FG_BRIGHT_CYAN, Arrays.asList(1, 47, true, 't', "bob", new Tuple<>(7, '8', "9"), new int[]{2,1,1,2}));
+        println(FG_WHITE, new char[10]);
+        println(FG_DARK_GRAY, new Character[]{'a','b','c','d','e','f','g','h','i','j'});
+        println(FG_BRIGHT_MAGENTA, Arrays.asList(Long.MAX_VALUE, Long.MAX_VALUE+1));
+        println(FG_BRIGHT_BLUE, BG_BRIGHT_YELLOW, new char[]{'a','b','c'});
+        println(FG_BRIGHT_YELLOW, BG_BRIGHT_BLUE, new int[]{'a','b','c'});
 
         Integer[] iarr = new Integer[5];
         iarr[1] = 1;
@@ -273,14 +296,19 @@ public class ConsolePrinting {
         carr[4] = 'e';
         println(carr);
 
-        try {
+        println(BG_BLACK, FG_WHITE,"TEST"); // check
+        println(BG_GRAY, FG_DARK_GRAY,"TEST"); //
+        println(BG_DARK_GRAY, FG_GRAY,"TEST");
+        println(BG_WHITE, FG_BLACK,"TEST");
+
+       try {
             while(true) {
                 Thread t;
                 Date date = new Date();
-                printrn(FGRED, date.toString());
+                printrn(FG_RED, date.toString());
                 Thread.sleep(2000);
                 date = new Date();
-                printrn(FGRED, date.toInstant());
+                printrn(FG_RED, date.toInstant());
                 Thread.sleep(2000);
             }
         } catch (Exception e) {
