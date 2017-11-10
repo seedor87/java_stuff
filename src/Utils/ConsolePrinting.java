@@ -2,6 +2,8 @@ package Utils;
 
 import Utils.Collections.Tuple;
 
+import java.io.IOException;
+import java.io.PrintStream;
 import java.lang.reflect.Array;
 import java.util.*;
 
@@ -296,10 +298,47 @@ public class ConsolePrinting {
         carr[4] = 'e';
         println(carr);
 
-        println(BG_BLACK, FG_WHITE,"TEST"); // check
-        println(BG_GRAY, FG_DARK_GRAY,"TEST"); //
+        println(BG_BLACK, FG_WHITE,"TEST");
+        println(BG_GRAY, FG_DARK_GRAY,"TEST");
         println(BG_DARK_GRAY, FG_GRAY,"TEST");
         println(BG_WHITE, FG_BLACK,"TEST");
+
+        print(FG_RED, " Fire ");
+        print(FG_BRIGHT_RED, " Fairy ");
+        print(BG_RED, " Fire ");
+        print(BG_BRIGHT_RED, " Fairy ");
+        println();
+
+       print(FG_GREEN, " Grass ");
+       print(FG_BRIGHT_GREEN, " Bug ");
+       print(BG_GREEN, " Grass ");
+       print(BG_BRIGHT_GREEN, " Bug ");
+       println();
+
+       print(FG_YELLOW, " Earth ");
+       print(FG_BRIGHT_YELLOW, " Elec ");
+       print(BG_YELLOW, " Earth ");
+       print(BG_BRIGHT_YELLOW, " Elec ");
+       println();
+
+       print(FG_BLUE, " Water ");
+       print(FG_BRIGHT_BLUE, " Fly ");
+       print(BG_BLUE, " Water ");
+       print(BG_BRIGHT_BLUE, " Fly ");
+       println();
+
+       print(FG_MAGENTA, " Pois ");
+       print(FG_BRIGHT_MAGENTA, " Psych ");
+       print(BG_MAGENTA, " Pois ");
+       print(BG_BRIGHT_MAGENTA, " Psych ");
+       println();
+
+       print(FG_BLACK,  " Fight ");
+       print(FG_DARK_GRAY,  " Rock ");
+       print(FG_GRAY,  " Steel ");
+       print(FG_WHITE,  " Dark ");
+       print("Norm");
+       println();
 
        try {
             while(true) {

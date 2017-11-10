@@ -31,7 +31,7 @@ public class StringUtilsRequiem {
     public static void main(String[] args) {
 
         println(replace("test\ntest", '\n', '-'));
-        for (int i = 0; i < 128; i++) {
+        for (int i = 0; i < 256; i++) {
             System.out.println(i + " \u001B[" + i + "mText goes here\u001B[0m");
         }
     }
