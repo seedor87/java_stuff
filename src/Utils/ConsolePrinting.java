@@ -2,8 +2,6 @@ package Utils;
 
 import Utils.Collections.Tuple;
 
-import java.io.IOException;
-import java.io.PrintStream;
 import java.lang.reflect.Array;
 import java.util.*;
 
@@ -12,50 +10,46 @@ public class ConsolePrinting {
     public static final String NL = "\n";
     public static final String RN = "\r";
 
-    interface Special {
+    public interface Special {
         String str();
     }
 
+    public static Special RESET = () ->             "\u001B[0m";
     public static Special BOLD = () ->              "\u001B[1m";
     public static Special UNDER = () ->             "\u001B[4m";
     public static Special INVER = () ->             "\u001B[7m";
-
-    public static Special FG_BLACK = () ->     "\u001B[30m";
-    public static Special FG_RED = () ->       "\u001B[31m";
-    public static Special FG_GREEN = () ->     "\u001B[32m";
-    public static Special FG_YELLOW = () ->    "\u001B[33m";
-    public static Special FG_BLUE = () ->      "\u001B[34m";
-    public static Special FG_MAGENTA = () ->    "\u001B[35m";
-    public static Special FG_CYAN = () ->      "\u001B[36m";
-    public static Special FG_GRAY = () ->     "\u001B[37m";
-
-    public static Special BG_BLACK = () ->     "\u001B[40m";
-    public static Special BG_RED = () ->       "\u001B[41m";
-    public static Special BG_GREEN = () ->     "\u001B[42m";
-    public static Special BG_YELLOW = () ->    "\u001B[43m";
-    public static Special BG_BLUE = () ->      "\u001B[44m";
-    public static Special BG_MAGENTA = () ->    "\u001B[45m";
-    public static Special BG_CYAN = () ->      "\u001B[46m";
-    public static Special BG_GRAY = () ->     "\u001B[47m";
-
-    public static Special FG_DARK_GRAY = () ->     "\u001B[90m";
-    public static Special FG_BRIGHT_RED = () ->       "\u001B[91m";
-    public static Special FG_BRIGHT_GREEN = () ->     "\u001B[92m";
-    public static Special FG_BRIGHT_YELLOW = () ->    "\u001B[93m";
-    public static Special FG_BRIGHT_BLUE = () ->      "\u001B[94m";
-    public static Special FG_BRIGHT_MAGENTA = () ->    "\u001B[95m";
-    public static Special FG_BRIGHT_CYAN = () ->      "\u001B[96m";
-    public static Special FG_WHITE = () ->     "\u001B[97m";
-    public static Special BG_DARK_GRAY = () ->     "\u001B[100m";
-    public static Special BG_BRIGHT_RED = () ->       "\u001B[101m";
-    public static Special BG_BRIGHT_GREEN = () ->     "\u001B[102m";
-    public static Special BG_BRIGHT_YELLOW = () ->    "\u001B[103m";
-    public static Special BG_BRIGHT_BLUE = () ->      "\u001B[104m";
-    public static Special BG_BRIGHT_MAGENTA = () ->    "\u001B[105m";
-    public static Special BG_BRIGHT_CYAN = () ->      "\u001B[106m";
-    public static Special BG_WHITE = () ->     "\u001B[107m";
-
-    public static Special RESET = () ->      "\u001B[0m";
+    public static Special FG_BLACK = () ->          "\u001B[30m";
+    public static Special FG_RED = () ->            "\u001B[31m";
+    public static Special FG_GREEN = () ->          "\u001B[32m";
+    public static Special FG_YELLOW = () ->         "\u001B[33m";
+    public static Special FG_BLUE = () ->           "\u001B[34m";
+    public static Special FG_MAGENTA = () ->        "\u001B[35m";
+    public static Special FG_CYAN = () ->           "\u001B[36m";
+    public static Special FG_GRAY = () ->           "\u001B[37m";
+    public static Special BG_BLACK = () ->          "\u001B[40m";
+    public static Special BG_RED = () ->            "\u001B[41m";
+    public static Special BG_GREEN = () ->          "\u001B[42m";
+    public static Special BG_YELLOW = () ->         "\u001B[43m";
+    public static Special BG_BLUE = () ->           "\u001B[44m";
+    public static Special BG_MAGENTA = () ->        "\u001B[45m";
+    public static Special BG_CYAN = () ->           "\u001B[46m";
+    public static Special BG_GRAY = () ->           "\u001B[47m";
+    public static Special FG_DARK_GRAY = () ->      "\u001B[90m";
+    public static Special FG_BRIGHT_RED = () ->     "\u001B[91m";
+    public static Special FG_BRIGHT_GREEN = () ->   "\u001B[92m";
+    public static Special FG_BRIGHT_YELLOW = () ->  "\u001B[93m";
+    public static Special FG_BRIGHT_BLUE = () ->    "\u001B[94m";
+    public static Special FG_BRIGHT_MAGENTA = () -> "\u001B[95m";
+    public static Special FG_BRIGHT_CYAN = () ->    "\u001B[96m";
+    public static Special FG_WHITE = () ->          "\u001B[97m";
+    public static Special BG_DARK_GRAY = () ->      "\u001B[100m";
+    public static Special BG_BRIGHT_RED = () ->     "\u001B[101m";
+    public static Special BG_BRIGHT_GREEN = () ->   "\u001B[102m";
+    public static Special BG_BRIGHT_YELLOW = () ->  "\u001B[103m";
+    public static Special BG_BRIGHT_BLUE = () ->    "\u001B[104m";
+    public static Special BG_BRIGHT_MAGENTA = () -> "\u001B[105m";
+    public static Special BG_BRIGHT_CYAN = () ->    "\u001B[106m";
+    public static Special BG_WHITE = () ->          "\u001B[107m";
 
     public static void print(Special c) {
         print(c.str());
@@ -303,55 +297,18 @@ public class ConsolePrinting {
         println(BG_DARK_GRAY, FG_GRAY,"TEST");
         println(BG_WHITE, FG_BLACK,"TEST");
 
-        print(FG_RED, " Fire ");
-        print(FG_BRIGHT_RED, " Fairy ");
-        print(BG_RED, " Fire ");
-        print(BG_BRIGHT_RED, " Fairy ");
-        println();
-
-       print(FG_GREEN, " Grass ");
-       print(FG_BRIGHT_GREEN, " Bug ");
-       print(BG_GREEN, " Grass ");
-       print(BG_BRIGHT_GREEN, " Bug ");
-       println();
-
-       print(FG_YELLOW, " Earth ");
-       print(FG_BRIGHT_YELLOW, " Elec ");
-       print(BG_YELLOW, " Earth ");
-       print(BG_BRIGHT_YELLOW, " Elec ");
-       println();
-
-       print(FG_BLUE, " Water ");
-       print(FG_BRIGHT_BLUE, " Fly ");
-       print(BG_BLUE, " Water ");
-       print(BG_BRIGHT_BLUE, " Fly ");
-       println();
-
-       print(FG_MAGENTA, " Pois ");
-       print(FG_BRIGHT_MAGENTA, " Psych ");
-       print(BG_MAGENTA, " Pois ");
-       print(BG_BRIGHT_MAGENTA, " Psych ");
-       println();
-
-       print(FG_BLACK,  " Fight ");
-       print(FG_DARK_GRAY,  " Rock ");
-       print(FG_GRAY,  " Steel ");
-       print(FG_WHITE,  " Dark ");
-       print("Norm");
-       println();
-
-       try {
-            while(true) {
-                Thread t;
-                Date date = new Date();
-                printrn(FG_RED, date.toString());
-                Thread.sleep(2000);
-                date = new Date();
-                printrn(FG_RED, date.toInstant());
-                Thread.sleep(2000);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//       try {
+//            while(true) {
+//                Thread t;
+//                Date date = new Date();
+//                printrn(FG_RED, date.toString());
+//                Thread.sleep(2000);
+//                date = new Date();
+//                printrn(FG_RED, date.toInstant());
+//                Thread.sleep(2000);
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 }
