@@ -37,7 +37,7 @@ public class HW4 {
     /* This is the flag that can be used to allow the
     purchase of items from one of the ten special categories,
     during the purchase of random items iteration */
-    static final boolean DISALLOW_DUPE_PURCH = true;
+    static final boolean DISALLOW_DUPE_PURCH = false;
 
     static final String START_DATE_STRING = "2017-01-01";
     static final String END_DATE_STRING = "2018-01-01";
@@ -143,7 +143,7 @@ public class HW4 {
         for (Object o : args) {
             writer.write(delim);
             writer.write(o.toString());
-            delim = ",";
+            delim = "|";
         }
         writer.write("\n");
     }
@@ -503,6 +503,13 @@ public class HW4 {
             }
         } catch (Exception ex) {
             ex.printStackTrace();
+        } finally {
+            try {
+                writer.flush();
+                writer.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
 
         // sort map of <sku-price, counts> by frequency (count)
@@ -553,7 +560,6 @@ public class HW4 {
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-
         }
 
         print(RESET);

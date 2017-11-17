@@ -77,7 +77,7 @@ public class Type {
         POI, PSY, RCK, STL, WAT
     }
 
-    public static MapMap<Type, Type, Double> ATTACK = new MapMap<>();
+    public static MapMap<Type, Type, Double> TABLE = new MapMap<>();
     public static MapMap<Type, Type, Double> DEFEND = new MapMap<>();
 
     Type(String name, Abbrv abbrv, String bgColor, String fgColor) {
@@ -116,16 +116,26 @@ public class Type {
         println(steel);
         println(water);
 
-        Map<Type, Double> bug_attack = new HashMap<>();
-        bug_attack.put(bug, 1.0);
-        ATTACK.put(bug, bug_attack);
+        Map<Type, Double> bug_ = new HashMap<>();
+        bug_.put(bug, 1.0);
+        bug_.put(dark, 2.0);
+        bug_.put(dragon, 1.0);
+        bug_.put(earth, 1.0);
+        bug_.put(electric, 1.0);
+        bug_.put(fairy, 0.5);
+        TABLE.put(bug, bug_);
+
 
         print("     ");
-        for (Map.Entry<Type, Map<Type, Double>> p1 : ATTACK.entrySet()) {
-            print(p1.getKey());
+//        for (Map.Entry<Type, Map<Type, Double>> p1 : TABLE.entrySet()) {
+//            print(p1.getKey());
+//
+//        }
+        for (Map.Entry<Type, Double> p2 : ((Map<Type, Double>) (TABLE.get(TABLE.keySet().toArray()[0]))).entrySet()) {
+            print(p2.getKey());
         }
         println();
-        for (Map.Entry<Type, Map<Type, Double>> p1 : ATTACK.entrySet()) {
+        for (Map.Entry<Type, Map<Type, Double>> p1 : TABLE.entrySet()) {
             print(p1.getKey());
             for(Map.Entry<Type, Double> p2 : p1.getValue().entrySet()) {
                 Double atk = p2.getValue();
