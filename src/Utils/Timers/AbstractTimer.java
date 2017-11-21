@@ -3,9 +3,11 @@ package Utils.Timers;
 import Utils.ConsolePrinting;
 
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Scanner;
 
 import static Utils.ConsolePrinting.*;
+import static Utils.StringUtils.StringUtils.padCenter;
 
 /***
  * Abstract timer that holds capabilities of general use in code timer.
@@ -62,7 +64,6 @@ public abstract class AbstractTimer {
      * Default Constructor
      */
     public AbstractTimer() {}
-
     public AbstractTimer(TimeUnit u) { setTimeUnit(u); }
     private TimeUnit getTimeUnit() { return timeUnit; }
 
@@ -156,7 +157,7 @@ public abstract class AbstractTimer {
             case NANO:
                 return ret + " nanoseconds";
             case MICRO:
-                return ret + " mircroseconds";
+                return ret + " microseconds";
             case MILLI:
                 return ret + " milliseconds";
             case SECONDS:
@@ -175,48 +176,119 @@ public abstract class AbstractTimer {
         return getTimeString();
     }
 
+    private static boolean validate(int input) {
+        return 0 < input && input < 5;
+    }
+
+    private static State getState(int input) {
+        switch (input) {
+            case 1:
+                return State.STARTED;
+            case 2:
+                return State.SUSPENDED;
+            case 3:
+                return State.RESUMED;
+            case 4:
+                return State.STOPPED;
+            default:
+                break;
+        }
+        return State.STOPPED;
+    }
+
     public static void main(String[] args) {
         Scanner reader = new Scanner(System.in);
-        String commands = "start[1] suspend[2] resume[3] stop[4] quit[~]";
-        int input;
-        AbstractTimer timer = new SYSTimer(TimeUnit.SECONDS);
-        String lastAction = "timer application";
-        ConsolePrinting.println(FG_BRIGHT_RED, timer + " : " + lastAction);
+        String commands;
+        TimeUnit unit = TimeUnit.SECONDS;
+        AbstractTimer timer;
+        String s = "";
+        int input = 3;
+
+        commands = padCenter(20, ' ', "[1] Nanoseconds") + padCenter(20, ' ', "[4] Seconds") + "\n" +
+                padCenter(20, ' ', "[2] Microseconds") + padCenter(20, ' ', "[5] Minutes") + "\n" +
+                padCenter(20, ' ', "[3] Milliseconds") + padCenter(20, ' ', "[6] hours");
         do {
+            ConsolePrinting.println("Please enter a number between 1 and 5");
             ConsolePrinting.println(commands);
             ConsolePrinting.print(">> ");
-            String s = reader.next();
-            input = Integer.parseInt(s);
             try {
-                switch (input) {
-                    case 1:
+                s = reader.next();
+                input = Integer.parseInt(s);
+            } catch(NumberFormatException ex) {
+                println(FG_BRIGHT_BLUE, "Cannot Parse input: " + s);
+                continue;
+            }
+            switch(input) {
+                case 1:
+                    unit = TimeUnit.NANO;
+                    break;
+                case 2:
+                    unit = TimeUnit.MICRO;
+                    break;
+                case 3:
+                    unit = TimeUnit.MILLI;
+                    break;
+                case 4:
+                    unit = TimeUnit.SECONDS;
+                    break;
+                case 5:
+                    unit = TimeUnit.MINUTES;
+                    break;
+                case 6:
+                    unit = TimeUnit.HOURS;
+                    break;
+                default:
+                    unit = TimeUnit.SECONDS;
+                    break;
+            }
+        } while(input > 6 || input < 1);
+        timer = new SYSTimer(unit);
+
+        commands = "start[1] suspend[2] resume[3] stop[4] quit[~]";
+        s = "";
+        input = 4;
+        String lastAction = "timer application";
+        Special color = FG_BRIGHT_RED;
+        do {
+            try {
+                switch (getState(input)) {
+                    case STARTED:
                         timer.start();
                         lastAction = "started";
-                        ConsolePrinting.println(FG_BRIGHT_GREEN, timer + " : " + lastAction);
+                        color = FG_BRIGHT_GREEN;
                         break;
-                    case 2:
+                    case SUSPENDED:
                         timer.suspend();
                         lastAction = "suspended";
-                        ConsolePrinting.println(FG_BRIGHT_YELLOW, timer + " : " + lastAction);
+                        color = FG_BRIGHT_YELLOW;
                         break;
-                    case 3:
+                    case RESUMED:
                         timer.resume();
                         lastAction = "resumed";
-                        ConsolePrinting.println(FG_BRIGHT_CYAN, timer + " : " + lastAction);
-
+                        color = FG_BRIGHT_CYAN;
                         break;
-                    case 4:
+                    case STOPPED:
                         timer.stop();
                         lastAction = "stopped";
-                        ConsolePrinting.println(FG_BRIGHT_RED, timer + " : " + lastAction);
+                        color = FG_BRIGHT_RED;
                         break;
                     default:
                         break;
                 }
             } catch (IllegalStateTransitionException ex) {
-                ConsolePrinting.println(FG_BRIGHT_MAGENTA, ex.toString());
+                lastAction = ex.toString();
+                color = FG_BRIGHT_MAGENTA;
             }
-        } while(0 < input && input < 5);
+            ConsolePrinting.println(color, lastAction, ":", timer);
+            ConsolePrinting.println(commands);
+            ConsolePrinting.print(">> ");
+            try {
+                s = reader.next();
+                input = Integer.parseInt(s);
+            } catch(NumberFormatException ex) {
+                println(FG_BRIGHT_BLUE, "Cannot Parse input: " + s);
+            }
+        } while(validate(input));
         ConsolePrinting.print("quiting...");
         reader.close();
         System.exit(0);
