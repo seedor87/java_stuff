@@ -1,6 +1,8 @@
 package Utils;
 
 import Utils.Collections.Tuple;
+import Utils.Timers.AbstractTimer;
+import Utils.Timers.SYSTimer;
 
 import java.lang.reflect.Array;
 import java.util.*;
@@ -16,7 +18,10 @@ public class ConsolePrinting {
 
     public static Special RESET = () ->             "\u001B[0m";
     public static Special BOLD = () ->              "\u001B[1m";
+    public static Special ITAL = () ->              "\u001B[3m";
     public static Special UNDER = () ->             "\u001B[4m";
+    public static Special BLINK = () ->             "\u001B[5m";
+    public static Special RAPID_BLINK = () ->       "\u001B[6m";
     public static Special INVER = () ->             "\u001B[7m";
     public static Special FG_BLACK = () ->          "\u001B[30m";
     public static Special FG_RED = () ->            "\u001B[31m";
@@ -297,18 +302,29 @@ public class ConsolePrinting {
         println(BG_DARK_GRAY, FG_GRAY,"TEST");
         println(BG_WHITE, FG_BLACK,"TEST");
 
-//       try {
-//            while(true) {
-//                Thread t;
-//                Date date = new Date();
-//                printrn(FG_RED, date.toString());
-//                Thread.sleep(2000);
-//                date = new Date();
-//                printrn(FG_RED, date.toInstant());
-//                Thread.sleep(2000);
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+       try {
+           AbstractTimer timer = new SYSTimer(AbstractTimer.TimeUnit.MINUTES);
+           timer.start();
+           boolean s = true;
+           boolean s2 = true;
+           while(true) {
+                if (s) {
+                    printrn(FG_RED, BG_BLACK, new Date().toString());
+                    s = false;
+                } else {
+                    if(s2) {
+                        printrn(BG_RED, FG_BLACK,"Running for:", timer.toString(AbstractTimer.TimeUnit.SECONDS));
+                        s2 = false;
+                    } else {
+                        printrn(BG_RED, FG_BLACK,"Running for:", timer.toString());
+                        s2 = true;
+                    }
+                    s = true;
+                }
+                Thread.sleep(1000);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -50,7 +50,7 @@ public class BinaryHeapTests {
 //            arrayBasedTest();
 
             timer.stop();
-            total_time += timer.getElapsedTime();
+            total_time += timer.getElapsed();
             println(timer);
         }
         println(FG_BRIGHT_GREEN, total_time, ":", total_time / (i-1));

@@ -17,7 +17,7 @@ public class CPUTimer extends AbstractTimer {
     }
 
     @Override
-    public double getElapsedTime(TimeUnit u) {
+    public double getElapsed(TimeUnit u) {
         switch(u) {
             case NANO:
                 return elapsedTime;

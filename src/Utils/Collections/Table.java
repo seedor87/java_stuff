@@ -4,19 +4,19 @@ import java.util.*;
 
 import static Utils.ConsolePrinting.*;
 
-public class MapMap<T1 extends Object, T2 extends Object, E extends Object> implements Map{
+public class Table<T1 extends Object, T2 extends Object, E extends Object> implements Map{
 
-    private Map<T1, Map<T2, E>> internal;
-    public MapMap() {
+    public Map<T1, Map<T2, E>> internal;
+    public Table() {
         internal = new HashMap<>();
     }
 
-    public MapMap(MapMap<T1, T2, E> mapMap) {
+    public Table(Table<T1, T2, E> table) {
         this();
-        this.putAll(mapMap);
+        this.putAll(table);
     }
 
-    public MapMap(Set<T1> set) {
+    public Table(Set<T1> set) {
         this();
         for(T1 elem : set) {
             this.put(elem);
@@ -108,7 +108,7 @@ public class MapMap<T1 extends Object, T2 extends Object, E extends Object> impl
         internal.putAll(m);
     }
 
-    public void putAll(MapMap<T1, T2, E> m) {
+    public void putAll(Table<T1, T2, E> m) {
         for (Entry<T1, Map<T2, E>> pair : m.entrySet()) {
             this.put(pair.getKey(), pair.getValue());
         }
@@ -147,35 +147,35 @@ public class MapMap<T1 extends Object, T2 extends Object, E extends Object> impl
     }
 
     public static void main(String[] args) {
-        MapMap<Character, String, Integer> mapMap = new MapMap<>();
-        mapMap.put('a', "first", 0);
-        mapMap.put('a', "second", 1);
-        mapMap.put('b', "third", 2);
-        mapMap.put('c', "fourth", 3);
+        Table<Character, String, Integer> table = new Table<>();
+        table.put('a', "first", 0);
+        table.put('a', "second", 1);
+        table.put('b', "third", 2);
+        table.put('c', "fourth", 3);
 
         Map<String, Integer> tempMap = new HashMap<>();
         tempMap.put("fifth", 4);
         tempMap.put("sixth", 5);
-        mapMap.put('d', tempMap);
+        table.put('d', tempMap);
 
-        MapMap<Character, String, Integer> tempMapMap = new MapMap<>();
-        tempMapMap.put('e', "seventh", 6);
-        tempMapMap.put('e', "eighth", 7);
-        mapMap.putAll(tempMapMap);
+        Table<Character, String, Integer> tempTable = new Table<>();
+        tempTable.put('e', "seventh", 6);
+        tempTable.put('e', "eighth", 7);
+        table.putAll(tempTable);
 
-        printlnDelim("\n", mapMap);
+        printlnDelim("\n", table);
 
-        mapMap.remove('e', "eighth");
-        println(mapMap);
+        table.remove('e', "eighth");
+        println(table);
 
-        println(mapMap.get('b', "third"));
-        println(mapMap.get('b', "NA"));
-        mapMap.remove('b', "third");
-        println(mapMap);
-        println(mapMap.get('b'));
-        println(mapMap.get('b', "third"));
+        println(table.get('b', "third"));
+        println(table.get('b', "NA"));
+        table.remove('b', "third");
+        println(table);
+        println(table.get('b'));
+        println(table.get('b', "third"));
 
-        mapMap.clear('e');
-        println(mapMap);
+        table.clear('e');
+        println(table);
     }
 }

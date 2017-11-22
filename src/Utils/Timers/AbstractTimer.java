@@ -3,11 +3,12 @@ package Utils.Timers;
 import Utils.ConsolePrinting;
 
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.Scanner;
 
 import static Utils.ConsolePrinting.*;
 import static Utils.StringUtils.StringUtils.padCenter;
+import static Utils.StringUtils.StringUtils.padToLeft;
+import static Utils.StringUtils.StringUtils.padToRight;
 
 /***
  * Abstract timer that holds capabilities of general use in code timer.
@@ -58,7 +59,10 @@ public abstract class AbstractTimer {
      * abstract methods to be overridden.
      * @return double - str present time per method of measurement, and current value of elapsed time, respectively.
      */
-    public abstract double getElapsedTime(TimeUnit u);
+    public abstract double getElapsed(TimeUnit u);
+    public double getElapsed() {
+        return getElapsed(getTimeUnit());
+    }
 
     /**
      * Default Constructor
@@ -83,7 +87,7 @@ public abstract class AbstractTimer {
                 formatter = new DecimalFormat("#,###.####");
                 break;
             case MINUTES:
-                formatter = new DecimalFormat("###.########");
+                formatter = new DecimalFormat("###.####");
                 break;
             case HOURS:
                 formatter = new DecimalFormat("##.##############");
@@ -147,13 +151,23 @@ public abstract class AbstractTimer {
         return current_state == State.STOPPED;
     }
 
-    public double getElapsedTime() {
-        return getElapsedTime(getTimeUnit());
+    public double getTimerValue(TimeUnit u) {
+        double hold = getTime();
+        if(isRunning()) {
+            endTime = hold;
+            elapsedTime += (endTime - startTime);
+            startTime = hold;
+        }
+        return getElapsed(u);
     }
 
-    public String getTimeString() {
-        String ret = formatter.format(getElapsedTime());
-        switch(timeUnit) {
+    public double getTimerValue() {
+        return getTimerValue(getTimeUnit());
+    }
+
+    public String toString(TimeUnit u) {
+        String ret = formatter.format(getTimerValue(u));
+        switch(u) {
             case NANO:
                 return ret + " nanoseconds";
             case MICRO:
@@ -172,9 +186,7 @@ public abstract class AbstractTimer {
     }
 
     @Override
-    public String toString() {
-        return getTimeString();
-    }
+    public String toString() {return toString(getTimeUnit());}
 
     private static boolean validate(int input) {
         return 0 < input && input < 5;
@@ -202,13 +214,13 @@ public abstract class AbstractTimer {
         TimeUnit unit = TimeUnit.SECONDS;
         AbstractTimer timer;
         String s = "";
-        int input = 3;
+        int input = 0;
 
-        commands = padCenter(20, ' ', "[1] Nanoseconds") + padCenter(20, ' ', "[4] Seconds") + "\n" +
-                padCenter(20, ' ', "[2] Microseconds") + padCenter(20, ' ', "[5] Minutes") + "\n" +
-                padCenter(20, ' ', "[3] Milliseconds") + padCenter(20, ' ', "[6] hours");
-        do {
-            ConsolePrinting.println("Please enter a number between 1 and 5");
+        commands = "\t" + padToLeft(20, ' ', "[1] Nanoseconds") + "[4] Seconds" + "\n" +
+                "\t" + padToLeft(20, ' ', "[2] Microseconds") + "[5] Minutes" + "\n" +
+                "\t" + padToLeft(20, ' ', "[3] Milliseconds") + "[6] hours";
+        while(input > 6 || input < 1) {
+            ConsolePrinting.println("Please enter a number between 1 and 6");
             ConsolePrinting.println(commands);
             ConsolePrinting.print(">> ");
             try {
@@ -237,11 +249,9 @@ public abstract class AbstractTimer {
                 case 6:
                     unit = TimeUnit.HOURS;
                     break;
-                default:
-                    unit = TimeUnit.SECONDS;
-                    break;
             }
-        } while(input > 6 || input < 1);
+        }
+        println("Using time unit:", unit);
         timer = new SYSTimer(unit);
 
         commands = "start[1] suspend[2] resume[3] stop[4] quit[~]";
@@ -281,7 +291,7 @@ public abstract class AbstractTimer {
             }
             ConsolePrinting.println(color, lastAction, ":", timer);
             ConsolePrinting.println(commands);
-            ConsolePrinting.print(">> ");
+            ConsolePrinting.println(">> ");
             try {
                 s = reader.next();
                 input = Integer.parseInt(s);

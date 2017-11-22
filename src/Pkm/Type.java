@@ -1,6 +1,7 @@
 package Pkm;
 
-import Utils.Collections.MapMap;
+import Utils.Collections.Table;
+import Utils.ConsolePrinting;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -51,24 +52,24 @@ public class Type {
     private String fgColor;
     private String bgColor;
 
-    private static final Type bug = new Type("Bug", Abbrv.BUG, BG_BRIGHT_GREEN, FG_WHITE);
+    private static final Type bug = new Type("Bug", Abbrv.BUG, BG_BRIGHT_GREEN, FG_BLACK);
     private static final Type dark = new Type("Dark", Abbrv.DRK, BG_WHITE, FG_BLACK);
-    private static final Type dragon = new Type("Dragon", Abbrv.DRG, BG_CYAN, FG_WHITE);
-    private static final Type earth = new Type("Earth", Abbrv.ERT, BG_YELLOW, FG_WHITE);
-    private static final Type electric = new Type("Electric", Abbrv.ELE, BG_BRIGHT_YELLOW, FG_WHITE);
-    private static final Type fairy = new Type("Fairy", Abbrv.FRY, BG_BRIGHT_RED, FG_WHITE);
+    private static final Type dragon = new Type("Dragon", Abbrv.DRG, BG_CYAN, FG_BLACK);
+    private static final Type earth = new Type("Earth", Abbrv.ERT, BG_YELLOW, FG_BLACK);
+    private static final Type electric = new Type("Electric", Abbrv.ELE, BG_BRIGHT_YELLOW, FG_BLACK);
+    private static final Type fairy = new Type("Fairy", Abbrv.FRY, BG_BRIGHT_RED, FG_BLACK);
     private static final Type fighting = new Type("Fighting", Abbrv.FGT, BG_BLACK, FG_WHITE);
-    private static final Type fire = new Type("Fire", Abbrv.FIR, BG_RED, FG_WHITE);
-    private static final Type flying = new Type("Flying", Abbrv.FLY, BG_BRIGHT_BLUE, FG_WHITE);
+    private static final Type fire = new Type("Fire", Abbrv.FIR, BG_RED, FG_BLACK);
+    private static final Type flying = new Type("Flying", Abbrv.FLY, BG_BRIGHT_BLUE, FG_BLACK);
     private static final Type ghost = new Type("Ghost", Abbrv.GST, RESET, FG_BLACK);
-    private static final Type grass = new Type("Grass", Abbrv.GRS, BG_GREEN, FG_WHITE);
-    private static final Type ice = new Type("Ice", Abbrv.ICE, BG_BRIGHT_CYAN, FG_WHITE);
+    private static final Type grass = new Type("Grass", Abbrv.GRS, BG_GREEN, FG_BLACK);
+    private static final Type ice = new Type("Ice", Abbrv.ICE, BG_BRIGHT_CYAN, FG_BLACK);
     private static final Type normal = new Type("Normal", Abbrv.NRM, RESET, RESET);
-    private static final Type poison = new Type("Poison", Abbrv.POI, BG_MAGENTA, FG_WHITE);
-    private static final Type psychic = new Type("Psychic", Abbrv.PSY, BG_BRIGHT_MAGENTA, FG_WHITE);
-    private static final Type rock = new Type("Rock", Abbrv.RCK, BG_DARK_GRAY, FG_WHITE);
-    private static final Type steel = new Type("Steel", Abbrv.STL, BG_GRAY, FG_WHITE);
-    private static final Type water = new Type("Water", Abbrv.WAT, BG_BLUE, FG_WHITE);
+    private static final Type poison = new Type("Poison", Abbrv.POI, BG_MAGENTA, FG_BLACK);
+    private static final Type psychic = new Type("Psychic", Abbrv.PSY, BG_BRIGHT_MAGENTA, FG_BLACK);
+    private static final Type rock = new Type("Rock", Abbrv.RCK, BG_DARK_GRAY, FG_BLACK);
+    private static final Type steel = new Type("Steel", Abbrv.STL, BG_GRAY, FG_BLACK);
+    private static final Type water = new Type("Water", Abbrv.WAT, BG_BLUE, FG_BLACK);
 
     public enum Abbrv {
         BUG, DRK, DRG, ERT,
@@ -77,8 +78,8 @@ public class Type {
         POI, PSY, RCK, STL, WAT
     }
 
-    public static MapMap<Type, Type, Double> TABLE = new MapMap<>();
-    public static MapMap<Type, Type, Double> DEFEND = new MapMap<>();
+    public static Table<Type, Type, Double> TABLE = new Table<>();
+    public static Table<Type, Type, Double> DEFEND = new Table<>();
 
     Type(String name, Abbrv abbrv, String bgColor, String fgColor) {
         this.name = name;
@@ -97,6 +98,17 @@ public class Type {
     }
 
     public static void main(String[] args) {
+        String[] att = new String[]{"A","T","T","A","C","K"};
+        int t = 0;
+        String out;
+        for (int i = 0; i < 17; i++) {
+            out = "   ";
+            if(i % 2 == 0 && i > 0 && i < 15 && i != 8) {
+                out = " " + att[t] + " ";
+                t++;
+            }
+            println(ConsolePrinting.BG_RED, ConsolePrinting.BOLD, out);
+        }
         println(bug);
         println(dark);
         println(dragon);
