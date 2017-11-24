@@ -1,6 +1,10 @@
 package Utils.Collections.BinaryHeaps;
 
+import ATOC.Binary;
 import Utils.Comparison;
+
+import java.util.Arrays;
+import java.util.Collection;
 
 import static Utils.Comparison.lt;
 
@@ -45,4 +49,5 @@ public abstract class BinaryHeap<E extends Comparable<? super E>> {
     public abstract void push(E value);
     public abstract E peek();
     public abstract E pop();
+
 }

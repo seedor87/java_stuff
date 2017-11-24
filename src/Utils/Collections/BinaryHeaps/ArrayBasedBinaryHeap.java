@@ -21,7 +21,7 @@ public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> extends Binar
                                int maxSize,
                                E[] data,
                                int heapSize) {
-            this.temp = new ArrayBasedBinaryHeap(type)
+            this.temp = new ArrayBasedBinaryHeap()
                     .setSize(maxSize)
                     .setComp(comp)
                     .setArgs(Arrays.copyOfRange(data, 0, heapSize));
@@ -46,13 +46,11 @@ public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> extends Binar
     protected E[] elements;
     protected Class type;
 
-    public <E extends Comparable<? super E>> ArrayBasedBinaryHeap(Class<E> type) {
-        this.type = type;
-    }
+    public <E extends Comparable<? super E>> ArrayBasedBinaryHeap() {}
 
     public ArrayBasedBinaryHeap setSize(int maxSize) {
         this.maxSize = maxSize;
-        this.elements = (E[]) Array.newInstance(this.type, this.maxSize);
+        this.elements = (E[]) new Comparable[maxSize];
         return this;
     }
 
@@ -177,73 +175,75 @@ public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> extends Binar
     }
 
     public static void main(String[] args) {
-        ArrayBasedBinaryHeap bh;
 
-        bh = new ArrayBasedBinaryHeap(Integer.class).setSize(10000);
-        bh.push(4);
-        bh.push(2);
-        bh.push(1);
-        bh.push(5);
-        bh.push(3);
-        println(bh);
-        bh.push(7, 8, 6);
-        println(bh);
-        bh.pop();
-        bh.pop();
-        println(bh);
+        ArrayBasedBinaryHeap<Integer> bhi = new ArrayBasedBinaryHeap().setSize(10000);
+        bhi.push(4);
+        bhi.push(2);
+        bhi.push(1);
+        bhi.push(5);
+        bhi.push(3);
+        println(bhi);
+        bhi.push(7, 8, 6);
+        println(bhi);
+        bhi.pop();
+        bhi.pop();
+        println(bhi);
 
         while(true) {
             try {
-                print(bh.pop());
+                print(bhi.pop(), " ");
             } catch (HeapException ex) {
                 println();
                 break;
             }
         }
 
-        bh = new ArrayBasedBinaryHeap(Character.class)
+        ArrayBasedBinaryHeap<Character> bhc = new ArrayBasedBinaryHeap()
                 .setSize(10000)
                 .setComp(gt)
                 .setArgs('a','b','c','z');
-        println(bh);
+        println(bhc);
 
-        bh = new ArrayBasedBinaryHeap(String.class)
+        ArrayBasedBinaryHeap<String> bhs = new ArrayBasedBinaryHeap()
                 .setSize(10000)
                 .setArgs(new HashSet(Arrays.asList(
                         "star",
                         "alex",
                         "bob")));
-        println(bh);
+        println(bhs);
 
-        bh.setComp(gt);
-        println(bh);
+        bhs.setComp(gt);
+        println(bhs);
 
-        class MyClass implements Comparable {
-            private Integer val;
-            MyClass(int val) {
+        class MyClass<E extends Object> implements Comparable<MyClass> {
+            private E val;
+            MyClass(E val) {
                 this.val = val;
             }
-            public int getVal() {
+            public E getVal() {
                 return this.val;
-            }
-
-            @Override
-            public int compareTo(Object o) {
-                return -1 * this.val.compareTo(((MyClass) o).getVal());
             }
 
             @Override
             public String toString() {
                 return this.val +  "";
             }
+
+            @Override
+            public int compareTo(MyClass o) {
+                return -1 * ((Comparable) this.val).compareTo(o.val);
+            }
         }
 
-        bh = new ArrayBasedBinaryHeap(MyClass.class)
+        ArrayBasedBinaryHeap<MyClass<Integer>> bhm = new ArrayBasedBinaryHeap()
                 .setSize(10000).setArgs(
                         new MyClass(9),
                         new MyClass(10),
                         new MyClass(11)
                 );
-        println(bh);
+        println(bhm);
+
+        bhm.setComp(gt);
+        println(bhm);
     }
 }
