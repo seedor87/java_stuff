@@ -1,10 +1,6 @@
 package Utils.Collections.BinaryHeaps;
 
-import ATOC.Binary;
 import Utils.Comparison;
-
-import java.util.Arrays;
-import java.util.Collection;
 
 import static Utils.Comparison.lt;
 

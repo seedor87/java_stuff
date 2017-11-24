@@ -2,7 +2,6 @@ package Utils.Collections.BinaryHeaps;
 
 import Utils.Comparison;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 import static Utils.ConsolePrinting.print;
@@ -17,12 +16,10 @@ public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> extends Binar
 
         ArrayBasedBinaryHeap<E> temp;
         ArrayBasedHeapIterator(Comparison.Comparator<E> comp,
-                               Class<E> type,
                                int maxSize,
                                E[] data,
                                int heapSize) {
-            this.temp = new ArrayBasedBinaryHeap()
-                    .setSize(maxSize)
+            this.temp = new ArrayBasedBinaryHeap(maxSize)
                     .setComp(comp)
                     .setArgs(Arrays.copyOfRange(data, 0, heapSize));
         }
@@ -43,15 +40,14 @@ public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> extends Binar
         }
     }
 
-    protected E[] elements;
-    protected Class type;
+    protected Comparable[] elements;
 
-    public <E extends Comparable<? super E>> ArrayBasedBinaryHeap() {}
-
-    public ArrayBasedBinaryHeap setSize(int maxSize) {
+    public <E extends Comparable<? super E>> ArrayBasedBinaryHeap(int maxSize) {
         this.maxSize = maxSize;
-        this.elements = (E[]) new Comparable[maxSize];
-        return this;
+        this.elements = new Comparable[this.maxSize];
+    }
+    public <E extends Comparable<? super E>> ArrayBasedBinaryHeap() {
+        this.elements = new Comparable[this.maxSize];
     }
 
     public ArrayBasedBinaryHeap setComp(Comparison.Comparator comp) {
@@ -107,7 +103,6 @@ public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> extends Binar
     public Iterator<E> iterator() {
         return new ArrayBasedHeapIterator(
                 this.comp,
-                this.type,
                 this.maxSize,
                 (E[]) this.elements,
                 this.heapSize
@@ -176,14 +171,14 @@ public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> extends Binar
 
     public static void main(String[] args) {
 
-        ArrayBasedBinaryHeap<Integer> bhi = new ArrayBasedBinaryHeap().setSize(10000);
-        bhi.push(4);
-        bhi.push(2);
+        ArrayBasedBinaryHeap<Integer> bhi = new ArrayBasedBinaryHeap();
+        bhi.push(8);
+        bhi.push(6);
         bhi.push(1);
         bhi.push(5);
         bhi.push(3);
         println(bhi);
-        bhi.push(7, 8, 6);
+        bhi.push(7, 2, 4);
         println(bhi);
         bhi.pop();
         bhi.pop();
@@ -199,13 +194,11 @@ public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> extends Binar
         }
 
         ArrayBasedBinaryHeap<Character> bhc = new ArrayBasedBinaryHeap()
-                .setSize(10000)
                 .setComp(gt)
                 .setArgs('a','b','c','z');
         println(bhc);
 
         ArrayBasedBinaryHeap<String> bhs = new ArrayBasedBinaryHeap()
-                .setSize(10000)
                 .setArgs(new HashSet(Arrays.asList(
                         "star",
                         "alex",
@@ -236,7 +229,7 @@ public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> extends Binar
         }
 
         ArrayBasedBinaryHeap<MyClass<Integer>> bhm = new ArrayBasedBinaryHeap()
-                .setSize(10000).setArgs(
+                .setArgs(
                         new MyClass(9),
                         new MyClass(10),
                         new MyClass(11)
