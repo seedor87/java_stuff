@@ -9,7 +9,7 @@ import static Utils.ConsolePrinting.println;
 import static Utils.Comparison.evaluate;
 import static Utils.Comparison.gt;
 
-public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> extends BinaryHeap implements Iterable<E> {
+public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> extends BinaryHeap {
 
     public class ArrayBasedHeapIterator<E extends Comparable<? super E>> implements Iterator {
 
@@ -138,6 +138,62 @@ public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> extends Binar
         return ret;
     }
 
+    @Override
+    public boolean contains(Object elem) {
+        int i = 0;
+        while(i < heapSize) {
+            if (elem.equals(elements[i])) {
+                return true;
+            }
+            i++;
+        }
+        return false;
+    }
+
+    @Override
+    public int lastIndexOf(Object elem) {
+        int ret = -1;
+        int i = 0;
+        while(i < heapSize) {
+            if (elem.equals(elements[i])) {
+                ret = i;
+            }
+            i++;
+        }
+        return ret;
+    }
+
+    @Override
+    public Object[] toArray() {
+        Iterator<E> it = this.iterator();
+        Object[] ret = new Object[this.heapSize];
+        int i = 0;
+        while(it.hasNext()) {
+            ret[i] = it.next();
+            i++;
+        }
+        return ret;
+    }
+
+    @Override
+    public Comparable[] toArray(Comparable[] arr) {
+        int len = arr.length;
+        while(true) {
+            try {
+                Iterator<E> it = this.iterator();
+                int i = 0;
+                while(it.hasNext()) {
+                    arr[i] = it.next();
+                    i++;
+                }
+                return arr;
+            } catch (ArrayIndexOutOfBoundsException ex) {
+                len = len * 2;
+                arr = new Comparable[len];
+            }
+        }
+    }
+
     protected void siftDown(int nodeIndex) {
         int leftChildIndex, rightChildIndex, minIndex;
         E tmp;
@@ -186,17 +242,23 @@ public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> extends Binar
         bhi.pop();
         println(bhi);
 
+        println("[2] :", bhi.lastIndexOf(2), bhi.contains(2));
+        Comparable[] ints = new Integer[5];
+        ints = bhi.toArray(ints);
+        println("bhi:", ints, "bhi.len:", ints.length);
+
         while(true) {
             try {
                 print(bhi.pop(), " ");
             } catch (HeapException ex) {
-                println();
+                println('-');
                 break;
             }
         }
 
         ArrayBasedBinaryHeap<Character> bhc = new ArrayBasedBinaryHeap('a','b','c','z');
         println(bhc);
+        println(bhc.toArray());
 
         ArrayBasedBinaryHeap<String> bhs = new ArrayBasedBinaryHeap(new HashSet(Arrays.asList(
                         "star",

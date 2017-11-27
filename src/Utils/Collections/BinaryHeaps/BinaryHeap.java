@@ -3,13 +3,14 @@ package Utils.Collections.BinaryHeaps;
 import Utils.Comparison;
 
 import java.util.Arrays;
+import java.util.Iterator;
 
 import static Utils.Comparison.lt;
 
 /**
  * Created by robertseedorf on 9/9/17.
  */
-public abstract class BinaryHeap<E extends Comparable<? super E>> {
+public abstract class BinaryHeap<E extends Comparable<? super E>> implements Iterable<E> {
 
     public static class HeapException extends RuntimeException {
         public HeapException(String message) { super(message); }
@@ -86,4 +87,8 @@ public abstract class BinaryHeap<E extends Comparable<? super E>> {
     public abstract void push(E value);
     public abstract E peek();
     public abstract E pop();
+    public abstract boolean contains(Object elem);
+    public abstract int lastIndexOf(Object elem);
+    public abstract Object[] toArray();
+    public abstract E[] toArray(E[] arr);
 }

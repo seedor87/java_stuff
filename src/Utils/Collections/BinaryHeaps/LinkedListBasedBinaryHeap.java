@@ -8,7 +8,7 @@ import static Utils.Comparison.evaluate;
 import static Utils.ConsolePrinting.*;
 import static Utils.Comparison.gt;
 
-public class LinkedListBasedBinaryHeap<E extends Comparable<? super E>> extends BinaryHeap implements Iterable<E>{
+public class LinkedListBasedBinaryHeap<E extends Comparable<? super E>> extends BinaryHeap {
 
     public class LinkedListBasedHeapIterator<C extends E> implements Iterator {
 
@@ -123,6 +123,47 @@ public class LinkedListBasedBinaryHeap<E extends Comparable<? super E>> extends 
     }
 
     @Override
+    public boolean contains(Object elem) {
+        return elements.contains(elem);
+    }
+
+    @Override
+    public int lastIndexOf(Object elem) {
+        return elements.lastIndexOf(elem);
+    }
+
+    @Override
+    public Object[] toArray() {
+        Iterator<E> it = this.iterator();
+        Object[] ret = new Object[this.heapSize];
+        int i = 0;
+        while(it.hasNext()) {
+            ret[i] = it.next();
+            i++;
+        }
+        return ret;
+    }
+
+    @Override
+    public Comparable[] toArray(Comparable[] arr) {
+        int len = arr.length;
+        while(true) {
+            try {
+                Iterator<E> it = this.iterator();
+                int i = 0;
+                while(it.hasNext()) {
+                    arr[i] = it.next();
+                    i++;
+                }
+                return arr;
+            } catch (ArrayIndexOutOfBoundsException ex) {
+                len = len * 2;
+                arr = new Comparable[len];
+            }
+        }
+    }
+
+    @Override
     public Iterator iterator() {
         return new LinkedListBasedHeapIterator(
                 this.comp,
@@ -173,6 +214,11 @@ public class LinkedListBasedBinaryHeap<E extends Comparable<? super E>> extends 
         println(bhi);
         bhi.pushAll(7, 8, 6);
         println(bhi);
+
+        println("[2] :", bhi.lastIndexOf(2), bhi.contains(2));
+        Comparable[] ints = new Integer[5];
+        ints = bhi.toArray(ints);
+        println("bhi:", ints, "bhi.len:", ints.length);
 
         while(true) {
             try {
