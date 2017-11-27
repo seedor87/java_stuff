@@ -16,7 +16,7 @@ public class BinaryHeapTests {
     public static void arrayBasedTest() {
         ArrayBasedBinaryHeap<Integer> bh = new ArrayBasedBinaryHeap(input.size());
         for(Integer i : input) {
-            bh.push(i);
+            bh.pushAll(i);
             println(bh);
         }
     }
@@ -24,7 +24,7 @@ public class BinaryHeapTests {
     public static void listBasedTest() {
         ListBasedBinaryHeap<Integer> bh = new ListBasedBinaryHeap<>();
         for(Integer i : input) {
-            bh.push(i);
+            bh.pushAll(i);
             println(bh);
         }
     }
@@ -32,7 +32,7 @@ public class BinaryHeapTests {
     public static void llBasedTest() {
         LinkedListBasedBinaryHeap<Integer> bh = new LinkedListBasedBinaryHeap<>();
         for(Integer i : input) {
-            bh.push(i);
+            bh.pushAll(i);
             println(bh);
         }
     }

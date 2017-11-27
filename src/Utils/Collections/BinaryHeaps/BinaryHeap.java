@@ -2,6 +2,8 @@ package Utils.Collections.BinaryHeaps;
 
 import Utils.Comparison;
 
+import java.util.Arrays;
+
 import static Utils.Comparison.lt;
 
 /**
@@ -25,9 +27,48 @@ public abstract class BinaryHeap<E extends Comparable<? super E>> {
         }
     }
 
-    protected int maxSize = 1000;
-    protected int heapSize = 0;
-    protected Comparison.Comparator comp = lt;
+    private final int DEFAULT_MAX_SIZE = 1000;
+    private final Comparison.Comparator DEFAULT_COMPARATOR = lt;
+
+    protected int maxSize;
+    protected int heapSize;
+    protected Comparison.Comparator comp;
+
+    protected BinaryHeap() {
+        this.maxSize = DEFAULT_MAX_SIZE;
+        this.heapSize = 0;
+        this.comp = DEFAULT_COMPARATOR;
+    }
+
+    protected BinaryHeap(Comparison.Comparator comp) {
+        this();
+        this.comp = comp;
+    }
+
+    protected BinaryHeap(int maxSize) {
+        this();
+        this.maxSize = maxSize;
+    }
+
+    protected BinaryHeap(Comparison.Comparator comp, int maxSize) {
+        this();
+        this.maxSize = maxSize;
+        this.comp = comp;
+    }
+
+    protected void setComp(Comparison.Comparator comp) {
+        this.comp = comp;
+    }
+
+    public void pushAll(E... elems) {
+        pushAll(Arrays.asList(elems));
+    }
+
+    public <T extends Iterable<E>> void pushAll(T elems) {
+        for(E elem : elems) {
+            push(elem);
+        }
+    }
 
     protected int getLeftChildIndex(int nodeIndex) {
         return 2 * nodeIndex + 1;
@@ -45,5 +86,4 @@ public abstract class BinaryHeap<E extends Comparable<? super E>> {
     public abstract void push(E value);
     public abstract E peek();
     public abstract E pop();
-
 }

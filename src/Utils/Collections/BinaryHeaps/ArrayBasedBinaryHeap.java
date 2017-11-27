@@ -8,7 +8,6 @@ import static Utils.ConsolePrinting.print;
 import static Utils.ConsolePrinting.println;
 import static Utils.Comparison.evaluate;
 import static Utils.Comparison.gt;
-import static Utils.Comparison.lt;
 
 public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> extends BinaryHeap implements Iterable<E> {
 
@@ -16,12 +15,9 @@ public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> extends Binar
 
         ArrayBasedBinaryHeap<E> temp;
         ArrayBasedHeapIterator(Comparison.Comparator<E> comp,
-                               int maxSize,
-                               E[] data,
-                               int heapSize) {
-            this.temp = new ArrayBasedBinaryHeap(maxSize)
-                    .setComp(comp)
-                    .setArgs(Arrays.copyOfRange(data, 0, heapSize));
+                               int heapSize,
+                               E[] data) {
+            this.temp = new ArrayBasedBinaryHeap(comp, heapSize, Arrays.copyOfRange(data, 0, heapSize));
         }
 
         @Override
@@ -42,29 +38,48 @@ public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> extends Binar
 
     protected Comparable[] elements;
 
-    public <E extends Comparable<? super E>> ArrayBasedBinaryHeap(int maxSize) {
-        this.maxSize = maxSize;
-        this.elements = new Comparable[this.maxSize];
-    }
-    public <E extends Comparable<? super E>> ArrayBasedBinaryHeap() {
+    public ArrayBasedBinaryHeap(int maxSize) {
+        super(maxSize);
         this.elements = new Comparable[this.maxSize];
     }
 
-    public ArrayBasedBinaryHeap setComp(Comparison.Comparator comp) {
-        this.comp = comp;
-        return this;
+    public ArrayBasedBinaryHeap(Comparison.Comparator comp) {
+        super(comp);
+        this.elements = new Comparable[this.maxSize];
+}
+
+    public ArrayBasedBinaryHeap(E... elems) {
+        this.elements = new Comparable[this.maxSize];
+        pushAll(elems);
     }
 
-    public <T extends E> ArrayBasedBinaryHeap setArgs(Collection<T> args) {
-        for (T arg : args) {
-            push(arg);
-        }
-        return this;
+    public <T extends Iterable<E>> ArrayBasedBinaryHeap(T elems) {
+        this.elements = new Comparable[this.maxSize];
+        pushAll(elems);
     }
 
-    public <T extends E> ArrayBasedBinaryHeap setArgs(T... args) {
-        return this.setArgs(Arrays.asList(args));
+    public ArrayBasedBinaryHeap(Comparison.Comparator comp, int maxSize) {
+        super(comp, maxSize);
+        this.elements = new Comparable[this.maxSize];
     }
+
+    public ArrayBasedBinaryHeap(Comparison.Comparator comp, int maxSize, E... elems) {
+        super(comp, maxSize);
+        this.elements = new Comparable[this.maxSize];
+        pushAll(elems);
+    }
+
+    public <T extends Iterable<E>> ArrayBasedBinaryHeap(Comparison.Comparator comp, int maxSize, T elems) {
+        super(comp, maxSize);
+        this.elements = new Comparable[this.maxSize];
+        pushAll(elems);
+    }
+
+    public ArrayBasedBinaryHeap() {
+        super();
+        this.elements = new Comparable[this.maxSize];
+    }
+
 
     public E peek() {
         if (empty()) {
@@ -87,25 +102,12 @@ public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> extends Binar
         siftUp(this.heapSize - 1);
     }
 
-    public void push(Comparable... values) {
-        for(Comparable elem : values) {
-            push(elem);
-        }
-    }
-
-    public void push(Iterable values) {
-        for(Object elem : values) {
-            push((Comparable) elem);
-        }
-    }
-
     @Override
     public Iterator<E> iterator() {
         return new ArrayBasedHeapIterator(
                 this.comp,
-                this.maxSize,
-                (E[]) this.elements,
-                this.heapSize
+                this.heapSize,
+                this.elements
         );
     }
 
@@ -178,7 +180,7 @@ public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> extends Binar
         bhi.push(5);
         bhi.push(3);
         println(bhi);
-        bhi.push(7, 2, 4);
+        bhi.pushAll(7, 2, 4);
         println(bhi);
         bhi.pop();
         bhi.pop();
@@ -193,13 +195,10 @@ public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> extends Binar
             }
         }
 
-        ArrayBasedBinaryHeap<Character> bhc = new ArrayBasedBinaryHeap()
-                .setComp(gt)
-                .setArgs('a','b','c','z');
+        ArrayBasedBinaryHeap<Character> bhc = new ArrayBasedBinaryHeap('a','b','c','z');
         println(bhc);
 
-        ArrayBasedBinaryHeap<String> bhs = new ArrayBasedBinaryHeap()
-                .setArgs(new HashSet(Arrays.asList(
+        ArrayBasedBinaryHeap<String> bhs = new ArrayBasedBinaryHeap(new HashSet(Arrays.asList(
                         "star",
                         "alex",
                         "bob")));
@@ -228,8 +227,7 @@ public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> extends Binar
             }
         }
 
-        ArrayBasedBinaryHeap<MyClass<Integer>> bhm = new ArrayBasedBinaryHeap()
-                .setArgs(
+        ArrayBasedBinaryHeap<MyClass<Integer>> bhm = new ArrayBasedBinaryHeap(
                         new MyClass(9),
                         new MyClass(10),
                         new MyClass(11)
