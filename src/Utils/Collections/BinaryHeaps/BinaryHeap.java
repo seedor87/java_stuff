@@ -11,17 +11,17 @@ import static Utils.ConsolePrinting.println;
 /**
  * Created by robertseedorf on 9/9/17.
  */
-public abstract class BinaryHeap<E extends Comparable<? super E>> implements Iterable<E> {
+public abstract class BinaryHeap<E> implements Iterable<E> {
 
     interface MyComparator extends Comparator {
         int compare(Object o1, Object o2);
     }
 
-    public static MyComparator lt = (Object o1, Object o2) -> ((Comparable) o1).compareTo((Comparable) o2);
-    public static MyComparator gt = (Object o1, Object o2) -> ((Comparable) o2).compareTo((Comparable) o1);
+    public static Comparator lt = (Object o1, Object o2) -> ((Comparable) o1).compareTo((Comparable) o2);
+    public static Comparator gt = (Object o1, Object o2) -> ((Comparable) o2).compareTo((Comparable) o1);
 
     private final int DEFAULT_MAX_SIZE = 1000;  // Default value assigned to the size of internal collection
-    private final Comparator<Integer> DEFAULT_COMPARATOR = gt;  // default comparator for heapification maintenance
+    private final Comparator<E> DEFAULT_COMPARATOR = gt;  // default comparator for heapification maintenance
 
     protected int maxSize;  // limit of max size to heap
     protected int heapSize; // tracks of current heap size
@@ -203,7 +203,7 @@ public abstract class BinaryHeap<E extends Comparable<? super E>> implements Ite
      * pops the number of elements equal to the number specified by parameter
      */
     public E[] pop(int count) {
-        Comparable[] ret = new Comparable[count];
+        Object[] ret = new Object[count];
         int i = 0;
         while(true) {
             try {
@@ -223,7 +223,7 @@ public abstract class BinaryHeap<E extends Comparable<? super E>> implements Ite
      * pops all elements from the heap
      */
     public E[] popAll() {
-        Comparable[] ret = new Comparable[this.heapSize];
+        Object[] ret = new Object[this.heapSize];
         int i = 0;
         while(true) {
             try {
@@ -282,6 +282,10 @@ public abstract class BinaryHeap<E extends Comparable<? super E>> implements Ite
         bhi = new ArrayBasedBinaryHeap(5);
 //        bhi = new ListBasedBinaryHeap<>(5);
 //        bhi = new LinkedListBasedBinaryHeap<>(5);
+
+        BinaryHeap<Character> bhc = new ListBasedBinaryHeap();
+        bhc.push('a');
+        println(bhc);
 
         bhi.push(8);
         bhi.push(6);
@@ -344,35 +348,42 @@ public abstract class BinaryHeap<E extends Comparable<? super E>> implements Ite
         println("bhi :", bhi.toArray());
 
         println("\n");
-        BinaryHeap<MyClass<Integer, String>> bhm = new ArrayBasedBinaryHeap(
+
+        Comparator custComp1 = (Object o1, Object o2) -> {
+            MyClass m1 = (MyClass) o1;
+            MyClass m2 = (MyClass) o2;
+            return m1.getKey().compareTo(m2.getKey());
+        };
+
+        Comparator custComp2 = (Object o1, Object o2) -> {
+            MyClass m1 = (MyClass) o1;
+            MyClass m2 = (MyClass) o2;
+            if( m1.getKey().compareTo(m2.getKey()) == 0 ) {
+                return ((Comparable) m2.getVal()).compareTo((Comparable) m1.getVal());
+            }
+            return m1.getKey().compareTo(m2.getKey());
+        };
+
+        BinaryHeap<MyClass<Integer, String>> bhm;
+        bhm = new ArrayBasedBinaryHeap(custComp1);
+//        bhm = new ListBasedBinaryHeap(custComp);
+//        bhm = new LinkedListBasedBinaryHeap(custComp);
+
+        bhm.pushAll(
                 new MyClass(9, "Nine"),
                 new MyClass(10, "Ten"),
                 new MyClass(11, "Eleven"),
-                new MyClass(9, "Nine-2")
+                new MyClass(9, "nine")
         );
         println(bhm);
 
-        bhm.sort(lt);
-        println(bhm);
-
-        Comparator custComparator = new Comparator() {
-            @Override
-            public int compare(Object o1, Object o2) {
-                MyClass m1 = (MyClass) o1;
-                MyClass m2 = (MyClass) o2;
-                if( m1.compareTo(m2) == 0 ) {
-                    return ((Comparable) m1.getVal()).compareTo((Comparable) m2.getVal());
-                }
-                return m1.compareTo(m2);
-            }
-        };
-        bhm.sort(custComparator);
+        bhm.sort(custComp2);
         println(bhm);
     }
 
 
 
-    private static class MyClass<K extends Comparable, V extends Object> implements Comparable<MyClass<K, V>> {
+    private static class MyClass<K extends Comparable, V extends Object> {
         private K key;
         private V val;
         MyClass(K key, V val) {
@@ -391,11 +402,6 @@ public abstract class BinaryHeap<E extends Comparable<? super E>> implements Ite
         @Override
         public String toString() {
             return "<" + this.getKey() + " : " + this.getVal() + ">";
-        }
-
-        @Override
-        public int compareTo(MyClass<K, V> o) {
-            return (this.getKey()).compareTo(o.getKey());
         }
     }
 }

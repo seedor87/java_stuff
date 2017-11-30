@@ -1,10 +1,8 @@
 package Utils.Collections.BinaryHeaps;
 
-import Utils.Comparison;
-
 import java.util.*;
 
-public class ListBasedBinaryHeap<E extends Comparable<? super E>> extends BinaryHeap {
+public class ListBasedBinaryHeap<E> extends BinaryHeap {
 
     public class ListBasedHeapIterator<C extends E> implements Iterator {
 
@@ -90,7 +88,7 @@ public class ListBasedBinaryHeap<E extends Comparable<? super E>> extends Binary
         }
     }
 
-    public void push(Comparable value) {
+    public void push(Object value) {
         if (this.heapSize == this.maxSize) {
             throw new FullHeapException("Heap's underlying storage is overflow");
         }

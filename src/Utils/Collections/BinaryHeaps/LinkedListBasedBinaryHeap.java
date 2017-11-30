@@ -2,7 +2,7 @@ package Utils.Collections.BinaryHeaps;
 
 import java.util.*;
 
-public class LinkedListBasedBinaryHeap<E extends Comparable<? super E>> extends BinaryHeap {
+public class LinkedListBasedBinaryHeap<E> extends BinaryHeap {
 
     public class LinkedListBasedHeapIterator<C extends E> implements Iterator {
 
@@ -83,7 +83,7 @@ public class LinkedListBasedBinaryHeap<E extends Comparable<? super E>> extends 
         }
     }
 
-    public void push(Comparable value) {
+    public void push(Object value) {
         if (this.heapSize == this.maxSize) {
             throw new FullHeapException("Heap's underlying storage is overflow");
         }

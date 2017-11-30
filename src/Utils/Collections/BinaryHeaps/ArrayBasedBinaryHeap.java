@@ -2,9 +2,9 @@ package Utils.Collections.BinaryHeaps;
 
 import java.util.*;
 
-public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> extends BinaryHeap {
+public class ArrayBasedBinaryHeap<E> extends BinaryHeap {
 
-    public class ArrayBasedHeapIterator<E extends Comparable<? super E>> implements Iterator {
+    public class ArrayBasedHeapIterator<E> implements Iterator {
 
         ArrayBasedBinaryHeap<E> temp;
         ArrayBasedHeapIterator(Comparator<E> comp,
@@ -29,48 +29,48 @@ public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> extends Binar
         }
     }
 
-    protected Comparable[] elements;
+    protected Object[] elements;
 
     public ArrayBasedBinaryHeap(int maxSize) {
         super(maxSize);
-        this.elements = new Comparable[this.maxSize];
+        this.elements = new Object[this.maxSize];
     }
 
     public ArrayBasedBinaryHeap(Comparator comp) {
         super(comp);
-        this.elements = new Comparable[this.maxSize];
+        this.elements = new Object[this.maxSize];
     }
 
     public ArrayBasedBinaryHeap(E... elems) {
-        this.elements = new Comparable[this.maxSize];
+        this.elements = new Object[this.maxSize];
         pushAll(elems);
     }
 
     public <T extends Iterable<E>> ArrayBasedBinaryHeap(T elems) {
-        this.elements = new Comparable[this.maxSize];
+        this.elements = new Object[this.maxSize];
         pushAll(elems);
     }
 
     public ArrayBasedBinaryHeap(Comparator comp, int maxSize) {
         super(comp, maxSize);
-        this.elements = new Comparable[this.maxSize];
+        this.elements = new Object[this.maxSize];
     }
 
     public ArrayBasedBinaryHeap(Comparator comp, E... elems) {
         super(comp);
-        this.elements = new Comparable[this.maxSize];
+        this.elements = new Object[this.maxSize];
         pushAll(elems);
     }
 
     public <T extends Iterable<E>> ArrayBasedBinaryHeap(Comparator comp, T elems) {
         super(comp);
-        this.elements = new Comparable[this.maxSize];
+        this.elements = new Object[this.maxSize];
         pushAll(elems);
     }
 
     public ArrayBasedBinaryHeap() {
         super();
-        this.elements = new Comparable[this.maxSize];
+        this.elements = new Object[this.maxSize];
     }
 
 
@@ -86,12 +86,12 @@ public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> extends Binar
     }
 
     @Override
-    public void push(Comparable value) {
+    public void push(Object value) {
         if (this.heapSize == elements.length) {
             throw new FullHeapException("Heap's underlying storage is overflow");
         }
         this.heapSize++;
-        this.elements[this.heapSize - 1] = (E) value;
+        this.elements[this.heapSize - 1] = value;
         siftUp(this.heapSize - 1);
     }
 
@@ -133,7 +133,7 @@ public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> extends Binar
 
     @Override
     public void clear() {
-        this.elements = new Comparable[maxSize];
+        this.elements = new Object[maxSize];
         this.heapSize = 0;
     }
 
