@@ -3,23 +3,36 @@ package Utils;
 import java.util.*;
 public class Comparison {
 
-    public interface BinaryComparator<T extends Object> extends Comparator {
-        int compare(Object elem1, Object elem2);
+    public interface BinaryComparator {
+        boolean compare(Object elem1, Object elem2);
     }
 
-    static public BinaryComparator<Comparable> lt = (Comparable elem1, Comparable elem2) -> elem1.compareTo(elem2) < 0;
-    static public BinaryComparator<Comparable> gt = (Comparable elem1, Comparable elem2) -> elem1.compareTo(elem2) > 0;
-    static public BinaryComparator<Comparable> lte = (Comparable elem1, Comparable elem2) -> elem1.compareTo(elem2) <= 0;
-    static public BinaryComparator<Comparable> gte = (Comparable elem1, Comparable elem2) -> elem1.compareTo(elem2) >= 0;
-    static public BinaryComparator<Comparable> eq = (Comparable elem1, Comparable elem2) -> elem1.compareTo(elem2) == 0;
+    static public BinaryComparator lt = (Object elem1, Object elem2) -> ((Comparable) elem1).compareTo((Comparable) elem2) < 0;
+    static public BinaryComparator gt = (Object elem1, Object elem2) -> ((Comparable) elem1).compareTo((Comparable) elem2) > 0;
+    static public BinaryComparator lte = (Object elem1, Object elem2) -> ((Comparable) elem1).compareTo((Comparable) elem2) <= 0;
+    static public BinaryComparator gte = (Object elem1, Object elem2) -> ((Comparable) elem1).compareTo((Comparable) elem2) >= 0;
+    static public BinaryComparator eq = (Object elem1, Object elem2) -> ((Comparable) elem1).compareTo((Comparable) elem2) == 0;
 
-    public static <T extends Comparable<? super T>> boolean evaluate(BinaryComparator comp, T first, T... rest) {
+    public static <T extends Comparable<? super T>> boolean evaluate(Comparator comp, T first, T... rest) {
         if (rest.length < 1) {
             return true;
         } else if (rest.length < 2) {
             return comp.compare(first, rest[0]) > 0;
         } else {
             if (comp.compare(first, rest[0]) > 0) {
+                return evaluate(comp, rest[0], Arrays.copyOfRange(rest, 1, rest.length));
+            }
+        }
+        return false;
+    }
+
+    public static <T extends Comparable<? super T>> boolean evaluate(BinaryComparator comp, T first, T... rest) {
+        if (rest.length < 1) {
+            return true;
+        } else if (rest.length < 2) {
+            return comp.compare(first, rest[0]);
+        } else {
+            if (comp.compare(first, rest[0])) {
                 return evaluate(comp, rest[0], Arrays.copyOfRange(rest, 1, rest.length));
             }
         }
@@ -36,23 +49,23 @@ public class Comparison {
 //        return true;
     }
 
-    public static <T extends Comparable<? super T>> int lt(T elem1, T elem2) {
+    public static <T extends Comparable<? super T>> boolean lt(T elem1, T elem2) {
         return lt.compare(elem1, elem2);
     }
 
-    public static <T extends Comparable<? super T>> int lte(T elem1, T elem2) {
+    public static <T extends Comparable<? super T>> boolean lte(T elem1, T elem2) {
         return lte.compare(elem1, elem2);
     }
 
-    public static <T extends Comparable<? super T>> int gt(T elem1, T elem2) {
+    public static <T extends Comparable<? super T>> boolean gt(T elem1, T elem2) {
         return gt.compare(elem1, elem2);
     }
 
-    public static <T extends Comparable<? super T>> int gte(T elem1, T elem2) {
+    public static <T extends Comparable<? super T>> boolean gte(T elem1, T elem2) {
         return gte.compare(elem1, elem2);
     }
 
-    public static <T extends Comparable<? super T>> int eq(T elem1, T elem2) {
+    public static <T extends Comparable<? super T>> boolean eq(T elem1, T elem2) {
         return eq.compare(elem1, elem2);
     }
 

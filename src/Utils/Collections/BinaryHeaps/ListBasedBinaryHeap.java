@@ -4,14 +4,12 @@ import Utils.Comparison;
 
 import java.util.*;
 
-import static Utils.Comparison.evaluate;
-
 public class ListBasedBinaryHeap<E extends Comparable<? super E>> extends BinaryHeap {
 
     public class ListBasedHeapIterator<C extends E> implements Iterator {
 
         ListBasedBinaryHeap<C> temp;
-        ListBasedHeapIterator(Comparison.BinaryComparator<C> comp, int heapSize, List<C> data) {
+        ListBasedHeapIterator(Comparator<C> comp, int heapSize, List<C> data) {
             this.temp = new ListBasedBinaryHeap(comp, data.subList(0, heapSize));
         }
 
@@ -43,7 +41,7 @@ public class ListBasedBinaryHeap<E extends Comparable<? super E>> extends Binary
         this.elements = new ArrayList<>(maxSize);
     }
 
-    public ListBasedBinaryHeap(Comparison.BinaryComparator comp) {
+    public ListBasedBinaryHeap(Comparator comp) {
         super(comp);
         this.elements = new ArrayList<>(this.maxSize);
     }
@@ -58,18 +56,18 @@ public class ListBasedBinaryHeap<E extends Comparable<? super E>> extends Binary
         pushAll(elems);
     }
 
-    public ListBasedBinaryHeap(Comparison.BinaryComparator comp, int maxSize) {
+    public ListBasedBinaryHeap(Comparator comp, int maxSize) {
         super(comp, maxSize);
         this.elements = new ArrayList<>(this.maxSize);
     }
 
-    public ListBasedBinaryHeap(Comparison.BinaryComparator comp, E... elems) {
+    public ListBasedBinaryHeap(Comparator comp, E... elems) {
         super(comp);
         this.elements = new ArrayList<>(this.maxSize);
         pushAll(elems);
     }
 
-    public <T extends Iterable<E>> ListBasedBinaryHeap(Comparison.BinaryComparator comp, T elems) {
+    public <T extends Iterable<E>> ListBasedBinaryHeap(Comparator comp, T elems) {
         super(comp);
         this.elements = new ArrayList<>(this.maxSize);
         pushAll(elems);
@@ -106,7 +104,7 @@ public class ListBasedBinaryHeap<E extends Comparable<? super E>> extends Binary
         E tmp;
         if (nodeIndex != 0) {
             parentIndex = getParentIndex(nodeIndex);
-            if (evaluate(this.comp, this.elements.get(nodeIndex), this.elements.get(parentIndex))) {
+            if (this.comp.compare(this.elements.get(nodeIndex), this.elements.get(parentIndex)) > 0) {
                 tmp = this.elements.get(parentIndex);
                 this.elements.set(parentIndex, this.elements.get(nodeIndex));
                 this.elements.set(nodeIndex, tmp);
@@ -179,15 +177,14 @@ public class ListBasedBinaryHeap<E extends Comparable<? super E>> extends Binary
                 minIndex = leftChildIndex;
             }
         } else {
-            if (evaluate(this.comp, this.elements.get(leftChildIndex), this.elements.get(rightChildIndex))
-                    || evaluate(Comparison.eq, this.elements.get(leftChildIndex), this.elements.get(rightChildIndex))) {
+            if ( this.comp.compare(this.elements.get(leftChildIndex), this.elements.get(rightChildIndex)) >= 0 ) {
                 minIndex = leftChildIndex;
             } else {
                 minIndex = rightChildIndex;
             }
         }
 
-        if (evaluate(this.comp, this.elements.get(minIndex), this.elements.get(nodeIndex))) {
+        if ( this.comp.compare(this.elements.get(minIndex), this.elements.get(nodeIndex)) > 0 ) {
             tmp = this.elements.get(minIndex);
             this.elements.set(minIndex, this.elements.get(nodeIndex));
             this.elements.set(nodeIndex, tmp);

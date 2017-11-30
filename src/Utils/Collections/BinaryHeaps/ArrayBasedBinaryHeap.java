@@ -1,17 +1,13 @@
 package Utils.Collections.BinaryHeaps;
 
-import Utils.Comparison;
-
 import java.util.*;
-
-import static Utils.Comparison.evaluate;
 
 public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> extends BinaryHeap {
 
     public class ArrayBasedHeapIterator<E extends Comparable<? super E>> implements Iterator {
 
         ArrayBasedBinaryHeap<E> temp;
-        ArrayBasedHeapIterator(Comparison.BinaryComparator<E> comp,
+        ArrayBasedHeapIterator(Comparator<E> comp,
                                int heapSize,
                                E[] data) {
             this.temp = new ArrayBasedBinaryHeap(comp, Arrays.copyOfRange(data, 0, heapSize));
@@ -40,7 +36,7 @@ public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> extends Binar
         this.elements = new Comparable[this.maxSize];
     }
 
-    public ArrayBasedBinaryHeap(Comparison.BinaryComparator comp) {
+    public ArrayBasedBinaryHeap(Comparator comp) {
         super(comp);
         this.elements = new Comparable[this.maxSize];
     }
@@ -55,18 +51,18 @@ public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> extends Binar
         pushAll(elems);
     }
 
-    public ArrayBasedBinaryHeap(Comparison.BinaryComparator comp, int maxSize) {
+    public ArrayBasedBinaryHeap(Comparator comp, int maxSize) {
         super(comp, maxSize);
         this.elements = new Comparable[this.maxSize];
     }
 
-    public ArrayBasedBinaryHeap(Comparison.BinaryComparator comp, E... elems) {
+    public ArrayBasedBinaryHeap(Comparator comp, E... elems) {
         super(comp);
         this.elements = new Comparable[this.maxSize];
         pushAll(elems);
     }
 
-    public <T extends Iterable<E>> ArrayBasedBinaryHeap(Comparison.BinaryComparator comp, T elems) {
+    public <T extends Iterable<E>> ArrayBasedBinaryHeap(Comparator comp, T elems) {
         super(comp);
         this.elements = new Comparable[this.maxSize];
         pushAll(elems);
@@ -113,7 +109,7 @@ public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> extends Binar
         E tmp;
         if (nodeIndex != 0) {
             parentIndex = getParentIndex(nodeIndex);
-            if (evaluate(this.comp, this.elements[nodeIndex], this.elements[parentIndex])) {
+            if (this.comp.compare(this.elements[nodeIndex], this.elements[parentIndex]) > 0) {
                 tmp = (E) this.elements[parentIndex];
                 this.elements[parentIndex] = this.elements[nodeIndex];
                 this.elements[nodeIndex] = tmp;
@@ -173,15 +169,14 @@ public class ArrayBasedBinaryHeap<E extends Comparable<? super E>> extends Binar
                 minIndex = leftChildIndex;
             }
         } else {
-            if (evaluate(this.comp, this.elements[leftChildIndex], this.elements[rightChildIndex])
-                    || evaluate(Comparison.eq, this.elements[leftChildIndex], this.elements[rightChildIndex])) {
+            if ( this.comp.compare(this.elements[leftChildIndex], this.elements[rightChildIndex]) >= 0 ) {
                 minIndex = leftChildIndex;
             } else {
                 minIndex = rightChildIndex;
             }
         }
 
-        if (evaluate(this.comp, this.elements[minIndex], this.elements[nodeIndex])) {
+        if ( this.comp.compare(this.elements[minIndex], this.elements[nodeIndex]) > 0 ) {
             tmp = (E) this.elements[minIndex];
             this.elements[minIndex] = this.elements[nodeIndex];
             this.elements[nodeIndex] = tmp;
