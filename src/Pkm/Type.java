@@ -540,5 +540,6 @@ public class Type {
         }
         print(ConsolePrinting.BG_RED, ConsolePrinting.BOLD, out);
         ConsolePrinting.println("-" + padToLength(152, "-------+"));
+        
     }
 }
