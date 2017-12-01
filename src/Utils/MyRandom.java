@@ -3,6 +3,7 @@ package Utils;
 import java.util.Random;
 
 import static Utils.ConsolePrinting.println;
+import static Utils.ConsolePrinting.printlnDelim;
 
 public abstract class MyRandom {
 
@@ -25,7 +26,7 @@ public abstract class MyRandom {
     }
 
     public static void main(String[] args) {
-        println(randomChars(100));
+        printlnDelim(", ",randomChars(1000));
         println(randomInts(100, 100));
     }
 }

@@ -134,7 +134,7 @@ public class ListUtils {
         return (E[]) ret.toArray();
     }
 
-    private static <E extends Comparable<? super E>> E most(Comparison.Comparator comp, E... params) {
+    private static <E extends Comparable<? super E>> E most(BinaryComparator comp, E... params) {
         E hold = params[0];
         for (E elem : params) {
             if(evaluate(comp, elem, hold)) {
