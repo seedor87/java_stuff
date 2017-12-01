@@ -13,10 +13,6 @@ import static Utils.ConsolePrinting.println;
  */
 public abstract class BinaryHeap<E> implements Iterable<E> {
 
-    interface MyComparator extends Comparator {
-        int compare(Object o1, Object o2);
-    }
-
     public static Comparator lt = (Object o1, Object o2) -> ((Comparable) o1).compareTo((Comparable) o2);
     public static Comparator gt = (Object o1, Object o2) -> ((Comparable) o2).compareTo((Comparable) o1);
 
@@ -349,39 +345,40 @@ public abstract class BinaryHeap<E> implements Iterable<E> {
 
         println("\n");
 
-        Comparator custComp1 = (Object o1, Object o2) -> {
-            MyClass m1 = (MyClass) o1;
-            MyClass m2 = (MyClass) o2;
-            return m1.getKey().compareTo(m2.getKey());
-        };
+        Comparator<MyClass<Integer, String>> custComp1 = Comparator.comparing(MyClass::getKey);
 
-        Comparator custComp2 = (Object o1, Object o2) -> {
-            MyClass m1 = (MyClass) o1;
-            MyClass m2 = (MyClass) o2;
-            if( m1.getKey().compareTo(m2.getKey()) == 0 ) {
-                return ((Comparable) m2.getVal()).compareTo((Comparable) m1.getVal());
+        Comparator<MyClass<Integer, String>> custComp2 = (MyClass<Integer, String> o1, MyClass<Integer, String> o2) -> {
+            if( o1.getKey().compareTo(o2.getKey()) == 0 ) {
+                return  o1.getVal().compareTo(o2.getVal());
             }
-            return m1.getKey().compareTo(m2.getKey());
+            return o1.getKey().compareTo(o2.getKey());
         };
 
         BinaryHeap<MyClass<Integer, String>> bhm;
         bhm = new ArrayBasedBinaryHeap(custComp1);
-//        bhm = new ListBasedBinaryHeap(custComp);
-//        bhm = new LinkedListBasedBinaryHeap(custComp);
+//        bhm = new ListBasedBinaryHeap(custComp1);
+//        bhm = new LinkedListBasedBinaryHeap(custComp1);
 
         bhm.pushAll(
-                new MyClass(9, "Nine"),
-                new MyClass(10, "Ten"),
-                new MyClass(11, "Eleven"),
-                new MyClass(9, "nine")
+                new MyClass<>(9, "Nine"),
+                new MyClass<>(10, "Ten"),
+                new MyClass<>(11, "Eleven"),
+                new MyClass<>(9, "nine")
         );
         println(bhm);
 
         bhm.sort(custComp2);
         println(bhm);
+
+        BinaryHeap bhq;
+        bhq = new ArrayBasedBinaryHeap();
+        bhq.push('a');
+        bhq.push((char) 98);
+        bhq.push("c".toCharArray()[0]);
+        bhq.push(new Character('d'));
+        bhq.sort(lt);
+        println(bhq);
     }
-
-
 
     private static class MyClass<K extends Comparable, V extends Object> {
         private K key;

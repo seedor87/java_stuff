@@ -26,14 +26,18 @@ public class BinaryHeapTests {
             BinaryHeap<Integer> bhi;
             BinaryHeap<Character> bhc;
 
-            bhi = new ArrayBasedBinaryHeap<>();
+//            bhi = new ArrayBasedBinaryHeap<>();
+//            bhi = new ListBasedBinaryHeap<>();
+            bhi = new LinkedListBasedBinaryHeap<>();
             for(Integer i : int_input) {
                 bhi.pushAll(i);
                 printrn(bhi);
             }
             println();
 
-            bhc= new ArrayBasedBinaryHeap<>();
+//            bhc= new ArrayBasedBinaryHeap<>();
+//            bhc = new ListBasedBinaryHeap<>();
+            bhc = new LinkedListBasedBinaryHeap<>();
             for(Character c: char_input) {
                 bhc.pushAll(c);
                 printrn(bhc);
