@@ -1,13 +1,13 @@
 package Sorting;
 
 import NewTesting.NewSYSTimeTest;
-import myUtils.MyGenerator;
-import myUtils.Tuple;
+import Utils.MyRandom;
+import Utils.Collections.Tuple;
 
-import static myUtils.ConsolePrinting.println;
-import static myUtils.ConsolePrinting.printlnDelim;
-import static myUtils.Equivalence.lt;
-import static myUtils.Exchange.exchange;
+import static Utils.ConsolePrinting.println;
+import static Utils.ConsolePrinting.printlnDelim;
+import static Utils.Comparison.lt;
+import static Utils.Exchange.exchange;
 
 public class QuickSort<T extends Object> extends NewSYSTimeTest<T> {
 
@@ -42,7 +42,7 @@ public class QuickSort<T extends Object> extends NewSYSTimeTest<T> {
     }
 
     public static void test(int len, int max) {
-        Integer[] itest1 = MyGenerator.randomInts(len, max);
+        Integer[] itest1 = MyRandom.randomInts(len, max);
         quickSort(itest1);
     }
 

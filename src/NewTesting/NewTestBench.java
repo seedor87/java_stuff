@@ -2,18 +2,16 @@ package NewTesting;
 
 import Sorting.DualPivotQuickSort;
 import Sorting.QuickSort;
-import Sorting.RandomPivotQuickSort;
-import myUtils.ConsolePrinting;
-import myUtils.MyGenerator;
-import myUtils.Tuple;
+import Utils.ConsolePrinting;
+import Utils.Collections.Tuple;
 
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 import static Sorting.RandomPivotQuickSort.quickSort;
-import static myUtils.ConsolePrinting.println;
-import static myUtils.ConsolePrinting.printlnDelim;
+import static Utils.ConsolePrinting.println;
+import static Utils.ConsolePrinting.printlnDelim;
 
 public class NewTestBench extends NewSYSTimeTest {
 
@@ -45,13 +43,13 @@ public class NewTestBench extends NewSYSTimeTest {
 
     public static void main(String[] args) {
 
-//        Character[] arr1 = MyGenerator.randomChars(50);
+//        Character[] arr1 = MyRandom.randomChars(50);
 //        println(arr1);
 //
-//        Character[] arr2 = MyGenerator.randomChars(500);
+//        Character[] arr2 = MyRandom.randomChars(500);
 //        println(arr2);
 //
-//        Character[] arr3 = MyGenerator.randomChars(5000);
+//        Character[] arr3 = MyRandom.randomChars(5000);
 //        println(arr3);
 
         Character[] carr1 = {'q', 'r', 'h', 'm', 'n', 's', 'v', 'n', 'a', 't', 'a', 's', 'k', 'g', 'b', 'w', 'd', 'g', 'q', 'l', 'a', 'q', 'q', 'p', 'c', 'x', 'p', 'o', 'x', 'e', 'm', 'z', 'o', 'm', 'i', 'q', 'l', 't', 'd', 't', 'a', 'p', 'j', 's', 's', 'o', 'p', 'd', 'm', 'c'};

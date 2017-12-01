@@ -1,21 +1,18 @@
 package Testing;
 
-import Random.KnightsTour;
-import Random.LargeProduct;
-import Random.MersennePrimes;
-import Random.PerfectNumbers;
+import RandomStuff.MersennePrimes;
+import RandomStuff.PerfectNumbers;
 import Sorting.DualPivotQuickSort;
 import Sorting.QuickSort;
-import myUtils.MyGenerator;
-import myUtils.Primes;
-import myUtils.Tuple;
+import Utils.Equivocation;
+import Utils.Primes;
+import Utils.Collections.Tuple;
 
-import java.util.Arrays;
 import java.util.List;
 
-import static myUtils.ConsolePrinting.*;
-import static myUtils.ConsolePrinting.printlnDelim;
-import static myUtils.Equivalence.eq;
+import static Utils.ConsolePrinting.*;
+import static Utils.ConsolePrinting.printlnDelim;
+import static Utils.Equivocation.equal;
 
 public class TestBench {
 
@@ -24,9 +21,9 @@ public class TestBench {
         for(int i = 10; i < len; i*=10) {
             try {
                 print("DP Sort: ");
-                new SYSTimeTest(DualPivotQuickSort.class, "test").exe(i,max);
+                new SYSTimeTest(DualPivotQuickSort.class, "DBTest").exe(i,max);
                 print("Reg qs: ");
-                new SYSTimeTest(QuickSort.class, "test").exe(i,max);
+                new SYSTimeTest(QuickSort.class, "DBTest").exe(i,max);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -38,7 +35,7 @@ public class TestBench {
         try {
             List<Double> res1 = (List) new SYSTimeTest(PerfectNumbers.class, "generatePerfectNumbers").exe(lim).get(0);
             List<Double> res2 = (List) new SYSTimeTest(PerfectNumbers.class, "findPerfectNumbers").exe(lim).get(0);
-            result = eq(res1, res2);
+            result = Equivocation.equal(res1, res2);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -95,14 +92,15 @@ public class TestBench {
 
 //        mersennePrimeTest();
 
-        new SYSTimeTest(TestBench.class, "notherTest").exe(Arrays.asList("1", "2", "3"));
-        new SYSTimeTest(TestBench.class, "notherTest").exe(new String[] {"1", "2", "3"});
-
+//        new SYSTimeTest(TestBench.class, "notherTest").exe(Arrays.asList("1", "2", "3"));
+//        new SYSTimeTest(TestBench.class, "notherTest").exe(new String[] {"1", "2", "3"});
 
 //        new SYSTimeTest(
 //                TestBench.class,
 //                "testTest1"
 //        ).exe(100000000);
+
+//        println(padCenter(35, '_', new LinkedList<>(Arrays.asList("Bob", "Alex", "Star"))));
 
     }
 }

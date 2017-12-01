@@ -1,6 +1,6 @@
 package Specialty;
 
-import myUtils.ConsolePrinting;
+import Utils.ConsolePrinting;
 import java.util.ArrayList;
 import java.util.List;
 
