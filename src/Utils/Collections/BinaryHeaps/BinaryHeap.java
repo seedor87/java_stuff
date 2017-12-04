@@ -345,39 +345,66 @@ public abstract class BinaryHeap<E> implements Iterable<E> {
 
         println("\n");
 
-        Comparator<MyClass<Integer, String>> custComp1 = Comparator.comparing(MyClass::getKey);
+        Comparator<MyClass<Integer, String>> keyComp = Comparator.comparingInt(MyClass::getKey);
+        keyComp = keyComp.reversed();
 
-        Comparator<MyClass<Integer, String>> custComp2 = (MyClass<Integer, String> o1, MyClass<Integer, String> o2) -> {
-            if( o1.getKey().compareTo(o2.getKey()) == 0 ) {
-                return  o1.getVal().compareTo(o2.getVal());
+        Comparator<MyClass<Integer, String>> valComp = Comparator.comparing(MyClass::getVal);
+        valComp = valComp.reversed();
+
+        Comparator<MyClass<Integer, String>> lenComp = (MyClass<Integer, String> m1, MyClass<Integer, String> m2) -> (Integer.compare(m1.getVal().length(), m2.getVal().length()));
+
+        Comparator<MyClass<Integer, String>> modComp = new Comparator<MyClass<Integer, String>>() {
+            @Override
+            public int compare(MyClass<Integer, String> o1, MyClass<Integer, String> o2) {
+                if(o1.getKey() % 2 == 0 && o2.getKey() % 2 == 0) {
+                    if(o1.getKey() > o2.getKey()) {
+                        return 1;
+                    } else {
+                        return -1;
+                    }
+                } else if(o1.getKey() % 2 == 0) {
+                    return 1;
+                } else if(o2.getKey() % 2 == 0) {
+                    return -1;
+                }
+                if(o1.getKey() > o2.getKey()) {
+                    return 1;
+                } else if (o1.getKey() < o2.getKey()){
+                    return -1;
+                }
+                return 0;
             }
-            return o1.getKey().compareTo(o2.getKey());
         };
 
         BinaryHeap<MyClass<Integer, String>> bhm;
-        bhm = new ArrayBasedBinaryHeap(custComp1);
+//        bhm = new ArrayBasedBinaryHeap(custComp1);
 //        bhm = new ListBasedBinaryHeap(custComp1);
-//        bhm = new LinkedListBasedBinaryHeap(custComp1);
+        bhm = new LinkedListBasedBinaryHeap(keyComp);
 
         bhm.pushAll(
+                new MyClass<>(0, "Zero"),
+                new MyClass<>(1, "One"),
+                new MyClass<>(2, "Two"),
+                new MyClass<>(3, "Three"),
+                new MyClass<>(4, "Four"),
+                new MyClass<>(5, "Five"),
+                new MyClass<>(6, "Six"),
+                new MyClass<>(7, "Seven"),
+                new MyClass<>(8, "Eight"),
                 new MyClass<>(9, "Nine"),
                 new MyClass<>(10, "Ten"),
-                new MyClass<>(11, "Eleven"),
-                new MyClass<>(9, "nine")
+                new MyClass<>(11, "Eleven")
         );
         println(bhm);
 
-        bhm.sort(custComp2);
+        bhm.sort(valComp);
         println(bhm);
 
-        BinaryHeap bhq;
-        bhq = new ArrayBasedBinaryHeap();
-        bhq.push('a');
-        bhq.push((char) 98);
-        bhq.push("c".toCharArray()[0]);
-        bhq.push(new Character('d'));
-        bhq.sort(lt);
-        println(bhq);
+        bhm.sort(lenComp);
+        println(bhm);
+
+        bhm.sort(modComp);
+        println(bhm);
     }
 
     private static class MyClass<K extends Comparable, V extends Object> {

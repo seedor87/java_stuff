@@ -18,7 +18,7 @@ public class BinaryHeapTests {
     public static void main(String args[]) {
 
         double total_time = 0;
-        AbstractTimer timer = new SYSTimer(AbstractTimer.TimeUnit.SECONDS);
+        AbstractTimer timer = new SYSTimer(AbstractTimer.TimeUnit.MICRO);
         int step;
         for (step = 1; step <= 10; step++) {
             timer.start();
@@ -31,17 +31,17 @@ public class BinaryHeapTests {
             bhi = new LinkedListBasedBinaryHeap<>();
             for(Integer i : int_input) {
                 bhi.pushAll(i);
-                printrn(bhi);
+//                printrn(bhi);
             }
-            println();
 
 //            bhc= new ArrayBasedBinaryHeap<>();
 //            bhc = new ListBasedBinaryHeap<>();
             bhc = new LinkedListBasedBinaryHeap<>();
             for(Character c: char_input) {
                 bhc.pushAll(c);
-                printrn(bhc);
+//                printrn(bhc);
             }
+//            println();
 
             timer.stop();
             total_time += timer.getElapsed();

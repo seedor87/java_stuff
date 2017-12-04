@@ -4,6 +4,11 @@ import java.util.*;
 
 public class Comparison {
 
+    static public Comparator<String> strComp = (String s1, String s2) -> (s1.compareTo(s2));
+    static public Comparator<String> strLen = (String s1, String s2) -> (Integer.compare(s1.length(), s2.length()));
+    static public Comparator<Integer> ascInt = (Integer i1, Integer i2) -> (Integer.compare(i1, i2));
+    static public Comparator<Integer> descInt = (Integer i1, Integer i2) -> (Integer.compare(i2, i1));
+
     static public Comparator LessThan = (Object o1, Object o2) -> ((Comparable) o1).compareTo((Comparable) o2) < 0 ? 1 : 0;
     static public Comparator GreaterThan = (Object o1, Object o2) -> ((Comparable) o1).compareTo((Comparable) o2) > 0 ? 1 : 0;
     static public Comparator LessThanEqualTo = (Object o1, Object o2) -> ((Comparable) o1).compareTo((Comparable) o2) <= 0 ? 1 : 0;
