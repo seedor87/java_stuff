@@ -1,9 +1,6 @@
 package Utils.Collections.BinaryHeaps;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 import static Utils.ConsolePrinting.print;
 import static Utils.ConsolePrinting.println;
@@ -21,7 +18,44 @@ public abstract class BinaryHeap<E> implements Iterable<E> {
 
     protected int maxSize;  // limit of max size to heap
     protected int heapSize; // tracks of current heap size
-    protected Comparator comp; // current comparator
+    protected Comparator<E> comp; // current comparator
+
+    public class HeapIterator<E> implements Iterator {
+
+        BinaryHeap<E> temp;
+        HeapIterator(Comparator<E> comp,
+                               int heapSize,
+                               E[] data) {
+            this.temp = new ArrayBasedBinaryHeap(comp, Arrays.copyOfRange(data, 0, heapSize));
+        }
+
+        @Override
+        public boolean hasNext() {
+            try {
+                this.temp.peek();
+            } catch (EmptyHeapException ex) {
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        public E next() {
+            return this.temp.pop();
+        }
+
+        @Override
+        public void remove() { this.temp.pop(); }
+    }
+
+    @Override
+    public Iterator<E> iterator() {
+        return new HeapIterator(
+                this.comp,
+                this.heapSize,
+                this.getElements()
+        );
+    }
 
     /**
      * The Custom Exception for further heap exception extension
@@ -126,6 +160,11 @@ public abstract class BinaryHeap<E> implements Iterable<E> {
      * returns last index of specified element, -1 if heap does not contain elem
      */
     public abstract int lastIndexOf(Object elem);
+
+    /**
+     * returns the Array of the elements foe iteration
+     */
+    protected abstract E[] getElements();
 
     /**
      * return the current size of the heap
@@ -377,8 +416,8 @@ public abstract class BinaryHeap<E> implements Iterable<E> {
         };
 
         BinaryHeap<MyClass<Integer, String>> bhm;
-//        bhm = new ArrayBasedBinaryHeap(custComp1);
-//        bhm = new ListBasedBinaryHeap(custComp1);
+//        bhm = new ArrayBasedBinaryHeap(keyComp);
+//        bhm = new ListBasedBinaryHeap(keyComp);
         bhm = new LinkedListBasedBinaryHeap(keyComp);
 
         bhm.pushAll(

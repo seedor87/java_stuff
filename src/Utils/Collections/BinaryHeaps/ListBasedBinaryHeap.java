@@ -4,29 +4,6 @@ import java.util.*;
 
 public class ListBasedBinaryHeap<E> extends BinaryHeap {
 
-    public class ListBasedHeapIterator<C extends E> implements Iterator {
-
-        ListBasedBinaryHeap<C> temp;
-        ListBasedHeapIterator(Comparator<C> comp, int heapSize, List<C> data) {
-            this.temp = new ListBasedBinaryHeap(comp, data.subList(0, heapSize));
-        }
-
-        @Override
-        public boolean hasNext() {
-            try {
-                this.temp.peek();
-            } catch (HeapException ex) {
-                return false;
-            }
-            return true;
-        }
-
-        @Override
-        public E next() {
-            return this.temp.pop();
-        }
-    }
-
     protected List<E> elements;
 
     public ListBasedBinaryHeap() {
@@ -39,7 +16,7 @@ public class ListBasedBinaryHeap<E> extends BinaryHeap {
         this.elements = new ArrayList<>(maxSize);
     }
 
-    public ListBasedBinaryHeap(Comparator comp) {
+    public ListBasedBinaryHeap(Comparator<E> comp) {
         super(comp);
         this.elements = new ArrayList<>(this.maxSize);
     }
@@ -54,18 +31,18 @@ public class ListBasedBinaryHeap<E> extends BinaryHeap {
         pushAll(elems);
     }
 
-    public ListBasedBinaryHeap(Comparator comp, int maxSize) {
+    public ListBasedBinaryHeap(Comparator<E> comp, int maxSize) {
         super(comp, maxSize);
         this.elements = new ArrayList<>(this.maxSize);
     }
 
-    public ListBasedBinaryHeap(Comparator comp, E... elems) {
+    public ListBasedBinaryHeap(Comparator<E> comp, E... elems) {
         super(comp);
         this.elements = new ArrayList<>(this.maxSize);
         pushAll(elems);
     }
 
-    public <T extends Iterable<E>> ListBasedBinaryHeap(Comparator comp, T elems) {
+    public <T extends Iterable<E>> ListBasedBinaryHeap(Comparator<E> comp, T elems) {
         super(comp);
         this.elements = new ArrayList<>(this.maxSize);
         pushAll(elems);
@@ -156,11 +133,16 @@ public class ListBasedBinaryHeap<E> extends BinaryHeap {
     }
 
     @Override
+    protected Object[] getElements() {
+        return this.elements.toArray();
+    }
+
+    @Override
     public Iterator iterator() {
-        return new ListBasedHeapIterator(
+        return new HeapIterator(
                 this.comp,
                 this.heapSize,
-                this.elements);
+                this.elements.toArray());
     }
 
     protected void siftDown(int nodeIndex) {

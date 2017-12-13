@@ -4,31 +4,6 @@ import java.util.*;
 
 public class ArrayBasedBinaryHeap<E> extends BinaryHeap {
 
-    public class ArrayBasedHeapIterator<E> implements Iterator {
-
-        ArrayBasedBinaryHeap<E> temp;
-        ArrayBasedHeapIterator(Comparator<E> comp,
-                               int heapSize,
-                               E[] data) {
-            this.temp = new ArrayBasedBinaryHeap(comp, Arrays.copyOfRange(data, 0, heapSize));
-        }
-
-        @Override
-        public boolean hasNext() {
-            try {
-                this.temp.peek();
-            } catch (EmptyHeapException ex) {
-                return false;
-            }
-            return true;
-        }
-
-        @Override
-        public E next() {
-            return this.temp.pop();
-        }
-    }
-
     protected Object[] elements;
 
     public ArrayBasedBinaryHeap(int maxSize) {
@@ -36,7 +11,7 @@ public class ArrayBasedBinaryHeap<E> extends BinaryHeap {
         this.elements = new Object[this.maxSize];
     }
 
-    public ArrayBasedBinaryHeap(Comparator comp) {
+    public ArrayBasedBinaryHeap(Comparator<E> comp) {
         super(comp);
         this.elements = new Object[this.maxSize];
     }
@@ -51,18 +26,18 @@ public class ArrayBasedBinaryHeap<E> extends BinaryHeap {
         pushAll(elems);
     }
 
-    public ArrayBasedBinaryHeap(Comparator comp, int maxSize) {
+    public ArrayBasedBinaryHeap(Comparator<E> comp, int maxSize) {
         super(comp, maxSize);
         this.elements = new Object[this.maxSize];
     }
 
-    public ArrayBasedBinaryHeap(Comparator comp, E... elems) {
+    public ArrayBasedBinaryHeap(Comparator<E> comp, E... elems) {
         super(comp);
         this.elements = new Object[this.maxSize];
         pushAll(elems);
     }
 
-    public <T extends Iterable<E>> ArrayBasedBinaryHeap(Comparator comp, T elems) {
+    public <T extends Iterable<E>> ArrayBasedBinaryHeap(Comparator<E> comp, T elems) {
         super(comp);
         this.elements = new Object[this.maxSize];
         pushAll(elems);
@@ -93,15 +68,6 @@ public class ArrayBasedBinaryHeap<E> extends BinaryHeap {
         this.heapSize++;
         this.elements[this.heapSize - 1] = value;
         siftUp(this.heapSize - 1);
-    }
-
-    @Override
-    public Iterator<E> iterator() {
-        return new ArrayBasedHeapIterator(
-                this.comp,
-                this.heapSize,
-                this.elements
-        );
     }
 
     protected void siftUp(int nodeIndex) {
@@ -155,6 +121,11 @@ public class ArrayBasedBinaryHeap<E> extends BinaryHeap {
             }
         } catch (EmptyHeapException ex) {}
         return i;
+    }
+
+    @Override
+    protected Object[] getElements() {
+        return this.elements;
     }
 
     protected void siftDown(int nodeIndex) {

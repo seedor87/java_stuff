@@ -4,29 +4,6 @@ import java.util.*;
 
 public class LinkedListBasedBinaryHeap<E> extends BinaryHeap {
 
-    public class LinkedListBasedHeapIterator<C extends E> implements Iterator {
-
-        LinkedListBasedBinaryHeap<C> temp;
-        LinkedListBasedHeapIterator(Comparator<C> comp, int heapSize, LinkedList<C> data) {
-            this.temp = new LinkedListBasedBinaryHeap(comp, data.subList(0, heapSize));
-        }
-
-        @Override
-        public boolean hasNext() {
-            try {
-                this.temp.peek();
-            } catch (HeapException ex) {
-                return false;
-            }
-            return true;
-        }
-
-        @Override
-        public E next() {
-            return this.temp.pop();
-        }
-    }
-
     protected LinkedList<E> elements;
 
     public LinkedListBasedBinaryHeap(int maxSize) {
@@ -34,7 +11,7 @@ public class LinkedListBasedBinaryHeap<E> extends BinaryHeap {
         this.elements = new LinkedList<>();
     }
 
-    public LinkedListBasedBinaryHeap(Comparator comp) {
+    public LinkedListBasedBinaryHeap(Comparator<E> comp) {
         super(comp);
         this.elements = new LinkedList<>();
     }
@@ -49,18 +26,18 @@ public class LinkedListBasedBinaryHeap<E> extends BinaryHeap {
         pushAll(elems);
     }
 
-    public LinkedListBasedBinaryHeap(Comparator comp, int maxSize) {
+    public LinkedListBasedBinaryHeap(Comparator<E> comp, int maxSize) {
         super(comp, maxSize);
         this.elements = new LinkedList<>();
     }
 
-    public LinkedListBasedBinaryHeap(Comparator comp, E... elems) {
+    public LinkedListBasedBinaryHeap(Comparator<E> comp, E... elems) {
         super(comp);
         this.elements = new LinkedList<>();
         pushAll(elems);
     }
 
-    public <T extends Iterable<E>> LinkedListBasedBinaryHeap(Comparator comp, T elems) {
+    public <T extends Iterable<E>> LinkedListBasedBinaryHeap(Comparator<E> comp, T elems) {
         super(comp);
         this.elements = new LinkedList<>();
         pushAll(elems);
@@ -149,12 +126,18 @@ public class LinkedListBasedBinaryHeap<E> extends BinaryHeap {
         }
         return ret;
     }
+
+    @Override
+    protected Object[] getElements() {
+        return this.elements.toArray();
+    }
+
     @Override
     public Iterator iterator() {
-        return new LinkedListBasedHeapIterator(
+        return new HeapIterator(
                 this.comp,
                 this.heapSize,
-                this.elements);
+                this.elements.toArray());
     }
 
     protected void siftDown(int nodeIndex) {
