@@ -1,8 +1,12 @@
 package Utils.StringUtils;
+import org.junit.Assert;
+import org.junit.Test;
+
 import java.util.Arrays;
 import java.util.Collection;
 
 import static Utils.ConsolePrinting.*;
+
 public class StringUtils {
 
     public static String padToLength(int len) {
@@ -146,19 +150,31 @@ public class StringUtils {
         return arr;
     }
 
+    @Test
+    public void testPaddingUtils() {
+        int len = 30;
+        Assert.assertEquals("padToRightTest",
+                "                       testing",
+                padToRight(len, "testing"));
+        Assert.assertEquals("padToLeftTest",
+                "t e s t i n g__$____$____$____",
+                padToLeft(len, "__$__", "t e s t i n g"));
+        Assert.assertEquals("padJustifyTest",
+                "           testing            ",
+                padJustify(len, ' ', "testing"));
+        Assert.assertEquals("padJustifyTest",
+                "l ef t^^^^^^^^^^^^^^^^^r igh t",
+                padJustify(len, '^', "l ef t", "r igh t"));
+        Assert.assertEquals("pasToLengthTest",
+                "123412341234123412341234123412",
+                padToLength(len, "1234"));
+
+    }
+
     public static void main(String[] args) {
 
         int len = 60;
         print(FG_BLUE);
-        println(padToRight(len, "testing"));
-        println(padToLeft(len, "DBTest ing"));
-        println(padToRight(len, '*', "DBTest   ing"));
-        println(padToLeft(len, "__$__", "t e s t i n g"));
-        println(padJustify(len, ' ', "left", "right"));
-        println(padJustify(len, '^', "l ef t", "r igh t"));
-        println(padToLength(len, "123"));
-        println(padJustify(len, ' ', "testing"));
-        println(padJustify(len, '_', "testing"));
 
         Character[] carr = new Character[]{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q'};
 //        arr = new String[]{"one", "two", "three", "four", "five", "six", "seven", "eight", "nine"};
@@ -166,7 +182,6 @@ public class StringUtils {
             println(FG_BLUE, padJustify(len, '_', Arrays.copyOfRange(carr, 0, i + 1)));
             println(FG_RED, padCenter(len, '_', Arrays.copyOfRange(carr, 0, i + 1)));
         }
-
 
         String[] sarr = new String[]{"0th", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th"};
         for (int i = 0; i < sarr.length; i++) {
@@ -184,4 +199,3 @@ public class StringUtils {
         }
     }
 }
-

@@ -1,5 +1,8 @@
 package Utils.StringUtils;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import static Utils.ConsolePrinting.println;
 import static Utils.StringUtils.StringUtils.padToLeft;
 import static Utils.StringUtils.StringUtils.padToLength;
@@ -100,6 +103,29 @@ public class StringUtilsPlusPlus {
     public static SplitLambda fifthLastIndex = (String s, String sep) -> s.lastIndexOf(sep, fourthLastIndex.splitOn(s, sep)-1);
     public static SplitLambda sixthLastIndex = (String s, String sep) -> s.lastIndexOf(sep, fifthLastIndex.splitOn(s, sep)-1);
 
+    @Test
+    public void testPaddingUtils() {
+        String[] someFiles = new String[]{
+                "some/path/to/a_file.py",
+                "another/path/to/a_file.py",
+                "yet/another/path/to/a_file.py",
+                "a/path/to/my_file.py",
+                "not/a/path/to/my_file.py"
+        };
+
+        Assert.assertEquals("splitAndJustifySeparator",
+                "some....../...........path/to/a_file.py\n" +
+                        "another.../...........path/to/a_file.py\n" +
+                        "yet......./...another/path/to/a_file.py\n" +
+                        "a........./..........path/to/my_file.py\n" +
+                        "not......./........a/path/to/my_file.py",
+                splitAndJustifyOnSeparator(
+                        firstIndex,
+                        3,
+                        "/",
+                        '.',
+                        someFiles));
+    }
 
     public static void main(String[] args) {
 
