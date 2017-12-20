@@ -16,6 +16,8 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import GradDataWarehousing.HWResources.*;
+import Utils.Timers.TimeUnit;
+
 import static Utils.ConsolePrinting.*;
 import static Utils.StringUtils.StringUtils.*;
 
@@ -144,7 +146,7 @@ public class HW1 {
                 padJustify(paddingSize, fill,     "MAX_ITEMS ",          " " + MAX_ITEMS),
                 padJustify(paddingSize, fill,     "WEEKEND_INCREASE ",   " " + WEEKEND_INCREASE)
         );
-        AbstractTimer timer = new SYSTimer(AbstractTimer.TimeUnit.SECONDS);
+        AbstractTimer timer = new SYSTimer(TimeUnit.SECONDS);
         timer.start();
 
         // Build array of all products for rand access later

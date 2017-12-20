@@ -5,6 +5,7 @@ import GradDataWarehousing.HWResources.InventoryBuilder;
 import GradDataWarehousing.HWResources.SkuPrice;
 import Utils.Timers.AbstractTimer;
 import Utils.Timers.SYSTimer;
+import Utils.Timers.TimeUnit;
 
 import java.io.*;
 import java.text.NumberFormat;
@@ -317,7 +318,7 @@ public class HW4 {
                 padJustify(paddingSize, fill,     "OUTPUT_PATH ",               " " + OUTPUT_PATH)
         );
         print(RESET);
-        AbstractTimer timer = new SYSTimer(AbstractTimer.TimeUnit.SECONDS);
+        AbstractTimer timer = new SYSTimer(TimeUnit.SECONDS);
         timer.start();
 
         // Init inventory, avg.s map, and ytd cases map from parsed file of avg bi-weekly sales

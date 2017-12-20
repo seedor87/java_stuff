@@ -1,6 +1,9 @@
 package Utils.Timers;
 
+import JUnit.TimedRule.TimedRule;
 import Utils.ConsolePrinting;
+import org.junit.Rule;
+import org.junit.Test;
 
 import java.text.DecimalFormat;
 import java.util.Scanner;
@@ -27,13 +30,6 @@ public abstract class AbstractTimer {
     }
 
     /**
-     * Enum for usable units of time that can be registered, the abstract methods be aware of this
-     */
-    public enum TimeUnit {
-        NANO, MICRO, MILLI, SECONDS, MINUTES, HOURS
-    }
-
-    /**
      * Enum for state transition of timer recording machine.
      * Used post measurement to save state and transition, or throw away and resume.
      */
@@ -44,7 +40,7 @@ public abstract class AbstractTimer {
     /**
      * protected fields for access only within extending classes.
      */
-    protected TimeUnit timeUnit = TimeUnit.MILLI;
+    protected TimeUnit timeUnit = Utils.Timers.TimeUnit.MILLI;
     protected double startTime = 01, endTime = 01, elapsedTime = 0;
     protected DecimalFormat formatter = new DecimalFormat("#,###,###.###");
     protected State current_state = State.STOPPED;
@@ -188,119 +184,20 @@ public abstract class AbstractTimer {
     @Override
     public String toString() {return toString(getTimeUnit());}
 
-    private static boolean validate(int input) {
-        return 0 < input && input < 5;
-    }
+    public static class AbstractTimerTest {
+        @Rule
+        public TimedRule tr = new TimedRule(SYSTimer.class, TimeUnit.SECONDS);
 
-    private static State getState(int input) {
-        switch (input) {
-            case 1:
-                return State.STARTED;
-            case 2:
-                return State.SUSPENDED;
-            case 3:
-                return State.RESUMED;
-            case 4:
-                return State.STOPPED;
-            default:
-                break;
-        }
-        return State.STOPPED;
-    }
-
-    public static void main(String[] args) {
-        Scanner reader = new Scanner(System.in);
-        String commands;
-        TimeUnit unit = TimeUnit.SECONDS;
-        AbstractTimer timer;
-        String s = "";
-        int input = 0;
-
-        commands = "\t" + padToLeft(20, ' ', "[1] Nanoseconds") + "[4] Seconds" + "\n" +
-                "\t" + padToLeft(20, ' ', "[2] Microseconds") + "[5] Minutes" + "\n" +
-                "\t" + padToLeft(20, ' ', "[3] Milliseconds") + "[6] hours";
-        while(input > 6 || input < 1) {
-            ConsolePrinting.println("Please enter a number between 1 and 6");
-            ConsolePrinting.println(commands);
-            ConsolePrinting.print(">> ");
-            try {
-                s = reader.next();
-                input = Integer.parseInt(s);
-            } catch(NumberFormatException ex) {
-                println(FG_BRIGHT_BLUE, "Cannot Parse input: " + s);
-                continue;
-            }
-            switch(input) {
-                case 1:
-                    unit = TimeUnit.NANO;
+        @Test
+        public void test() {
+            int i = 0;
+            while(true) {
+                println(i);
+                i++;
+                if (i % 1000 == 0) {
                     break;
-                case 2:
-                    unit = TimeUnit.MICRO;
-                    break;
-                case 3:
-                    unit = TimeUnit.MILLI;
-                    break;
-                case 4:
-                    unit = TimeUnit.SECONDS;
-                    break;
-                case 5:
-                    unit = TimeUnit.MINUTES;
-                    break;
-                case 6:
-                    unit = TimeUnit.HOURS;
-                    break;
-            }
-        }
-        println("Using time unit:", unit);
-        timer = new SYSTimer(unit);
-
-        commands = "start[1] suspend[2] resume[3] stop[4] quit[~]";
-        s = "";
-        input = 4;
-        String lastAction = "timer application";
-        Special color = FG_BRIGHT_RED;
-        do {
-            try {
-                switch (getState(input)) {
-                    case STARTED:
-                        timer.start();
-                        lastAction = "started";
-                        color = FG_BRIGHT_GREEN;
-                        break;
-                    case SUSPENDED:
-                        timer.suspend();
-                        lastAction = "suspended";
-                        color = FG_BRIGHT_YELLOW;
-                        break;
-                    case RESUMED:
-                        timer.resume();
-                        lastAction = "resumed";
-                        color = FG_BRIGHT_CYAN;
-                        break;
-                    case STOPPED:
-                        timer.stop();
-                        lastAction = "stopped";
-                        color = FG_BRIGHT_RED;
-                        break;
-                    default:
-                        break;
                 }
-            } catch (IllegalStateTransitionException ex) {
-                lastAction = ex.toString();
-                color = FG_BRIGHT_MAGENTA;
             }
-            ConsolePrinting.println(color, lastAction, ":", timer);
-            ConsolePrinting.println(commands);
-            ConsolePrinting.println(">> ");
-            try {
-                s = reader.next();
-                input = Integer.parseInt(s);
-            } catch(NumberFormatException ex) {
-                println(FG_BRIGHT_BLUE, "Cannot Parse input: " + s);
-            }
-        } while(validate(input));
-        ConsolePrinting.print("quiting...");
-        reader.close();
-        System.exit(0);
+        }
     }
 }

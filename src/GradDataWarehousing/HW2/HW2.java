@@ -3,6 +3,7 @@ package GradDataWarehousing.HW2;
 import GradDataWarehousing.HWResources.SkuPrice;
 import Utils.Timers.AbstractTimer;
 import Utils.Timers.SYSTimer;
+import Utils.Timers.TimeUnit;
 
 import java.io.*;
 import java.text.NumberFormat;
@@ -66,7 +67,7 @@ public class HW2 {
                 padJustify(paddingSize, fill,   "OUTPUT_PATH ",   " " + OUTPUT_PATH),
                 padJustify(paddingSize, fill,   "NUM_WEEKS ",     " " + NUM_WEEKS)
         );
-        AbstractTimer timer = new SYSTimer(AbstractTimer.TimeUnit.SECONDS);
+        AbstractTimer timer = new SYSTimer(TimeUnit.SECONDS);
         timer.start();
 
         try {

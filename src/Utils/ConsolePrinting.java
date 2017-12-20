@@ -3,6 +3,7 @@ package Utils;
 import Utils.Collections.Tuple;
 import Utils.Timers.AbstractTimer;
 import Utils.Timers.SYSTimer;
+import Utils.Timers.TimeUnit;
 
 import java.lang.reflect.Array;
 import java.util.*;
@@ -303,7 +304,7 @@ public class ConsolePrinting {
         println(BG_WHITE, FG_BLACK,"TEST");
 
        try {
-           AbstractTimer timer = new SYSTimer(AbstractTimer.TimeUnit.MINUTES);
+           AbstractTimer timer = new SYSTimer(TimeUnit.MINUTES);
            timer.start();
            boolean s = true;
            boolean s2 = true;
@@ -313,7 +314,7 @@ public class ConsolePrinting {
                     s = false;
                 } else {
                     if(s2) {
-                        printrn(BG_RED, FG_BLACK,"Running for:", timer.toString(AbstractTimer.TimeUnit.SECONDS));
+                        printrn(BG_RED, FG_BLACK,"Running for:", timer.toString(TimeUnit.SECONDS));
                         s2 = false;
                     } else {
                         printrn(BG_RED, FG_BLACK,"Running for:", timer.toString());

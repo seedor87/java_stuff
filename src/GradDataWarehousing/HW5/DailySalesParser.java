@@ -3,6 +3,7 @@ package GradDataWarehousing.HW5;
 import GradDataWarehousing.HWResources.SkuPrice;
 import Utils.Timers.AbstractTimer;
 import Utils.Timers.SYSTimer;
+import Utils.Timers.TimeUnit;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
@@ -75,7 +76,7 @@ public class DailySalesParser {
 
     public static void main(String[] args) {
 
-        AbstractTimer timer = new SYSTimer(AbstractTimer.TimeUnit.SECONDS);
+        AbstractTimer timer = new SYSTimer(TimeUnit.SECONDS);
         timer.start();
         println(FG_CYAN, "STARTED");
 
