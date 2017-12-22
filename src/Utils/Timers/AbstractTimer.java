@@ -1,17 +1,12 @@
 package Utils.Timers;
 
 import JUnit.TimedRule.TimedRule;
-import Utils.ConsolePrinting;
 import org.junit.Rule;
 import org.junit.Test;
 
 import java.text.DecimalFormat;
-import java.util.Scanner;
 
 import static Utils.ConsolePrinting.*;
-import static Utils.StringUtils.StringUtils.padCenter;
-import static Utils.StringUtils.StringUtils.padToLeft;
-import static Utils.StringUtils.StringUtils.padToRight;
 
 /***
  * Abstract timer that holds capabilities of general use in code timer.
@@ -30,11 +25,35 @@ public abstract class AbstractTimer {
     }
 
     /**
+     * Interface for state machine method leveraging
+     */
+    public interface EnactableState<T> {
+        double enact(T timer);
+    }
+
+    /**
      * Enum for state transition of timer recording machine.
      * Used post measurement to save state and transition, or throw away and resume.
      */
-    public enum State {
-        STOPPED, STARTED, SUSPENDED, RESUMED
+    public enum State implements EnactableState<AbstractTimer> {
+        /*                         Started   Suspended     Resumed     Stopped     */
+        STARTED( new boolean[]      {true,      true,       false,      true},      "Started",     (timer) -> timer.start()),
+        SUSPENDED( new boolean[]    {false,     false,      true,       true},      "Suspended",   (timer) -> timer.suspend()),
+        RESUMED( new boolean[]      {true,      true,       false,      true},      "Resumed",     (timer) -> timer.resume()),
+        STOPPED( new boolean[]      {true,      false,      false,      true},      "Stopped",     (timer) -> timer.stop());
+
+        public String name;
+        public boolean[] transitions;
+        private EnactableState<AbstractTimer> op;
+
+        State(boolean[] transitions, String name, EnactableState<AbstractTimer> op) {
+            this.name = name; this.transitions = transitions; this.op = op;
+        }
+
+        @Override
+        public double enact(AbstractTimer timer) {
+            return op.enact(timer);
+        }
     }
 
     /**
@@ -42,8 +61,8 @@ public abstract class AbstractTimer {
      */
     protected TimeUnit timeUnit = Utils.Timers.TimeUnit.MILLI;
     protected double startTime = 01, endTime = 01, elapsedTime = 0;
-    protected DecimalFormat formatter = new DecimalFormat("#,###,###.###");
-    protected State current_state = State.STOPPED;
+    protected DecimalFormat formatter;
+    protected State current = State.STOPPED;
 
     /**
      * abstract methods to be overridden.
@@ -57,7 +76,7 @@ public abstract class AbstractTimer {
      */
     public abstract double getElapsed(TimeUnit u);
     public double getElapsed() {
-        return getElapsed(getTimeUnit());
+        return getElapsed(this.getTimeUnit());
     }
 
     /**
@@ -69,59 +88,38 @@ public abstract class AbstractTimer {
 
     private void setTimeUnit(TimeUnit u) {
         this.timeUnit = u;
-        switch(getTimeUnit()) {
-            case NANO:
-                formatter = new DecimalFormat("###,###,###,###");
-                break;
-            case MICRO:
-                formatter = new DecimalFormat("###,###,###.#");
-                break;
-            case MILLI:
-                formatter = new DecimalFormat("###,###.##");
-                break;
-            case SECONDS:
-                formatter = new DecimalFormat("#,###.####");
-                break;
-            case MINUTES:
-                formatter = new DecimalFormat("###.####");
-                break;
-            case HOURS:
-                formatter = new DecimalFormat("##.##############");
-                break;
-            default:
-                break;
-        }
+        formatter = new DecimalFormat(this.getTimeUnit().stringFormat);
     }
 
     public double start () {
         startTime = getTime();
         elapsedTime = 0;
-        current_state = State.STARTED;
+        current = State.STARTED;
         return startTime;
     }
 
     public double suspend() {
         double hold = getTime();
-        if(isRunning()) {
+        if(current.transitions[1]) {
             endTime = hold;
             elapsedTime += (endTime - startTime);
             startTime = 0l;
-            current_state = State.SUSPENDED;
+            current = State.SUSPENDED;
             return endTime;
         }
         endTime = 01;
-        throw new IllegalStateTransitionException(current_state + " -> " + State.SUSPENDED);
+        throw new IllegalStateTransitionException(current + " -> " + State.SUSPENDED);
     }
 
     public double resume() {
         double hold = getTime();
-        if(current_state == State.SUSPENDED) {
+        if(current.transitions[2]) {
             startTime = hold;
             endTime = 01;
-            current_state = State.RESUMED;
+            current = State.RESUMED;
             return startTime;
         }
-        throw new IllegalStateTransitionException(current_state + " -> " + State.RESUMED);
+        throw new IllegalStateTransitionException(current + " -> " + State.RESUMED);
     }
 
     public double stop () {
@@ -130,21 +128,12 @@ public abstract class AbstractTimer {
             endTime = hold;
             elapsedTime += (endTime - startTime);
             startTime = 0l;
-            current_state = State.STOPPED;
         } else {
             startTime = 0;
             endTime = 0;
         }
+        current = State.STOPPED;
         return endTime;
-    }
-
-    public boolean isRunning () {
-        return current_state == State.STARTED
-                || current_state == State.RESUMED;
-    }
-
-    public boolean isStopped() {
-        return current_state == State.STOPPED;
     }
 
     public double getTimerValue(TimeUnit u) {
@@ -157,28 +146,18 @@ public abstract class AbstractTimer {
         return getElapsed(u);
     }
 
+    public boolean isRunning() {
+        return current == State.STARTED ||
+                current == State.RESUMED;
+    }
+
     public double getTimerValue() {
         return getTimerValue(getTimeUnit());
     }
 
     public String toString(TimeUnit u) {
-        String ret = formatter.format(getTimerValue(u));
-        switch(u) {
-            case NANO:
-                return ret + " nanoseconds";
-            case MICRO:
-                return ret + " microseconds";
-            case MILLI:
-                return ret + " milliseconds";
-            case SECONDS:
-                return ret + " seconds";
-            case MINUTES:
-                return ret + " mins";
-            case HOURS:
-                return ret + " hrs";
-            default:
-                return "NaN";
-        }
+        String ret = formatter.format(getTimerValue(u)) + " " + u.name;
+        return ret;
     }
 
     @Override
@@ -192,7 +171,7 @@ public abstract class AbstractTimer {
         public void test() {
             int i = 0;
             while(true) {
-                println(i);
+                printrn(i);
                 i++;
                 if (i % 1000 == 0) {
                     break;

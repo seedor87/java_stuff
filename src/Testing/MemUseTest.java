@@ -1,6 +1,6 @@
 package Testing;
 
-import Utils.Timers.Spacer;
+import Utils.Timers.SYSSpacer;
 import Utils.Collections.Tuple;
 
 import static Utils.ConsolePrinting.println;
@@ -13,7 +13,7 @@ public class MemUseTest extends AbstractTest {
 
     @Override
     Tuple wrapperFunc(Object[] params) throws Exception {
-        Spacer spacer = new Spacer();
+        SYSSpacer spacer = new SYSSpacer();
         spacer.start();
         Tuple ret = new Tuple(myMethod(params));
         spacer.stop();
