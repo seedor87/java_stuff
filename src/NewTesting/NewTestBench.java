@@ -13,7 +13,7 @@ import static Sorting.RandomPivotQuickSort.quickSort;
 import static Utils.ConsolePrinting.println;
 import static Utils.ConsolePrinting.printlnDelim;
 
-public class NewTestBench extends NewSYSTimeTest {
+public class NewTestBench extends NewSYSStopwatchTest {
 
     public <T extends Comparable> T[] regQS(T[] carr) {
         QuickSort.quickSort(carr);

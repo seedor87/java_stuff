@@ -1,13 +1,14 @@
 package RandomStuff;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static Utils.ConsolePrinting.*;
-import NewTesting.NewSYSTimeTest;
+import NewTesting.NewSYSStopwatchTest;
 import Utils.Collections.Tuple;
 
-public class PrimeFactorization<T extends Object> extends NewSYSTimeTest<T> {
+public class PrimeFactorization<T extends Object> extends NewSYSStopwatchTest<T> {
 
     public static void geekTest(int lim) {
         for (int i = 2; i < lim; i++) {
@@ -50,7 +51,26 @@ public class PrimeFactorization<T extends Object> extends NewSYSTimeTest<T> {
         }
     }
 
-
+//    public static int sumDig(int n, int tot) {
+//        if (n > 0) {
+//            tot += n % 10;
+//            return sumDig(n/10, tot) % 10;
+//        }
+//        return tot;
+//    }
+//
+//    public static int sumDig(int n) {
+//        if(n > 0) {
+//            return sumDig(n/10, 0);
+//        }
+//        return 0;
+//
+////        while(n > 0) {
+////            total += n % 10;
+////            n /= 10;
+////        }
+////        return total;
+//    }
 
     public static int sumDig(int n) {
         int total = 0;
@@ -69,33 +89,13 @@ public class PrimeFactorization<T extends Object> extends NewSYSTimeTest<T> {
         return total;
     }
 
-    public static <T extends Comparable<T>> T max(List<T> arr) {
-        T max = arr.get(0);
-        for (T elem : arr.subList(1, arr.size())) {
-            if (elem.compareTo(max) > 0) {
-                max = elem;
-            }
-        }
-        return max;
-    }
-
-    public static <T extends Comparable<T>> T min(List<T> arr) {
-        T min = arr.get(0);
-        for (T elem : arr.subList(1, arr.size())) {
-            if (elem.compareTo(min) < 0) {
-                min = elem;
-            }
-        }
-        return min;
-    }
-
     public static boolean isPrime2(int n) {
         return (primeFactors(n).size() < 2);
     }
 
     public static boolean isGeekNumber(int n) {
         List<Integer> factors = primeFactors(n);
-        int max = max(factors);
+        int max = Collections.max(factors);
         int[] counts = new int[max+1];
         for (int elem : factors) {
             counts[elem]++;
@@ -135,13 +135,18 @@ public class PrimeFactorization<T extends Object> extends NewSYSTimeTest<T> {
         }
         return ret;
     }
-
-    public static void main(String[] args) {
-       isPerfectPowerTest(1000);
-    }
-
     @Override
     public Tuple runThis(Object... params) {
         return null;
     }
+
+    public static void main(String[] args) {
+
+//        isPerfectPowerTest(1000);
+
+//        println(sumDig(1010));
+
+        geekTest(1000);
+    }
+
 }

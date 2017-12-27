@@ -5,9 +5,9 @@ import Utils.Collections.Tuple;
 
 import static Utils.ConsolePrinting.println;
 
-public class MemUseTest extends AbstractTest {
+public class SYSSpaceTest extends AbstractTest {
 
-    public MemUseTest(Class cl, String method) {
+    public SYSSpaceTest(Class cl, String method) {
         super(cl, method);
     }
 

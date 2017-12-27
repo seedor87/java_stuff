@@ -1,7 +1,7 @@
 package Utils;
 
-import Utils.Timers.AbstractTimer;
-import Utils.Timers.SYSTimer;
+import Utils.Timers.AbstractStopwatch;
+import Utils.Timers.SYSStopwatch;
 import Utils.Timers.TimeUnit;
 
 import static Utils.ConsolePrinting.println;
@@ -63,7 +63,7 @@ public class GCD {
         }
 
 
-        AbstractTimer timer = new SYSTimer(TimeUnit.MILLI);
+        AbstractStopwatch timer = new SYSStopwatch(TimeUnit.MILLI);
         if(!true) {
             timer. start();
             println(gcdRecur(1, 1234567890));

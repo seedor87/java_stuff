@@ -1,8 +1,8 @@
 package GradDataWarehousing.HW2;
 
 import GradDataWarehousing.HWResources.SkuPrice;
-import Utils.Timers.AbstractTimer;
-import Utils.Timers.SYSTimer;
+import Utils.Timers.AbstractStopwatch;
+import Utils.Timers.SYSStopwatch;
 import Utils.Timers.TimeUnit;
 
 import java.io.*;
@@ -67,7 +67,7 @@ public class HW2 {
                 padJustify(paddingSize, fill,   "OUTPUT_PATH ",   " " + OUTPUT_PATH),
                 padJustify(paddingSize, fill,   "NUM_WEEKS ",     " " + NUM_WEEKS)
         );
-        AbstractTimer timer = new SYSTimer(TimeUnit.SECONDS);
+        AbstractStopwatch timer = new SYSStopwatch(TimeUnit.SECONDS);
         timer.start();
 
         try {

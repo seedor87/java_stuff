@@ -1,6 +1,6 @@
 package JUnit.TimedRule;
 
-import Utils.Timers.SYSTimer;
+import Utils.Timers.SYSStopwatch;
 import Utils.Timers.TimeUnit;
 import org.junit.Rule;
 import org.junit.Test;
@@ -8,7 +8,7 @@ import org.junit.Test;
 public class TimedRuleTest1 {
 
     @Rule
-    public TimedRule jcr = new TimedRule(SYSTimer.class, TimeUnit.MICRO);
+    public TimedRule jcr = new TimedRule(SYSStopwatch.class, TimeUnit.MICRO);
 
     @Test
     public void test() {

@@ -3,8 +3,8 @@ package GradDataWarehousing.HW3;
 import GradDataWarehousing.HWResources.HW1Arrays;
 import GradDataWarehousing.HWResources.InventoryBuilder;
 import GradDataWarehousing.HWResources.SkuPrice;
-import Utils.Timers.AbstractTimer;
-import Utils.Timers.SYSTimer;
+import Utils.Timers.AbstractStopwatch;
+import Utils.Timers.SYSStopwatch;
 import Utils.Timers.TimeUnit;
 
 import java.io.*;
@@ -248,7 +248,7 @@ public class HW3 {
                 padJustify(paddingSize, fill,     "OUTPUT_PATH ",        " " + OUTPUT_PATH)
         );
         print(RESET);
-        AbstractTimer timer = new SYSTimer(TimeUnit.SECONDS);
+        AbstractStopwatch timer = new SYSStopwatch(TimeUnit.SECONDS);
         timer.start();
 
         // Init inventory, avg.s map, and ytd cases map from parsed file of avg bi-weekly sales

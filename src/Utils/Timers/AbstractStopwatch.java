@@ -13,7 +13,7 @@ import static Utils.ConsolePrinting.*;
  * when implemented requires instantiation of only the getTime() and getElapsedTime() methods,
  * All other work is done in this class.
  */
-public abstract class AbstractTimer {
+public abstract class AbstractStopwatch {
 
     /**
      * Special exception for bad state transitions.
@@ -35,7 +35,7 @@ public abstract class AbstractTimer {
      * Enum for state transition of timer recording machine.
      * Used post measurement to save state and transition, or throw away and resume.
      */
-    public enum State implements EnactableState<AbstractTimer> {
+    public enum State implements EnactableState<AbstractStopwatch> {
         /*                         Started   Suspended     Resumed     Stopped     */
         STARTED( new boolean[]      {true,      true,       false,      true},      "Started",     (timer) -> timer.start()),
         SUSPENDED( new boolean[]    {false,     false,      true,       true},      "Suspended",   (timer) -> timer.suspend()),
@@ -44,14 +44,14 @@ public abstract class AbstractTimer {
 
         public String name;
         public boolean[] transitions;
-        private EnactableState<AbstractTimer> op;
+        private EnactableState<AbstractStopwatch> op;
 
-        State(boolean[] transitions, String name, EnactableState<AbstractTimer> op) {
+        State(boolean[] transitions, String name, EnactableState<AbstractStopwatch> op) {
             this.name = name; this.transitions = transitions; this.op = op;
         }
 
         @Override
-        public double enact(AbstractTimer timer) {
+        public double enact(AbstractStopwatch timer) {
             return op.enact(timer);
         }
     }
@@ -82,8 +82,8 @@ public abstract class AbstractTimer {
     /**
      * Default Constructor
      */
-    public AbstractTimer() {}
-    public AbstractTimer(TimeUnit u) { setTimeUnit(u); }
+    public AbstractStopwatch() {}
+    public AbstractStopwatch(TimeUnit u) { setTimeUnit(u); }
     private TimeUnit getTimeUnit() { return timeUnit; }
 
     private void setTimeUnit(TimeUnit u) {
@@ -163,9 +163,9 @@ public abstract class AbstractTimer {
     @Override
     public String toString() {return toString(getTimeUnit());}
 
-    public static class AbstractTimerTest {
+    public static class AbstractStopwatchTest {
         @Rule
-        public TimedRule tr = new TimedRule(SYSTimer.class, TimeUnit.SECONDS);
+        public TimedRule tr = new TimedRule(SYSStopwatch.class, TimeUnit.SECONDS);
 
         @Test
         public void test() {

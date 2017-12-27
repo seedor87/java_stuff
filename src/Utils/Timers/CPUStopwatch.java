@@ -3,10 +3,10 @@ package Utils.Timers;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
 
-public class CPUTimer extends AbstractTimer {
+public class CPUStopwatch extends AbstractStopwatch {
 
-    public CPUTimer() {}
-    public CPUTimer(TimeUnit u) {
+    public CPUStopwatch() {}
+    public CPUStopwatch(TimeUnit u) {
         super(u);
     }
 
@@ -20,20 +20,20 @@ public class CPUTimer extends AbstractTimer {
     public double getElapsed(TimeUnit u) {
         switch(u) {
             case NANO:
-                return elapsedTime;
+                return this.elapsedTime;
             case MICRO:
-                return elapsedTime / 1000.0;
+                return this.elapsedTime / 1000.0;
             case MILLI:
-                return elapsedTime / 1000000.0;
+                return this.elapsedTime / 1000000.0;
             case SECONDS:
-                return elapsedTime / 1000000000.0;
+                return this.elapsedTime / 1000000000.0;
             case MINUTES:
-                return elapsedTime / (60.0 * 1000000000.0);
+                return this.elapsedTime / (60.0 * 1000000000.0);
             case HOURS:
-                return elapsedTime / (3600.0 * 1000000000.0);
+                return this.elapsedTime / (3600.0 * 1000000000.0);
             default:
                 break;
         }
-        return elapsedTime;
+        return this.elapsedTime;
     }
 }

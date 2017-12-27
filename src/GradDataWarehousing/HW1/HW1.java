@@ -1,7 +1,7 @@
 package GradDataWarehousing.HW1;
 
-import Utils.Timers.AbstractTimer;
-import Utils.Timers.SYSTimer;
+import Utils.Timers.AbstractStopwatch;
+import Utils.Timers.SYSStopwatch;
 
 import java.io.*;
 import java.text.NumberFormat;
@@ -146,7 +146,7 @@ public class HW1 {
                 padJustify(paddingSize, fill,     "MAX_ITEMS ",          " " + MAX_ITEMS),
                 padJustify(paddingSize, fill,     "WEEKEND_INCREASE ",   " " + WEEKEND_INCREASE)
         );
-        AbstractTimer timer = new SYSTimer(TimeUnit.SECONDS);
+        AbstractStopwatch timer = new SYSStopwatch(TimeUnit.SECONDS);
         timer.start();
 
         // Build array of all products for rand access later

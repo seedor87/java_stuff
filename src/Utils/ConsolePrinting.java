@@ -1,8 +1,8 @@
 package Utils;
 
 import Utils.Collections.Tuple;
-import Utils.Timers.AbstractTimer;
-import Utils.Timers.SYSTimer;
+import Utils.Timers.AbstractStopwatch;
+import Utils.Timers.SYSStopwatch;
 import Utils.Timers.TimeUnit;
 
 import java.lang.reflect.Array;
@@ -304,7 +304,7 @@ public class ConsolePrinting {
         println(BG_WHITE, FG_BLACK,"TEST");
 
        try {
-           AbstractTimer timer = new SYSTimer(TimeUnit.MINUTES);
+           AbstractStopwatch timer = new SYSStopwatch(TimeUnit.MINUTES);
            timer.start();
            boolean s = true;
            boolean s2 = true;

@@ -1,8 +1,8 @@
 package GradDataWarehousing.HW5;
 
 import GradDataWarehousing.HWResources.SkuPrice;
-import Utils.Timers.AbstractTimer;
-import Utils.Timers.SYSTimer;
+import Utils.Timers.AbstractStopwatch;
+import Utils.Timers.SYSStopwatch;
 import Utils.Timers.TimeUnit;
 
 import java.io.*;
@@ -76,7 +76,7 @@ public class DailySalesParser {
 
     public static void main(String[] args) {
 
-        AbstractTimer timer = new SYSTimer(TimeUnit.SECONDS);
+        AbstractStopwatch timer = new SYSStopwatch(TimeUnit.SECONDS);
         timer.start();
         println(FG_CYAN, "STARTED");
 

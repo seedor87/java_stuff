@@ -1,7 +1,7 @@
 package JUnit.TimedRule;
 
-import Utils.Timers.AbstractTimer;
-import Utils.Timers.SYSTimer;
+import Utils.Timers.AbstractStopwatch;
+import Utils.Timers.SYSStopwatch;
 import Utils.Timers.TimeUnit;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
@@ -13,17 +13,17 @@ public class TimedRule implements TestRule {
 
     private Statement base;
     private Description description;
-    private Class<? extends AbstractTimer> type = SYSTimer.class;
+    private Class<? extends AbstractStopwatch> type = SYSStopwatch.class;
     private TimeUnit unit = TimeUnit.MILLI;
 
     public TimedRule() { super(); }
 
-    public TimedRule(Class<? extends AbstractTimer> type) {
+    public TimedRule(Class<? extends AbstractStopwatch> type) {
         this();
         this.type = type;
     }
 
-    public TimedRule(Class<? extends AbstractTimer> type, TimeUnit unit) {
+    public TimedRule(Class<? extends AbstractStopwatch> type, TimeUnit unit) {
         this(type);
         this.unit = unit;
     }
@@ -37,9 +37,9 @@ public class TimedRule implements TestRule {
 
     public class TimedStatement extends Statement {
         private final Statement base;
-        private AbstractTimer timer;
+        private AbstractStopwatch timer;
 
-        public <T extends AbstractTimer> TimedStatement(Statement base, Class<T> type, TimeUnit unit) {
+        public <T extends AbstractStopwatch> TimedStatement(Statement base, Class<T> type, TimeUnit unit) {
             try {
                 Constructor<T> ctor = (Constructor<T>) type.getDeclaredConstructors()[1];
                 this.timer = ctor.newInstance(unit);

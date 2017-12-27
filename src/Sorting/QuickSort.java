@@ -1,6 +1,6 @@
 package Sorting;
 
-import NewTesting.NewSYSTimeTest;
+import NewTesting.NewSYSStopwatchTest;
 import Utils.MyRandom;
 import Utils.Collections.Tuple;
 
@@ -9,7 +9,7 @@ import static Utils.ConsolePrinting.printlnDelim;
 import static Utils.Comparison.lt;
 import static Utils.Exchange.exchange;
 
-public class QuickSort<T extends Object> extends NewSYSTimeTest<T> {
+public class QuickSort<T extends Object> extends NewSYSStopwatchTest<T> {
 
     private static  <T extends Comparable<? super T>> int partition(T[] arr, int left, int right) {
         int i = left, j = right;

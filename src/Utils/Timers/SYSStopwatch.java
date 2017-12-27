@@ -1,11 +1,11 @@
 package Utils.Timers;
 
-public class SYSTimer extends AbstractTimer {
+public class SYSStopwatch extends AbstractStopwatch {
 
     private final double nativeFactor = 1000000000.0;
 
-    public SYSTimer() {}
-    public SYSTimer(TimeUnit u) {
+    public SYSStopwatch() {}
+    public SYSStopwatch(TimeUnit u) {
         super(u);
     }
 
@@ -20,18 +20,18 @@ public class SYSTimer extends AbstractTimer {
             case NANO:
                 break;
             case MICRO:
-                return elapsedTime / (nativeFactor / 1000000.0);
+                return this.elapsedTime / (nativeFactor / 1000000.0);
             case MILLI:
-                return elapsedTime / (nativeFactor / 1000.0);
+                return this.elapsedTime / (nativeFactor / 1000.0);
             case SECONDS:
-                return elapsedTime / nativeFactor;
+                return this.elapsedTime / nativeFactor;
             case MINUTES:
-                return elapsedTime / (60.0 * nativeFactor);
+                return this.elapsedTime / (60.0 * nativeFactor);
             case HOURS:
-                return elapsedTime / (3600.0 * nativeFactor);
+                return this.elapsedTime / (3600.0 * nativeFactor);
             default:
                 break;
         }
-        return elapsedTime;
+        return this.elapsedTime;
     }
 }

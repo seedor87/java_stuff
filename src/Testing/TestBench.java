@@ -12,7 +12,6 @@ import java.util.List;
 
 import static Utils.ConsolePrinting.*;
 import static Utils.ConsolePrinting.printlnDelim;
-import static Utils.Equivocation.equal;
 
 public class TestBench {
 
@@ -21,9 +20,9 @@ public class TestBench {
         for(int i = 10; i < len; i*=10) {
             try {
                 print("DP Sort: ");
-                new SYSTimeTest(DualPivotQuickSort.class, "DBTest").exe(i,max);
+                new SYSStopwatchTest(DualPivotQuickSort.class, "DBTest").exe(i,max);
                 print("Reg qs: ");
-                new SYSTimeTest(QuickSort.class, "DBTest").exe(i,max);
+                new SYSStopwatchTest(QuickSort.class, "DBTest").exe(i,max);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -33,8 +32,8 @@ public class TestBench {
     public static boolean ppTest(int lim) {
         boolean result = false;
         try {
-            List<Double> res1 = (List) new SYSTimeTest(PerfectNumbers.class, "generatePerfectNumbers").exe(lim).get(0);
-            List<Double> res2 = (List) new SYSTimeTest(PerfectNumbers.class, "findPerfectNumbers").exe(lim).get(0);
+            List<Double> res1 = (List) new SYSStopwatchTest(PerfectNumbers.class, "generatePerfectNumbers").exe(lim).get(0);
+            List<Double> res2 = (List) new SYSStopwatchTest(PerfectNumbers.class, "findPerfectNumbers").exe(lim).get(0);
             result = Equivocation.equal(res1, res2);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -45,7 +44,7 @@ public class TestBench {
     public static List<Integer> primeTest(int lim) {
         Tuple result;
         try {
-            result = new CPUTimeTest(Primes.class, "getAllPrimes").exe(lim);
+            result = new CPUStopwatchTest(Primes.class, "getAllPrimes").exe(lim);
             return (List) result.get(0);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -55,7 +54,7 @@ public class TestBench {
 
     public static void mersennePrimeTest(int lim) {
         try {
-            new CPUTimeTest(MersennePrimes.class, "mersennePrimeTest").exe(lim);
+            new CPUStopwatchTest(MersennePrimes.class, "mersennePrimeTest").exe(lim);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -63,9 +62,9 @@ public class TestBench {
 
     public static void testTest1(int lim) throws Exception {
         for (int i = 10; i < lim; i *= 10) {
-            new MemUseTest(TestBench.class, "mersennePrimeTest").exe(i);
-            new SYSTimeTest(TestBench.class, "mersennePrimeTest").exe(i);
-            new CPUTimeTest(TestBench.class, "mersennePrimeTest").exe(i);
+            new SYSSpaceTest(TestBench.class, "mersennePrimeTest").exe(i);
+            new SYSStopwatchTest(TestBench.class, "mersennePrimeTest").exe(i);
+            new CPUStopwatchTest(TestBench.class, "mersennePrimeTest").exe(i);
         }
     }
 
@@ -80,9 +79,9 @@ public class TestBench {
 
     public static void main(String argv[]) throws Exception {
 
-//        new MemUseTest(KnightsTour.class, "solveKnightTour").exe();
-//        new SYSTimeTest(LargeProduct.class, "test1").exe();
-//        new CPUTimeTest(LargeProduct.class, "test2").exe();
+//        new SYSSpaceTest(KnightsTour.class, "solveKnightTour").exe();
+//        new SYSStopwatchTest(LargeProduct.class, "test1").exe();
+//        new CPUStopwatchTest(LargeProduct.class, "test2").exe();
 
 //        qsTest(100000000,10000);
 
@@ -92,10 +91,10 @@ public class TestBench {
 
 //        mersennePrimeTest();
 
-//        new SYSTimeTest(TestBench.class, "notherTest").exe(Arrays.asList("1", "2", "3"));
-//        new SYSTimeTest(TestBench.class, "notherTest").exe(new String[] {"1", "2", "3"});
+//        new SYSStopwatchTest(TestBench.class, "notherTest").exe(Arrays.asList("1", "2", "3"));
+//        new SYSStopwatchTest(TestBench.class, "notherTest").exe(new String[] {"1", "2", "3"});
 
-//        new SYSTimeTest(
+//        new SYSStopwatchTest(
 //                TestBench.class,
 //                "testTest1"
 //        ).exe(100000000);

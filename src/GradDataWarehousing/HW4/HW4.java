@@ -3,8 +3,8 @@ package GradDataWarehousing.HW4;
 import GradDataWarehousing.HWResources.HW1Arrays;
 import GradDataWarehousing.HWResources.InventoryBuilder;
 import GradDataWarehousing.HWResources.SkuPrice;
-import Utils.Timers.AbstractTimer;
-import Utils.Timers.SYSTimer;
+import Utils.Timers.AbstractStopwatch;
+import Utils.Timers.SYSStopwatch;
 import Utils.Timers.TimeUnit;
 
 import java.io.*;
@@ -22,7 +22,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static GradDataWarehousing.HWResources.Utils.isMilkSku;
 import static Utils.ConsolePrinting.*;
 import static Utils.StringUtils.StringUtils.*;
-import static Utils.StringUtils.StringUtilsRequiem.trim;
 
 public class HW4 {
 
@@ -290,6 +289,13 @@ public class HW4 {
         }
     }
 
+    public static String trim(String str, int len) {
+        if(str.length() > len) {
+            return padToLeft(len, '.', str.substring(0, len-3));
+        }
+        return padToLeft(len, ' ', str);
+    }
+
     public static void main(String[] args) {
 
         // set params according to last name of user
@@ -318,7 +324,7 @@ public class HW4 {
                 padJustify(paddingSize, fill,     "OUTPUT_PATH ",               " " + OUTPUT_PATH)
         );
         print(RESET);
-        AbstractTimer timer = new SYSTimer(TimeUnit.SECONDS);
+        AbstractStopwatch timer = new SYSStopwatch(TimeUnit.SECONDS);
         timer.start();
 
         // Init inventory, avg.s map, and ytd cases map from parsed file of avg bi-weekly sales

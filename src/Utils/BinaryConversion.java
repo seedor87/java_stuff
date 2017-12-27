@@ -1,6 +1,6 @@
 package Utils;
 
-import Utils.Timers.SYSTimer;
+import Utils.Timers.SYSStopwatch;
 import Utils.Timers.TimeUnit;
 
 import static Utils.ConsolePrinting.*;
@@ -48,7 +48,7 @@ public class BinaryConversion {
     }
 
     public static void main(String args[]) {
-        SYSTimer timer = new SYSTimer(TimeUnit.MILLI);
+        SYSStopwatch timer = new SYSStopwatch(TimeUnit.MILLI);
         timer.start();
         for (long i = 0; i < MAX_BINARY; i++) {
             long x = toBinary(i);

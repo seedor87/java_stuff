@@ -8,7 +8,7 @@ import java.util.Scanner;
 import static Utils.ConsolePrinting.*;
 import static Utils.StringUtils.StringUtils.padToLeft;
 
-public class StopWatchApp {
+public class StopwatchApp {
 
     private static boolean validate(int input) {
         return 0 < input && input < 6;
@@ -18,13 +18,13 @@ public class StopWatchApp {
         Scanner reader = new Scanner(System.in);
         String commands;
         TimeUnit unit = Utils.Timers.TimeUnit.SECONDS;
-        AbstractTimer timer;
-        Map<AbstractTimer.State, Special> stateColorMap = new HashMap<AbstractTimer.State, Special>()
+        AbstractStopwatch stopwatch;
+        Map<AbstractStopwatch.State, Special> stateColorMap = new HashMap<AbstractStopwatch.State, Special>()
         {{
-            put(AbstractTimer.State.STARTED,    FG_BRIGHT_GREEN);
-            put(AbstractTimer.State.SUSPENDED,  FG_BRIGHT_YELLOW);
-            put(AbstractTimer.State.RESUMED,    FG_BRIGHT_CYAN);
-            put(AbstractTimer.State.STOPPED,    FG_BRIGHT_RED);
+            put(AbstractStopwatch.State.STARTED,    FG_BRIGHT_GREEN);
+            put(AbstractStopwatch.State.SUSPENDED,  FG_BRIGHT_YELLOW);
+            put(AbstractStopwatch.State.RESUMED,    FG_BRIGHT_CYAN);
+            put(AbstractStopwatch.State.STOPPED,    FG_BRIGHT_RED);
         }};
 
         String s = "";
@@ -46,27 +46,27 @@ public class StopWatchApp {
             unit = Utils.Timers.TimeUnit.values()[input-1]; // -1 for array index offset
         }
         println("Using time unit:", unit);
-        timer = new SYSTimer(unit);
+        stopwatch = new SYSStopwatch(unit);
 
         commands = "start[1] suspend[2] resume[3] stop[4] print[5] quit[~]";
         s = "";
         input = 4;
-        String lastAction = "timer application";
+        String lastAction = "stopwatch application";
         ConsolePrinting.Special color = FG_BRIGHT_RED;
-        AbstractTimer.State next;
+        AbstractStopwatch.State next;
         do {
             try {
-                next = AbstractTimer.State.values()[input-1];   // -1 for offset of commands to arr index
-                next.enact(timer);
+                next = AbstractStopwatch.State.values()[input-1];   // -1 for offset of commands to arr index
+                next.enact(stopwatch);
                 lastAction = next.name;
                 color = stateColorMap.get(next);
-            } catch (AbstractTimer.IllegalStateTransitionException ex) {
+            } catch (AbstractStopwatch.IllegalStateTransitionException ex) {
                 lastAction = ex.toString();
                 color = FG_BRIGHT_MAGENTA;
             } catch (Exception ex) {
-                // pass on to printing for timer
+                // pass on to printing for stopwatch
             }
-            ConsolePrinting.println(color, lastAction, ":", timer);
+            ConsolePrinting.println(color, lastAction, ":", stopwatch);
             ConsolePrinting.println(commands);
             ConsolePrinting.print(">> ");
             try {

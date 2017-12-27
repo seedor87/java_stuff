@@ -1,7 +1,7 @@
 package Utils.Collections.BinaryHeaps;
 
-import Utils.Timers.AbstractTimer;
-import Utils.Timers.SYSTimer;
+import Utils.Timers.AbstractStopwatch;
+import Utils.Timers.SYSStopwatch;
 import Utils.Timers.TimeUnit;
 
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ public class BinaryHeapTests {
     public static void main(String args[]) {
 
         double total_time = 0;
-        AbstractTimer timer = new SYSTimer(TimeUnit.MICRO);
+        AbstractStopwatch timer = new SYSStopwatch(TimeUnit.MICRO);
         int step;
         for (step = 1; step <= 10; step++) {
             timer.start();
