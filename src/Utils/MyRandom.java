@@ -2,8 +2,8 @@ package Utils;
 
 import java.util.Random;
 
-import static Utils.ConsolePrinting.println;
-import static Utils.ConsolePrinting.printlnDelim;
+import static Utils.Console.Printing.println;
+import static Utils.Console.Printing.printlnDelim;
 
 public abstract class MyRandom {
 

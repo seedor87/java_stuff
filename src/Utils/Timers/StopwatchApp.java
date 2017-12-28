@@ -1,12 +1,14 @@
 package Utils.Timers;
 
-import Utils.ConsolePrinting;
+import Utils.Console.Printing;
+import Utils.Console.Special;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-import static Utils.ConsolePrinting.*;
-import static Utils.StringUtils.StringUtils.padToLeft;
+import static Utils.Console.Printing.*;
+import static Utils.Console.Special.*;
+import static Utils.StringUtils.padToLeft;
 
 public class StopwatchApp {
 
@@ -33,9 +35,9 @@ public class StopwatchApp {
                     "\t" + padToLeft(20, ' ', "[2] Microseconds") + "[5] Minutes" + "\n" +
                     "\t" + padToLeft(20, ' ', "[3] Milliseconds") + "[6] hours";
         while(input > 6 || input < 1) {
-            ConsolePrinting.println("Please enter a number between 1 and 6");
-            ConsolePrinting.println(commands);
-            ConsolePrinting.print(">> ");
+            Printing.println("Please enter a number between 1 and 6");
+            Printing.println(commands);
+            Printing.print(">> ");
             try {
                 s = reader.next();
                 input = Integer.parseInt(s);
@@ -52,7 +54,7 @@ public class StopwatchApp {
         s = "";
         input = 4;
         String lastAction = "stopwatch application";
-        ConsolePrinting.Special color = FG_BRIGHT_RED;
+        Special color = FG_BRIGHT_RED;
         AbstractStopwatch.State next;
         do {
             try {
@@ -66,9 +68,9 @@ public class StopwatchApp {
             } catch (Exception ex) {
                 // pass on to printing for stopwatch
             }
-            ConsolePrinting.println(color, lastAction, ":", stopwatch);
-            ConsolePrinting.println(commands);
-            ConsolePrinting.print(">> ");
+            Printing.println(color, lastAction, ":", stopwatch);
+            Printing.println(commands);
+            Printing.print(">> ");
             try {
                 s = reader.next();
                 input = Integer.parseInt(s);
@@ -76,7 +78,7 @@ public class StopwatchApp {
                 println(FG_BRIGHT_BLUE, "Cannot Parse input: " + s);
             }
         } while(validate(input));
-        ConsolePrinting.print("quiting...");
+        Printing.print("quiting...");
         reader.close();
         System.exit(0);
     }

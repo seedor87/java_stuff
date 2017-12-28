@@ -1,10 +1,12 @@
 package Utils.Collections;
 
+import Utils.Console.Printing;
+
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import static Utils.ConsolePrinting.*;
+import static Utils.Console.Printing.*;
 
 public class StaQ<E extends Object> implements Iterable{
 
@@ -71,7 +73,7 @@ public class StaQ<E extends Object> implements Iterable{
         Arrays.stream(new int[] {1, 2, 3})
                 .map(n -> 2 * n + 1)
                 .average()
-                .ifPresent(Utils.ConsolePrinting::println);  // 5.0
+                .ifPresent(Printing::println);  // 5.0
 
         StaQ<Integer> s = new StaQ<>();
         s.push(5);

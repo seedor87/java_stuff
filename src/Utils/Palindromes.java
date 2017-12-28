@@ -2,7 +2,7 @@ package Utils;
 
 import java.util.*;
 
-import static Utils.ConsolePrinting.*;
+import static Utils.Console.Printing.*;
 
 public class Palindromes {
 

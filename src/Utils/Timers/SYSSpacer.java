@@ -2,7 +2,7 @@ package Utils.Timers;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import static Utils.ConsolePrinting.println;
+import static Utils.Console.Printing.println;
 
 public class SYSSpacer {
 

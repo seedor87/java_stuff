@@ -4,9 +4,9 @@ import java.io.*;
 import java.util.Scanner;
 
 import static GradDataWarehousing.HWResources.Utils.isMilkSku;
-import static Utils.ConsolePrinting.FG_CYAN;
-import static Utils.ConsolePrinting.print;
-import static Utils.ConsolePrinting.println;
+import static Utils.Console.Special.*;
+import static Utils.Console.Printing.print;
+import static Utils.Console.Printing.println;
 
 /**
  * Created by robertseedorf on 9/26/17.

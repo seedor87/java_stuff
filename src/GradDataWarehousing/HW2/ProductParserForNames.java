@@ -7,8 +7,8 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
-import static Utils.ConsolePrinting.println;
-import static Utils.ConsolePrinting.printlnDelim;
+import static Utils.Console.Printing.println;
+import static Utils.Console.Printing.printlnDelim;
 
 /**
  * Created by robertseedorf on 9/24/17.

@@ -4,7 +4,7 @@ import Utils.Timers.CPUStopwatch;
 import Utils.Timers.AbstractStopwatch;
 import Utils.Collections.Tuple;
 
-import static Utils.ConsolePrinting.println;
+import static Utils.Console.Printing.println;
 
 public class CPUStopwatchTest extends AbstractTest {
 

@@ -15,8 +15,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static Utils.ConsolePrinting.*;
-import static Utils.StringUtils.StringUtils.*;
+import static Utils.Console.Printing.*;
+import static Utils.StringUtils.*;
+import static Utils.Console.Special.*;
+
 
 public class HW2 {
 

@@ -2,7 +2,7 @@ package Utils.Collections;
 
 import java.util.*;
 
-import static Utils.ConsolePrinting.*;
+import static Utils.Console.Printing.*;
 
 public class Table<T1 extends Object, T2 extends Object, E extends Object> implements Map{
 

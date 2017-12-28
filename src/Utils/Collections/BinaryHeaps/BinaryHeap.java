@@ -2,8 +2,8 @@ package Utils.Collections.BinaryHeaps;
 
 import java.util.*;
 
-import static Utils.ConsolePrinting.print;
-import static Utils.ConsolePrinting.println;
+import static Utils.Console.Printing.print;
+import static Utils.Console.Printing.println;
 
 /**
  * Created by robertseedorf on 9/9/17.

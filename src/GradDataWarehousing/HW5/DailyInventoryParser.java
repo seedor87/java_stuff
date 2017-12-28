@@ -14,10 +14,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import static Utils.ConsolePrinting.FG_CYAN;
-import static Utils.ConsolePrinting.FG_GREEN;
-import static Utils.ConsolePrinting.println;
+import static Utils.Console.Special.*;
+import static Utils.Console.Printing.println;
 
 public class DailyInventoryParser {
     static final String DELIM = "\\|";

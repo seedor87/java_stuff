@@ -1,6 +1,6 @@
 package Specialty;
 
-import Utils.ConsolePrinting;
+import Utils.Console.Printing;
 
 import java.util.Arrays;
 
@@ -51,16 +51,16 @@ public class MaxSubArray {
 
         inp = new int[]{1, 2, -4, 1, 2, 3};
         out = test(inp);
-        ConsolePrinting.print("result: ");
-        ConsolePrinting.printlnDelim(", ", out);
-        ConsolePrinting.print("sumAll: ");
-        ConsolePrinting.println(sum(test(inp)));
+        Printing.print("result: ");
+        Printing.printlnDelim(", ", out);
+        Printing.print("sumAll: ");
+        Printing.println(sum(test(inp)));
 
         inp = new int[]{9, 9, 2, 5, -8, 8, 2, -6, -10, 5, 2, -6, -9, 1, 2, 10, -5, 9, 9, 3, -7, 8, 1, 6, -3, -9, -7, 7, 7, 7, 10, 10, 0, 6, -2, -6, 4, 5, -4, 5, -5, 1, 9, -4, -10, 8, -3, -1, 1, 8, 10, 10, 6, 10, 5, 10, 5, -10, -9, -8, -9, 10, -2, 5, 9, 0, -5, 6, 10, -9, 9, -7, 0, -1, -6, 10, -8, 4, -3, -5, 6, 2, -10, 5, 7, 0, -6, -2, -10, 2, -1, 8, 2, 1, 8, -7, 7, -8, 8, -6};
         out = test(inp);
-        ConsolePrinting.print("result: ");
-        ConsolePrinting.printlnDelim(", ", out);
-        ConsolePrinting.print("sumAll: ");
-        ConsolePrinting.println(sum(test(inp)));
+        Printing.print("result: ");
+        Printing.printlnDelim(", ", out);
+        Printing.print("sumAll: ");
+        Printing.println(sum(test(inp)));
     }
 }

@@ -14,11 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package Utils.StringUtils;
+package RandomStuff;
 
 import java.util.HashSet;
 import java.util.Set;
-import static Utils.ConsolePrinting.*;
+import static Utils.Console.Printing.*;
 
 /**
  * Measures the Jaccard similarity (aka Jaccard index) of two sets of character

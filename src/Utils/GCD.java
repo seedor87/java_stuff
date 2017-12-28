@@ -4,7 +4,7 @@ import Utils.Timers.AbstractStopwatch;
 import Utils.Timers.SYSStopwatch;
 import Utils.Timers.TimeUnit;
 
-import static Utils.ConsolePrinting.println;
+import static Utils.Console.Printing.println;
 
 public class GCD {
 

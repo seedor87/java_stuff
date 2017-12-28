@@ -10,8 +10,8 @@ import Utils.Collections.Tuple;
 
 import java.util.List;
 
-import static Utils.ConsolePrinting.*;
-import static Utils.ConsolePrinting.printlnDelim;
+import static Utils.Console.Printing.*;
+import static Utils.Console.Printing.printlnDelim;
 
 public class TestBench {
 

@@ -1,5 +1,7 @@
 package Utils;
 
+import Utils.Console.Printing;
+
 import java.lang.reflect.Array;
 import java.util.*;
 
@@ -8,19 +10,30 @@ import static Utils.ListUtils.contains;
 public class Equivocation<T extends Object> {
 
     public static <T> boolean equal(T first, T second) {
-        if(!first.getClass().equals(second.getClass())) {
-            return false;
-        }
-        if (first.getClass().isPrimitive()) {
-            return first == second;
-        }
-        if (first.getClass().isArray()) {
-            return (Array.getLength(first) > Array.getLength(second)) ? equalArray(first, second) : equalArray(second, first);
-        }
-        if (Iterable.class.isInstance(first)) {
-            return equalIterable(first, second);
-        }
-        return first.equals(second);
+        return (first.getClass().equals(second.getClass())) ?
+                (first.getClass().isPrimitive()) ?
+                        first == second :
+                        (first.getClass().isArray()) ?
+                                (Array.getLength(first) > Array.getLength(second)) ?
+                                        equalArray(first, second) :
+                                        equalArray(second, first) :
+                                (Iterable.class.isInstance(first)) ?
+                                        equalIterable(first, second) :
+                                        first.equals(second) :
+                false;
+//        if(!first.getClass().equals(second.getClass())) {
+//            return false;
+//        }
+//        if (first.getClass().isPrimitive()) {
+//            return first == second;
+//        }
+//        if (first.getClass().isArray()) {
+//            return (Array.getLength(first) > Array.getLength(second)) ? equalArray(first, second) : equalArray(second, first);
+//        }
+//        if (Iterable.class.isInstance(first)) {
+//            return equalIterable(first, second);
+//        }
+//        return first.equals(second);
     }
 
     private static <T> boolean equalArray(T first, T second) {
@@ -159,68 +172,74 @@ public class Equivocation<T extends Object> {
 
     public static void main(String[] args) {
 
-        ConsolePrinting.println(equal(
-                (int) 5.0,
-                new Integer(5))
+        Printing.println("5.0 == new Integer(5) :",
+                equal(
+                    (int) 5.0,
+                    new Integer(5)
+                )
         );
-        ConsolePrinting.println(equal(
-                new Boolean(false),
-                new Boolean("false"))
+        Printing.println("new Boolean(false) == new Boolean(\"false\") :",
+                equal(
+                    new Boolean(false),
+                    new Boolean("false")
+                )
         );
-        ConsolePrinting.println(equal(
-                new char[]{'a', 'c'},
-                new char[]{'a', 'b'})
+        Printing.println("new char[]{'a', 'c'} == new char[]{'c', 'a'} :",
+                equal(
+                    new char[]{'a', 'c'},
+                    new char[]{'c', 'a'}
+                )
         );
 
 
         Character[] carr1 = {'a','b','c','d'};
         Character[] carr2 = {'d','c','b','a'};
-        ConsolePrinting.println(carr1, " == ", carr2, equal(carr1, carr2));
+        Printing.println(carr1, " == ", carr2, equal(carr1, carr2));
 
         String[] sarr1 = {"bob", "alex", "star", "cammi", "joey"};
         String[] sarr2 = {"joey", "cammi", "star", "alex", "bob"};
-        ConsolePrinting.println(sarr1, " == ", sarr2, equal(sarr1, sarr2));
+        Printing.println(sarr1, " == ", sarr2, equal(sarr1, sarr2));
 
         List<Integer> ilist1 = new LinkedList<>(Arrays.asList(1,2,3,4));
         List<Integer> ilist2 = new LinkedList<>(Arrays.asList(4,3,2,1));
-        ConsolePrinting.println(ilist1, " == ", ilist2, equal(ilist1, ilist2));
+        Printing.println(ilist1, " == ", ilist2, equal(ilist1, ilist2));
 
-        ConsolePrinting.println("distinct?", distinct(new LinkedList(Arrays.asList('a','b','c','d','e','f'))));
-        ConsolePrinting.println("distinct?", distinct(1,2,3,4,5,6,1));
+        Printing.println("distinct?", distinct(new LinkedList(Arrays.asList('a','b','c','d','e','f'))));
+        Printing.println("distinct?", distinct(1,2,3,4,5,6,1));
 
 
         // first \/ second
-        ConsolePrinting.println("union :" , union(
+        Printing.println("union :" , union(
            new Integer[]{1,2,3},
            new Integer[]{4,5,6})
         );
         // first /\ second
-        ConsolePrinting.println("intersection :", intersection(
+        Printing.println("intersection :", intersection(
                 new ArrayList<>(Arrays.asList(1,2,3)),
                 new ArrayList<>(Arrays.asList(1,3)))
         );
         // first - second
-        ConsolePrinting.println("difference :", difference(
+        Printing.println("difference :", difference(
                 new ArrayList<>(Arrays.asList(1,2,3)),
                 new ArrayList<>(Arrays.asList(1,3)))
         );
         // first - second
-        ConsolePrinting.println("difference :", difference(
+        Printing.println("difference :", difference(
                 new Character[]{'a','b','d','e'},
                 new Character[]{'a','b','c','d'})
         );
         // first - second
-        ConsolePrinting.println("difference :", difference(
+        Printing.println("difference :", difference(
                 new Long[]{Long.MAX_VALUE, Long.MAX_VALUE+1},
                 new Long[]{Long.MIN_VALUE, Long.MIN_VALUE-1})
         );
         // (first - second) \/ (second - first)
-       ConsolePrinting.println("bilateralDifference :",  bilateralDifference(
+       Printing.println("bilateralDifference :",  bilateralDifference(
                 new Character[]{'a','b','d','e'},
                 new Character[]{'a','b','c','d'})
        );
         // (first - second) \/ (second - first)
-        ConsolePrinting.println("bilateralDifference :", bilateralDifference(
+        Printing.println("bilateralDifference :", bilateralDifference(
                 new LinkedList<>(Arrays.asList(1,2,3)),
                 new LinkedList<>(Arrays.asList(4,5,6)))
         );

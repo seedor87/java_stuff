@@ -3,7 +3,7 @@ package Testing;
 import Utils.Timers.SYSSpacer;
 import Utils.Collections.Tuple;
 
-import static Utils.ConsolePrinting.println;
+import static Utils.Console.Printing.println;
 
 public class SYSSpaceTest extends AbstractTest {
 

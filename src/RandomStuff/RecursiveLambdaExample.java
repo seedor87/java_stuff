@@ -1,6 +1,6 @@
 package RandomStuff;
 
-import Utils.ConsolePrinting;
+import Utils.Console.Printing;
 import Utils.Collections.Tuple;
 
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ public class RecursiveLambdaExample<T extends Object> {
 
     VarArgs<T>  test2 = (T...params) -> {
         for (int i = 0; i < (Integer) params[0]; i++) {
-            ConsolePrinting.println(i + ": " + fermatNumber(i));
+            Printing.println(i + ": " + fermatNumber(i));
         }
         return 0;
     };
@@ -67,7 +67,7 @@ public class RecursiveLambdaExample<T extends Object> {
 
         reclambex.exe(reclambex.test2, 10);
 
-        ConsolePrinting.println(palindromia.varArgs('r','a','c','e','c','a','r'));
-        ConsolePrinting.println(palindromia.varArgs(1,2,3,3,2,1));
+        Printing.println(palindromia.varArgs('r','a','c','e','c','a','r'));
+        Printing.println(palindromia.varArgs(1,2,3,3,2,1));
     }
 }

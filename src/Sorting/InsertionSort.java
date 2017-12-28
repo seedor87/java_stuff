@@ -1,6 +1,6 @@
 package Sorting;
 
-import static Utils.ConsolePrinting.println;
+import static Utils.Console.Printing.println;
 
 public class InsertionSort {
 

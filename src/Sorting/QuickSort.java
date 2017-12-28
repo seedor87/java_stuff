@@ -4,8 +4,8 @@ import NewTesting.NewSYSStopwatchTest;
 import Utils.MyRandom;
 import Utils.Collections.Tuple;
 
-import static Utils.ConsolePrinting.println;
-import static Utils.ConsolePrinting.printlnDelim;
+import static Utils.Console.Printing.println;
+import static Utils.Console.Printing.printlnDelim;
 import static Utils.Comparison.lt;
 import static Utils.Exchange.exchange;
 

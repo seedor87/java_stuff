@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.awt.Toolkit;
 import java.util.List;
 
-import static Utils.ConsolePrinting.*;
+import static Utils.Console.Printing.*;
 
 public class Primes {
 

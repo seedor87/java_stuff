@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static Utils.ConsolePrinting.println;
+import static Utils.Console.Printing.println;
 
 /**
  * Created by Bob S on 8/17/2017.

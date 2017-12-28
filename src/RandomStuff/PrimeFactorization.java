@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static Utils.ConsolePrinting.*;
+import static Utils.Console.Printing.*;
 import NewTesting.NewSYSStopwatchTest;
 import Utils.Collections.Tuple;
 

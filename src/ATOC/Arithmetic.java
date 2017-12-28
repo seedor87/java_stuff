@@ -2,7 +2,7 @@ package ATOC;
 
 import static ATOC.Basic.*;
 import static ATOC.Booleans.*;
-import static Utils.ConsolePrinting.println;
+import static Utils.Console.Printing.println;
 
 public class Arithmetic {
 

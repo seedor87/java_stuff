@@ -1,4 +1,4 @@
-package Utils;
+package Utils.Console;
 
 import Utils.Collections.Tuple;
 import Utils.Timers.AbstractStopwatch;
@@ -7,68 +7,26 @@ import Utils.Timers.TimeUnit;
 
 import java.lang.reflect.Array;
 import java.util.*;
+import static Utils.Console.Special.*;
 
-public class ConsolePrinting {
+public class Printing {
 
-    public static final String NL = "\n";
-    public static final String RN = "\r";
-
-    public interface Special {
-        String str();
+    public static String format(String str, Object... args) {
+        return System.out.format(str, args).toString();
     }
 
-    public static Special RESET = () ->             "\u001B[0m";
-    public static Special BOLD = () ->              "\u001B[1m";
-    public static Special ITAL = () ->              "\u001B[3m";
-    public static Special UNDER = () ->             "\u001B[4m";
-    public static Special BLINK = () ->             "\u001B[5m";
-    public static Special RAPID_BLINK = () ->       "\u001B[6m";
-    public static Special INVER = () ->             "\u001B[7m";
-    public static Special FG_BLACK = () ->          "\u001B[30m";
-    public static Special FG_RED = () ->            "\u001B[31m";
-    public static Special FG_GREEN = () ->          "\u001B[32m";
-    public static Special FG_YELLOW = () ->         "\u001B[33m";
-    public static Special FG_BLUE = () ->           "\u001B[34m";
-    public static Special FG_MAGENTA = () ->        "\u001B[35m";
-    public static Special FG_CYAN = () ->           "\u001B[36m";
-    public static Special FG_GRAY = () ->           "\u001B[37m";
-    public static Special BG_BLACK = () ->          "\u001B[40m";
-    public static Special BG_RED = () ->            "\u001B[41m";
-    public static Special BG_GREEN = () ->          "\u001B[42m";
-    public static Special BG_YELLOW = () ->         "\u001B[43m";
-    public static Special BG_BLUE = () ->           "\u001B[44m";
-    public static Special BG_MAGENTA = () ->        "\u001B[45m";
-    public static Special BG_CYAN = () ->           "\u001B[46m";
-    public static Special BG_GRAY = () ->           "\u001B[47m";
-    public static Special FG_DARK_GRAY = () ->      "\u001B[90m";
-    public static Special FG_BRIGHT_RED = () ->     "\u001B[91m";
-    public static Special FG_BRIGHT_GREEN = () ->   "\u001B[92m";
-    public static Special FG_BRIGHT_YELLOW = () ->  "\u001B[93m";
-    public static Special FG_BRIGHT_BLUE = () ->    "\u001B[94m";
-    public static Special FG_BRIGHT_MAGENTA = () -> "\u001B[95m";
-    public static Special FG_BRIGHT_CYAN = () ->    "\u001B[96m";
-    public static Special FG_WHITE = () ->          "\u001B[97m";
-    public static Special BG_DARK_GRAY = () ->      "\u001B[100m";
-    public static Special BG_BRIGHT_RED = () ->     "\u001B[101m";
-    public static Special BG_BRIGHT_GREEN = () ->   "\u001B[102m";
-    public static Special BG_BRIGHT_YELLOW = () ->  "\u001B[103m";
-    public static Special BG_BRIGHT_BLUE = () ->    "\u001B[104m";
-    public static Special BG_BRIGHT_MAGENTA = () -> "\u001B[105m";
-    public static Special BG_BRIGHT_CYAN = () ->    "\u001B[106m";
-    public static Special BG_WHITE = () ->          "\u001B[107m";
-
-    public static void print(Special c) {
-        print(c.str());
+    public static void print(PrintableSpecial c) {
+        print(c.toString());
     }
 
     public static void println() {
-        print(NL);
+        print(NEW_LINE);
     }
-    public static void printrn() { print(RN); }
+    public static void printrn() { print(CARR_RET); }
 
-    public static <T> String wrap(Special c, T... args) {
+    public static <T> String wrap(PrintableSpecial c, T... args) {
         StringBuffer sb = new StringBuffer();
-        sb.append(c.str());
+        sb.append(c.toString());
         for (T elem: args) {
             sb.append(elem.toString());
         }
@@ -176,35 +134,35 @@ public class ConsolePrinting {
         print(args);
     }
 
-    public static <T> void print(Special c, T...args) {
+    public static <T> void print(PrintableSpecial c, T...args) {
         print(c);
         print(args);
         print(RESET);
     }
 
-    public static <T> void println(Special c, T...args) {
+    public static <T> void println(PrintableSpecial c, T...args) {
         print(c, args);
         println();
     }
 
-    public static <T> void printrn(Special c, T...args) {
+    public static <T> void printrn(PrintableSpecial c, T...args) {
         printrn();
         print(c, args);
     }
 
-    public static <T> void print(Special c1, Special c2, T...args) {
+    public static <T> void print(PrintableSpecial c1, PrintableSpecial c2, T...args) {
         print(c1);
         print(c2);
         print(args);
         print(RESET);
     }
 
-    public static <T> void println(Special c1, Special c2, T...args) {
+    public static <T> void println(PrintableSpecial c1, PrintableSpecial c2, T...args) {
         print(c1, c2, args);
         println();
     }
 
-    public static <T> void printrn(Special c1, Special c2, T...args) {
+    public static <T> void printrn(PrintableSpecial c1, PrintableSpecial c2, T...args) {
         printrn();
         print(c1, c2, args);
     }

@@ -1,6 +1,6 @@
 package RandomStuff;
 
-import static Utils.ConsolePrinting.*;
+import static Utils.Console.Printing.*;
 
 public class LargeProduct {
 

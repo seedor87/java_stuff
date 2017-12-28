@@ -4,7 +4,7 @@ import Utils.Equivocation;
 
 import java.util.*;
 
-import static Utils.ConsolePrinting.println;
+import static Utils.Console.Printing.println;
 
 public class Tuple<T> implements Iterable<T>{
 

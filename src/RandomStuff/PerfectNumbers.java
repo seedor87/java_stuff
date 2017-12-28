@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import static RandomStuff.PrimeFactorization.isPerfectPower;
-import static Utils.ConsolePrinting.*;
+import static Utils.Console.Printing.*;
 
 public class PerfectNumbers {
 

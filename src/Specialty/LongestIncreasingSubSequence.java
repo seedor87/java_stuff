@@ -1,12 +1,12 @@
 package Specialty;
 
-import Utils.ConsolePrinting;
+import Utils.Console.Printing;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LongestIncreasingSubsequence {
+public class LongestIncreasingSubSequence {
 
-    public static <T extends Comparable<? super T>> List<T> longestIncreasingSubsequence(T[] arr) {
+    public static <T extends Comparable<? super T>> List<T> longestIncreasingSubSequence(T[] arr) {
         List<T> ret = new ArrayList<>();
         int n = arr.length;
         if (n < 2) {
@@ -44,9 +44,9 @@ public class LongestIncreasingSubsequence {
 
     public static void main(String[] args) {
         Integer[] iarr = new Integer[]{2,5,-2,-3,3,4,5,3,7};
-        ConsolePrinting.println(longestIncreasingSubsequence(iarr));
+        Printing.println(longestIncreasingSubSequence(iarr));
 
         Character[] carr = new Character[]{'d','f','g','a','b','c','e','h'};
-        ConsolePrinting.println(longestIncreasingSubsequence(carr));
+        Printing.println(longestIncreasingSubSequence(carr));
     }
 }

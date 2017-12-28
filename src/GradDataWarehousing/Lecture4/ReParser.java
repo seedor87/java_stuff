@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 
-import static Utils.ConsolePrinting.println;
+import static Utils.Console.Printing.println;
 
 /**
  * Created by robertseedorf on 9/26/17.

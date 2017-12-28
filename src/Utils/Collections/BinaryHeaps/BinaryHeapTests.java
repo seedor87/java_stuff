@@ -8,7 +8,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static Utils.ConsolePrinting.*;
+import static Utils.Console.Printing.*;
+import static Utils.Console.Special.*;
 
 public class BinaryHeapTests {
 

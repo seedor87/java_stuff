@@ -3,10 +3,10 @@ package Utils;
 import Utils.Timers.SYSStopwatch;
 import Utils.Timers.TimeUnit;
 
-import static Utils.ConsolePrinting.*;
-import static Utils.StringUtils.StringUtils.padCenter;
-import static Utils.StringUtils.StringUtils.padJustify;
-import static Utils.StringUtils.StringUtils.padToRight;
+import static Utils.Console.Printing.*;
+import static Utils.StringUtils.padCenter;
+import static Utils.StringUtils.padJustify;
+import static Utils.StringUtils.padToRight;
 
 public class BinaryConversion {
 

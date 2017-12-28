@@ -1,6 +1,6 @@
 package RandomStuff;
 
-import Utils.ConsolePrinting;
+import Utils.Console.Printing;
 
 public class FermatNumbers {
 
@@ -9,7 +9,7 @@ public class FermatNumbers {
     }
     public static void main(String[] args) {
         for(int i = 0; i < 1000; i++) {
-            ConsolePrinting.println(fermatNumber(i));
+            Printing.println(fermatNumber(i));
         }
     }
 }

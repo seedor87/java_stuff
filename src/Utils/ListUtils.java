@@ -1,10 +1,12 @@
 package Utils;
 
 import Utils.Collections.Tuple;
+import Utils.Console.Printing;
 
 import java.util.*;
+import static Utils.Console.Special.*;
 
-import static Utils.ConsolePrinting.*;
+import static Utils.Console.Printing.*;
 import static Utils.Comparison.*;
 
 public class ListUtils {
@@ -134,7 +136,7 @@ public class ListUtils {
         return (E[]) ret.toArray();
     }
 
-    private static <E extends Comparable<? super E>> E most(BinaryComparator comp, E... params) {
+    private static <E extends Comparable<? super E>> E most(BooleanComparable comp, E... params) {
         E hold = params[0];
         for (E elem : params) {
             if(evaluate(comp, elem, hold)) {
@@ -168,8 +170,8 @@ public class ListUtils {
                 new Character[]{'e', 'f'}
         ));
 
-        ConsolePrinting.println(max(1,2,3,4,5));
-        ConsolePrinting.println(min(1,2,3,4,5,0));
+        Printing.println(max(1,2,3,4,5));
+        Printing.println(min(1,2,3,4,5,0));
 
         Tuple<Object>[] zippedOne = zip(
                 new Object[]{1,2,3},

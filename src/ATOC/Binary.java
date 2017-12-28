@@ -2,8 +2,8 @@ package ATOC;
 
 import static ATOC.Basic.*;
 import static ATOC.Booleans.*;
-import static Utils.ConsolePrinting.println;
-import static Utils.StringUtils.StringUtils.padJustify;
+import static Utils.Console.Printing.println;
+import static Utils.StringUtils.padJustify;
 
 public class Binary {
 

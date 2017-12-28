@@ -1,6 +1,6 @@
 package Specialty;
 
-import Utils.ConsolePrinting;
+import Utils.Console.Printing;
 
 public class RodCutting {
 
@@ -31,7 +31,7 @@ public class RodCutting {
                 new myInt(20)
         };
         int size = arr.length;
-        ConsolePrinting.println("Maximum Obtainable Value is " + cutRod(arr, size));
+        Printing.println("Maximum Obtainable Value is " + cutRod(arr, size));
     }
 
 }

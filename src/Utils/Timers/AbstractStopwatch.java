@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import java.text.DecimalFormat;
 
-import static Utils.ConsolePrinting.*;
+import static Utils.Console.Printing.*;
 
 /***
  * Abstract timer that holds capabilities of general use in code timer.

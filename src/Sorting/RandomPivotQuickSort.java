@@ -2,7 +2,7 @@ package Sorting;
 
 import java.util.Random;
 
-import static Utils.ConsolePrinting.println;
+import static Utils.Console.Printing.println;
 import static Utils.Comparison.lt;
 import static Utils.Exchange.exchange;
 
