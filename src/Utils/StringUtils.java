@@ -4,37 +4,57 @@ import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.stream.IntStream;
+
 import static Utils.Console.Special.*;
 
 import static Utils.Console.Printing.*;
 
+/**
+ * This class contains some methods for string manipulation that are lacking in the String suite of tools.
+ * Key:
+ *      padCenter({1, 2, 3})    =  ..1..2..3...
+ *      padJustify({1, 2, 3})   =  1....2.....3
+ */
 public class StringUtils {
 
+    /**
+     * Interface for extension of index-named-lambda pattern for ease of use in string split methods
+     */
     public interface SplitLambda {
         int splitOn(String s, String sep);
     }
 
-    public static SplitLambda firstIndex = (String s, String sep) -> s.indexOf(sep);
+    public static SplitLambda firstIndex = String::indexOf;
     public static SplitLambda secondIndex = (String s, String sep) -> s.indexOf(sep, firstIndex.splitOn(s, sep)+1);
     public static SplitLambda thirdIndex = (String s, String sep) -> s.indexOf(sep, secondIndex.splitOn(s, sep)+1);
     public static SplitLambda fourthIndex = (String s, String sep) -> s.indexOf(sep, thirdIndex.splitOn(s, sep)+1);
     public static SplitLambda fifthIndex = (String s, String sep) -> s.indexOf(sep, fourthIndex.splitOn(s, sep)+1);
     public static SplitLambda sixthIndex = (String s, String sep) -> s.indexOf(sep, fifthIndex.splitOn(s, sep)+1);
-    public static SplitLambda lastIndex = (String s, String sep) -> s.lastIndexOf(sep);
+    public static SplitLambda lastIndex = String::lastIndexOf;
     public static SplitLambda secondLastIndex = (String s, String sep) -> s.lastIndexOf(sep, lastIndex.splitOn(s, sep)-1);
     public static SplitLambda thirdLastIndex = (String s, String sep) -> s.lastIndexOf(sep, secondLastIndex.splitOn(s, sep)-1);
     public static SplitLambda fourthLastIndex = (String s, String sep) -> s.lastIndexOf(sep, thirdLastIndex.splitOn(s, sep)-1);
     public static SplitLambda fifthLastIndex = (String s, String sep) -> s.lastIndexOf(sep, fourthLastIndex.splitOn(s, sep)-1);
     public static SplitLambda sixthLastIndex = (String s, String sep) -> s.lastIndexOf(sep, fifthLastIndex.splitOn(s, sep)-1);
 
+    /**
+     * Method to generate and return string of default char (' ') to length, len
+     */
     public static String padToLength(int len) {
         return padToLength(len, ' ');
     }
 
+    /**
+     * Method to generate and return string of specified char, fill, to length, len
+     */
     public static String padToLength(int len, char fill) {
         return padToLength(len, "" + fill);
     }
 
+    /**
+     * Method to generate and return string of substring, fill, to length, len
+     */
     public static String padToLength(int len, String fill) {
         StringBuilder ret = new StringBuilder();
         while(ret.length() < len) {
@@ -46,37 +66,62 @@ public class StringUtils {
         return ret.toString();
     }
 
+    /**
+     * Method to generate and return left justified string of object, s, to length len.
+     */
     public static String padToLeft(int len, Object s) {
         return padToLeft(len, ' ', s);
     }
+
+    /**
+     * Method to generate and return right justified string of object, s, to length len.
+     */
     public static String padToRight(int len, Object s) {
         return padToRight(len, ' ', s);
     }
 
+    /**
+     * Method to generate and return left justified string of object, s, padded with char, fill, to length len.
+     */
     public static String padToLeft(int len, char fill, Object s) {
         String temp = padToLength(len - s.toString().length(), fill);
         return s.toString() + temp;
     }
 
+    /**
+     * Method to generate and return right justified string of object, s, padded with char, fill, to length len.
+     */
     public static String padToRight(int len, char fill, Object s) {
         String temp = padToLength(len - s.toString().length(), fill);
         return temp + s.toString();
     }
 
+    /**
+     * Method to generate and return left justified string of object, s, padded with string, fill, to length len.
+     */
     public static String padToLeft(int len, String fill, Object s) {
         String temp = padToLength(len - s.toString().length(), fill);
         return s.toString() + temp;
     }
 
+    /**
+     * Method to generate and return left justified string of object, s, padded with string, fill, to length len.
+     */
     public static String padToRight(int len, String fill, Object s) {
         String temp = padToLength(len - s.toString().length(), fill);
         return temp + s.toString();
     }
 
+    /**
+     * Method to generate and return center justified string of Collection, objs, padded with char, fill, to length len.
+     */
     public static String padJustify(int len, char fill, Collection<Object> objs) {
         return padJustify(len, fill, objs.toArray());
     }
 
+    /**
+     * Method to generate and return center justified string of Array, objs, padded with char, fill, to length len.
+     */
     public static String padJustify(int len, char fill, Object... objs) {
         if(objs.length < 2) {
             return padJustify(len, fill, "", objs[0], "");
@@ -106,10 +151,16 @@ public class StringUtils {
         return sb.toString();
     }
 
+    /**
+     * Method to generate and return centered string of Collection, objs, padded with char, fill, to length len.
+     */
     public static String padCenter(int len, char fill, Collection<Object> objs) {
         return padCenter(len, fill, objs.toArray());
     }
 
+    /**
+     * Method to generate and return centered string of Array, objs, padded with char, fill, to length len.
+     */
     public static String padCenter(int len, char fill, Object... objs) {
         StringBuilder sb = new StringBuilder();
         int totObjsLen = 0;
@@ -137,6 +188,9 @@ public class StringUtils {
         return sb.toString();
     }
 
+    /**
+     * Method to populate a number of remaining slots, remaining, of a total number of slots, numSlots, of an Array, arr, padded with char, fill,
+     */
     private static String[] fillRemainder(int remaining, int numSlots, char fill, String[] arr) {
         if(numSlots % 2 == 0) {
             int i = 1;
@@ -168,18 +222,24 @@ public class StringUtils {
         return arr;
     }
 
+    /**
+     * Method to split and justify Array, objs, on default index, lastIndex, of string separator, to length, padding, and fill with char, fill
+     */
     public static String splitAndJustifyOnSeparator(int padding, String separator, char fill, Object... params) {
         return splitAndJustifyOnSeparator(lastIndex, padding, separator, fill, params);
     }
 
-    public static String splitAndJustifyOnSeparator(SplitLambda lamb, int padding, String separator, char fill, Object... params) {
+    /**
+     * Method to split and justify Array, objs, on specified index, index, of string separator, to length, padding, and fill with char, fill
+     */
+    public static String splitAndJustifyOnSeparator(SplitLambda index, int padding, String separator, char fill, Object... params) {
         int maxl = 0;
         int maxr = 0;
         String[] lefts = new String[params.length];
         String[] rights = new String[params.length];
         int fulcrum = 0;
         for (int i = 0; i < params.length; i++) {
-            fulcrum = lamb.splitOn(params[i].toString(), separator);
+            fulcrum = index.splitOn(params[i].toString(), separator);
             String left = params[i].toString().substring(0, fulcrum);
             String right = params[i].toString().substring(fulcrum+separator.length());
             lefts[i] = left;
@@ -207,18 +267,24 @@ public class StringUtils {
         return sb.toString();
     }
 
+    /**
+     * Method to split and center Array, objs, on default index, lastIndex, of string separator, to length, padding, and fill with char, fill
+     */
     public static String splitAndCenterOnSeparator(int padding, String separator, char fill, Object... params) {
         return splitAndCenterOnSeparator(lastIndex, padding, separator, fill, params);
     }
 
-    public static String splitAndCenterOnSeparator(SplitLambda lamb, int padding, String separator, char fill, Object... params) {
+    /**
+     * Method to split and center Array, objs, on specified index, index, of string separator, to length, padding, and fill with char, fill
+     */
+    public static String splitAndCenterOnSeparator(SplitLambda index, int padding, String separator, char fill, Object... params) {
         int maxl = 0;
         int maxr = 0;
         String[] lefts = new String[params.length];
         String[] rights = new String[params.length];
         int fulcrum = 0;
         for(int i = 0; i < params.length; i++) {
-            fulcrum = lamb.splitOn(params[i].toString(), separator);
+            fulcrum = index.splitOn(params[i].toString(), separator);
             String left = params[i].toString().substring(0, fulcrum);
             String right = params[i].toString().substring(fulcrum+separator.length());
             lefts[i] = left;
@@ -246,30 +312,38 @@ public class StringUtils {
 
     public static void main(String[] args) {
 
+        Integer[] iArr = {1,2,3};
+        println(FG_MAGENTA, iArr, padCenter(12, '.', iArr));
+        println(FG_MAGENTA, iArr, padJustify(12, '.', iArr));
+
         int len = 60;
-        print(FG_BLUE);
+        Character[] cArr = new Character[]{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q'};
+        IntStream.range(0, cArr.length)
+                .forEach(i -> {
+                    println(FG_BLUE, padJustify(len, '_', Arrays.copyOfRange(cArr, 0, i + 1)));
+                    println(FG_RED, padCenter(len, '_', Arrays.copyOfRange(cArr, 0, i + 1)));
+                });
 
-        Character[] carr = new Character[]{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q'};
-//        arr = new String[]{"one", "two", "three", "four", "five", "six", "seven", "eight", "nine"};
-        for (int i = 0; i < carr.length; i++) {
-            println(FG_BLUE, padJustify(len, '_', Arrays.copyOfRange(carr, 0, i + 1)));
-            println(FG_RED, padCenter(len, '_', Arrays.copyOfRange(carr, 0, i + 1)));
-        }
-
-        String[] sarr = new String[]{"0th", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th"};
-        for (int i = 0; i < sarr.length; i++) {
-            println(FG_CYAN, padJustify(len, '-', Arrays.copyOfRange(sarr, 0, i + 1)));
-        }
-        for (int i = sarr.length - 2; i > -1; i--) {
-            println(FG_CYAN, padJustify(len, '-', Arrays.copyOfRange(sarr, 0, i + 1)));
-        }
-
-        for (int i = 0; i < sarr.length; i++) {
-            println(FG_YELLOW, padCenter(len, '-', Arrays.copyOfRange(sarr, 0, i + 1)));
-        }
-        for (int i = sarr.length - 2; i > -1; i--) {
-            println(FG_YELLOW, padCenter(len, '-', Arrays.copyOfRange(sarr, 0, i + 1)));
-        }
+        String[] sArr = new String[]{"0th", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th"};
+        int from = 0, to = sArr.length;
+        IntStream.range(from, to)
+            .forEach(i ->
+                println(FG_CYAN, padJustify(len, '-', Arrays.copyOfRange(sArr, 0, i + 1))
+            ));
+        IntStream.range(from, to)
+            .map(i -> to - i + from -1)
+            .forEach(i ->
+                println(FG_CYAN, padJustify(len, '-', Arrays.copyOfRange(sArr, 0, i + 1))
+            ));
+        IntStream.range(from, to)
+            .forEach(i ->
+                    println(FG_YELLOW, padCenter(len, '-', Arrays.copyOfRange(sArr, 0, i + 1))
+                    ));
+        IntStream.range(from, to)
+            .map(i -> to - i + from -1)
+            .forEach(i ->
+                    println(FG_YELLOW, padCenter(len, '-', Arrays.copyOfRange(sArr, 0, i + 1))
+                    ));
 
         String[] someFiles = new String[]{
                 "some/path/to/a_file.py",
@@ -358,8 +432,8 @@ public class StringUtils {
                 .1,
                 999.99
         };
-        println(splitAndCenterOnSeparator(firstIndex, 1,".", ' ',someDoubles));
-        println(splitAndCenterOnSeparator(firstIndex, 0,".", '0',someDoubles));
+        println(splitAndCenterOnSeparator(1,".", ' ',someDoubles));
+        println(splitAndCenterOnSeparator(0,".", '0',someDoubles));
 
 
         String[] someMoreDoubles = new String[]{

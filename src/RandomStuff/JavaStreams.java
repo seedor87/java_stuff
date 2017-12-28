@@ -112,6 +112,21 @@ public class JavaStreams {
                             return sum1 + sum2;
                         });
 
+        persons
+                .parallelStream()
+                .reduce(0,
+                        (sum, p) -> {
+                            Utils.Console.Printing.format("accumulator: sum=%s; person=%s [%s]\n",
+                                    sum, p, Thread.currentThread().getName());
+                            return sum += p.age;
+                        },
+                        (sum1, sum2) -> {
+                            Utils.Console.Printing.format("combiner: sum1=%s; sum2=%s [%s]\n",
+                                    sum1, sum2, Thread.currentThread().getName());
+                            return sum1 + sum2;
+                        });
+
+
     }
 }
 
