@@ -1,8 +1,45 @@
 package RandomStuff;
 
+import TestingUtils.JUnitTesting.TimedRule.TimedRule;
+import Utils.Timers.AbstractStopwatch;
+import Utils.Timers.SYSStopwatch;
+import Utils.Timers.TimeUnit;
+import org.junit.Assert;
+import org.junit.Rule;
+import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.IntStream;
+import static Utils.Console.Printing.*;
 
 public class ArmstrongNumber {
+
+    @Rule
+    public TimedRule jcr = new TimedRule(SYSStopwatch.class, TimeUnit.MICRO);
+
+    private static boolean cntrlMethod(int n, int pow) {
+        List<Integer> arr = new ArrayList<>();
+        int temp = n;
+        while (temp > 0) {
+            arr.add(temp % 10);
+            temp /= 10;
+        }
+        int sum = 0;
+        for (int k : arr) {
+            sum += Math.pow(k, pow);
+        }
+        return sum == n;
+    }
+
+    @Test
+    public void test() {
+        int lim = 1000000000;
+        int pow = 4;
+        for (int i = 1; i < lim; ++i) {
+            Assert.assertEquals(isNthArmstrNum(i, pow), cntrlMethod(i, pow));
+        }
+    }
 
     public static IntStream parseDigits(int n) {
         int count = 0, temp = n;
@@ -12,33 +49,35 @@ public class ArmstrongNumber {
                 .limit(count);
     }
 
-    public static boolean isArmstrNum(int i) {
-        return i == parseDigits(i)
-                .mapToDouble(x -> Math.pow(x, 3))
+    public static boolean isNthArmstrNum(int n, int pow) {
+        return n == parseDigits(n)
+                .mapToDouble(i -> Math.pow(i, pow))
                 .reduce(0, (x, y) -> x + y);
     }
 
-    public static boolean isNthPowNum(int i, int n) {
-        return i == parseDigits(i)
-                .mapToDouble(x -> Math.pow(x, n))
-                .reduce(0, (x, y) -> x + y);
-    }
-
-    public static void armstrNumTest(int lim, int n) {
-        IntStream.range(0, lim)
-                .filter((x) -> isNthPowNum(x, n))
-                .mapToObj(r -> parseDigits(r)
-                        .mapToObj(i -> i + "^" + n + " -> " + Math.pow(i, n) + ", ")
-                        .collect(StringBuilder::new,
-                                StringBuilder::append,
-                                StringBuilder::append)
-                        + " : " + r)
-                .forEach(Utils.Console.Printing::println);
+    public static boolean isArmstrNum(int n) {
+        return isNthArmstrNum(n, 3);
     }
 
     public static void main(String args[]) {
         int lim = 1000000;
-        IntStream.range(2,10)
-                .forEach(n -> armstrNumTest(lim, n));
+        int pow = 7;
+        AbstractStopwatch stopwatch = new SYSStopwatch(TimeUnit.MICRO);
+
+        stopwatch.start();
+        IntStream.range(2,pow)
+                .forEach(i ->
+                    IntStream.range(1, lim)
+                            .filter((j) -> isNthArmstrNum(j, i))
+                            .mapToObj(k -> parseDigits(k)
+                                    .mapToObj(l -> l + "^" + i + " -> " + Math.pow(l, i) + ", ")
+                                    .collect(StringBuilder::new,
+                                            StringBuilder::append,
+                                            StringBuilder::append)
+                                    + " : " + k)
+                            .forEach(Utils.Console.Printing::println)
+                );
+        stopwatch.stop();
+        println(stopwatch, "\n");
     }
 }

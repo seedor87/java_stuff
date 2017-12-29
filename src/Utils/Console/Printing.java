@@ -1,6 +1,6 @@
 package Utils.Console;
 
-import Utils.Collections.Tuple;
+import Utils.Collections.OldTuple.Tuple;
 import Utils.Timers.AbstractStopwatch;
 import Utils.Timers.SYSStopwatch;
 import Utils.Timers.TimeUnit;

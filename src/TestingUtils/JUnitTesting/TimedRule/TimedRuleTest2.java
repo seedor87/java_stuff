@@ -1,4 +1,4 @@
-package JUnit.TimedRule;
+package TestingUtils.JUnitTesting.TimedRule;
 
 import Utils.Timers.SYSStopwatch;
 import Utils.Timers.TimeUnit;

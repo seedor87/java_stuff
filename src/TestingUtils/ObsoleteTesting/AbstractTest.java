@@ -1,6 +1,6 @@
-package Testing;
+package TestingUtils.ObsoleteTesting;
 
-import Utils.Collections.Tuple;
+import Utils.Collections.OldTuple.Tuple;
 
 import java.lang.reflect.Method;
 

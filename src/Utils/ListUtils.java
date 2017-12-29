@@ -1,6 +1,6 @@
 package Utils;
 
-import Utils.Collections.Tuple;
+import Utils.Collections.OldTuple.Tuple;
 import Utils.Console.Printing;
 
 import java.util.*;

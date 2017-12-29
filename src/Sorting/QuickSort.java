@@ -1,8 +1,8 @@
 package Sorting;
 
-import NewTesting.NewSYSStopwatchTest;
+import TestingUtils.ObsoleteTesting.NewSYSStopwatchTest;
 import Utils.MyRandom;
-import Utils.Collections.Tuple;
+import Utils.Collections.OldTuple.Tuple;
 
 import static Utils.Console.Printing.println;
 import static Utils.Console.Printing.printlnDelim;

@@ -1,4 +1,4 @@
-package Testing;
+package TestingUtils.ObsoleteTesting;
 
 import RandomStuff.MersennePrimes;
 import RandomStuff.PerfectNumbers;
@@ -6,7 +6,7 @@ import Sorting.DualPivotQuickSort;
 import Sorting.QuickSort;
 import Utils.Equivocation;
 import Utils.Primes;
-import Utils.Collections.Tuple;
+import Utils.Collections.OldTuple.Tuple;
 
 import java.util.List;
 

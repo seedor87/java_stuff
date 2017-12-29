@@ -1,7 +1,7 @@
-package Testing;
+package TestingUtils.ObsoleteTesting;
 
 import Utils.Timers.SYSSpacer;
-import Utils.Collections.Tuple;
+import Utils.Collections.OldTuple.Tuple;
 
 import static Utils.Console.Printing.println;
 

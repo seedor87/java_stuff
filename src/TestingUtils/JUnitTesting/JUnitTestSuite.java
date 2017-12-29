@@ -1,4 +1,4 @@
-package JUnit;
+package TestingUtils.JUnitTesting;
 
 import Utils.StringUtils;
 import org.junit.runner.RunWith;

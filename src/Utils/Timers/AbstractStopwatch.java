@@ -1,6 +1,6 @@
 package Utils.Timers;
 
-import JUnit.TimedRule.TimedRule;
+import TestingUtils.JUnitTesting.TimedRule.TimedRule;
 import org.junit.Rule;
 import org.junit.Test;
 

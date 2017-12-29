@@ -1,8 +1,8 @@
-package NewTesting;
+package TestingUtils.ObsoleteTesting;
 
 import Utils.Timers.SYSStopwatch;
 import Utils.Timers.AbstractStopwatch;
-import Utils.Collections.Tuple;
+import Utils.Collections.OldTuple.Tuple;
 
 import static Utils.Console.Printing.println;
 

@@ -1,9 +1,9 @@
-package NewTesting;
+package TestingUtils.ObsoleteTesting;
 
 import Sorting.DualPivotQuickSort;
 import Sorting.QuickSort;
 import Utils.Console.Printing;
-import Utils.Collections.Tuple;
+import Utils.Collections.OldTuple.Tuple;
 
 import java.util.Arrays;
 import java.util.LinkedList;

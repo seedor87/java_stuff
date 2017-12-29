@@ -51,15 +51,6 @@ public class PerfectNumbers {
         }
     }
 
-    public static long binaryToInteger(String binary) {
-        char[] numbers = binary.toCharArray();
-        long result = 0;
-        for(int i=numbers.length - 1; i>=0; i--)
-            if(numbers[i]=='1')
-                result += Math.pow(2, (numbers.length-i - 1));
-        return result;
-    }
-
     public static int sum(List<Integer> arr) {
         int total = 0;
         for (Integer elem : arr) {

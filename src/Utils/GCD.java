@@ -62,7 +62,6 @@ public class GCD {
             println(fib(i));
         }
 
-
         AbstractStopwatch timer = new SYSStopwatch(TimeUnit.MILLI);
         if(!true) {
             timer. start();

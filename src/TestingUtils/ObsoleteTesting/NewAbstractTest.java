@@ -1,6 +1,6 @@
-package NewTesting;
+package TestingUtils.ObsoleteTesting;
 
-import Utils.Collections.Tuple;
+import Utils.Collections.OldTuple.Tuple;
 
 public abstract class NewAbstractTest<T extends Object> {
 

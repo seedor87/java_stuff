@@ -1,7 +1,7 @@
 package RandomStuff;
 
 import Utils.Console.Printing;
-import Utils.Collections.Tuple;
+import Utils.Collections.OldTuple.Tuple;
 
 import java.util.ArrayList;
 import java.util.Arrays;

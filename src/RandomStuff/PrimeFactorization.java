@@ -5,8 +5,8 @@ import java.util.Collections;
 import java.util.List;
 
 import static Utils.Console.Printing.*;
-import NewTesting.NewSYSStopwatchTest;
-import Utils.Collections.Tuple;
+import TestingUtils.ObsoleteTesting.NewSYSStopwatchTest;
+import Utils.Collections.OldTuple.Tuple;
 
 public class PrimeFactorization<T extends Object> extends NewSYSStopwatchTest<T> {
 
