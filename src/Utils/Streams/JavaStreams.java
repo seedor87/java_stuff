@@ -1,10 +1,13 @@
-package RandomStuff;
+package Utils.Streams;
 
 import Utils.Console.Printing;
 
+import java.io.Console;
 import java.util.*;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static Utils.Console.Printing.*;
 
@@ -127,6 +130,24 @@ public class JavaStreams {
                         });
 
 
+        IntStream.iterate(1, i -> i *2)
+                .limit(4)
+                .forEach(Utils.Console.Printing::println);
+
+
+        Stream<Color> s = IntStream.range(0,5)
+                .mapToObj(i -> Color.values()[i%3]);
+        s.forEach(Utils.Console.Printing::println);
+
+        Stream<Double> ds = IntStream.range(0,5).mapToDouble(Math::sin).boxed();
+        ds.forEach(Utils.Console.Printing::println);
+    }
+}
+
+enum Color {
+    RED, GREEN, BLUE;
+    static public Color getColor(int i) {
+        return Color.values()[i%3];
     }
 }
 
