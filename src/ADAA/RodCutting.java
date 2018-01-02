@@ -1,4 +1,4 @@
-package Specialty;
+package ADAA;
 
 import Utils.Console.Printing;
 

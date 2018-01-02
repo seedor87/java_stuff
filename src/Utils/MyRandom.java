@@ -1,6 +1,12 @@
 package Utils;
 
+import Utils.Timers.AbstractStopwatch;
+import Utils.Timers.SYSStopwatch;
+import Utils.Timers.TimeUnit;
+
 import java.util.Random;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static Utils.Console.Printing.println;
 import static Utils.Console.Printing.printlnDelim;
@@ -9,12 +15,10 @@ public abstract class MyRandom {
 
     private static Random generator = new Random();
 
-    public static Integer[] randomInts(int n, int max) {
-        Integer[] ret = new Integer[n];
-        for (int i = 0; i < n; i++) {
-            ret[i] = generator.nextInt(max);
-        }
-        return ret;
+    public static Stream<Object> randomInts(int n, int max) {
+        return IntStream
+                .range(0, n)
+                .mapToObj( i -> new Integer(generator.nextInt(max)));
     }
 
     public static Character[] randomChars(int n) {
@@ -26,7 +30,16 @@ public abstract class MyRandom {
     }
 
     public static void main(String[] args) {
-        printlnDelim(", ",randomChars(1000));
-        println(randomInts(100, 100));
+        AbstractStopwatch stp = new SYSStopwatch(TimeUnit.MICRO);
+        stp.start();
+        printlnDelim(", ",randomChars(1000000));
+        stp.stop();
+        println(stp);
+
+        stp.start();
+        randomInts(1000000, 100).forEach(p -> Utils.Console.Printing.print(p + " "));
+        println();
+        stp.stop();
+        println(stp);
     }
 }

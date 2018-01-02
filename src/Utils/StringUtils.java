@@ -1,4 +1,5 @@
 package Utils;
+import Utils.Console.PrintableSpecial;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -310,6 +311,19 @@ public class StringUtils {
         return sb.toString();
     }
 
+    /**
+     * Method to wrap the given objects, args (via toString), with the Special character, c, and ensure the string is terminated by a RESET char.
+     */
+    public static <T> String wrap(PrintableSpecial c, T... args) {
+        StringBuffer sb = new StringBuffer();
+        sb.append(c.toString());
+        for (T elem: args) {
+            sb.append(elem.toString());
+        }
+        sb.append(RESET);
+        return sb.toString();
+    }
+
     public static void main(String[] args) {
 
         Integer[] iArr = {1,2,3};
@@ -461,7 +475,7 @@ public class StringUtils {
         Assert.assertEquals("padJustifyTest",
                 "l ef t^^^^^^^^^^^^^^^^^r igh t",
                 padJustify(len, '^', "l ef t", "r igh t"));
-        Assert.assertEquals("pasToLengthTest",
+        Assert.assertEquals("padToLengthTest",
                 "123412341234123412341234123412",
                 padToLength(len, "1234"));
         String[] someFiles = new String[]{
@@ -483,5 +497,6 @@ public class StringUtils {
                         "/",
                         '.',
                         someFiles));
+
     }
 }

@@ -1,9 +1,8 @@
 package TestingUtils.ObsoleteTesting;
 
-import RandomStuff.MersennePrimes;
-import RandomStuff.PerfectNumbers;
-import Sorting.DualPivotQuickSort;
-import Sorting.QuickSort;
+import RandomStuff.SpecialNumbers.SpecialNumbers;
+import Utils.Sorting.DualPivotQuickSort;
+import Utils.Sorting.QuickSort;
 import Utils.Equivocation;
 import Utils.Primes;
 import Utils.Collections.OldTuple.Tuple;
@@ -32,8 +31,8 @@ public class TestBench {
     public static boolean ppTest(int lim) {
         boolean result = false;
         try {
-            List<Double> res1 = (List) new SYSStopwatchTest(PerfectNumbers.class, "generatePerfectNumbers").exe(lim).get(0);
-            List<Double> res2 = (List) new SYSStopwatchTest(PerfectNumbers.class, "findPerfectNumbers").exe(lim).get(0);
+            List<Double> res1 = (List) new SYSStopwatchTest(SpecialNumbers.class, "generatePerfectNumbers").exe(lim).get(0);
+            List<Double> res2 = (List) new SYSStopwatchTest(SpecialNumbers.class, "findPerfectNumbers").exe(lim).get(0);
             result = Equivocation.equal(res1, res2);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -54,7 +53,7 @@ public class TestBench {
 
     public static void mersennePrimeTest(int lim) {
         try {
-            new CPUStopwatchTest(MersennePrimes.class, "mersennePrimeTest").exe(lim);
+            new CPUStopwatchTest(Primes.class, "mersennePrimeTest").exe(lim);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

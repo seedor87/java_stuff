@@ -1,8 +1,7 @@
-package Utils.Streams;
+package RandomStuff.Streams;
 
 import Utils.Console.Printing;
 
-import java.io.Console;
 import java.util.*;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -141,6 +140,25 @@ public class JavaStreams {
 
         Stream<Double> ds = IntStream.range(0,5).mapToDouble(Math::sin).boxed();
         ds.forEach(Utils.Console.Printing::println);
+
+        List<Foo> foos = new ArrayList<>();
+        IntStream.range(0,4)
+                .forEach((i -> foos.add(new Foo("Foo " + i))));
+        foos.forEach(f -> IntStream
+                                .range(1, 4)
+                                .forEach(i -> f.bars.add(new Bar("Bar " + i + " <- " + f.name))));
+        foos.stream()
+                .flatMap(f -> f.bars.stream())
+                .forEach(b -> Utils.Console.Printing.println(b.name));
+
+        IntStream
+                .range(0,4)
+                .mapToObj(i -> new Foo("Foo" + i))
+                .peek(f -> IntStream.range(0,4)
+                    .mapToObj(i-> new Bar("Bar" + i + " <- " + f.name))
+                    .forEach(f.bars::add))
+                .flatMap(f -> f.bars.stream())
+                .forEach(b -> Utils.Console.Printing.println(b.name));
     }
 }
 
@@ -163,6 +181,23 @@ class Person {
     @Override
     public String toString() {
         return name;
+    }
+}
+
+class Foo {
+    String name;
+    List<Bar> bars = new ArrayList<>();
+
+    Foo(String name) {
+        this.name = name;
+    }
+}
+
+class Bar {
+    String name;
+
+    Bar(String name) {
+        this.name = name;
     }
 }
 

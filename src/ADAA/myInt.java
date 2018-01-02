@@ -1,4 +1,4 @@
-package Specialty;
+package ADAA;
 
 public class myInt implements Arithmetic {
     int val;

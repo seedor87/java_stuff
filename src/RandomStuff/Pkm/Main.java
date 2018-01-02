@@ -1,4 +1,4 @@
-package Pkm;
+package RandomStuff.Pkm;
 
 import Utils.Collections.Table;
 import Utils.Console.Printing;
@@ -7,7 +7,7 @@ import Utils.Console.Special;
 import java.util.HashMap;
 import java.util.Map;
 
-import static Pkm.Type.*;
+import static RandomStuff.Pkm.Type.*;
 import static Utils.Console.Printing.print;
 import static Utils.StringUtils.padCenter;
 import static Utils.StringUtils.padToLength;

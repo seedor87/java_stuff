@@ -1,7 +1,7 @@
 package TestingUtils.ObsoleteTesting;
 
-import Sorting.DualPivotQuickSort;
-import Sorting.QuickSort;
+import Utils.Sorting.DualPivotQuickSort;
+import Utils.Sorting.QuickSort;
 import Utils.Console.Printing;
 import Utils.Collections.OldTuple.Tuple;
 
@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import static Sorting.RandomPivotQuickSort.quickSort;
+import static Utils.Sorting.RandomPivotQuickSort.quickSort;
 import static Utils.Console.Printing.println;
 import static Utils.Console.Printing.printlnDelim;
 

@@ -1,4 +1,4 @@
-package Specialty;
+package ADAA;
 
 public interface Arithmetic {
 

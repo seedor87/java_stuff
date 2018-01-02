@@ -1,4 +1,4 @@
-package Pkm;
+package RandomStuff.Pkm;
 
 import Utils.Console.Special;
 

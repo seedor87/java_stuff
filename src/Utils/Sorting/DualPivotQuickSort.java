@@ -1,4 +1,4 @@
-package Sorting;
+package Utils.Sorting;
 
 import Utils.MyRandom;
 
@@ -47,7 +47,7 @@ public class DualPivotQuickSort {
     }
 
     public static void test(int len, int max) {
-        Integer[] itest1 = MyRandom.randomInts(len, max);
+        Integer[] itest1 = MyRandom.randomInts(len, max).toArray(Integer[]::new);
         quickSort(itest1);
     }
 

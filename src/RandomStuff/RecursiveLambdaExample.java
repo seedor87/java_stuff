@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.function.UnaryOperator;
 
-import static RandomStuff.FermatNumbers.fermatNumber;
+import static RandomStuff.SpecialNumbers.SpecialNumbers.fermatNumber;
 import static Utils.Comparison.eq;
 
 public class RecursiveLambdaExample<T extends Object> {

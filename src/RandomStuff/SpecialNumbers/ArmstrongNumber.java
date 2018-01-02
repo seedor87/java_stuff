@@ -1,4 +1,4 @@
-package RandomStuff;
+package RandomStuff.SpecialNumbers;
 
 import TestingUtils.JUnitTesting.TimedRule.TimedRule;
 import Utils.Timers.AbstractStopwatch;

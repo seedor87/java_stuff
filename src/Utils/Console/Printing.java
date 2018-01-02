@@ -24,16 +24,6 @@ public class Printing {
     }
     public static void printrn() { print(CARR_RET); }
 
-    public static <T> String wrap(PrintableSpecial c, T... args) {
-        StringBuffer sb = new StringBuffer();
-        sb.append(c.toString());
-        for (T elem: args) {
-            sb.append(elem.toString());
-        }
-        sb.append(RESET);
-        return sb.toString();
-    }
-
     private static <T> void printMap(T obj) {
         print("[");
         String delim = "";

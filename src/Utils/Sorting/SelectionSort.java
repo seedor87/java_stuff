@@ -1,4 +1,4 @@
-package Sorting;
+package Utils.Sorting;
 
 import static Utils.Console.Printing.println;
 import static Utils.Exchange.exchange;

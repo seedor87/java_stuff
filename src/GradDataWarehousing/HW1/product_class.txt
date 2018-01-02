@@ -1,5 +1,5 @@
 product_class_id	product_subcategory	product_category	product_department	product_family
-1	Nuts	Specialty	Produce	Food
+1	Nuts	ADAA	Produce	Food
 2	Shellfish	Seafood	Seafood	Food
 3	Canned Fruit	Fruit	Canned Products	Food
 4	Spices	Baking Goods	Baking Goods	Food
@@ -87,7 +87,7 @@ product_class_id	product_subcategory	product_category	product_department	product
 86	Pot Scrubbers	Kitchen Products	Household	Non-Consumable
 87	Pot Cleaners	Kitchen Products	Household	Non-Consumable
 88	Toothbrushes	Bathroom Products	Health and Hygiene	Non-Consumable
-89	Sunglasses	Specialty	Carousel	Non-Consumable
+89	Sunglasses	ADAA	Carousel	Non-Consumable
 90	Coffee	Hot Beverages	Beverages	Drink
 91	Bologna	Meat	Deli	Food
 92	Non-Alcoholic Wine	Beer and Wine	Alcoholic Beverages	Drink

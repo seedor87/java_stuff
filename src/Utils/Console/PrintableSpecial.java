@@ -1,6 +1,6 @@
 package Utils.Console;
 
-interface PrintableSpecial {
+public interface PrintableSpecial {
     @Override
     String toString();
 }

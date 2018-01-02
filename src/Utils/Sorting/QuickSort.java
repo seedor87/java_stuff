@@ -1,11 +1,10 @@
-package Sorting;
+package Utils.Sorting;
 
 import TestingUtils.ObsoleteTesting.NewSYSStopwatchTest;
 import Utils.MyRandom;
 import Utils.Collections.OldTuple.Tuple;
 
 import static Utils.Console.Printing.println;
-import static Utils.Console.Printing.printlnDelim;
 import static Utils.Comparison.lt;
 import static Utils.Exchange.exchange;
 
@@ -42,7 +41,13 @@ public class QuickSort<T extends Object> extends NewSYSStopwatchTest<T> {
     }
 
     public static void test(int len, int max) {
-        Integer[] itest1 = MyRandom.randomInts(len, max);
+        Integer[] itest1 = MyRandom.randomInts(len, max).toArray(Integer[]::new);
+//        Integer[] itest1 = MyRandom.randomInts(len, max).toArray(new IntFunction<Integer[]>() {
+//            @Override
+//            public Integer[] apply(int n) {
+//                return new Integer[n];
+//            }
+//        });
         quickSort(itest1);
     }
 
