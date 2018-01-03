@@ -43,13 +43,13 @@ public class NewTestBench extends NewSYSStopwatchTest {
 
     public static void main(String[] args) {
 
-//        Character[] arr1 = MyRandom.randomChars(50);
+//        Character[] arr1 = MyRandom.randomLetter(50);
 //        println(arr1);
 //
-//        Character[] arr2 = MyRandom.randomChars(500);
+//        Character[] arr2 = MyRandom.randomLetter(500);
 //        println(arr2);
 //
-//        Character[] arr3 = MyRandom.randomChars(5000);
+//        Character[] arr3 = MyRandom.randomLetter(5000);
 //        println(arr3);
 
         Character[] carr1 = {'q', 'r', 'h', 'm', 'n', 's', 'v', 'n', 'a', 't', 'a', 's', 'k', 'g', 'b', 'w', 'd', 'g', 'q', 'l', 'a', 'q', 'q', 'p', 'c', 'x', 'p', 'o', 'x', 'e', 'm', 'z', 'o', 'm', 'i', 'q', 'l', 't', 'd', 't', 'a', 'p', 'j', 's', 's', 'o', 'p', 'd', 'm', 'c'};

@@ -3,6 +3,7 @@ package TestingUtils.JUnitTesting.TimedRule;
 import Utils.Timers.AbstractStopwatch;
 import Utils.Timers.SYSStopwatch;
 import Utils.Timers.TimeUnit;
+import com.sun.crypto.provider.DESCipher;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -28,18 +29,23 @@ public class TimedRule implements TestRule {
         this.unit = unit;
     }
 
+    public Description getDescription() {
+        return this.description;
+    }
+
     @Override
     public Statement apply(Statement base, Description description) {
         this.base = base;
         this.description = description;
-        return new TimedStatement(this.base, this.type, this.unit);
+        return new TimedStatement(this.base, this.description, this.type, this.unit);
     }
 
     public class TimedStatement extends Statement {
         private final Statement base;
         private AbstractStopwatch timer;
+        private final Description description;
 
-        public <T extends AbstractStopwatch> TimedStatement(Statement base, Class<T> type, TimeUnit unit) {
+        public <T extends AbstractStopwatch> TimedStatement(Statement base, Description description, Class<T> type, TimeUnit unit) {
             try {
                 Constructor<T> ctor = (Constructor<T>) type.getDeclaredConstructors()[1];
                 this.timer = ctor.newInstance(unit);
@@ -47,17 +53,18 @@ public class TimedRule implements TestRule {
                 ex.printStackTrace();
             }
             this.base = base;
+            this.description = description;
         }
 
         @Override
         public void evaluate() throws Throwable {
-            timer.start();
+            this.timer.start();
             try {
-                base.evaluate();
+                this.base.evaluate();
             } finally {
-                timer.stop();
+                this.timer.stop();
             }
-            System.out.println(timer);
+            System.out.println(this.description + " : " + this.timer);
         }
     }
 }

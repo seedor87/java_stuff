@@ -7,6 +7,8 @@ import Utils.Timers.TimeUnit;
 
 import java.lang.reflect.Array;
 import java.util.*;
+import java.util.stream.Stream;
+
 import static Utils.Console.Special.*;
 
 public class Printing {
@@ -79,6 +81,10 @@ public class Printing {
         print("'");
         System.out.print(c);
         print("'");
+    }
+
+    private static <T> void printStream(T s) {
+        ((Stream) s).forEach(Utils.Console.Printing::print);
     }
 
     private static void printNull() {

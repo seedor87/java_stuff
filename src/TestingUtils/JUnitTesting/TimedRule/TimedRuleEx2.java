@@ -5,7 +5,7 @@ import Utils.Timers.TimeUnit;
 import org.junit.Rule;
 import org.junit.Test;
 
-public class TimedRuleTest2 {
+public class TimedRuleEx2 {
 
     public static class Inner {
         @Rule
