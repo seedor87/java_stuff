@@ -1,9 +1,8 @@
 package TestingUtils.JUnitTesting.TimedRule;
 
-import Utils.Timers.AbstractStopwatch;
-import Utils.Timers.SYSStopwatch;
-import Utils.Timers.TimeUnit;
-import com.sun.crypto.provider.DESCipher;
+import Utils.StopWatches.AbstractStopwatch;
+import Utils.StopWatches.SYSStopwatch;
+import Utils.StopWatches.TimeUnit;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;

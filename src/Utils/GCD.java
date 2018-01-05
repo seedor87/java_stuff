@@ -1,8 +1,8 @@
 package Utils;
 
-import Utils.Timers.AbstractStopwatch;
-import Utils.Timers.SYSStopwatch;
-import Utils.Timers.TimeUnit;
+import Utils.StopWatches.AbstractStopwatch;
+import Utils.StopWatches.SYSStopwatch;
+import Utils.StopWatches.TimeUnit;
 
 import static Utils.Console.Printing.println;
 

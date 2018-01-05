@@ -1,37 +1,41 @@
 package ADAA;
 
 import Utils.Console.Printing;
+import java.util.Comparator;
 
 public class RodCutting {
 
-    public static Arithmetic cutRod(Arithmetic[] arr, int n) {
-        myInt[] val = new myInt[n+1];
-        val[0] = new myInt(0);
+    static Comparator<Number> NumComparator = (o1, o2) -> ((Comparable) o1).compareTo(o2);
+
+    public static <T extends Number> T cutRod(T[] arr) {
+        return cutRod(arr, arr.length);
+    }
+
+    public static <T extends Number> T cutRod(T[] arr, int n) {
+        Number[] val = new Number[n+1];
+        val[0] = new ZeroAggregator().apply(arr[0]);
 
         for (int i = 1; i <= n; i++) {
-            myInt max = new myInt(Integer.MIN_VALUE);
+            Number max = new MinValueAggregator().apply(arr[0]);
             for(int j = 0; j < i; j++) {
-                max = ((max.compareTo(arr[j].add(val[i-j-1])) < 0) ? max : (myInt) arr[j].add(val[i-j-1]));
+                Number temp = new SumAggregator().apply(arr[j], val[i-j-1]);
+                max = NumComparator.compare(max, temp) > 0 ? max : temp;
             }
             val[i] = max;
         }
-        return val[n];
+        return (T) val[n];
     }
 
     public static void main(String args[])
     {
-        myInt[] arr = new myInt[] {
-                new myInt(1),
-                new myInt(5),
-                new myInt(8),
-                new myInt(9),
-                new myInt(10),
-                new myInt(17),
-                new myInt(17),
-                new myInt(20)
-        };
-        int size = arr.length;
-        Printing.println("Maximum Obtainable Value is " + cutRod(arr, size));
+        Integer[] ints = new Integer[] {1,5,8,9,10,15,17,20};
+        Printing.println("Maximum Obtainable Value is", cutRod(ints));
+
+        Double[] doubles = new Double[] {1.1, 2.2, 3.4, 5.1, 6.4, 7.5};
+        Printing.println("Maximum Obtainable Value is", cutRod(doubles));
+
+        Long[] longs = new Long[] {10000L, 10250L, 105000L, 10700L, 10900L, 11000L, 12000L};
+        Printing.println("Maximum Obtainable Value is", cutRod(longs));
     }
 
 }

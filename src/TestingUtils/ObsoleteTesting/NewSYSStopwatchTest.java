@@ -1,7 +1,7 @@
 package TestingUtils.ObsoleteTesting;
 
-import Utils.Timers.SYSStopwatch;
-import Utils.Timers.AbstractStopwatch;
+import Utils.StopWatches.SYSStopwatch;
+import Utils.StopWatches.AbstractStopwatch;
 import Utils.Collections.OldTuple.Tuple;
 
 import static Utils.Console.Printing.println;

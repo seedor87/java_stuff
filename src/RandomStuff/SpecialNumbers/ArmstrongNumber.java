@@ -1,9 +1,9 @@
 package RandomStuff.SpecialNumbers;
 
 import TestingUtils.JUnitTesting.TimedRule.TimedRule;
-import Utils.Timers.AbstractStopwatch;
-import Utils.Timers.SYSStopwatch;
-import Utils.Timers.TimeUnit;
+import Utils.StopWatches.AbstractStopwatch;
+import Utils.StopWatches.SYSStopwatch;
+import Utils.StopWatches.TimeUnit;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;

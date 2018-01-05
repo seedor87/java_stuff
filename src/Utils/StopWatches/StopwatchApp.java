@@ -1,4 +1,4 @@
-package Utils.Timers;
+package Utils.StopWatches;
 
 import Utils.Console.Printing;
 import Utils.Console.Special;
@@ -19,7 +19,7 @@ public class StopwatchApp {
     public static void main(String[] args) {
         Scanner reader = new Scanner(System.in);
         String commands;
-        TimeUnit unit = Utils.Timers.TimeUnit.SECONDS;
+        TimeUnit unit = Utils.StopWatches.TimeUnit.SECONDS;
         AbstractStopwatch stopwatch;
         Map<AbstractStopwatch.State, Special> stateColorMap = new HashMap<AbstractStopwatch.State, Special>()
         {{
@@ -45,7 +45,7 @@ public class StopwatchApp {
                 println(FG_BRIGHT_BLUE, "Cannot Parse input: " + s);
                 continue;
             }
-            unit = Utils.Timers.TimeUnit.values()[input-1]; // -1 for array index offset
+            unit = Utils.StopWatches.TimeUnit.values()[input-1]; // -1 for array index offset
         }
         println("Using time unit:", unit);
         stopwatch = new SYSStopwatch(unit);

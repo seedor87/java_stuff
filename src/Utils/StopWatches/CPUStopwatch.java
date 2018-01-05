@@ -1,4 +1,4 @@
-package Utils.Timers;
+package Utils.StopWatches;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;

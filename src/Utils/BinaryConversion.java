@@ -1,7 +1,7 @@
 package Utils;
 
-import Utils.Timers.SYSStopwatch;
-import Utils.Timers.TimeUnit;
+import Utils.StopWatches.SYSStopwatch;
+import Utils.StopWatches.TimeUnit;
 
 import static Utils.Console.Printing.*;
 import static Utils.StringUtils.padCenter;

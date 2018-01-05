@@ -1,4 +1,4 @@
-package Utils.Timers;
+package Utils.StopWatches;
 
 import TestingUtils.JUnitTesting.TimedRule.TimedRule;
 import org.junit.Rule;
@@ -59,7 +59,7 @@ public abstract class AbstractStopwatch {
     /**
      * protected fields for access only within extending classes.
      */
-    protected TimeUnit timeUnit = Utils.Timers.TimeUnit.MILLI;
+    protected TimeUnit timeUnit = Utils.StopWatches.TimeUnit.MILLI;
     protected double startTime = 01, endTime = 01, elapsedTime = 0;
     protected DecimalFormat formatter;
     protected State current = State.STOPPED;

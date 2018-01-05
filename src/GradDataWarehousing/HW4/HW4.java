@@ -3,9 +3,9 @@ package GradDataWarehousing.HW4;
 import GradDataWarehousing.HWResources.HW1Arrays;
 import GradDataWarehousing.HWResources.InventoryBuilder;
 import GradDataWarehousing.HWResources.SkuPrice;
-import Utils.Timers.AbstractStopwatch;
-import Utils.Timers.SYSStopwatch;
-import Utils.Timers.TimeUnit;
+import Utils.StopWatches.AbstractStopwatch;
+import Utils.StopWatches.SYSStopwatch;
+import Utils.StopWatches.TimeUnit;
 
 import java.io.*;
 import java.text.NumberFormat;
