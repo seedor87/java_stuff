@@ -1,24 +1,35 @@
 package Utils.Sorting;
 
-import TestingUtils.ObsoleteTesting.NewSYSStopwatchTest;
-import Utils.MyRandom;
-import Utils.Collections.OldTuple.Tuple;
+import java.util.Comparator;
 
 import static Utils.Console.Printing.println;
-import static Utils.Comparison.lt;
 import static Utils.Exchange.exchange;
 
-public class QuickSort<T extends Object> extends NewSYSStopwatchTest<T> {
+public class QuickSort<T extends Object> extends AbstractSortingAlgorithm {
 
-    private static  <T extends Comparable<? super T>> int partition(T[] arr, int left, int right) {
+    @Override
+    public <T extends Comparable<? super T>> T[] sort(Comparator<T> comp, T[] arr, int lowIndex, int highIndex) {
+        int i = partition(comp, arr, lowIndex, highIndex);
+        if (lowIndex < i - 1) {
+            sort(comp, arr, lowIndex, i - 1);
+        }
+        if (i < highIndex) {
+            sort(comp, arr, i, highIndex);
+        }
+        return arr;
+    }
+
+    private static  <T extends Comparable<? super T>> int partition(Comparator<T> comp, T[] arr, int left, int right) {
         int i = left, j = right;
         T pivot = arr[(left + right) / 2];
 
         while (i <= j) {
-            while (lt(arr[i],pivot))
+            while (comp.compare(arr[i], pivot) < 0) {
                 i++;
-            while (lt(pivot,arr[j]))
+            }
+            while (comp.compare(pivot,arr[j]) < 0) {
                 j--;
+            }
             if (i <= j) {
                 exchange(arr, i, j);
                 i++;
@@ -28,44 +39,18 @@ public class QuickSort<T extends Object> extends NewSYSStopwatchTest<T> {
         return i;
     }
 
-    public static  <T extends Comparable<? super T>> void quickSort(T[] arr, int left, int right) {
-        int i = partition(arr, left, right);
-        if (left < i - 1)
-            quickSort(arr, left, i - 1);
-        if (i < right)
-            quickSort(arr, i, right);
-    }
-
-    public static  <T extends Comparable<? super T>> void quickSort(T[] arr) {
-        quickSort(arr, 0, arr.length-1);
-    }
-
-    public static void test(int len, int max) {
-        Integer[] itest1 = MyRandom.randomInts(len, max).toArray(Integer[]::new);
-//        Integer[] itest1 = MyRandom.randomInts(len, max).toArray(new IntFunction<Integer[]>() {
-//            @Override
-//            public Integer[] apply(int n) {
-//                return new Integer[n];
-//            }
-//        });
-        quickSort(itest1);
-    }
-
-    @Override
-    public Tuple runThis(Object... params) {
-        quickSort((Comparable[]) params);
-        return new Tuple<>(params);
-    }
-
     public static void main(String[] args) {
+        Integer[] iarr = new Integer[]{3,2,5,6,1,7,8,4};
+        Character[] carr = new Character[]{'d','f','b','a','g','e','c','h'};
 
-        println(new QuickSort().test(new Integer[]{3,2,5,6,1,7,8,4}));
+        QuickSort qs = new QuickSort();
 
-        VarArgs<Character> myExe1 = (Character[] carr) -> {
-            quickSort(carr);
-            return new Tuple<>(carr);
-        };
-        println(new QuickSort().test(myExe1, new Character[]{'d','f','b','a','g','e','c','h'}));
+        println(qs.sort(iarr));
+
+        println(qs.sort(carr));
+
+        println(qs.sort((o1, o2) -> ((Comparable) o2).compareTo(o1), iarr, 0, iarr.length-1));
+
+        println(qs.sort((o1, o2) -> ((Comparable) o2).compareTo(o1), carr, 0, carr.length-1));
     }
-
 }

@@ -5,7 +5,7 @@ import java.lang.management.ThreadMXBean;
 
 public class CPUStopwatch extends AbstractStopwatch {
 
-    public CPUStopwatch() {}
+    public CPUStopwatch() {super();}
     public CPUStopwatch(TimeUnit u) {
         super(u);
     }

@@ -61,7 +61,7 @@ public abstract class AbstractStopwatch {
      */
     protected TimeUnit timeUnit = Utils.StopWatches.TimeUnit.MILLI;
     protected double startTime = 01, endTime = 01, elapsedTime = 0;
-    protected DecimalFormat formatter;
+    protected DecimalFormat formatter = new DecimalFormat(this.getTimeUnit().stringFormat);
     protected State current = State.STOPPED;
 
     /**

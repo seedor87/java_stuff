@@ -4,29 +4,29 @@ import Utils.Sorting.DualPivotQuickSort;
 import Utils.Sorting.QuickSort;
 import Utils.Console.Printing;
 import Utils.Collections.OldTuple.Tuple;
+import Utils.Sorting.RandomPivotQuickSort;
 
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import static Utils.Sorting.RandomPivotQuickSort.quickSort;
 import static Utils.Console.Printing.println;
 import static Utils.Console.Printing.printlnDelim;
 
 public class NewTestBench extends NewSYSStopwatchTest {
 
     public <T extends Comparable> T[] regQS(T[] carr) {
-        QuickSort.quickSort(carr);
+        new QuickSort().sort(carr);
         return carr;
     }
 
     public <T extends Comparable> T[] dualQS(T[] carr) {
-        DualPivotQuickSort.quickSort(carr);
+        new DualPivotQuickSort().sort(carr);
         return carr;
     }
 
     public <T extends Comparable> T[] randQS(T[] carr) {
-        quickSort(carr);
+        new RandomPivotQuickSort().sort(carr);
         return carr;
     }
 
@@ -63,7 +63,7 @@ public class NewTestBench extends NewSYSStopwatchTest {
 
 
         VarArgs myExe2 = (Object[] oarr) -> {
-            quickSort((Comparable[]) oarr);
+            new RandomPivotQuickSort().sort((Comparable[]) oarr);
             return new Tuple<>(oarr);
         };
         println(new NewTestBench().test(myExe2, new Character[]{'1','0','6','3','4','2','5','7'}));

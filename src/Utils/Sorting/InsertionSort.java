@@ -1,35 +1,40 @@
 package Utils.Sorting;
 
+import java.util.Comparator;
+
 import static Utils.Console.Printing.println;
 
-public class InsertionSort {
+public class InsertionSort extends AbstractSortingAlgorithm {
 
-    public static <T extends Comparable<? super T>> void insertionSort(T[] arr) {
-        insertionSort(arr, arr.length-1);
-    }
-
-    public static <T extends Comparable<? super T>> void insertionSort(T[] arr, int n) {
+    @Override
+    public <T extends Comparable<? super T>> T[] sort(Comparator<T> comp, T[] arr, int lowIndex, int highIndex) {
         T x;
         int j;
-        if(n > 0) {
-            insertionSort(arr, n-1);
-            x = arr[n];
-            j = n-1;
-            while(j >= 0 && arr[j].compareTo(x) > 0) {
+        if(highIndex > lowIndex) {
+            sort(comp, arr, lowIndex, highIndex-1);
+            x = arr[highIndex];
+            j = highIndex-1;
+            while(j >= 0 && comp.compare(arr[j], x) > 0) {
                 arr[j+1] = arr[j];
                 j = j-1;
             }
             arr[j+1] = x;
         }
+        return arr;
     }
 
     public static void main(String[] args) {
         Integer[] iarr = new Integer[]{3,2,5,6,1,7,8,4};
-        insertionSort(iarr);
-        println(iarr);
-
         Character[] carr = new Character[]{'d','f','b','a','g','e','c','h'};
-        insertionSort(carr);
-        println(carr);
+
+        InsertionSort is = new InsertionSort();
+
+        println(is.sort(iarr));
+
+        println(is.sort(carr));
+
+        println(is.sort((o1, o2) -> ((Comparable) o2).compareTo(o1), iarr, 0, iarr.length-1));
+
+        println(is.sort((o1, o2) -> ((Comparable) o2).compareTo(o1), carr, 0, carr.length-1));
     }
 }

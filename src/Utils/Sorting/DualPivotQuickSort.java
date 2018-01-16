@@ -1,36 +1,29 @@
 package Utils.Sorting;
 
-import Utils.MyRandom;
+import java.util.Comparator;
 
 import static Utils.Console.Printing.println;
-import static Utils.Comparison.lt;
 import static Utils.Exchange.exchange;
 
-public class DualPivotQuickSort {
+public class DualPivotQuickSort extends AbstractSortingAlgorithm {
 
-    public static <T extends Comparable<? super T>> void quickSort(T[] arr) {
-        quickSort(arr, 0, arr.length-1);
-    }
-
-    private static <T extends Comparable<? super T>> void quickSort(T[] arr, int lowIndex, int highIndex) {
+    @Override
+    public <T extends Comparable<? super T>> T[] sort(Comparator<T> comp, T[] arr, int lowIndex, int highIndex) {
         if(highIndex <= lowIndex) {
-            return;
+            return arr;
         }
 
-        T lowPivot = arr[lowIndex];
-        T highPivot = arr[highIndex];
+        T lowPivot = arr[lowIndex], highPivot = arr[highIndex];
 
-        if(lt(highPivot, lowPivot)) {
+        if(comp.compare(highPivot, lowPivot) < 0) {
             exchange(arr, lowIndex, highIndex);
         }
-        int lt = lowIndex + 1;
-        int gt = highIndex - 1;
-        int i = lowIndex + 1;
+        int lt = lowIndex + 1, gt = highIndex - 1, i = lowIndex + 1;
 
         while (i <= gt) {
-            if (lt(arr[i], lowPivot)) {
+            if (comp.compare(arr[i], lowPivot) < 0) {
                 exchange(arr, i++, lt++);
-            } else if (lt(highPivot, arr[i])) {
+            } else if (comp.compare(highPivot, arr[i]) < 0) {
                 exchange(arr, i, gt--);
             } else {
                 i++;
@@ -39,25 +32,26 @@ public class DualPivotQuickSort {
         exchange(arr, lowIndex, --lt);
         exchange(arr, highIndex, ++gt);
 
-        quickSort(arr, lowIndex, lt-1);
-        if (lt(arr[lt], arr[gt])) {
-            quickSort (arr, lt+1, gt-1);
+        sort(comp, arr, lowIndex, lt - 1);
+        if (comp.compare(arr[lt], arr[gt]) < 0) {
+            sort (comp, arr, lt + 1, gt - 1);
         }
-        quickSort(arr, gt+1, highIndex);
-    }
-
-    public static void test(int len, int max) {
-        Integer[] itest1 = MyRandom.randomInts(len, max).toArray(Integer[]::new);
-        quickSort(itest1);
+        sort(comp, arr, gt + 1, highIndex);
+        return arr;
     }
 
     public static void main(String[] args) {
         Integer[] iarr = new Integer[]{3,2,5,6,1,7,8,4};
-        quickSort(iarr);
-        println(iarr);
-
         Character[] carr = new Character[]{'d','f','b','a','g','e','c','h'};
-        quickSort(carr);
-        println(carr);
+
+        DualPivotQuickSort dpqs = new DualPivotQuickSort();
+
+        println(dpqs.sort(iarr));
+
+        println(dpqs.sort(carr));
+
+        println(dpqs.sort((o1, o2) -> ((Comparable) o2).compareTo(o1), iarr, 0, iarr.length-1));
+
+        println(dpqs.sort((o1, o2) -> ((Comparable) o2).compareTo(o1), carr, 0, carr.length-1));
     }
 }

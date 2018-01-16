@@ -2,11 +2,16 @@ package ADAA;
 
 import Utils.Console.Printing;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class LongestIncreasingSubSequence {
 
     public static <T extends Comparable<? super T>> List<T> longestIncreasingSubSequence(T[] arr) {
+        return longestIncreasingSubSequence(Comparator.naturalOrder(), arr);
+    }
+
+    public static <T extends Comparable<? super T>> List<T> longestIncreasingSubSequence(Comparator<T> comp, T[] arr) {
         List<T> ret = new ArrayList<>();
         int n = arr.length;
         if (n < 2) {
@@ -23,7 +28,7 @@ public class LongestIncreasingSubSequence {
         for (int i=n-2; i > -1; i--) {
             D[i] = 1;
             for(int j=n-1; j > i; j--) {
-                if (arr[i].compareTo(arr[j]) < 0 && D[j] + 1 > D[i]) {
+                if (comp.compare(arr[i], arr[j]) < 0 && D[j] + 1 > D[i]) {
                     D[i] = D[j] + 1;
                     if (D[i] > max_so_far) {
                         index_max = i;

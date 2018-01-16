@@ -1,32 +1,29 @@
 package Utils.Sorting;
 
+import java.util.Comparator;
+
 import static Utils.Console.Printing.println;
 
-public class MergeSort {
+public class MergeSort extends AbstractSortingAlgorithm {
 
-    public static <T extends Comparable<? super T>> void mergeSort(T[] arr) {
-        mergeSort(arr, 0, arr.length-1);
-    }
-
-    private static <T extends Comparable<? super T>> void mergeSort(T[] arr, int i, int j) {
-        int mid = 0;
-        if(i < j) {
-            mid = (i + j) / 2;
-            mergeSort(arr, i, mid);
-            mergeSort(arr, mid + 1, j);
-            merge(arr, i, mid, j);
+    @Override
+    public  <T extends Comparable<? super T>> T[] sort(Comparator<T> comp, T[] arr, int lowIndex, int highIndex) {
+        int mid;
+        if(lowIndex < highIndex) {
+            mid = (lowIndex + highIndex) / 2;
+            sort(comp, arr, lowIndex, mid);
+            sort(comp, arr, mid + 1, highIndex);
+            merge(comp, arr, lowIndex, mid, highIndex);
         }
+        return arr;
     }
 
-    private static <T extends Comparable<? super T>> void merge(T[] arr, int i, int mid, int j) {
+    private static <T extends Comparable<? super T>> void merge(Comparator<T> comp, T[] arr, int i, int mid, int j) {
         Comparable temp[] = new Comparable[arr.length];
-        int l = i;
-        int r = j;
-        int m = mid + 1;
-        int k = l;
+        int l = i, r = j, m = mid + 1, k = l;
 
         while(l <= mid && m <= r) {
-            if(arr[l].compareTo(arr[m]) <= 0) {
+            if(comp.compare(arr[l], arr[m]) <= 0) {
                 temp[k++] = arr[l++];
             } else {
                 temp[k++] = arr[m++];
@@ -38,18 +35,23 @@ public class MergeSort {
         while(m <= r) {
             temp[k++] = arr[m++];
         }
-        for(int i1 = i; i1 <= j; i1++) {
-            arr[i1] = (T) temp[i1];
+        for(int _i = i; _i <= j; _i++) {
+            arr[_i] = (T) temp[_i];
         }
     }
 
     public static void main(String[] args) {
         Integer[] iarr = new Integer[]{3,2,5,6,1,7,8,4};
-        mergeSort(iarr);
-        println(iarr);
-
         Character[] carr = new Character[]{'d','f','b','a','g','e','c','h'};
-        mergeSort(carr);
-        println(carr);
+
+        MergeSort ms = new MergeSort();
+
+        println(ms.sort(iarr));
+
+        println(ms.sort(carr));
+
+        println(ms.sort((o1, o2) -> ((Comparable) o2).compareTo(o1), iarr, 0, iarr.length-1));
+
+        println(ms.sort((o1, o2) -> ((Comparable) o2).compareTo(o1), carr, 0, carr.length-1));
     }
 }

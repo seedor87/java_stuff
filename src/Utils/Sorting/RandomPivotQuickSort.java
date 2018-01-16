@@ -1,23 +1,38 @@
 package Utils.Sorting;
 
+import java.util.Comparator;
 import java.util.Random;
 
 import static Utils.Console.Printing.println;
 import static Utils.Comparison.lt;
 import static Utils.Exchange.exchange;
 
-public class RandomPivotQuickSort {
+public class RandomPivotQuickSort extends AbstractSortingAlgorithm {
 
-    private static  <T extends Comparable<? super T>> int partition(T[] arr, int left, int right) {
+    @Override
+    public <T extends Comparable<? super T>> T[] sort(Comparator<T> comp, T[] arr, int lowIndex, int highIndex) {
+        int i = partition(comp, arr, lowIndex, highIndex);
+        if (lowIndex < i - 1) {
+            sort(comp, arr, lowIndex, i - 1);
+        }
+        if (i < highIndex) {
+            sort(comp, arr, i, highIndex);
+        }
+        return arr;
+    }
+
+    private static  <T extends Comparable<? super T>> int partition(Comparator<T> comp, T[] arr, int left, int right) {
         int i = left, j = right;
         int index = new Random().nextInt(((right - left) + 1) + left);
         T pivot = arr[index];
 
         while (i <= j) {
-            while (lt(arr[i],pivot))
+            while (comp.compare(arr[i],pivot) < 0) {
                 i++;
-            while (lt(pivot,arr[j]))
+            }
+            while (comp.compare(pivot,arr[j]) < 0) {
                 j--;
+            }
             if (i <= j) {
                 exchange(arr, i, j);
                 i++;
@@ -27,25 +42,18 @@ public class RandomPivotQuickSort {
         return i;
     }
 
-    public static  <T extends Comparable<? super T>> void quickSort(T[] arr, int left, int right) {
-        int i = partition(arr, left, right);
-        if (left < i - 1)
-            quickSort(arr, left, i - 1);
-        if (i < right)
-            quickSort(arr, i, right);
-    }
-
-    public static  <T extends Comparable<? super T>> void quickSort(T[] arr) {
-        quickSort(arr, 0, arr.length-1);
-    }
-
     public static void main(String[] args) {
         Integer[] iarr = new Integer[]{3,2,5,6,1,7,8,4};
-        quickSort(iarr);
-        println(iarr);
-
         Character[] carr = new Character[]{'d','f','b','a','g','e','c','h'};
-        quickSort(carr);
-        println(carr);
+
+        RandomPivotQuickSort rpqs = new RandomPivotQuickSort();
+
+        println(rpqs.sort(iarr));
+
+        println(rpqs.sort(carr));
+
+        println(rpqs.sort((o1, o2) -> ((Comparable) o2).compareTo(o1), iarr, 0, iarr.length-1));
+
+        println(rpqs.sort((o1, o2) -> ((Comparable) o2).compareTo(o1), carr, 0, carr.length-1));
     }
 }

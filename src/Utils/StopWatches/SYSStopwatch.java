@@ -4,7 +4,7 @@ public class SYSStopwatch extends AbstractStopwatch {
 
     private final double nativeFactor = 1000000000.0;
 
-    public SYSStopwatch() {}
+    public SYSStopwatch() {super();}
     public SYSStopwatch(TimeUnit u) {
         super(u);
     }
