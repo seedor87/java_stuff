@@ -2,15 +2,13 @@ package Utils.Sorting;
 
 import java.util.Comparator;
 import java.util.Random;
-
 import static Utils.Console.Printing.println;
-import static Utils.Comparison.lt;
 import static Utils.Exchange.exchange;
 
-public class RandomPivotQuickSort extends AbstractSortingAlgorithm {
+public class RandomPivotQuickSort<T extends Comparable<? super T>> extends AbstractSortingAlgorithm<T> {
 
     @Override
-    public <T extends Comparable<? super T>> T[] sort(Comparator<T> comp, T[] arr, int lowIndex, int highIndex) {
+    public T[] sort(Comparator comp, Comparable[] arr, int lowIndex, int highIndex) {
         int i = partition(comp, arr, lowIndex, highIndex);
         if (lowIndex < i - 1) {
             sort(comp, arr, lowIndex, i - 1);
@@ -18,7 +16,7 @@ public class RandomPivotQuickSort extends AbstractSortingAlgorithm {
         if (i < highIndex) {
             sort(comp, arr, i, highIndex);
         }
-        return arr;
+        return (T[]) arr;
     }
 
     private static  <T extends Comparable<? super T>> int partition(Comparator<T> comp, T[] arr, int left, int right) {

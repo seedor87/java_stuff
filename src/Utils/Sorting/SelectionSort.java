@@ -1,28 +1,42 @@
 package Utils.Sorting;
 
 import java.util.Comparator;
-
 import static Utils.Console.Printing.println;
 import static Utils.Exchange.exchange;
 
-public class SelectionSort extends AbstractSortingAlgorithm {
+public class SelectionSort<T extends Comparable<? super T>> extends AbstractSortingAlgorithm<T> {
 
     @Override
-    public <T extends Comparable<? super T>> T[] sort(Comparator<T> comp, T[] arr, int lowIndex, int highIndex) {
-        int i, j, iMin, n = highIndex;
+    public T[] sort(Comparator comp, Comparable[] arr, int lowIndex, int highIndex) {
+        int i, iMin;
 
-        for (j = lowIndex; j < n-1; j++) {
-            iMin = j;
-            for (i = j; i < n; i++) {
+        if (lowIndex <= highIndex) {
+            iMin = lowIndex;
+            for (i = lowIndex; i <= highIndex; i++) {
                 if (comp.compare(arr[i], arr[iMin]) < 0) {
                     iMin = i;
                 }
             }
-            if(iMin != j) {
-                exchange(arr, j, iMin);
+            if(iMin != lowIndex) {
+                exchange(arr, lowIndex, iMin);
             }
+            return sort(comp, arr, lowIndex + 1, highIndex);
         }
-        return arr;
+        return (T[]) arr;
+
+
+//        for (j = lowIndex; j <= highIndex; j++) {
+//            iMin = j;
+//            for (i = j; i <= highIndex; i++) {
+//                if (comp.compare(arr[i], arr[iMin]) < 0) {
+//                    iMin = i;
+//                }
+//            }
+//            if(iMin != j) {
+//                exchange(arr, j, iMin);
+//            }
+//        }
+//        return arr;
     }
 
     public static void main(String[] args) {

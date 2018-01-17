@@ -1,43 +1,47 @@
 package Utils.Sorting;
 
 import java.util.Comparator;
-
 import static Utils.Console.Printing.println;
 import static Utils.Exchange.exchange;
 
-public class DualPivotQuickSort extends AbstractSortingAlgorithm {
+public class DualPivotQuickSort<T extends Comparable<? super T>> extends AbstractSortingAlgorithm<T> {
 
     @Override
-    public <T extends Comparable<? super T>> T[] sort(Comparator<T> comp, T[] arr, int lowIndex, int highIndex) {
-        if(highIndex <= lowIndex) {
-            return arr;
-        }
+    public T[] sort(Comparator comp, Comparable[] arr, int lowIndex, int highIndex) {
+        if(highIndex > lowIndex) {
+            Comparable lowPivot = arr[lowIndex], highPivot = arr[highIndex];
 
-        T lowPivot = arr[lowIndex], highPivot = arr[highIndex];
-
-        if(comp.compare(highPivot, lowPivot) < 0) {
-            exchange(arr, lowIndex, highIndex);
-        }
-        int lt = lowIndex + 1, gt = highIndex - 1, i = lowIndex + 1;
-
-        while (i <= gt) {
-            if (comp.compare(arr[i], lowPivot) < 0) {
-                exchange(arr, i++, lt++);
-            } else if (comp.compare(highPivot, arr[i]) < 0) {
-                exchange(arr, i, gt--);
-            } else {
-                i++;
+            if (comp.compare(highPivot, lowPivot) < 0) {
+                exchange(arr, lowIndex, highIndex);
+                lowPivot = arr[lowIndex];
+                highPivot = arr[highIndex];
             }
-        }
-        exchange(arr, lowIndex, --lt);
-        exchange(arr, highIndex, ++gt);
+            while(comp.compare(lowPivot, highPivot) > 0 && lowIndex < highIndex) {
+                lowIndex++;
+                lowPivot = arr[lowIndex];
+            }
 
-        sort(comp, arr, lowIndex, lt - 1);
-        if (comp.compare(arr[lt], arr[gt]) < 0) {
+            int lt = lowIndex + 1, gt = highIndex - 1, i = lowIndex + 1;
+
+            while (i <= gt) {
+                if (comp.compare(arr[i], lowPivot) < 0) {
+                    exchange(arr, i++, lt++);
+                } else if (comp.compare(highPivot, arr[i]) < 0) {
+                    exchange(arr, i, gt--);
+                } else {
+                    i++;
+                }
+            }
+            exchange(arr, lowIndex, --lt);
+            exchange(arr, highIndex, ++gt);
+
+            sort(comp, arr, lowIndex, lt - 1);
+//        if (comp.compare(arr[lt], arr[gt]) < 0) {
             sort (comp, arr, lt + 1, gt - 1);
+//        }
+            sort(comp, arr, gt + 1, highIndex);
         }
-        sort(comp, arr, gt + 1, highIndex);
-        return arr;
+        return (T[]) arr;
     }
 
     public static void main(String[] args) {

@@ -1,33 +1,32 @@
 package Utils.Sorting;
 
 import java.util.Comparator;
-
 import static Utils.Console.Printing.println;
 import static Utils.Exchange.exchange;
 
-public class QuickSort<T extends Object> extends AbstractSortingAlgorithm {
+public class QuickSort<T extends Comparable<? super T>> extends AbstractSortingAlgorithm<T> {
 
     @Override
-    public <T extends Comparable<? super T>> T[] sort(Comparator<T> comp, T[] arr, int lowIndex, int highIndex) {
-        int i = partition(comp, arr, lowIndex, highIndex);
-        if (lowIndex < i - 1) {
-            sort(comp, arr, lowIndex, i - 1);
+    public T[] sort(Comparator comp, Comparable[] arr, int lowIndex, int highIndex) {
+        int p = partition(comp, arr, lowIndex, highIndex);
+        if (lowIndex < p - 1) {
+            sort(comp, arr, lowIndex, p - 1);
         }
-        if (i < highIndex) {
-            sort(comp, arr, i, highIndex);
+        if (p < highIndex) {
+            sort(comp, arr, p, highIndex);
         }
-        return arr;
+        return (T[]) arr;
     }
 
-    private static  <T extends Comparable<? super T>> int partition(Comparator<T> comp, T[] arr, int left, int right) {
-        int i = left, j = right;
-        T pivot = arr[(left + right) / 2];
+    private static  <T extends Comparable<? super T>> int partition(Comparator<T> comp, T[] arr, int leftIndex, int rightIndex) {
+        int i = leftIndex, j = rightIndex;
+        T pivot = arr[(leftIndex + rightIndex) / 2];
 
         while (i <= j) {
             while (comp.compare(arr[i], pivot) < 0) {
                 i++;
             }
-            while (comp.compare(pivot,arr[j]) < 0) {
+            while (comp.compare(pivot, arr[j]) < 0) {
                 j--;
             }
             if (i <= j) {

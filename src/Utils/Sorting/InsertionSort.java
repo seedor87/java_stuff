@@ -1,27 +1,40 @@
 package Utils.Sorting;
 
 import java.util.Comparator;
-
 import static Utils.Console.Printing.println;
 
-public class InsertionSort extends AbstractSortingAlgorithm {
+public class InsertionSort<T extends Comparable<? super T>> extends AbstractSortingAlgorithm<T> {
+
+//    @Override
+//    public T[] sort(Comparator comp, Comparable[] arr, int lowIndex, int highIndex) {
+//        Comparable x;
+//        int j;
+//        if(highIndex > lowIndex) {
+//            sort(comp, arr, lowIndex, highIndex-1);
+//            x = arr[highIndex];
+//            j = highIndex-1;
+//            while(j >= 0 && comp.compare(x, arr[j]) < 0) {
+//                arr[j+1] = arr[j];
+//                j = j-1;
+//            }
+//            arr[j+1] = x;
+//        }
+//        return (T[]) arr;
+//    }
 
     @Override
-    public <T extends Comparable<? super T>> T[] sort(Comparator<T> comp, T[] arr, int lowIndex, int highIndex) {
-        T x;
-        int j;
-        if(highIndex > lowIndex) {
-            sort(comp, arr, lowIndex, highIndex-1);
-            x = arr[highIndex];
-            j = highIndex-1;
-            while(j >= 0 && comp.compare(arr[j], x) > 0) {
-                arr[j+1] = arr[j];
-                j = j-1;
+    public T[] sort(Comparator comp, Comparable[] arr, int lowIndex, int highIndex) {
+        for(int i = lowIndex + 1; i <= highIndex; i++ ) {
+            Comparable x = arr[i];
+            int j;
+            for(j = i; j > lowIndex && comp.compare(x, arr[j - 1] ) < 0; j--) {
+                arr[j] = arr[j - 1];
             }
-            arr[j+1] = x;
+            arr[j] = x;
         }
-        return arr;
+        return (T[]) arr;
     }
+
 
     public static void main(String[] args) {
         Integer[] iarr = new Integer[]{3,2,5,6,1,7,8,4};
