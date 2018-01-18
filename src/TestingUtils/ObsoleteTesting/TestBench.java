@@ -1,11 +1,10 @@
 package TestingUtils.ObsoleteTesting;
 
 import RandomStuff.SpecialNumbers.SpecialNumbers;
-import Utils.Sorting.DualPivotQuickSort;
-import Utils.Sorting.QuickSort;
 import Utils.Equivocation;
 import Utils.Primes;
 import Utils.Collections.OldTuple.Tuple;
+import Utils.Sorting.SortingAlgorithms.*;
 
 import java.util.List;
 

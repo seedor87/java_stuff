@@ -1,10 +1,8 @@
 package TestingUtils.ObsoleteTesting;
 
-import Utils.Sorting.DualPivotQuickSort;
-import Utils.Sorting.QuickSort;
+import Utils.Sorting.SortingAlgorithms.*;
 import Utils.Console.Printing;
 import Utils.Collections.OldTuple.Tuple;
-import Utils.Sorting.RandomPivotQuickSort;
 
 import java.util.Arrays;
 import java.util.LinkedList;

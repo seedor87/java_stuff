@@ -63,7 +63,7 @@ public class TimedRule implements TestRule {
             } finally {
                 this.timer.stop();
             }
-            System.out.println(this.description + " : " + this.timer);
+            System.out.println(this.description + " : " + this.timer + "\n");
         }
     }
 }
