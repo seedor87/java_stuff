@@ -1,7 +1,10 @@
 package Utils;
 
+import TestingUtils.JUnitTesting.TimedRule.TimedRule;
 import Utils.StopWatches.SYSStopwatch;
 import Utils.StopWatches.TimeUnit;
+import org.junit.Rule;
+import org.junit.Test;
 
 import static Utils.Console.Printing.*;
 import static Utils.StringUtils.padCenter;
@@ -10,7 +13,9 @@ import static Utils.StringUtils.padToRight;
 
 public class BinaryConversion {
 
-    static long MAX_BINARY = 65536;
+    @Rule
+    public TimedRule jcr = new TimedRule(SYSStopwatch.class, TimeUnit.SECONDS);
+    private static long MAX_BINARY = 65536;
 
     public static long toBinary(long n) {
         return (n <= 0) ? 0 : (n % 2 ) + (10 * toBinary(n/2));
@@ -32,10 +37,6 @@ public class BinaryConversion {
         return toBinary(toDecimal(x) + toDecimal(y));
     }
 
-//    public static long incrBinary(long x) {
-//        return addBinaries(x, 1);
-//    }
-
     public static long incrBinary(long x) {
         return incrBinary(x, 0);
     }
@@ -47,9 +48,8 @@ public class BinaryConversion {
         return incrBinary(x/10, p+1);
     }
 
-    public static void main(String args[]) {
-        SYSStopwatch timer = new SYSStopwatch(TimeUnit.MILLI);
-        timer.start();
+    @Test
+    public void test() {
         for (long i = 0; i < MAX_BINARY; i++) {
             long x = toBinary(i);
             long y = toDecimal(x);
@@ -60,7 +60,5 @@ public class BinaryConversion {
                     )
             );
         }
-        timer.stop();
-        println(timer);
     }
 }

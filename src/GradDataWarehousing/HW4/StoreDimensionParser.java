@@ -46,7 +46,7 @@ public class StoreDimensionParser {
                     "Store Town",
                     "Store Zip",
                     "Store Phone",
-                    "Store State");
+                    "Store StopwatchState");
 
 
             store_key = 105;

@@ -15,6 +15,7 @@ import static Utils.Console.Printing.*;
  */
 public abstract class AbstractStopwatch {
 
+    private final long ZERO = 0L;
     /**
      * Special exception for bad state transitions.
      */
@@ -27,15 +28,15 @@ public abstract class AbstractStopwatch {
     /**
      * Interface for state machine method leveraging
      */
-    public interface EnactableState<T> {
-        double enact(T timer);
+    public interface Enactable<T> {
+        double transition(T timer);
     }
 
     /**
      * Enum for state transition of timer recording machine.
      * Used post measurement to save state and transition, or throw away and resume.
      */
-    public enum State implements EnactableState<AbstractStopwatch> {
+    public enum StopwatchState implements Enactable<AbstractStopwatch> {
         /*                         Started   Suspended     Resumed     Stopped     */
         STARTED( new boolean[]      {true,      true,       false,      true},      "Started",     (timer) -> timer.start()),
         SUSPENDED( new boolean[]    {false,     false,      true,       true},      "Suspended",   (timer) -> timer.suspend()),
@@ -44,15 +45,15 @@ public abstract class AbstractStopwatch {
 
         public String name;
         public boolean[] transitions;
-        private EnactableState<AbstractStopwatch> op;
+        private Enactable<AbstractStopwatch> enactable;
 
-        State(boolean[] transitions, String name, EnactableState<AbstractStopwatch> op) {
-            this.name = name; this.transitions = transitions; this.op = op;
+        StopwatchState(boolean[] transitions, String name, Enactable<AbstractStopwatch> enactable) {
+            this.name = name; this.transitions = transitions; this.enactable = enactable;
         }
 
         @Override
-        public double enact(AbstractStopwatch timer) {
-            return op.enact(timer);
+        public double transition(AbstractStopwatch timer) {
+            return enactable.transition(timer);
         }
     }
 
@@ -60,9 +61,9 @@ public abstract class AbstractStopwatch {
      * protected fields for access only within extending classes.
      */
     protected TimeUnit timeUnit = Utils.StopWatches.TimeUnit.MILLI;
-    protected double startTime = 01, endTime = 01, elapsedTime = 0;
+    protected double startTime = ZERO, endTime = ZERO, elapsedTime = 0;
     protected DecimalFormat formatter = new DecimalFormat(this.getTimeUnit().stringFormat);
-    protected State current = State.STOPPED;
+    protected StopwatchState current = StopwatchState.STOPPED;
 
     /**
      * abstract methods to be overridden.
@@ -94,7 +95,7 @@ public abstract class AbstractStopwatch {
     public double start () {
         startTime = getTime();
         elapsedTime = 0;
-        current = State.STARTED;
+        current = StopwatchState.STARTED;
         return startTime;
     }
 
@@ -103,23 +104,23 @@ public abstract class AbstractStopwatch {
         if(current.transitions[1]) {
             endTime = hold;
             elapsedTime += (endTime - startTime);
-            startTime = 0l;
-            current = State.SUSPENDED;
+            startTime = ZERO;
+            current = StopwatchState.SUSPENDED;
             return endTime;
         }
-        endTime = 01;
-        throw new IllegalStateTransitionException(current + " -> " + State.SUSPENDED);
+        endTime = ZERO;
+        throw new IllegalStateTransitionException(current + " -> " + StopwatchState.SUSPENDED);
     }
 
     public double resume() {
         double hold = getTime();
         if(current.transitions[2]) {
             startTime = hold;
-            endTime = 01;
-            current = State.RESUMED;
+            endTime = ZERO;
+            current = StopwatchState.RESUMED;
             return startTime;
         }
-        throw new IllegalStateTransitionException(current + " -> " + State.RESUMED);
+        throw new IllegalStateTransitionException(current + " -> " + StopwatchState.RESUMED);
     }
 
     public double stop () {
@@ -127,12 +128,12 @@ public abstract class AbstractStopwatch {
         if(isRunning()) {
             endTime = hold;
             elapsedTime += (endTime - startTime);
-            startTime = 0l;
+            startTime = ZERO;
         } else {
             startTime = 0;
             endTime = 0;
         }
-        current = State.STOPPED;
+        current = StopwatchState.STOPPED;
         return endTime;
     }
 
@@ -147,8 +148,8 @@ public abstract class AbstractStopwatch {
     }
 
     public boolean isRunning() {
-        return current == State.STARTED ||
-                current == State.RESUMED;
+        return current == StopwatchState.STARTED ||
+                current == StopwatchState.RESUMED;
     }
 
     public double getTimerValue() {
@@ -156,8 +157,7 @@ public abstract class AbstractStopwatch {
     }
 
     public String toString(TimeUnit u) {
-        String ret = formatter.format(getTimerValue(u)) + " " + u.name;
-        return ret;
+        return formatter.format(getTimerValue(u)) + " " + u.name;
     }
 
     @Override
@@ -173,7 +173,8 @@ public abstract class AbstractStopwatch {
             while(true) {
                 printrn(i);
                 i++;
-                if (i % 1000 == 0) {
+                if (i % 100000 == 0) {
+                    println();
                     break;
                 }
             }

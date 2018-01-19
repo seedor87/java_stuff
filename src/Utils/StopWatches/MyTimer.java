@@ -1,57 +1,64 @@
 package Utils.StopWatches;
 
-import java.awt.*;
+import java.awt.Toolkit;
 import java.util.concurrent.*;
 import java.util.concurrent.TimeUnit;
 
-public class MyTimer {
-    Toolkit toolkit;
-    Future<String> future;
-    ExecutorService executor;
+import static Utils.Console.Printing.printrn;
 
-    MyTimer() throws Exception{
+public class MyTimer<T extends Callable> {
+    private Future<T> future;
+    private ExecutorService executor;
+    private final Toolkit toolkit = Toolkit.getDefaultToolkit();
+
+    public MyTimer() throws Exception{
         executor = Executors.newSingleThreadExecutor();
         future = executor.submit(() -> {
-            while(true) {}
+            while(true);
         });
-        toolkit = Toolkit.getDefaultToolkit();
     }
 
-    MyTimer(Callable call) {
+    public MyTimer(T call) throws Exception {
         executor = Executors.newSingleThreadExecutor();
         future = executor.submit(call);
-        toolkit = Toolkit.getDefaultToolkit();
     }
 
-    public void exe(long seconds) {
+    public void run(long seconds) {
         try {
-            System.out.println("Started..");
-            System.out.println(future.get(seconds, TimeUnit.SECONDS));
-            System.out.println("Finished!");
+            System.out.println("Started...");
+            future.get(seconds, TimeUnit.SECONDS);
+            System.out.println("\nFinished!");
         } catch (TimeoutException e) {
             future.cancel(true);
-            System.out.println("Terminated!");
-        } catch (ExecutionException e) {
-            future.cancel(true);
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+            System.out.println("\nTerminated!");
+        } catch (Exception e) {
             future.cancel(true);
             e.printStackTrace();
         } finally {
             toolkit.beep();
+            future.cancel(true);
             executor.shutdownNow();
-            System.exit(0);
         }
     }
 
     public static void main(String[] args) throws Exception {
-        new MyTimer().exe(1);
-        new MyTimer(new Callable() {
-            @Override
-            public Object call() throws Exception {
-                return null;
-            }
-        });
+        new MyTimer<>(() -> new TestClass().call()).run(1);
+        new MyTimer(new TestClass()::call).run(1);
+        new MyTimer(new TestClass()).run(1);
+        new MyTimer().run(1);
+        System.exit(0);
+    }
+}
+
+class TestClass implements Callable {
+    @Override
+    public Object call() throws Exception {
+        int i = 0;
+        while(i < 10000) {
+            printrn(i);
+            ++i;
+        }
+        return null;
     }
 }
 

@@ -23,21 +23,21 @@ public class StringUtils {
      * Interface for extension of index-named-lambda pattern for ease of use in string split methods
      */
     public interface SplitLambda {
-        int splitOn(String s, String sep);
+        int splitOn(String s, String delim);
     }
 
     public static SplitLambda firstIndex = String::indexOf;
-    public static SplitLambda secondIndex = (String s, String sep) -> s.indexOf(sep, firstIndex.splitOn(s, sep)+1);
-    public static SplitLambda thirdIndex = (String s, String sep) -> s.indexOf(sep, secondIndex.splitOn(s, sep)+1);
-    public static SplitLambda fourthIndex = (String s, String sep) -> s.indexOf(sep, thirdIndex.splitOn(s, sep)+1);
-    public static SplitLambda fifthIndex = (String s, String sep) -> s.indexOf(sep, fourthIndex.splitOn(s, sep)+1);
-    public static SplitLambda sixthIndex = (String s, String sep) -> s.indexOf(sep, fifthIndex.splitOn(s, sep)+1);
+    public static SplitLambda secondIndex = (String s, String delim) -> s.indexOf(delim, firstIndex.splitOn(s, delim)+1);
+    public static SplitLambda thirdIndex = (String s, String delim) -> s.indexOf(delim, secondIndex.splitOn(s, delim)+1);
+    public static SplitLambda fourthIndex = (String s, String delim) -> s.indexOf(delim, thirdIndex.splitOn(s, delim)+1);
+    public static SplitLambda fifthIndex = (String s, String delim) -> s.indexOf(delim, fourthIndex.splitOn(s, delim)+1);
+    public static SplitLambda sixthIndex = (String s, String delim) -> s.indexOf(delim, fifthIndex.splitOn(s, delim)+1);
     public static SplitLambda lastIndex = String::lastIndexOf;
-    public static SplitLambda secondLastIndex = (String s, String sep) -> s.lastIndexOf(sep, lastIndex.splitOn(s, sep)-1);
-    public static SplitLambda thirdLastIndex = (String s, String sep) -> s.lastIndexOf(sep, secondLastIndex.splitOn(s, sep)-1);
-    public static SplitLambda fourthLastIndex = (String s, String sep) -> s.lastIndexOf(sep, thirdLastIndex.splitOn(s, sep)-1);
-    public static SplitLambda fifthLastIndex = (String s, String sep) -> s.lastIndexOf(sep, fourthLastIndex.splitOn(s, sep)-1);
-    public static SplitLambda sixthLastIndex = (String s, String sep) -> s.lastIndexOf(sep, fifthLastIndex.splitOn(s, sep)-1);
+    public static SplitLambda secondLastIndex = (String s, String delim) -> s.lastIndexOf(delim, lastIndex.splitOn(s, delim)-1);
+    public static SplitLambda thirdLastIndex = (String s, String delim) -> s.lastIndexOf(delim, secondLastIndex.splitOn(s, delim)-1);
+    public static SplitLambda fourthLastIndex = (String s, String delim) -> s.lastIndexOf(delim, thirdLastIndex.splitOn(s, delim)-1);
+    public static SplitLambda fifthLastIndex = (String s, String delim) -> s.lastIndexOf(delim, fourthLastIndex.splitOn(s, delim)-1);
+    public static SplitLambda sixthLastIndex = (String s, String delim) -> s.lastIndexOf(delim, fifthLastIndex.splitOn(s, delim)-1);
 
     /**
      * Method to generate and return string of default char (' ') to length, len
@@ -93,16 +93,14 @@ public class StringUtils {
      * Method to generate and return right justified string of object, s, padded with char, fill, to length len.
      */
     public static String padToRight(int len, char fill, Object s) {
-        String temp = padToLength(len - s.toString().length(), fill);
-        return temp + s.toString();
+        return padToLength(len - s.toString().length(), fill) + s.toString();
     }
 
     /**
      * Method to generate and return left justified string of object, s, padded with string, fill, to length len.
      */
     public static String padToLeft(int len, String fill, Object s) {
-        String temp = padToLength(len - s.toString().length(), fill);
-        return s.toString() + temp;
+        return s.toString() + padToLength(len - s.toString().length(), fill);
     }
 
     /**
@@ -128,13 +126,13 @@ public class StringUtils {
             return padJustify(len, fill, "", objs[0], "");
         }
         StringBuilder sb = new StringBuilder();
-        int totObjsLen = 0;
+        int totalLenObjs = 0;
         for(Object obj : objs) {
-            totObjsLen += obj.toString().length();
+            totalLenObjs += obj.toString().length();
         }
         int numSpacers = objs.length - 1;
         String[] arr = new String[numSpacers + objs.length];
-        int avgSpacerLen = (len - totObjsLen) / numSpacers;
+        int avgSpacerLen = (len - totalLenObjs) / numSpacers;
 
         int index = 0;
         for (Object obj : Arrays.copyOfRange(objs, 0, objs.length-1)) {
@@ -143,7 +141,7 @@ public class StringUtils {
         }
         arr[index] = objs[objs.length-1].toString();
 
-        int remaining = len - (totObjsLen + (avgSpacerLen * numSpacers));
+        int remaining = len - (totalLenObjs + (avgSpacerLen * numSpacers));
         arr = fillRemainder(remaining, numSpacers, fill, arr);
 
         for(String str : arr) {
@@ -164,14 +162,14 @@ public class StringUtils {
      */
     public static String padCenter(int len, char fill, Object... objs) {
         StringBuilder sb = new StringBuilder();
-        int totObjsLen = 0;
+        int totalLenObjs = 0;
         for(Object obj : objs) {
-            totObjsLen += obj.toString().length();
+            totalLenObjs += obj.toString().length();
         }
 
         int numSpacers = objs.length + 1;
         String[] arr = new String[numSpacers + objs.length];
-        int avgPerObj = (len - totObjsLen) / numSpacers;
+        int avgPerObj = (len - totalLenObjs) / numSpacers;
 
         int index = 0;
         arr[index++] = padToLength(avgPerObj, fill);
@@ -180,7 +178,7 @@ public class StringUtils {
             arr[index++] = padToLength(avgPerObj, fill);
         }
 
-        int remaining = len - (totObjsLen + (avgPerObj * numSpacers));
+        int remaining = len - (totalLenObjs + (avgPerObj * numSpacers));
         arr = fillRemainder(remaining, numSpacers, fill, arr);
 
         for(String str : arr) {
@@ -234,37 +232,34 @@ public class StringUtils {
      * Method to split and justify Array, objs, on specified index, index, of string separator, to length, padding, and fill with char, fill
      */
     public static String splitAndJustifyOnSeparator(SplitLambda index, int padding, String separator, char fill, Object... params) {
-        int maxl = 0;
-        int maxr = 0;
-        String[] lefts = new String[params.length];
-        String[] rights = new String[params.length];
-        int fulcrum = 0;
+        int maxL = 0, maxR = 0, fulcrum = 0;
+        String[] lefts = new String[params.length], rights = new String[params.length];
         for (int i = 0; i < params.length; i++) {
             fulcrum = index.splitOn(params[i].toString(), separator);
             String left = params[i].toString().substring(0, fulcrum);
             String right = params[i].toString().substring(fulcrum+separator.length());
             lefts[i] = left;
             rights[i] = right;
-            if (left.length() > maxl) {
-                maxl = left.length();
+            if (left.length() > maxL) {
+                maxL = left.length();
             }
-            if (right.length() > maxr) {
-                maxr = right.length();
+            if (right.length() > maxR) {
+                maxR = right.length();
             }
         }
-        maxl += padding;
-        maxr += padding;
+        maxL += padding;
+        maxR += padding;
         StringBuilder sb = new StringBuilder();
         int i = 0;
         for ( ; i < params.length-1; i++) {
-            sb.append(padToLeft(maxl, fill, lefts[i]));
+            sb.append(padToLeft(maxL, fill, lefts[i]));
             sb.append(separator);
-            sb.append(padToRight(maxr, fill, rights[i]));
+            sb.append(padToRight(maxR, fill, rights[i]));
             sb.append("\n");
         }
-        sb.append(padToLeft(maxl, fill, lefts[i]));
+        sb.append(padToLeft(maxL, fill, lefts[i]));
         sb.append(separator);
-        sb.append(padToRight(maxr, fill, rights[i]));
+        sb.append(padToRight(maxR, fill, rights[i]));
         return sb.toString();
     }
 
@@ -279,35 +274,32 @@ public class StringUtils {
      * Method to split and center Array, objs, on specified index, index, of string separator, to length, padding, and fill with char, fill
      */
     public static String splitAndCenterOnSeparator(SplitLambda index, int padding, String separator, char fill, Object... params) {
-        int maxl = 0;
-        int maxr = 0;
-        String[] lefts = new String[params.length];
-        String[] rights = new String[params.length];
-        int fulcrum = 0;
+        int maxL = 0, maxR = 0, fulcrum = 0;
+        String[] lefts = new String[params.length], rights = new String[params.length];
         for(int i = 0; i < params.length; i++) {
             fulcrum = index.splitOn(params[i].toString(), separator);
             String left = params[i].toString().substring(0, fulcrum);
             String right = params[i].toString().substring(fulcrum+separator.length());
             lefts[i] = left;
             rights[i] = right;
-            if(left.length() > maxl) { maxl = left.length(); }
-            if(right.length() > maxr) { maxr = right.length(); }
+            if(left.length() > maxL) { maxL = left.length(); }
+            if(right.length() > maxR) { maxR = right.length(); }
         }
         StringBuilder sb = new StringBuilder();
         int i = 0;
         for( ; i < params.length-1; i++) {
-            sb.append(padToRight(maxl, fill, lefts[i]));
+            sb.append(padToRight(maxL, fill, lefts[i]));
             sb.append(padToLength(padding, fill));
             sb.append(separator);
             sb.append(padToLength(padding, fill));
-            sb.append(padToLeft(maxr, fill, rights[i]));
+            sb.append(padToLeft(maxR, fill, rights[i]));
             sb.append("\n");
         }
-        sb.append(padToRight(maxl, fill, lefts[i]));
+        sb.append(padToRight(maxL, fill, lefts[i]));
         sb.append(padToLength(padding, fill));
         sb.append(separator);
         sb.append(padToLength(padding, fill));
-        sb.append(padToLeft(maxr, fill, rights[i]));
+        sb.append(padToLeft(maxR, fill, rights[i]));
         return sb.toString();
     }
 
@@ -450,14 +442,15 @@ public class StringUtils {
         println(splitAndCenterOnSeparator(0,".", '0',someDoubles));
 
 
-        String[] someMoreDoubles = new String[]{
-                "0....0",
-                "1....1",
-                "2....2"
+        String[] someChords = new String[]{
+                "0 **** 0",
+                "1 **** 1",
+                "2 **** 2"
         };
-        println(splitAndCenterOnSeparator(firstIndex, 1, "..", ' ', someMoreDoubles));
-        println(splitAndJustifyOnSeparator(secondIndex, 1, "..", ' ', someMoreDoubles));
-        println(splitAndCenterOnSeparator(thirdIndex, 1, "..", ' ', someMoreDoubles));
+        println(splitAndCenterOnSeparator(firstIndex, 1, "**", ' ', someChords));
+        println(splitAndJustifyOnSeparator(secondIndex, 1, "**", ' ', someChords));
+        println(splitAndCenterOnSeparator(thirdIndex, 1, "**", ' ', someChords));
+        println(splitAndCenterOnSeparator((s, delim) -> (s.length()/2)-1, 1, "*", ' ', someChords));
     }
 
     @Test

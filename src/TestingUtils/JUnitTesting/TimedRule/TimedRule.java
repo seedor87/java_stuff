@@ -3,11 +3,10 @@ package TestingUtils.JUnitTesting.TimedRule;
 import Utils.StopWatches.AbstractStopwatch;
 import Utils.StopWatches.SYSStopwatch;
 import Utils.StopWatches.TimeUnit;
+import java.lang.reflect.Constructor;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
-
-import java.lang.reflect.Constructor;
 
 public class TimedRule implements TestRule {
 
@@ -40,8 +39,8 @@ public class TimedRule implements TestRule {
     }
 
     public class TimedStatement extends Statement {
-        private final Statement base;
         private AbstractStopwatch timer;
+        private final Statement base;
         private final Description description;
 
         public <T extends AbstractStopwatch> TimedStatement(Statement base, Description description, Class<T> type, TimeUnit unit) {
@@ -63,7 +62,7 @@ public class TimedRule implements TestRule {
             } finally {
                 this.timer.stop();
             }
-            System.out.println(this.description + " : " + this.timer + "\n");
+            System.out.println("\u001B[32m" + this.description + " : " + this.timer + "\u001B[0m\n");
         }
     }
 }

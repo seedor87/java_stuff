@@ -1,67 +1,69 @@
 package Utils.StopWatches;
 
-import Utils.Console.Printing;
-import Utils.Console.Special;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import Utils.Console.Printing;
+import Utils.Console.Special;
 import static Utils.Console.Printing.*;
 import static Utils.Console.Special.*;
-import static Utils.StringUtils.padToLeft;
 
 public class StopwatchApp {
+
+    private static String choice = "";
+    private static int input = 0;
+    private static String commands = "";
+    private static String lastAction = "stopwatch application";
+    private static Special color = FG_BRIGHT_RED;
+    private static AbstractStopwatch stopwatch;
+    private static AbstractStopwatch.StopwatchState next;
+    private static TimeUnit unit = Utils.StopWatches.TimeUnit.SECONDS;
+    private static final Scanner READER = new Scanner(System.in);
+    private static final Map<AbstractStopwatch.StopwatchState, Special> STATE_COLOR_MAP = new HashMap<AbstractStopwatch.StopwatchState, Special>()
+    {{
+        put(AbstractStopwatch.StopwatchState.STARTED,    FG_BRIGHT_GREEN);
+        put(AbstractStopwatch.StopwatchState.SUSPENDED,  FG_BRIGHT_YELLOW);
+        put(AbstractStopwatch.StopwatchState.RESUMED,    FG_BRIGHT_CYAN);
+        put(AbstractStopwatch.StopwatchState.STOPPED,    FG_BRIGHT_RED);
+    }};
 
     private static boolean validate(int input) {
         return 0 < input && input < 6;
     }
 
     public static void main(String[] args) {
-        Scanner reader = new Scanner(System.in);
-        String commands;
-        TimeUnit unit = Utils.StopWatches.TimeUnit.SECONDS;
-        AbstractStopwatch stopwatch;
-        Map<AbstractStopwatch.State, Special> stateColorMap = new HashMap<AbstractStopwatch.State, Special>()
-        {{
-            put(AbstractStopwatch.State.STARTED,    FG_BRIGHT_GREEN);
-            put(AbstractStopwatch.State.SUSPENDED,  FG_BRIGHT_YELLOW);
-            put(AbstractStopwatch.State.RESUMED,    FG_BRIGHT_CYAN);
-            put(AbstractStopwatch.State.STOPPED,    FG_BRIGHT_RED);
-        }};
-
-        String s = "";
-        int input = 0;
-        commands =  "\t" + padToLeft(20, ' ', "[1] Nanoseconds") + "[4] Seconds" + "\n" +
-                    "\t" + padToLeft(20, ' ', "[2] Microseconds") + "[5] Minutes" + "\n" +
-                    "\t" + padToLeft(20, ' ', "[3] Milliseconds") + "[6] hours";
+        int index = 0;
+        for (TimeUnit u : TimeUnit.values()) {
+            ++index;
+            commands += "\t[" + index + "] " + u.name + "\n";
+        }
         while(input > 6 || input < 1) {
-            Printing.println("Please enter a number between 1 and 6");
-            Printing.println(commands);
+            Printing.println("Please enter a number between 1 and", index);
+            Printing.print(commands);
             Printing.print(">> ");
             try {
-                s = reader.next();
-                input = Integer.parseInt(s);
+                choice = READER.next();
+                input = Integer.parseInt(choice);
+                unit = Utils.StopWatches.TimeUnit.values()[input-1]; // -1 for array index offset
             } catch(NumberFormatException ex) {
-                println(FG_BRIGHT_BLUE, "Cannot Parse input: " + s);
+                println(FG_BRIGHT_BLUE, "Cannot Parse input: " + choice);
+                continue;
+            } catch (ArrayIndexOutOfBoundsException ex) {
                 continue;
             }
-            unit = Utils.StopWatches.TimeUnit.values()[input-1]; // -1 for array index offset
         }
         println("Using time unit:", unit);
-        stopwatch = new SYSStopwatch(unit);
 
-        commands = "start[1] suspend[2] resume[3] stop[4] print[5] quit[~]";
-        s = "";
+        stopwatch = new SYSStopwatch(unit);
+        choice = "";
         input = 4;
-        String lastAction = "stopwatch application";
-        Special color = FG_BRIGHT_RED;
-        AbstractStopwatch.State next;
+        commands = "start[1] suspend[2] resume[3] stop[4] print[5] quit[~]";
         do {
             try {
-                next = AbstractStopwatch.State.values()[input-1];   // -1 for offset of commands to arr index
-                next.enact(stopwatch);
+                next = AbstractStopwatch.StopwatchState.values()[input-1];   // -1 for offset of commands to arr index
+                next.transition(stopwatch);
                 lastAction = next.name;
-                color = stateColorMap.get(next);
+                color = STATE_COLOR_MAP.get(next);
             } catch (AbstractStopwatch.IllegalStateTransitionException ex) {
                 lastAction = ex.toString();
                 color = FG_BRIGHT_MAGENTA;
@@ -72,14 +74,14 @@ public class StopwatchApp {
             Printing.println(commands);
             Printing.print(">> ");
             try {
-                s = reader.next();
-                input = Integer.parseInt(s);
+                choice = READER.next();
+                input = Integer.parseInt(choice);
             } catch(NumberFormatException ex) {
-                println(FG_BRIGHT_BLUE, "Cannot Parse input: " + s);
+                println(FG_BRIGHT_BLUE, "Cannot Parse input: " + choice);
             }
         } while(validate(input));
         Printing.print("quiting...");
-        reader.close();
+        READER.close();
         System.exit(0);
     }
 }
