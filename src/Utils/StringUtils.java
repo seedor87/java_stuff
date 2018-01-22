@@ -264,14 +264,14 @@ public class StringUtils {
     }
 
     /**
-     * Method to split and center Array, objs, on default index, lastIndex, of string separator, to length, padding, and fill with char, fill
+     * Method to split and center Array, objs, on default index, lastIndex, of string delimiter, separator, to length, padding, and fill with char, fill
      */
     public static String splitAndCenterOnSeparator(int padding, String separator, char fill, Object... params) {
         return splitAndCenterOnSeparator(lastIndex, padding, separator, fill, params);
     }
 
     /**
-     * Method to split and center Array, objs, on specified index, index, of string separator, to length, padding, and fill with char, fill
+     * Method to split and center Array, objs, on specified index, index, of string delimiter, to length, padding, and fill with char, fill
      */
     public static String splitAndCenterOnSeparator(SplitLambda index, int padding, String separator, char fill, Object... params) {
         int maxL = 0, maxR = 0, fulcrum = 0;
@@ -421,11 +421,12 @@ public class StringUtils {
                 "me@hotmail.com",
                 "you@apple.com",
                 "someone@yahoo.com",
-                "DBTest@gmail.om",
+                "DBTest@gmail.com",
                 "no.reply@domain.name.com"
         };
         println(splitAndJustifyOnSeparator(2, "@", '_', someEmailAddresses));
         println(splitAndCenterOnSeparator(2, "@", '_', someEmailAddresses));
+        println(splitAndCenterOnSeparator(2, ".", '_', someEmailAddresses));
 
 
         Double[] someDoubles = new Double[] {

@@ -1,19 +1,19 @@
-package TestingUtils.JUnitTesting;
+package TestingUtils.JUnitTesting.TimedRule.examples;
 
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.Description;
 
-public class JUnitTestRunner {
+public class TestRunnerExample {
 
     public static void main(String[] args) {
-        Result result = JUnitCore.runClasses(JUnitTestSuite.class);
+        Result result = JUnitCore.runClasses(TestSuiteExample.class);
         for (Failure failure : result.getFailures()) {
             Description description;
-            String header;
-            String trace;
+            String header, trace;
             Throwable exception;
+
             description = failure.getDescription();
             exception = failure.getException();
             header = failure.getTestHeader();
