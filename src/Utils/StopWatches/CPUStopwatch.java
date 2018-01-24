@@ -19,11 +19,11 @@ public class CPUStopwatch extends AbstractStopwatch {
     @Override
     public double getElapsed(TimeUnit u) {
         switch(u) {
-            case NANO:
+            case NANOSECONDS:
                 return this.elapsedTime;
-            case MICRO:
+            case MICROSECONDS:
                 return this.elapsedTime / 1000.0;
-            case MILLI:
+            case MILLISECONDS:
                 return this.elapsedTime / 1000000.0;
             case SECONDS:
                 return this.elapsedTime / 1000000000.0;

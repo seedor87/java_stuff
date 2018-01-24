@@ -17,11 +17,11 @@ public class SYSStopwatch extends AbstractStopwatch {
     @Override
     public double getElapsed(TimeUnit u) {
         switch(u) {
-            case NANO:
+            case NANOSECONDS:
                 break;
-            case MICRO:
+            case MICROSECONDS:
                 return this.elapsedTime / (nativeFactor / 1000000.0);
-            case MILLI:
+            case MILLISECONDS:
                 return this.elapsedTime / (nativeFactor / 1000.0);
             case SECONDS:
                 return this.elapsedTime / nativeFactor;

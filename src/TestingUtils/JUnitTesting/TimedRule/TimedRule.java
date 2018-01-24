@@ -10,7 +10,7 @@ import org.junit.runners.model.Statement;
 public class TimedRule implements TestRule {
 
     private final Class<? extends AbstractStopwatch> DEFAULT_CLASS = SYSStopwatch.class;
-    private final TimeUnit DEFAULT_UNIT = TimeUnit.MICRO;
+    private final TimeUnit DEFAULT_UNIT = TimeUnit.MICROSECONDS;
 
     private Statement statement;
     private Description description;

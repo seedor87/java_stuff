@@ -1,9 +1,6 @@
 package Utils;
 
-import TestingUtils.JUnitTesting.TimedRule.TimedRule;
-import Utils.StopWatches.SYSStopwatch;
-import Utils.StopWatches.TimeUnit;
-import org.junit.Rule;
+import TestingUtils.JUnitTesting.TimedRule.TimeableClass;
 import org.junit.Test;
 
 import static Utils.Console.Printing.*;
@@ -11,10 +8,8 @@ import static Utils.StringUtils.padCenter;
 import static Utils.StringUtils.padJustify;
 import static Utils.StringUtils.padToRight;
 
-public class BinaryConversion {
+public class BinaryConversion extends TimeableClass {
 
-    @Rule
-    public TimedRule jcr = new TimedRule(SYSStopwatch.class, TimeUnit.SECONDS);
     private static long MAX_BINARY = 65536;
 
     public static long toBinary(long n) {

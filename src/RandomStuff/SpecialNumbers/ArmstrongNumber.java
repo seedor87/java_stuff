@@ -16,9 +16,9 @@ import static Utils.Console.Printing.*;
 public class ArmstrongNumber {
 
     @Rule
-    public TimedRule jcr = new TimedRule(SYSStopwatch.class, TimeUnit.MICRO);
+    public TimedRule jcr = new TimedRule(SYSStopwatch.class, TimeUnit.MICROSECONDS);
 
-    private static boolean cntrlMethod(int n, int pow) {
+    private static boolean ctrlMethod(int n, int pow) {
         List<Integer> arr = new ArrayList<>();
         int temp = n;
         while (temp > 0) {
@@ -30,15 +30,6 @@ public class ArmstrongNumber {
             sum += Math.pow(k, pow);
         }
         return sum == n;
-    }
-
-    @Test
-    public void test() {
-        int lim = 1000000000;
-        int pow = 4;
-        for (int i = 1; i < lim; ++i) {
-            Assert.assertEquals(isNthArmstrNum(i, pow), cntrlMethod(i, pow));
-        }
     }
 
     public static IntStream parseDigits(int n) {
@@ -59,25 +50,36 @@ public class ArmstrongNumber {
         return isNthArmstrNum(n, 3);
     }
 
-    public static void main(String args[]) {
+    @Test
+    public void test() {
         int lim = 1000000;
-        int pow = 7;
-        AbstractStopwatch stopwatch = new SYSStopwatch(TimeUnit.MICRO);
+        int pow = 8;
 
-        stopwatch.start();
         IntStream.range(2,pow)
-                .forEach(i ->
-                    IntStream.range(1, lim)
-                            .filter((j) -> isNthArmstrNum(j, i))
-                            .mapToObj(k -> parseDigits(k)
-                                    .mapToObj(l -> l + "^" + i + " -> " + Math.pow(l, i) + ", ")
-                                    .collect(StringBuilder::new,
-                                            StringBuilder::append,
-                                            StringBuilder::append)
-                                    + " : " + k)
-                            .forEach(Utils.Console.Printing::println)
-                );
-        stopwatch.stop();
-        println(stopwatch, "\n");
+            .forEach(i -> {
+                println("Power:", i);
+                IntStream.range(2, lim)
+                    .filter((j) -> isNthArmstrNum(j, i))
+                    .mapToObj(k -> "\t" + parseDigits(k)
+                        .mapToObj(l -> l + "^" + i + " -> " + Math.pow(l, i) + " ")
+                        .collect(
+                            StringBuilder::new,
+                            (sb, s) -> sb.insert(0, s),
+                            (sb1, sb2) -> sb1.insert(0, sb2.toString())
+
+                            /* TIP: this is a good way to reverse in a stream */
+//                            ArrayList::new,
+//                            (list, e) -> list.add(0, e),
+//                            (list1, list2) -> list1.addAll(0, list2)
+
+                        )
+                        + ": " + k)
+                    .forEach(Utils.Console.Printing::println);
+            });
+        println("\n");
+    }
+
+    public static void main(String args[]) {
+        new ArmstrongNumber().test();
     }
 }

@@ -15,7 +15,7 @@ import static Utils.Console.Printing.println;
 public class MyRandom {
 
     @Rule
-    public TimedRule jcr = new TimedRule(SYSStopwatch.class, TimeUnit.MICRO);
+    public TimedRule jcr = new TimedRule(SYSStopwatch.class, TimeUnit.MICROSECONDS);
 
     private static Random rand = new Random();
 
@@ -120,7 +120,7 @@ public class MyRandom {
     }
 
     public static void main(String[] args) {
-        AbstractStopwatch stp = new SYSStopwatch(TimeUnit.MICRO);
+        AbstractStopwatch stp = new SYSStopwatch(TimeUnit.MICROSECONDS);
 
         stp.start();
         randomLetters(100000000, Case.UPPER);

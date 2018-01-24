@@ -1,10 +1,9 @@
 package Utils.Sorting.SortingAlgorithms;
 
-import org.junit.Test;
-
-import java.util.Comparator;
 import static Utils.Console.Printing.println;
 import static Utils.Exchange.exchange;
+import org.junit.Test;
+import java.util.Comparator;
 
 public class DualPivotQuickSort<T extends Comparable<? super T>> extends AbstractSortingAlgorithm<T> {
 
@@ -73,8 +72,8 @@ public class DualPivotQuickSort<T extends Comparable<? super T>> extends Abstrac
 
         println(dpqs.sort(carr));
 
-        println(dpqs.sort((o1, o2) -> ((Comparable) o2).compareTo(o1), iarr, 0, iarr.length-1));
+        println(dpqs.sort(Comparator.reverseOrder(), iarr, 0, iarr.length-1));
 
-        println(dpqs.sort((o1, o2) -> ((Comparable) o2).compareTo(o1), carr, 0, carr.length-1));
+        println(dpqs.sort(Comparator.reverseOrder(), carr, 0, carr.length-1));
     }
 }

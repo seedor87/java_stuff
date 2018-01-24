@@ -80,7 +80,7 @@ public enum SortingAlgorithmsEnum {
                     };
 //            list = Arrays.asList(arr);
 
-            timer = new SYSStopwatch(TimeUnit.MILLI);
+            timer = new SYSStopwatch(TimeUnit.MILLISECONDS);
             timer.start();
 
             arr = algo.<Integer>sort(arr);

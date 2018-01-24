@@ -1,10 +1,10 @@
 package TestingUtils.JUnitTesting.TimedRule.examples;
 
 import TestingUtils.JUnitTesting.TimedRule.Testable;
-import TestingUtils.JUnitTesting.TimedRule.Timeable;
+import TestingUtils.JUnitTesting.TimedRule.TimeableClass;
 import org.junit.Test;
 
-public abstract class TimedRuleEx2 extends Timeable implements Testable {
+public abstract class TimedRuleEx2 extends TimeableClass implements Testable {
 
     /*
     The method we want to test, does not have to be static
@@ -27,7 +27,7 @@ public abstract class TimedRuleEx2 extends Timeable implements Testable {
     To get around this, we use the following dynamic to work, make a static
     inner class that has a valid default constructor and test that instead
      */
-    public static class Inner extends Timeable implements Testable {
+    public static class Inner extends TimeableClass implements Testable {
         @Override
         @Test
         public void test() {

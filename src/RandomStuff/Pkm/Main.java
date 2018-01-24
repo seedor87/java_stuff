@@ -1,16 +1,14 @@
 package RandomStuff.Pkm;
 
-import Utils.Collections.Table;
-import Utils.Console.Printing;
-import Utils.Console.Special;
-
-import java.util.HashMap;
-import java.util.Map;
-
 import static RandomStuff.Pkm.Type.*;
 import static Utils.Console.Printing.print;
 import static Utils.StringUtils.padCenter;
 import static Utils.StringUtils.padToLength;
+import Utils.Collections.Table;
+import Utils.Console.Printing;
+import Utils.Console.Special;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Main {
     public static void main(String[] args) {

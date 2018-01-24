@@ -19,7 +19,7 @@ public class BinaryHeapTests {
     public static void main(String args[]) {
 
         double total_time = 0;
-        AbstractStopwatch timer = new SYSStopwatch(TimeUnit.MICRO);
+        AbstractStopwatch timer = new SYSStopwatch(TimeUnit.MICROSECONDS);
         int step;
         for (step = 1; step <= 10; step++) {
             timer.start();

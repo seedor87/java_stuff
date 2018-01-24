@@ -1,19 +1,16 @@
 package Utils.Sorting.SortingAlgorithms;
 
+import java.util.Collection;
+import java.util.Comparator;
+import org.junit.Rule;
 import TestingUtils.JUnitTesting.TimedRule.TimedRule;
 import Utils.StopWatches.SYSStopwatch;
 import Utils.StopWatches.TimeUnit;
-import org.junit.Rule;
-
-import java.util.Collection;
-import java.util.Comparator;
-
-import static Utils.Console.Printing.println;
 
 public abstract class AbstractSortingAlgorithm<T extends Comparable<? super T>> implements SortingInterface<T> {
 
     @Rule
-    public TimedRule jcr = new TimedRule(SYSStopwatch.class, TimeUnit.MILLI);
+    public TimedRule jcr = new TimedRule(SYSStopwatch.class, TimeUnit.MILLISECONDS);
 
     private Comparator<T> DEFAULT_COMPARATOR = Comparator.naturalOrder();
 
