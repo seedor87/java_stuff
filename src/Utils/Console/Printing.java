@@ -7,6 +7,9 @@ import Utils.StopWatches.TimeUnit;
 
 import java.lang.reflect.Array;
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.IntConsumer;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static Utils.Console.Special.*;
@@ -84,7 +87,35 @@ public class Printing {
     }
 
     private static <T> void printStream(T s) {
-        ((Stream) s).forEach(Utils.Console.Printing::print);
+        ((Stream) s).forEach(new Consumer() {
+            int i = 0;
+
+            @Override
+            public void accept(Object o) {
+                if (i++ > 0) {
+                    print(" > ");
+                    print(o);
+                } else {
+                    print(o);
+                }
+            }
+        });
+    }
+
+    private static <T> void printIntStream(T s) {
+        ((IntStream) s).forEach(new IntConsumer() {
+            int i = 0;
+
+            @Override
+            public void accept(int value) {
+                if (i++ > 0) {
+                    print(" > ");
+                    print(value);
+                } else {
+                    print(value);
+                }
+            }
+        });
     }
 
     private static void printNull() {
@@ -101,6 +132,10 @@ public class Printing {
                 printTuple(o);
             } else if (Iterable.class.isInstance(o)) {
                 printIterable(o);
+            } else if (Stream.class.isInstance(o)) {
+                printStream(o);
+            } else if(IntStream.class.isInstance(o)) {
+                printIntStream(o);
             } else if (Character.class.isInstance(o)) {
                 printChar(o);
             } else {
@@ -201,6 +236,58 @@ public class Printing {
         printDelim(delim, args);
     }
 
+    public static <T extends IntStream> void printDelim(String delim, T args) {
+        args.forEach(new IntConsumer() {
+            int i = 0;
+
+            @Override
+            public void accept(int value) {
+                if (i++ > 0) {
+                    print(delim);
+                    print(value);
+                } else {
+                    print(value);
+                }
+            }
+        });
+    }
+
+    public static <T extends IntStream> void printlnDelim(String delim, T args) {
+        printDelim(delim, args);
+        println();
+    }
+
+    public static <T extends IntStream> void printrnDelim(String delim, T args) {
+        printrn();
+        printDelim(delim, args);
+    }
+
+    public static <T extends Stream<E>, E> void printDelim(String delim, T args) {
+        args.forEach(new Consumer<E>() {
+            int i = 0;
+
+            @Override
+            public void accept(E e) {
+                if (i++ > 0) {
+                    print(delim);
+                    print(e);
+                } else {
+                    print(e);
+                }
+            }
+        });
+    }
+
+    public static <T extends Stream<E>, E> void printlnDelim(String delim, T args) {
+        printDelim(delim, args);
+        println();
+    }
+
+    public static <T extends Stream<E>, E> void printrnDelim(String delim, T args) {
+        printrn();
+        printDelim(delim, args);
+    }
+
    public static void printDelim(String delim, char[] arr) {
         String temp = "";
         for(char c : arr) {
@@ -257,12 +344,16 @@ public class Printing {
         println(BG_DARK_GRAY, FG_GRAY,"TEST");
         println(BG_WHITE, FG_BLACK,"TEST");
 
-       try {
-           AbstractStopwatch timer = new SYSStopwatch(TimeUnit.MINUTES);
-           timer.start();
-           boolean s = true;
-           boolean s2 = true;
-           while(true) {
+        printlnDelim(", ", IntStream.of(1,2,3,4));
+        printlnDelim(" - ", Arrays.stream(new String[4]));
+        println(FG_BLUE, IntStream.of(5,4,3,2,1));
+
+        try {
+            AbstractStopwatch timer = new SYSStopwatch(TimeUnit.MINUTES);
+            timer.start();
+            boolean s = true;
+            boolean s2 = true;
+            while(true) {
                 if (s) {
                     printrn(FG_RED, BG_BLACK, new Date().toString());
                     s = false;
@@ -279,7 +370,7 @@ public class Printing {
                 Thread.sleep(1000);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+           e.printStackTrace();
         }
     }
 }

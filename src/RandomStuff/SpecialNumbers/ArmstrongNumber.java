@@ -1,17 +1,19 @@
 package RandomStuff.SpecialNumbers;
 
+import RandomStuff.Streams.StreamUtils;
 import TestingUtils.JUnitTesting.TimedRule.TimedRule;
-import Utils.StopWatches.AbstractStopwatch;
+import Utils.Console.Special;
 import Utils.StopWatches.SYSStopwatch;
 import Utils.StopWatches.TimeUnit;
-import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.IntStream;
+
 import static Utils.Console.Printing.*;
+import static Utils.Console.Special.*;
+import static Utils.StringUtils.wrap;
 
 public class ArmstrongNumber {
 
@@ -33,11 +35,15 @@ public class ArmstrongNumber {
     }
 
     public static IntStream parseDigits(int n) {
-        int count = 0, temp = n;
-        while(temp > 0) { temp /= 10; count++; }
-        return IntStream.iterate(n, i -> i /10)
-                .map(i -> i % 10)
-                .limit(count);
+        return StreamUtils.takeWhile(
+                    IntStream.iterate(n, i -> i / 10)
+                    , i -> i > 0)
+                .map(j -> j % 10);
+//        int count = 0, temp = n;
+//        while(temp > 0) { temp /= 10; count++; }
+//        return IntStream.iterate(n, i -> i /10)
+//                .map(i -> i % 10)
+//                .limit(count);
     }
 
     public static boolean isNthArmstrNum(int n, int pow) {
@@ -50,6 +56,23 @@ public class ArmstrongNumber {
         return isNthArmstrNum(n, 3);
     }
 
+    enum DigitColors {
+        ZERO(FG_RED),
+        ONE(FG_GREEN),
+        TWO(FG_BRIGHT_RED),
+        THREE(FG_YELLOW),
+        FOUR(FG_MAGENTA),
+        FIVE(FG_BRIGHT_GREEN),
+        SIX(FG_BRIGHT_YELLOW),
+        SEVEN(FG_CYAN),
+        EIGHT(FG_BRIGHT_MAGENTA),
+        NINE(FG_BRIGHT_CYAN);
+        private Special color;
+        DigitColors(Special color) {
+            this.color = color;
+        }
+    }
+
     @Test
     public void test() {
         int lim = 1000000;
@@ -60,23 +83,27 @@ public class ArmstrongNumber {
                 println("Power:", i);
                 IntStream.range(2, lim)
                     .filter((j) -> isNthArmstrNum(j, i))
-                    .mapToObj(k -> "\t" + parseDigits(k)
-                        .mapToObj(l -> l + "^" + i + " -> " + Math.pow(l, i) + " ")
-                        .collect(
-                            StringBuilder::new,
-                            (sb, s) -> sb.insert(0, s),
-                            (sb1, sb2) -> sb1.insert(0, sb2.toString())
-
-                            /* TIP: this is a good way to reverse in a stream */
-//                            ArrayList::new,
-//                            (list, e) -> list.add(0, e),
-//                            (list1, list2) -> list1.addAll(0, list2)
-
-                        )
-                        + ": " + k)
-                    .forEach(Utils.Console.Printing::println);
+                        .forEach(k -> {
+                            parseDigits(k)
+                                .<ArrayList<String>>collect(
+                                    ArrayList::new,
+                                    (list, e) -> {
+                                        (list).add(0, "" + wrap(DigitColors.values()[e].color, e));
+                                        (list).add((list.size()/2)+1, wrap(DigitColors.values()[e].color, e) + "^" + i + " = " + Math.pow(e, i));
+                                    },
+                                    (list1, list2) -> (list1).addAll(list2)
+                                ).stream()
+                                    .forEach(s -> {
+                                        if (s.length() < 11) {
+                                            print(s);
+                                        } else {
+                                            print("", s);
+                                        }
+                                    });
+                            println();
+                        });
             });
-        println("\n");
+        println();
     }
 
     public static void main(String args[]) {
