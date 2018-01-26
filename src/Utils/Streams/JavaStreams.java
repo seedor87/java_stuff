@@ -1,4 +1,4 @@
-package RandomStuff.Streams;
+package Utils.Streams;
 
 import Utils.Console.Printing;
 

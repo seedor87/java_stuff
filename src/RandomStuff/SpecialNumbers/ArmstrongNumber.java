@@ -1,6 +1,6 @@
 package RandomStuff.SpecialNumbers;
 
-import RandomStuff.Streams.StreamUtils;
+import Utils.Streams.StreamUtils;
 import TestingUtils.JUnitTesting.TimedRule.TimedRule;
 import Utils.Console.Special;
 import Utils.StopWatches.SYSStopwatch;
@@ -34,16 +34,15 @@ public class ArmstrongNumber {
         return sum == n;
     }
 
+    /* NOTE: maintains order of parsed digits */
     public static IntStream parseDigits(int n) {
-        return StreamUtils.takeWhile(
-                    IntStream.iterate(n, i -> i / 10)
-                    , i -> i > 0)
-                .map(j -> j % 10);
-//        int count = 0, temp = n;
-//        while(temp > 0) { temp /= 10; count++; }
-//        return IntStream.iterate(n, i -> i /10)
-//                .map(i -> i % 10)
-//                .limit(count);
+        return StreamUtils.reverseIntStream(
+                    StreamUtils.takeWhile(
+                        IntStream.iterate(n, i -> i / 10)
+                        , i -> i > 0
+                    )
+                    .map(j -> j % 10)
+        );
     }
 
     public static boolean isNthArmstrNum(int n, int pow) {
@@ -88,12 +87,14 @@ public class ArmstrongNumber {
                                 .<ArrayList<String>>collect(
                                     ArrayList::new,
                                     (list, e) -> {
-                                        (list).add(0, "" + wrap(DigitColors.values()[e].color, e));
-                                        (list).add((list.size()/2)+1, wrap(DigitColors.values()[e].color, e) + "^" + i + " = " + Math.pow(e, i));
+                                        list.add(wrap(DigitColors.values()[e].color, e) + "^" + i + " = " + Math.pow(e, i));
+                                        list.add((list.size()/2), wrap(DigitColors.values()[e].color, e));
+                                        /* Used for reverse-ordered digits */
+//                                        (list).add(0, "" + wrap(DigitColors.values()[e].color, e));
+//                                        (list).add((list.size()/2)+1, wrap(DigitColors.values()[e].color, e) + "^" + i + " = " + Math.pow(e, i));
                                     },
                                     (list1, list2) -> (list1).addAll(list2)
-                                ).stream()
-                                    .forEach(s -> {
+                                ).forEach(s -> {
                                         if (s.length() < 11) {
                                             print(s);
                                         } else {
@@ -107,6 +108,7 @@ public class ArmstrongNumber {
     }
 
     public static void main(String args[]) {
-        new ArmstrongNumber().test();
+     Utils.Console.Printing.print(parseDigits(1234));
+//        new ArmstrongNumber().test();
     }
 }
