@@ -36,7 +36,7 @@ public class ArmstrongNumber {
 
     /* NOTE: maintains order of parsed digits */
     public static IntStream parseDigits(int n) {
-        return StreamUtils.reverseIntStream(
+        return StreamUtils.reverse(
                     StreamUtils.takeWhile(
                         IntStream.iterate(n, i -> i / 10)
                         , i -> i > 0

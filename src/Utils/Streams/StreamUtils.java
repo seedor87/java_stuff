@@ -19,46 +19,50 @@ public class StreamUtils {
     public TimedRule jcr = new TimedRule(SYSStopwatch.class, TimeUnit.MICROSECONDS);
 
     public static IntStream takeWhile(IntStream stream, IntPredicate predicate) {
-        return StreamSupport.intStream(new TakeIntSpliterator(stream, predicate), stream.isParallel());
+        return stream.flatMap(takeWhileFunc(predicate));
     }
 
-    public static <T> Stream<T> takeWhile(Stream<T> stream, Predicate<T> predicate) {
-        return StreamSupport.<T>stream(new TakeSpliterator<T>(stream, predicate), stream.isParallel());
-    }
-
-    public static IntStream dropWhile(IntStream stream, IntPredicate predicate) {
-        return StreamSupport.intStream(new DropIntSpliterator(stream, predicate), stream.isParallel());
-    }
-
-    public static <T> Stream<T> dropWhile(Stream<T> stream, Predicate<T> predicate) {
-        return StreamSupport.<T>stream(new DropSpliterator<T>(stream, predicate), stream.isParallel());
-    }
-
-    public static <T> Stream<T> reverse(Stream<T> stream) {
-        return StreamSupport.stream(new ReverseSpliterator<>(stream.spliterator()), stream.isParallel());
-    }
-
-    public static <T> Function<T, Stream<T>> everyNth(int n) {
-        return new Function<T, Stream<T>>() {
-            int i = 0;
+    public static IntFunction<? extends IntStream> takeWhileFunc(IntPredicate predicate) {
+        return new IntFunction<IntStream>() {
+            boolean found = false;
 
             @Override
-            public Stream<T> apply(T t) {
-                if (i++ % n == 0) {
-                    return Stream.of(t);
+            public IntStream apply(int value) {
+                if (!found) {
+                    if (predicate.test(value)) {
+                        return IntStream.of(value);
+                    } else {
+                        found = true;
+                    }
                 }
-                return Stream.empty();
+                return IntStream.empty();
             }
         };
     }
 
-    public static IntFunction<? extends IntStream> everyNthInt(int n) {
+    public static IntStream takeWhile(IntStream stream, IntBinaryPredicate predicate, Integer seed) {
+        return stream.flatMap(takeWhileFunc(seed, predicate));
+    }
+
+    public static IntStream takeWhile(IntStream stream, IntBinaryPredicate predicate) {
+        return stream.flatMap(takeWhileFunc(null, predicate));
+    }
+
+    public static IntFunction<? extends IntStream> takeWhileFunc(Integer seed, IntBinaryPredicate predicate) {
         return new IntFunction<IntStream>() {
-            int i = 0;
+            boolean found = false;
+            Integer prev = seed;
 
             @Override
             public IntStream apply(int value) {
-                if (i++ % n == 0) {
+                if (!found) {
+                    if (prev != null) {
+                        if (!predicate.test(prev, value)) {
+                            found = true;
+                            return IntStream.empty();
+                        }
+                    }
+                    prev = value;
                     return IntStream.of(value);
                 }
                 return IntStream.empty();
@@ -66,11 +70,273 @@ public class StreamUtils {
         };
     }
 
+    public static <T> Stream<T> takeWhile(Stream<T> stream, Predicate<T> predicate) {
+        return stream.flatMap(takeWhileFunc(predicate));
+    }
+
+    public static <T> Function<T, Stream<T>> takeWhileFunc(Predicate<T> predicate) {
+        return new Function<T, Stream<T>>() {
+            boolean found = false;
+
+            @Override
+            public Stream<T> apply(T t) {
+                if (!found) {
+                    if (predicate.test(t)) {
+                        return Stream.of(t);
+                    } else {
+                        found = true;
+                    }
+                }
+                return Stream.empty();
+            }
+        };
+    }
+
+    public static <T> Stream<T> takeWhile(Stream<T> stream, BinaryPredicate<T> predicate, T seed) {
+        return stream.flatMap(takeWhileFunc(seed, predicate));
+    }
+
+    public static <T> Stream<T> takeWhile(Stream<T> stream, BinaryPredicate<T> predicate) {
+        return stream.flatMap(takeWhileFunc(null, predicate));
+    }
+
+    public static <T> Function<T, Stream<T>> takeWhileFunc(T seed, BinaryPredicate<T> predicate) {
+        return new Function<T, Stream<T>>() {
+            boolean found = false;
+            T prev = seed;
+
+            @Override
+            public Stream<T> apply(T t) {
+                if (!found) {
+                    if (prev != null) {
+                        if (!predicate.test(prev, t)) {
+                            found = true;
+                            return Stream.empty();
+                        }
+                    }
+                    prev = t;
+                    return Stream.of(t);
+                }
+                return Stream.empty();
+            }
+        };
+    }
+
+    public static IntStream dropWhile(IntStream stream, IntPredicate predicate) {
+        return stream.flatMap(dropWhileFunc(predicate));
+    }
+
+    public static IntFunction<? extends IntStream> dropWhileFunc(IntPredicate predicate) {
+        return new IntFunction<IntStream>() {
+            boolean found = false;
+
+            @Override
+            public IntStream apply(int value) {
+                if (!found) {
+                    if (predicate.test(value)) {
+                        return IntStream.empty();
+                    } else {
+                        found = true;
+                    }
+                }
+                return IntStream.of(value);
+            }
+        };
+    }
+
+    public static IntStream dropWhile(IntStream stream, IntBinaryPredicate predicate, Integer seed) {
+        return stream.flatMap(dropWhileFunc(seed, predicate));
+    }
+
+    public static IntStream dropWhile(IntStream stream, IntBinaryPredicate predicate) {
+        return stream.flatMap(dropWhileFunc(null, predicate));
+    }
+
+    public static IntFunction<? extends IntStream> dropWhileFunc(Integer seed, IntBinaryPredicate predicate) {
+        return new IntFunction<IntStream>() {
+            boolean found = false;
+            Integer prev = seed;
+
+            @Override
+            public IntStream apply(int value) {
+                if (!found) {
+                    if (prev != null) {
+                        if (!predicate.test(prev, value)) {
+                            found = true;
+                            return IntStream.of(value);
+                        }
+                    }
+                    prev = value;
+                    return IntStream.empty();
+                }
+                return IntStream.of(value);
+            }
+        };
+    }
+
+    public static <T> Stream<T> dropWhile(Stream<T> stream, Predicate<T> predicate) {
+        return stream.flatMap(dropWhileFunc(predicate));
+    }
+
+    public static <T> Function<T, Stream<T>> dropWhileFunc(Predicate<T> predicate) {
+        return new Function<T, Stream<T>>() {
+            boolean found = false;
+
+            @Override
+            public Stream<T> apply(T t) {
+                if (!found) {
+                    if (predicate.test(t)) {
+                        return Stream.empty();
+                    } else {
+                        found = true;
+                    }
+                }
+                return Stream.of(t);
+            }
+        };
+    }
+
+    public static <T> Stream<T> dropWhile(Stream<T> stream, BinaryPredicate<T> predicate, T seed) {
+        return stream.flatMap(dropWhileFunc(seed, predicate));
+    }
+
+    public static <T> Stream<T> dropWhile(Stream<T> stream, BinaryPredicate<T> predicate) {
+        return stream.flatMap(dropWhileFunc(null, predicate));
+    }
+
+    public static <T> Function<T, Stream<T>> dropWhileFunc(T seed, BinaryPredicate<T> predicate) {
+        return new Function<T, Stream<T>>() {
+            boolean found = false;
+            T prev = seed;
+
+            @Override
+            public Stream<T> apply(T t) {
+                if (!found) {
+                    if (prev != null) {
+                        if (!predicate.test(prev, t)) {
+                            found = true;
+                            return Stream.of(t);
+                        }
+                    }
+                    prev = t;
+                    return Stream.empty();
+                }
+                return Stream.of(t);
+            }
+        };
+    }
+
+    public static IntStream reverse(IntStream stream) {
+        return StreamSupport.intStream(new IntReverseSpliterator<>(stream.spliterator()), stream.isParallel());
+    }
+
+    public static <T> Stream<T> reverse(Stream<T> stream) {
+        return StreamSupport.stream(new ReverseSpliterator<>(stream.spliterator()), stream.isParallel());
+    }
+
+    public static IntStream intDropN(IntStream stream, long n) {
+        return stream.flatMap(intDropN(n));
+    }
+
+    public static IntFunction<? extends IntStream> intDropN(long n) {
+        return new IntFunction<IntStream>() {
+            int i = 0;
+
+            @Override
+            public IntStream apply(int value) {
+                return (i ++ >= n) ? IntStream.of(value) : IntStream.empty();
+            }
+        };
+    }
+
+    public static <T> Stream<T> dropN(Stream<T> stream, long n) {
+        return stream.flatMap(dropN(n));
+    }
+
+    public static <T> Function<T, Stream<T>> dropN(long n) {
+        return new Function<T, Stream<T>>() {
+            int i = 0;
+
+            @Override
+            public Stream<T> apply(T value) {
+                return (i ++ >= n) ? Stream.of(value) : Stream.empty();
+            }
+        };
+    }
+
+    public static IntStream intTakeN(IntStream stream, long n) {
+        return stream.flatMap(intTakeN(n));
+    }
+
+    public static IntFunction<? extends IntStream> intTakeN(long n) {
+        return new IntFunction<IntStream>() {
+            int i = 0;
+
+            @Override
+            public IntStream apply(int value) {
+                return (i ++ >= n) ? IntStream.empty() : IntStream.of(value);
+            }
+        };
+    }
+
+    public static <T> Stream<T> takeN(Stream<T> stream, long n) {
+        return stream.flatMap(takeN(n));
+    }
+
+    public static <T> Function<T, Stream<T>> takeN(long n) {
+        return new Function<T, Stream<T>>() {
+            int i = 0;
+
+            @Override
+            public Stream<T> apply(T t) {
+                return (i ++ >= n) ? Stream.empty() : Stream.of(t);
+            }
+        };
+    }
+
+    public static IntFunction<? extends IntStream> intTakeEveryNth(long n) {
+        return new IntFunction<IntStream>() {
+            int i = 0;
+
+            @Override
+            public IntStream apply(int value) {
+                return (i++ % n == 0) ? IntStream.of(value) : IntStream.empty();
+            }
+        };
+    }
+
+    public static <T> Function<T, Stream<T>> takeEveryNth(long n) {
+        return new Function<T, Stream<T>>() {
+            int i = 0;
+
+            @Override
+            public Stream<T> apply(T t) {
+                return (i++ % n == 0)? Stream.of(t) : Stream.empty();
+            }
+        };
+    }
+
+    public static IntFunction<IntStream> intMatchOnly(IntPredicate predicate) {
+        return value -> (predicate.test(value)) ? IntStream.of(value) : IntStream.empty();
+    }
+
+    public static <T> Function<T, Stream<T>> matchOnly(Predicate<T> predicate) {
+        return value -> (predicate.test(value)) ? Stream.of(value) : Stream.empty();
+    }
+
     public static <T> String toString(Stream<T> stream) {
         return stream.collect(
                     StringBuilder::new,
                     (sb, s) -> sb.append(s.toString()),
                     StringBuilder::append)
+                .toString();
+    }
+
+    public static <T> String toString(String delim, Stream<T> stream) {
+        return stream.collect(
+                StringBuilder::new,
+                (sb, s) -> sb.append(s.toString()),
+                StringBuilder::append)
                 .toString();
     }
 
@@ -82,7 +348,7 @@ public class StreamUtils {
                 .stream();
     }
 
-    public static IntStream reverseIntStream(IntStream stream) {
+    public static IntStream intReverseStream(IntStream stream) {
         return stream.<ArrayDeque<Integer>>collect(
                     ArrayDeque::new,
                     ArrayDeque::addFirst,
@@ -147,101 +413,46 @@ public class StreamUtils {
         }
     }
 
-    private static class DropIntSpliterator extends Spliterators.AbstractIntSpliterator {
-        private final PrimitiveIterator.OfInt iterator;
-        private final IntPredicate predicate;
-        private boolean found;
+    private static class IntReverseSpliterator<T extends Integer> implements Spliterator.OfInt {
+        private Spliterator.OfInt spliterator;
+        private final Deque<Integer> deque = new ArrayDeque<>();
 
-        public DropIntSpliterator(IntStream stream, IntPredicate predicate) {
-            super(Long.MAX_VALUE, IMMUTABLE);
-            this.iterator = stream.iterator();
-            this.predicate = predicate;
-            this.found = false;
+        private IntReverseSpliterator(Spliterator.OfInt spliterator) {
+            this.spliterator = spliterator;
+        }
+
+
+        @Override
+        public OfInt trySplit() {
+            // After traveling started the spliterator don't contain elements!
+            Spliterator.OfInt prev = spliterator.trySplit();
+            if(prev == null) {
+                return null;
+            }
+
+            Spliterator.OfInt me = spliterator;
+            spliterator = prev;
+            return new IntReverseSpliterator(me);
         }
 
         @Override
         public boolean tryAdvance(IntConsumer action) {
-            if (iterator.hasNext()) {
-                int value = iterator.next();
-                if (found || !predicate.test(value)) {
-                    found = true;
-                    action.accept(value);
-                }
+            while(spliterator.tryAdvance((IntConsumer) deque::addFirst));
+            if(!deque.isEmpty()) {
+                action.accept(deque.remove());
                 return true;
             }
             return false;
         }
-    }
 
-    private static class DropSpliterator<T> extends Spliterators.AbstractSpliterator {
-        private final Iterator<T> iterator;
-        private final Predicate<T> predicate;
-        private boolean found;
-
-        public DropSpliterator(Stream<T> stream, Predicate<T> predicate) {
-            super(Long.MAX_VALUE, IMMUTABLE);
-            this.iterator = stream.iterator();
-            this.predicate = predicate;
-            this.found = false;
+        @Override
+        public long estimateSize() {
+            return spliterator.estimateSize();
         }
 
         @Override
-        public boolean tryAdvance(Consumer action) {
-            if (iterator.hasNext()) {
-                T value = iterator.next();
-                if (found || !predicate.test(value)) {
-                    found = true;
-                    action.accept(value);
-                }
-                return true;
-            }
-            return false;
-        }
-    }
-
-    private static class TakeIntSpliterator extends Spliterators.AbstractIntSpliterator {
-        private final PrimitiveIterator.OfInt iterator;
-        private final IntPredicate predicate;
-
-        public TakeIntSpliterator(IntStream stream, IntPredicate predicate) {
-            super(Long.MAX_VALUE, IMMUTABLE);
-            this.iterator = stream.iterator();
-            this.predicate = predicate;
-        }
-
-        @Override
-        public boolean tryAdvance(IntConsumer action) {
-            if (iterator.hasNext()) {
-                int value = iterator.nextInt();
-                if (predicate.test(value)) {
-                    return false;
-                }
-                action.accept(value);
-            }
-            return true;
-        }
-    }
-
-    private static class TakeSpliterator<T> extends Spliterators.AbstractSpliterator {
-        private final Iterator<T> iterator;
-        private final Predicate<T> predicate;
-
-        public TakeSpliterator(Stream<T> stream, Predicate<T> predicate) {
-            super(Long.MAX_VALUE, IMMUTABLE);
-            this.iterator = stream.iterator();
-            this.predicate = predicate;
-        }
-
-        @Override
-        public boolean tryAdvance(Consumer action) {
-            if (iterator.hasNext()) {
-                T value = iterator.next();
-                if (predicate.test(value)) {
-                    action.accept(value);
-                    return true;
-                }
-            }
-            return false;
+        public int characteristics() {
+            return spliterator.characteristics();
         }
     }
 
@@ -249,22 +460,29 @@ public class StreamUtils {
     public void test() {
         printlnDelim(", ", IntStream.of(1,2,3,4));
 
-        println(reverseIntStream(IntStream.range(0, 10)));
+        println(IntStream.range(0, 10).flatMap(intTakeEveryNth(3)));
 
-        println(reverseStream(Stream.of('a','b','c','d')));
-
+        println(intReverseStream(IntStream.range(0, 10)));
         println(reverse(Stream.of('a','b','c','d')));
 
-        println(takeWhile(Stream.of("1ne", "2wo", "thr33", "4our"), s -> !s.contains("3")));
+        println(IntStream.range(0, 10).flatMap(intTakeN(5)));
+        println(IntStream.range(0, 10).flatMap(intDropN(5)));
 
-        println(dropWhile(Stream.of("1ne", "2wo", "thr33", "4our"), s -> !s.contains("3")));
+        println(takeWhile(Stream.of("1ne", "2wo", "thr33", "4our", "5ive"), s -> !s.contains("3")));
+        println(dropWhile(Stream.of("1ne", "2wo", "thr33", "4our", "5ive"), s -> !s.contains("3")));
 
-        println(IntStream.range(0, 10).flatMap(everyNthInt(3)));
+        println(takeWhile(IntStream.of(1,2,3,4,3,2,1), (i1, i2) -> i1 < i2, Integer.MIN_VALUE));
+        println(takeWhile(Stream.of("1", "22", "333", "22", "1"), (i1, i2) -> i1.length() < i2.length(), ""));
+
+        println(dropWhile(IntStream.of(1,2,3,4,3,2,1), (i1, i2) -> i1 < i2));
+        println(dropWhile(Stream.of("1", "22", "333", "22", "1"), (i1, i2) -> i1.length() < i2.length()));
+
+        println(IntStream.range(0, 50).flatMap(intMatchOnly(value -> value % 2 == 0)));
+        println(Stream.of("1ne", "2wo", "thr33", "4our", "5ive").flatMap(matchOnly(value -> value.length() > 3)));
 
         println(Stream.of('a','b','c','d')
         .flatMap(new Function<Character, Stream<?>>() {
             int count = 0;
-
             @Override
             public Stream<?> apply(Character character) {
                 return Stream.of("" + character + count++);
