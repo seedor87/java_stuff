@@ -1,0 +1,201 @@
+package Utils.StreamUtils;
+
+import static Utils.Console.Printing.*;
+import static Utils.StreamUtils.Functions.*;
+
+import TestingUtils.JUnitTesting.TimedRule.TimedRule;
+import Utils.StopWatches.SYSStopwatch;
+import Utils.StopWatches.TimeUnit;
+
+import Utils.StreamUtils.Interfaces.IntBiPredicate;
+import Utils.StreamUtils.Interfaces.BiPredicate;
+
+import javafx.util.Pair;
+import org.junit.Rule;
+import org.junit.Test;
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
+public class Methods {
+
+    @Rule
+    public TimedRule jcr = new TimedRule(SYSStopwatch.class, TimeUnit.MICROSECONDS);
+
+    public static IntStream takeWhile(IntStream stream, IntPredicate predicate) {
+        return stream.flatMap(Functions.takeWhile(predicate));
+    }
+
+    public static IntStream takeWhile(IntStream stream, IntBiPredicate predicate, Integer seed) {
+        return stream.flatMap(Functions.takeWhile(seed, predicate));
+    }
+
+    public static IntStream takeWhile(IntStream stream, IntBiPredicate predicate) {
+        return stream.flatMap(Functions.takeWhile(null, predicate));
+    }
+
+    public static <T> Stream<T> takeWhile(Stream<T> stream, Predicate<T> predicate) {
+        return stream.flatMap(Functions.takeWhile(predicate));
+    }
+
+    public static <T> Stream<T> takeWhile(Stream<T> stream, BiPredicate<T> predicate, T seed) {
+        return stream.flatMap(Functions.takeWhile(seed, predicate));
+    }
+
+    public static <T> Stream<T> takeWhile(Stream<T> stream, BiPredicate<T> predicate) {
+        return stream.flatMap(Functions.takeWhile(null, predicate));
+    }
+
+    public static IntStream dropWhile(IntStream stream, IntPredicate predicate) {
+        return stream.flatMap(Functions.dropWhile(predicate));
+    }
+
+    public static IntStream dropWhile(IntStream stream, IntBiPredicate predicate, Integer seed) {
+        return stream.flatMap(Functions.dropWhile(seed, predicate));
+    }
+
+    public static IntStream dropWhile(IntStream stream, IntBiPredicate predicate) {
+        return stream.flatMap(Functions.dropWhile(null, predicate));
+    }
+
+    public static <T> Stream<T> dropWhile(Stream<T> stream, Predicate<T> predicate) {
+        return stream.flatMap(Functions.dropWhile(predicate));
+    }
+
+    public static <T> Stream<T> dropWhile(Stream<T> stream, BiPredicate<T> predicate, T seed) {
+        return stream.flatMap(Functions.dropWhile(seed, predicate));
+    }
+
+    public static <T> Stream<T> dropWhile(Stream<T> stream, BiPredicate<T> predicate) {
+        return stream.flatMap(Functions.dropWhile(null, predicate));
+    }
+
+    public static IntStream takeOnly(IntStream stream, IntPredicate predicate) {
+        return stream.flatMap(Functions.intTakeOnly(predicate));
+    }
+
+    public static <T> Stream<T> takeOnly(Stream<T> stream, Predicate<T> predicate) {
+        return stream.flatMap(Functions.takeOnly(predicate));
+    }
+
+    public static IntStream dropOnly(IntStream stream, IntPredicate predicate) {
+        return stream.flatMap(Functions.intTakeOnly(predicate.negate()));
+    }
+
+    public static <T> Stream<T> dropOnly(Stream<T> stream, Predicate<T> predicate) {
+        return stream.flatMap(Functions.takeOnly(predicate.negate()));
+    }
+
+    public static IntStream dropN(IntStream stream, long n) {
+        return stream.flatMap(Functions.intDropN(n));
+    }
+
+    public static <T> Stream<T> dropN(Stream<T> stream, long n) {
+        return stream.flatMap(Functions.dropN(n));
+    }
+
+    public static IntStream takeN(IntStream stream, long n) {
+        return stream.flatMap(Functions.intTakeN(n));
+    }
+
+    public static <T> Stream<T> takeN(Stream<T> stream, long n) {
+        return stream.flatMap(Functions.takeN(n));
+    }
+
+    public static <T> Stream<Pair<T, T>> makePairs(Stream<T> stream) {
+        return stream.flatMap(Functions.makePairs());
+    }
+
+    public static <T> Stream<Pair<Integer, Integer>> makePairs(IntStream stream) {
+        return stream.boxed().flatMap(Functions.makePairs());
+    }
+
+    public static <T> Stream<T> reverse(Stream<T> stream) {
+        return stream.<ArrayDeque<T>>collect(
+                    ArrayDeque::new,
+                    ArrayDeque::addFirst,
+                    ArrayDeque::addAll)
+                .stream();
+    }
+
+    public static IntStream reverse(IntStream stream) {
+        return stream.<ArrayDeque<Integer>>collect(
+                    ArrayDeque::new,
+                    ArrayDeque::addFirst,
+                    ArrayDeque::addAll)
+                .stream()
+                .mapToInt(Integer::intValue);
+    }
+
+    public static <T> String toString(Stream<T> stream) {
+        return stream.collect(
+                StringBuilder::new,
+                (sb, s) -> sb.append(s.toString()),
+                StringBuilder::append)
+        .toString();
+    }
+
+    public static <T> String toString(String delim, Stream<T> stream) {
+        return stream.collect(
+                StringBuilder::new,
+                new BiConsumer<StringBuilder, T>() {
+                    int i = 0;
+                    @Override
+                    public void accept(StringBuilder sb, T t) {
+                        if (i++ >0) {
+                            sb.append(delim);
+                            sb.append(t);
+                        } else {
+                            sb.append(t);
+                        }
+                    }
+                },
+                StringBuilder::append)
+        .toString();
+    }
+
+    public static <T> Stream<T> iterate(T seed, Predicate<T> predicate, UnaryOperator<T> operator) {
+        return takeWhile(Stream.iterate(seed, operator), predicate);
+    }
+
+    @Test
+    public void test() {
+
+        println(IntStream.range(0, 10).flatMap(intTakeEveryNth(3)));
+
+        println(reverse(IntStream.range(0, 10)));
+        println(reverse(Stream.of('a','b','c','d')));
+
+        println(takeN(IntStream.range(0, 10), 5));
+        println(dropN(IntStream.range(0, 10), 5));
+
+        println(takeWhile(Stream.of("one", "two", "three", "four", "five"), s -> !s.contains("ee")));
+        println(dropWhile(Stream.of("one", "two", "three", "four", "five"), s -> !s.contains("ee")));
+
+        println(takeWhile(IntStream.of(1,2,3,4,3,2,1), (i1, i2) -> i1 < i2, Integer.MIN_VALUE));
+        println(takeWhile(Stream.of("one", "two", "three", "four", "five"), (i1, i2) -> i1.length() <= i2.length(), ""));
+
+        println(dropWhile(IntStream.of(1,2,3,4,3,2,1), (i1, i2) -> i1 < i2));
+        println(dropWhile(Stream.of("one", "two", "three", "four", "five"), (i1, i2) -> i1.length() <= i2.length()));
+
+        println(takeOnly(IntStream.range(0, 10), value -> value % 2 == 0));
+        println(dropOnly(IntStream.range(0, 10), value -> value % 2 == 0));
+
+        println(takeOnly(Stream.of("one", "two", "three", "four", "five"), value -> value.length() < 5));
+
+        println(makePairs(Stream.of("one", "two", "one", "two", "one", "two")));
+        println(makePairs(IntStream.range(0, 100)).map(p -> p.getKey() * p.getValue()));
+
+        println(iterate(1, (i) -> i < 100, (i)-> i++));
+
+        println(Stream.of('a','b','c','d')
+        .flatMap(new Function<Character, Stream<?>>() {
+            int count = 0;
+            @Override
+            public Stream<?> apply(Character character) {
+                return Stream.of("" + character + count++);
+            }
+        }));
+    }
+}

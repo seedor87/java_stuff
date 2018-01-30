@@ -3,7 +3,7 @@ package Utils.Random;
 import TestingUtils.JUnitTesting.TimedRule.TimedRule;
 import Utils.StopWatches.SYSStopwatch;
 import Utils.StopWatches.TimeUnit;
-import Utils.Streams.StreamUtils;
+import Utils.StreamUtils.Methods;
 import org.junit.Rule;
 
 import java.util.Random;
@@ -57,8 +57,8 @@ public abstract class AbstractRandomGenerator {
     public Stream<String> randomStrings(int n, Case c, int min, int max) {
         return Stream
             .generate(() ->
-                StreamUtils.toString(
-                        randomLetters(min + this.rand.nextInt(max - min), c)
+                Methods.toString(
+                    randomLetters(min + this.rand.nextInt(max - min), c)
                 )
             )
             .limit(n);
