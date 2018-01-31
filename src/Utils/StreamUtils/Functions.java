@@ -4,12 +4,16 @@ import Utils.StreamUtils.Interfaces.BiPredicate;
 import Utils.StreamUtils.Interfaces.IntBiPredicate;
 import javafx.util.Pair;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import java.util.stream.Stream.Builder;
 
 public class Functions {
 
@@ -226,19 +230,18 @@ public class Functions {
         };
     }
 
-    public static <T> Function<T, Stream<Pair<T,T>>> makePairs() {
-        return new Function<T, Stream<Pair<T,T>>>() {
-            T prev = null;
+    public static <T> Function<T, Stream<List<T>>> listsOfN(int n) {
+        return new Function<T, Stream<List<T>>>() {
+            List<T> arr = new ArrayList<>();
             @Override
-            public Stream<Pair<T,T>> apply(T t) {
-                if (prev != null) {
-                    Stream<Pair<T,T>> ret = Stream.of(new Pair<>(prev, t));
-                    prev = null;
-                    return ret;
-                } else {
-                    prev = t;
+            public Stream<List<T>> apply(T t) {
+                arr.add(t);
+                if (arr.size() < n) {
                     return Stream.empty();
                 }
+                List<T> temp = arr;
+                arr = new ArrayList<>();
+                return Stream.of(temp);
             }
         };
     }

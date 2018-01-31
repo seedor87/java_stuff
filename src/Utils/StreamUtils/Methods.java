@@ -6,17 +6,14 @@ import static Utils.StreamUtils.Functions.*;
 import TestingUtils.JUnitTesting.TimedRule.TimedRule;
 import Utils.StopWatches.SYSStopwatch;
 import Utils.StopWatches.TimeUnit;
-
 import Utils.StreamUtils.Interfaces.IntBiPredicate;
 import Utils.StreamUtils.Interfaces.BiPredicate;
 
-import javafx.util.Pair;
 import org.junit.Rule;
 import org.junit.Test;
 import java.util.*;
 import java.util.function.*;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
+import java.util.stream.*;
 
 public class Methods {
 
@@ -103,66 +100,97 @@ public class Methods {
         return stream.flatMap(Functions.takeN(n));
     }
 
-    public static <T> Stream<Pair<T, T>> makePairs(Stream<T> stream) {
-        return stream.flatMap(Functions.makePairs());
+    public static <T> Stream<List<T>> listsOfN(Stream<T> stream, int n) {
+        return stream.flatMap(Functions.listsOfN(n));
     }
 
-    public static <T> Stream<Pair<Integer, Integer>> makePairs(IntStream stream) {
-        return stream.boxed().flatMap(Functions.makePairs());
+    public static Stream<List<Integer>> listsOfN(IntStream stream, int n) {
+        return stream.boxed().flatMap(Functions.listsOfN(n));
+    }
+
+    public static <T> Stream<T[]> arraysOfN(Stream<T> stream, int n) {
+        return stream.flatMap(Functions.listsOfN(n)).map(ts -> (T[]) ts.toArray());
+    }
+
+    public static Stream<Integer[]> arraysOfN(IntStream stream, int n) {
+        return stream.boxed().flatMap(Functions.listsOfN(n)).map(integers -> integers.toArray(new Integer[n]));
     }
 
     public static <T> Stream<T> reverse(Stream<T> stream) {
         return stream.<ArrayDeque<T>>collect(
-                    ArrayDeque::new,
-                    ArrayDeque::addFirst,
-                    ArrayDeque::addAll)
-                .stream();
+                ArrayDeque::new,
+                ArrayDeque::addFirst,
+                ArrayDeque::addAll)
+            .stream();
     }
 
     public static IntStream reverse(IntStream stream) {
         return stream.<ArrayDeque<Integer>>collect(
-                    ArrayDeque::new,
-                    ArrayDeque::addFirst,
-                    ArrayDeque::addAll)
-                .stream()
-                .mapToInt(Integer::intValue);
+                ArrayDeque::new,
+                ArrayDeque::addFirst,
+                ArrayDeque::addAll)
+            .stream()
+            .mapToInt(Integer::intValue);
     }
 
     public static <T> String toString(Stream<T> stream) {
         return stream.collect(
+            Collector.of(
                 StringBuilder::new,
                 (sb, s) -> sb.append(s.toString()),
-                StringBuilder::append)
-        .toString();
+                StringBuilder::append,
+                StringBuilder::toString)
+            );
     }
 
     public static <T> String toString(String delim, Stream<T> stream) {
         return stream.collect(
+            Collector.of(
                 StringBuilder::new,
                 new BiConsumer<StringBuilder, T>() {
-                    int i = 0;
+                    boolean first = true;
                     @Override
                     public void accept(StringBuilder sb, T t) {
-                        if (i++ >0) {
+                        if (!first) {
                             sb.append(delim);
                             sb.append(t);
                         } else {
                             sb.append(t);
+                            first = false;
                         }
                     }
                 },
-                StringBuilder::append)
-        .toString();
+                StringBuilder::append,
+                StringBuilder::toString)
+        );
     }
 
     public static <T> Stream<T> iterate(T seed, Predicate<T> predicate, UnaryOperator<T> operator) {
-        return takeWhile(Stream.iterate(seed, operator), predicate);
+        return StreamSupport.stream(
+            new BoundedSpliterator<>(
+                seed,
+                predicate,
+                operator
+            ),
+            false
+        );
+    }
+
+    public static IntStream intIterate(Integer seed, IntPredicate predicate, IntUnaryOperator operator) {
+        return StreamSupport.intStream(
+            new IntBoundedSpliterator(
+                seed,
+                predicate,
+                operator
+            ),
+            false
+        );
     }
 
     @Test
     public void test() {
 
-        println(IntStream.range(0, 10).flatMap(intTakeEveryNth(3)));
+        println(toString(", ", IntStream.range(0, 10).flatMap(intTakeEveryNth(3)).boxed()));
 
         println(reverse(IntStream.range(0, 10)));
         println(reverse(Stream.of('a','b','c','d')));
@@ -184,18 +212,31 @@ public class Methods {
 
         println(takeOnly(Stream.of("one", "two", "three", "four", "five"), value -> value.length() < 5));
 
-        println(makePairs(Stream.of("one", "two", "one", "two", "one", "two")));
-        println(makePairs(IntStream.range(0, 100)).map(p -> p.getKey() * p.getValue()));
+        println(listsOfN(Stream.of("one", "two", "one", "two", "one", "two"), 2));
+        println(arraysOfN(IntStream.range(0, 100), 3));
 
-        println(iterate(1, (i) -> i < 100, (i)-> i++));
+        println(
+            intIterate(
+                1,
+                i -> i <= 100,
+                i -> i + 1
+            )
+        );
 
-        println(Stream.of('a','b','c','d')
-        .flatMap(new Function<Character, Stream<?>>() {
-            int count = 0;
-            @Override
-            public Stream<?> apply(Character character) {
-                return Stream.of("" + character + count++);
-            }
-        }));
+        println(
+            iterate(
+                'z',
+                c -> !c.equals((char) ('a' - 1)),
+                c -> (--c)
+            )
+        );
+
+        println(
+            iterate(
+                "1",
+                i -> i.length() < 10,
+                i -> i + (char) (i.charAt(i.length()-1) + 1)
+            )
+        );
     }
 }
