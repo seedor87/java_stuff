@@ -7,12 +7,11 @@ import TestingUtils.JUnitTesting.TimedRule.TimedRule;
 import Utils.Console.Special;
 import Utils.StopWatches.SYSStopwatch;
 import Utils.StopWatches.TimeUnit;
-import Utils.StreamUtils.Interfaces.IntBiPredicate;
-import Utils.StreamUtils.Interfaces.BiPredicate;
 
 import Utils.StreamUtils.Spliterators.*;
 import org.junit.Rule;
 import org.junit.Test;
+
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.*;
@@ -27,24 +26,24 @@ public class Methods {
         return StreamSupport.stream(new IntTakeWhileSpliterator(stream.spliterator(), predicate), stream.isParallel()).mapToInt(i -> i);
     }
 
-    public static IntStream takeWhile(IntStream stream, IntBiPredicate predicate, Integer identity) {
-        return stream.flatMap(Functions.takeWhile(identity, predicate));
+    public static IntStream takeWhile(IntStream stream, BiPredicate<Integer, Integer> predicate, Integer identity) {
+        return StreamSupport.stream(new BiIntTakeWhileSpliterator(stream.spliterator(), predicate, identity), stream.isParallel()).mapToInt(i -> i);
     }
 
-    public static IntStream takeWhile(IntStream stream, IntBiPredicate predicate) {
-        return stream.flatMap(Functions.takeWhile(null, predicate));
+    public static IntStream takeWhile(IntStream stream, BiPredicate<Integer, Integer> predicate) {
+        return StreamSupport.stream(new BiIntTakeWhileSpliterator(stream.spliterator(), predicate, null), stream.isParallel()).mapToInt(i -> i);
     }
 
     static <T> Stream<T> takeWhile(Stream<T> stream, Predicate<? super T> predicate) {
         return StreamSupport.stream(new TakeWhileSpliterator<>(stream.spliterator(), predicate), stream.isParallel());
     }
 
-    public static <T> Stream<T> takeWhile(Stream<T> stream, BiPredicate<T> predicate, T identity) {
-        return stream.flatMap(Functions.takeWhile(identity, predicate));
+    public static <T> Stream<T> takeWhile(Stream<T> stream, BiPredicate<? super T, ? super T> predicate, T identity) {
+        return StreamSupport.stream(new BiTakeWhileSpliterator<>(stream.spliterator(), predicate, identity), stream.isParallel());
     }
 
-    public static <T> Stream<T> takeWhile(Stream<T> stream, BiPredicate<T> predicate) {
-        return stream.flatMap(Functions.takeWhile(null, predicate));
+    public static <T> Stream<T> takeWhile(Stream<T> stream, BiPredicate<? super T, ? super T> predicate) {
+        return StreamSupport.stream(new BiTakeWhileSpliterator<>(stream.spliterator(), predicate, null), stream.isParallel());
     }
 
 
@@ -52,11 +51,11 @@ public class Methods {
         return stream.flatMap(Functions.dropWhile(predicate));
     }
 
-    public static IntStream dropWhile(IntStream stream, IntBiPredicate predicate, Integer identity) {
-        return stream.flatMap(Functions.takeWhile(identity, predicate));
+    public static IntStream dropWhile(IntStream stream, BiPredicate<? super Integer, ? super Integer> predicate, Integer identity) {
+        return stream.flatMap(Functions.dropWhile(identity, predicate));
     }
 
-    public static IntStream dropWhile(IntStream stream, IntBiPredicate predicate) {
+    public static IntStream dropWhile(IntStream stream, BiPredicate<? super Integer, ? super Integer> predicate) {
         return stream.flatMap(Functions.dropWhile(null, predicate));
     }
 
@@ -64,11 +63,11 @@ public class Methods {
         return stream.flatMap(Functions.dropWhile(predicate));
     }
 
-    public static <T> Stream<T> dropWhile(Stream<T> stream, BiPredicate<T> predicate, T identity) {
+    public static <T> Stream<T> dropWhile(Stream<T> stream, BiPredicate<? super T, ? super T> predicate, T identity) {
         return stream.flatMap(Functions.dropWhile(identity, predicate));
     }
 
-    public static <T> Stream<T> dropWhile(Stream<T> stream, BiPredicate<T> predicate) {
+    public static <T> Stream<T> dropWhile(Stream<T> stream, BiPredicate<? super T, ? super T> predicate) {
         return stream.flatMap(Functions.dropWhile(null, predicate));
     }
 
@@ -122,23 +121,14 @@ public class Methods {
     }
 
     public static <T> Stream<T> reverse(Stream<T> stream) {
-        return stream.<ArrayDeque<T>>collect(
-                ArrayDeque::new,
-                ArrayDeque::addFirst,
-                ArrayDeque::addAll)
-            .stream();
+        return StreamSupport.stream(new ReverseSpliterator<>(stream.spliterator()), stream.isParallel());
     }
 
     public static IntStream reverse(IntStream stream) {
-        return stream.<ArrayDeque<Integer>>collect(
-                ArrayDeque::new,
-                ArrayDeque::addFirst,
-                ArrayDeque::addAll)
-            .stream()
-            .mapToInt(Integer::intValue);
+        return StreamSupport.stream(new IntReverseSpliterator(stream.spliterator()), stream.isParallel()).mapToInt(i -> i);
     }
 
-    public static <T> String toString(Stream<T> stream) {
+    public static <T> String makeString(Stream<T> stream) {
         return stream.collect(
             Collector.of(
                 StringBuilder::new,
@@ -148,7 +138,7 @@ public class Methods {
             );
     }
 
-    public static <T> String toString(String delim, Stream<T> stream) {
+    public static <T> String makeString(String delim, Stream<T> stream) {
         return stream.collect(
             Collector.of(
                 StringBuilder::new,
@@ -196,7 +186,7 @@ public class Methods {
     public void test() {
 
         println(Special.RESET,"toString(\", \", IntStream.range(0, 10).flatMap(intTakeEveryNth(3)).boxed()));\n", Special.FG_BRIGHT_CYAN,
-                toString(", ", IntStream.range(0, 10).flatMap(intTakeEveryNth(3)).boxed()));
+                makeString(", ", IntStream.range(0, 10).flatMap(intTakeEveryNth(3)).boxed()));
 
         println(Special.RESET,"reverse(IntStream.range(0, 10)));\n", Special.FG_BRIGHT_CYAN,
                 reverse(IntStream.range(0, 10)));
@@ -339,25 +329,48 @@ public class Methods {
 
         println(Special.RESET,
 "               takeWhile(\n" +
-"                    IntStream.generate(\n" +
-"                        new IntSupplier() {\n" +
-"                            int i = 0;\n" +
-"                            @Override\n" +
-"                            public int getAsInt() { return i++; }\n" +
-"                        }\n" +
-"                    ),\n" +
-"                    i -> i < 1000\n" +
-"                )\n", Special.FG_BRIGHT_CYAN,
-                takeWhile(
-                    IntStream.generate(
-                        new IntSupplier() {
-                            int i = 0;
-                            @Override
-                            public int getAsInt() { return i++; }
-                        }
-                    ),
-                    i -> i < 1000
-                )
+"                IntStream.generate(\n" +
+"                    new IntSupplier() {\n" +
+"                        int i = 0;\n" +
+"                        @Override\n" +
+"                        public int getAsInt() { return i++; }\n" +
+"                    }\n" +
+"                ),\n" +
+"                i -> i < 1000\n" +
+"            )\n" +
+"           )\n", Special.FG_BRIGHT_CYAN,
+            takeWhile(
+                IntStream.generate(
+                    new IntSupplier() {
+                        int i = 0;
+                        @Override
+                        public int getAsInt() { return i++; }
+                    }
+                ),
+                i -> i < 1000
+            )
+        );
+
+        println(Special.RESET,
+"           takeWhile(\n" +
+"            IntStream.generate(\n" +
+"                new IntSupplier() {\n" +
+"                    int i = 0;\n" +
+"                    @Override\n" +
+"                    public int getAsInt() { return i++; }\n" +
+"                }\n" +
+"            ), (first, second) -> first < second)\n" +
+"        );\n", Special.FG_BRIGHT_CYAN,
+        takeWhile(
+            IntStream.generate(
+                new IntSupplier() {
+                    int i = 0;
+                    @Override
+                    public int getAsInt() { return i++; }
+                }
+            ),
+            (first, second) -> first < second && first < 5,
+            Integer.MIN_VALUE)
         );
     }
 }

@@ -4,27 +4,30 @@ import java.util.Comparator;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.BiPredicate;
 import java.util.function.Consumer;
-import java.util.function.IntPredicate;
 
-public class IntTakeWhileSpliterator implements Spliterator<Integer>, Consumer<Integer>, Cloneable {
-    private final IntPredicate condition;
+public class BiTakeWhileSpliterator<T> implements Spliterator<T>, Consumer<T>, Cloneable {
+    private final BiPredicate<? super T, ? super T> condition;
     private final AtomicBoolean checked = new AtomicBoolean();
-    private Spliterator<Integer> source;
+    private Spliterator<T> source;
+    private T prev;
 
-    public IntTakeWhileSpliterator(Spliterator<Integer> source, IntPredicate predicate) {
+    public BiTakeWhileSpliterator(Spliterator<T> source, BiPredicate<? super T, ? super T> predicate, T identity) {
         this.condition = predicate;
         this.source = source;
+        this.prev = identity;
     }
 
     @Override
-    public void accept(Integer integer) {}
+    public void accept(T o) { this.prev = o;}
 
     @Override
-    public boolean tryAdvance(Consumer<? super Integer> action) {
+    public boolean tryAdvance(Consumer<? super T> action) {
         return (!checked.get() &&
             source.tryAdvance((e) -> {
-                if (condition.test(e)) {
+                if (condition.test(prev, e)) {
+                    this.accept(e);
                     action.accept(e);
                 } else {
                     checked.set(true);
@@ -34,17 +37,17 @@ public class IntTakeWhileSpliterator implements Spliterator<Integer>, Consumer<I
     }
 
     @Override
-    public Spliterator<Integer> trySplit() {
-        Spliterator<Integer> prefix = source.trySplit();
+    public Spliterator<T> trySplit() {
+        Spliterator<T> prefix = source.trySplit();
         if(prefix == null) {
             return null;
         }
         if(checked.get()) {
             return Spliterators.emptySpliterator();
         }
-        IntTakeWhileSpliterator clone;
+        BiTakeWhileSpliterator<T> clone;
         try {
-            clone = (IntTakeWhileSpliterator) clone();
+            clone = (BiTakeWhileSpliterator<T>) clone();
         } catch (CloneNotSupportedException e) {
             throw new InternalError(e);
         }
@@ -63,7 +66,7 @@ public class IntTakeWhileSpliterator implements Spliterator<Integer>, Consumer<I
     }
 
     @Override
-    public Comparator<? super Integer> getComparator() {
+    public Comparator<? super T> getComparator() {
         return source.getComparator();
     }
 }

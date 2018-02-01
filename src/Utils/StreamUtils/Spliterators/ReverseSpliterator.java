@@ -7,16 +7,16 @@ import java.util.Spliterator;
 import java.util.function.Consumer;
 
 public class ReverseSpliterator <T> implements Spliterator<T> {
-    private Spliterator<T> spliterator;
+    private Spliterator<T> source;
     private final Deque<T> deque = new ArrayDeque<>();
 
     public ReverseSpliterator(Spliterator<T> spliterator) {
-        this.spliterator = spliterator;
+        this.source = spliterator;
     }
 
     @Override
     public boolean tryAdvance(Consumer<? super T> action) {
-        while(spliterator.tryAdvance(deque::addFirst));
+        while(source.tryAdvance(deque::addFirst));
         if(!deque.isEmpty()) {
             action.accept(deque.remove());
             return true;
@@ -26,29 +26,29 @@ public class ReverseSpliterator <T> implements Spliterator<T> {
 
     @Override
     public Spliterator<T> trySplit() {
-        Spliterator<T> prev = spliterator.trySplit();
+        Spliterator<T> prev = source.trySplit();
         if(prev == null) {
             return null;
         }
 
-        Spliterator<T> me = spliterator;
-        spliterator = prev;
+        Spliterator<T> me = source;
+        source = prev;
         return new ReverseSpliterator(me);
     }
 
     @Override
     public long estimateSize() {
-        return spliterator.estimateSize();
+        return source.estimateSize();
     }
 
     @Override
     public int characteristics() {
-        return spliterator.characteristics();
+        return source.characteristics();
     }
 
     @Override
     public Comparator<? super T> getComparator() {
-        Comparator<? super T> comparator = spliterator.getComparator();
+        Comparator<? super T> comparator = source.getComparator();
         return (comparator != null) ? comparator.reversed() : null;
     }
 

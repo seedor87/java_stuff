@@ -8,28 +8,28 @@ import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 
 public class IntReverseSpliterator implements Spliterator.OfInt {
-    private OfInt spliterator;
+    private OfInt source;
     private final Deque<Integer> deque = new ArrayDeque<>();
 
     public IntReverseSpliterator(OfInt spliterator) {
-        this.spliterator = spliterator;
+        this.source = spliterator;
     }
 
     @Override
     public OfInt trySplit() {
-        OfInt prev = spliterator.trySplit();
+        OfInt prev = source.trySplit();
         if(prev == null) {
             return null;
         }
 
-        OfInt me = spliterator;
-        spliterator = prev;
+        OfInt me = source;
+        source = prev;
         return new IntReverseSpliterator(me);
     }
 
     @Override
     public boolean tryAdvance(IntConsumer action) {
-        while(spliterator.tryAdvance((IntConsumer) deque::addFirst));
+        while(source.tryAdvance((IntConsumer) deque::addFirst));
         if(!deque.isEmpty()) {
             action.accept(deque.remove());
             return true;
@@ -39,17 +39,17 @@ public class IntReverseSpliterator implements Spliterator.OfInt {
 
     @Override
     public long estimateSize() {
-        return spliterator.estimateSize();
+        return source.estimateSize();
     }
 
     @Override
     public int characteristics() {
-        return spliterator.characteristics();
+        return source.characteristics();
     }
 
     @Override
     public Comparator<? super Integer> getComparator() {
-        Comparator<? super Integer> comparator = spliterator.getComparator();
+        Comparator<? super Integer> comparator = source.getComparator();
         return (comparator != null) ? comparator.reversed() : null;
     }
 

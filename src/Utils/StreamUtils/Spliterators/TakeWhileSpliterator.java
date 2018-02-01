@@ -8,26 +8,23 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class TakeWhileSpliterator<T> implements Spliterator<T>, Consumer<T>, Cloneable {
-    private final Predicate<? super T> predicate;
+    private final Predicate<? super T> condition;
     private final AtomicBoolean checked = new AtomicBoolean();
     private Spliterator<T> source;
-    private T cur;
 
     public TakeWhileSpliterator(Spliterator<T> source, Predicate<? super T> predicate) {
-        this.predicate = predicate;
+        this.condition = predicate;
         this.source = source;
     }
 
     @Override
-    public void accept(T t) {
-        this.cur = t;
-    }
+    public void accept(T t) {}
 
     @Override
     public boolean tryAdvance(Consumer<? super T> action) {
         return (!checked.get() &&
             source.tryAdvance((e) -> {
-                if (predicate.test(e)) {
+                if (condition.test(e)) {
                     action.accept(e);
                 } else {
                     checked.set(true);

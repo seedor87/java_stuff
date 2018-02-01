@@ -1,7 +1,5 @@
 package Utils.StreamUtils.Spliterators;
 
-import Utils.StreamUtils.Spliterators.BoundedSpliterator;
-
 import java.util.Spliterator;
 import java.util.function.Consumer;
 import java.util.function.Predicate;

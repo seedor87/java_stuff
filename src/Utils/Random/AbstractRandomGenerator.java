@@ -57,7 +57,7 @@ public abstract class AbstractRandomGenerator {
     public Stream<String> randomStrings(int n, Case c, int min, int max) {
         return Stream
             .generate(() ->
-                Methods.toString(
+                Methods.makeString(
                     randomLetters(min + this.rand.nextInt(max - min), c)
                 )
             )

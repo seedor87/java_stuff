@@ -1,97 +1,12 @@
 package Utils.StreamUtils;
 
-import Utils.StreamUtils.Interfaces.BiPredicate;
-import Utils.StreamUtils.Interfaces.IntBiPredicate;
-import javafx.util.Pair;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.function.IntFunction;
-import java.util.function.IntPredicate;
-import java.util.function.Predicate;
+import java.util.function.*;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-import java.util.stream.Stream.Builder;
 
 public class Functions {
-
-    public static IntFunction<? extends IntStream> takeWhile(IntPredicate predicate) {
-        return new IntFunction<IntStream>() {
-            boolean found = false;
-            @Override
-            public IntStream apply(int value) {
-                if (!found) {
-                    if (predicate.test(value)) {
-                        return IntStream.of(value);
-                    } else {
-                        found = true;
-                    }
-                }
-                return IntStream.empty();
-            }
-        };
-    }
-
-    public static IntFunction<? extends IntStream> takeWhile(Integer identity, IntBiPredicate predicate) {
-        return new IntFunction<IntStream>() {
-            boolean found = false;
-            Integer prev = identity;
-            @Override
-            public IntStream apply(int value) {
-                if (!found) {
-                    if (prev != null) {
-                        if (!predicate.test(prev, value)) {
-                            found = true;
-                            return IntStream.empty();
-                        }
-                    }
-                    prev = value;
-                    return IntStream.of(value);
-                }
-                return IntStream.empty();
-            }
-        };
-    }
-
-    public static <T> Function<T, Stream<T>> takeWhile(Predicate<T> predicate) {
-        return new Function<T, Stream<T>>() {
-            boolean found = false;
-            @Override
-            public Stream<T> apply(T t) {
-                if (!found) {
-                    if (predicate.test(t)) {
-                        return Stream.of(t);
-                    } else {
-                        found = true;
-                    }
-                }
-                return Stream.empty();
-            }
-        };
-    }
-
-    public static <T> Function<T, Stream<T>> takeWhile(T identity, BiPredicate<T> predicate) {
-        return new Function<T, Stream<T>>() {
-            boolean found = false;
-            T prev = identity;
-            @Override
-            public Stream<T> apply(T t) {
-                if (!found) {
-                    if (prev != null) {
-                        if (!predicate.test(prev, t)) {
-                            found = true;
-                            return Stream.empty();
-                        }
-                    }
-                    prev = t;
-                    return Stream.of(t);
-                }
-                return Stream.empty();
-            }
-        };
-    }
 
     public static IntFunction<? extends IntStream> dropWhile(IntPredicate predicate) {
         return new IntFunction<IntStream>() {
@@ -110,7 +25,7 @@ public class Functions {
         };
     }
 
-    public static IntFunction<? extends IntStream> dropWhile(Integer identity, IntBiPredicate predicate) {
+    public static IntFunction<? extends IntStream> dropWhile(Integer identity, BiPredicate<? super Integer, ? super Integer> predicate) {
         return new IntFunction<IntStream>() {
             boolean found = false;
             Integer prev = identity;
@@ -148,7 +63,7 @@ public class Functions {
         };
     }
 
-    public static <T> Function<T, Stream<T>> dropWhile(T identity, BiPredicate<T> predicate) {
+    public static <T> Function<T, Stream<T>> dropWhile(T identity, BiPredicate<? super T, ? super T> predicate) {
         return new Function<T, Stream<T>>() {
             boolean found = false;
             T prev = identity;
