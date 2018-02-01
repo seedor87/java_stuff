@@ -1,34 +1,34 @@
-package Utils.StreamUtils;
+package Utils.StreamUtils.Spliterators;
+
+import static Utils.Console.Printing.println;
 
 import java.util.Spliterator;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
+import java.util.function.*;
 import java.util.stream.StreamSupport;
 
-public class BoundedSpliterator<T> implements Spliterator<T> {
-    private T index;
-    private Predicate<T> condition;
-    private UnaryOperator<T> increment;
+public class IntBoundedSpliterator implements Spliterator.OfInt {
+    private Integer index;
+    private IntPredicate condition;
+    private IntUnaryOperator increment;
 
-    public BoundedSpliterator(T initialization, Predicate<T> termination, UnaryOperator<T> incrementation) {
+    public IntBoundedSpliterator(Integer initialization, IntPredicate termination, IntUnaryOperator incrementation) {
         this.index = initialization;
         this.condition = termination;
         this.increment = incrementation;
     }
 
     @Override
-    public boolean tryAdvance(Consumer<? super T> action) {
+    public boolean tryAdvance(IntConsumer action) {
         if (condition.test(index)) {
             action.accept(index);
-            index = increment.apply(index);
+            index = increment.applyAsInt(index);
             return true;
         }
         return false;
     }
 
     @Override
-    public Spliterator<T> trySplit() {
+    public Spliterator.OfInt trySplit() {
         return this;
     }
 
@@ -43,15 +43,17 @@ public class BoundedSpliterator<T> implements Spliterator<T> {
     }
 
     public static void main(String[] args) {
+        int index = 10;
         StreamSupport.stream(
-            new BoundedSpliterator<>(
-                'a',
-                character -> !character.equals('d'),
-                character -> (char) (character + 1)
+            new IntBoundedSpliterator(
+                index,
+                i -> i > -1,
+                i -> i /2
             ) ,
             false
         )
         .mapToInt(Character::getNumericValue)
         .forEach(Utils.Console.Printing::println);
+        println("\n", index);
     }
 }

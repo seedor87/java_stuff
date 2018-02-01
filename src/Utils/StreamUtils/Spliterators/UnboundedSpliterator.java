@@ -1,4 +1,6 @@
-package Utils.StreamUtils;
+package Utils.StreamUtils.Spliterators;
+
+import Utils.StreamUtils.Spliterators.BoundedSpliterator;
 
 import java.util.Spliterator;
 import java.util.function.Consumer;

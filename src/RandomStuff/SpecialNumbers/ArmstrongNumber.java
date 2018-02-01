@@ -9,6 +9,8 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import java.util.*;
+import java.util.function.IntPredicate;
+import java.util.function.IntSupplier;
 import java.util.stream.IntStream;
 
 import static Utils.Console.Printing.*;
@@ -36,13 +38,12 @@ public class ArmstrongNumber {
 
     /* NOTE: maintains order of parsed digits */
     public static IntStream parseDigits(int n) {
-        return Methods.reverse(
-                    Methods.takeWhile(
-                        IntStream.iterate(n, i -> i / 10)
-                        , i -> i > 0
-                    )
-                    .map(j -> j % 10)
-        );
+        return
+            Methods.takeWhile(
+                IntStream.iterate(n, i -> i / 10),
+                (IntPredicate) i -> i > 0
+            )
+            .map(j -> j % 10);
     }
 
     public static boolean isNthArmstrNum(int n, int pow) {

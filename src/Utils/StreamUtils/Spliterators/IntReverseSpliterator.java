@@ -1,11 +1,13 @@
-package Utils.StreamUtils;
+package Utils.StreamUtils.Spliterators;
 
 import java.util.ArrayDeque;
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.Spliterator;
+import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 
-public class IntReverseSpliterator<T extends Integer> implements Spliterator.OfInt {
+public class IntReverseSpliterator implements Spliterator.OfInt {
     private OfInt spliterator;
     private final Deque<Integer> deque = new ArrayDeque<>();
 
@@ -15,7 +17,6 @@ public class IntReverseSpliterator<T extends Integer> implements Spliterator.OfI
 
     @Override
     public OfInt trySplit() {
-        // After traveling started the spliterator don't contain elements!
         OfInt prev = spliterator.trySplit();
         if(prev == null) {
             return null;
@@ -44,5 +45,18 @@ public class IntReverseSpliterator<T extends Integer> implements Spliterator.OfI
     @Override
     public int characteristics() {
         return spliterator.characteristics();
+    }
+
+    @Override
+    public Comparator<? super Integer> getComparator() {
+        Comparator<? super Integer> comparator = spliterator.getComparator();
+        return (comparator != null) ? comparator.reversed() : null;
+    }
+
+    @Override
+    public void forEachRemaining(Consumer<? super Integer> action) {
+        if(!deque.isEmpty() || tryAdvance(action)) {
+            deque.forEach(action);
+        }
     }
 }

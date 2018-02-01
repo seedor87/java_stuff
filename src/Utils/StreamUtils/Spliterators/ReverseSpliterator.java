@@ -1,4 +1,4 @@
-package Utils.StreamUtils;
+package Utils.StreamUtils.Spliterators;
 
 import java.util.ArrayDeque;
 import java.util.Comparator;
@@ -26,7 +26,6 @@ public class ReverseSpliterator <T> implements Spliterator<T> {
 
     @Override
     public Spliterator<T> trySplit() {
-        // After traveling started the spliterator don't contain elements!
         Spliterator<T> prev = spliterator.trySplit();
         if(prev == null) {
             return null;
@@ -55,7 +54,6 @@ public class ReverseSpliterator <T> implements Spliterator<T> {
 
     @Override
     public void forEachRemaining(Consumer<? super T> action) {
-        // Ensure that tryAdvance is called at least once
         if(!deque.isEmpty() || tryAdvance(action)) {
             deque.forEach(action);
         }
