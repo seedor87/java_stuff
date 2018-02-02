@@ -1,7 +1,6 @@
 package RandomStuff.SpecialNumbers;
 
 import java.util.*;
-import java.util.stream.IntStream;
 
 import static Utils.Console.Printing.*;
 import static Utils.Primes.isPrime;
@@ -9,7 +8,6 @@ import static Utils.Primes.primeFactors;
 
 import TestingUtils.ObsoleteTesting.NewSYSStopwatchTest;
 import Utils.Collections.OldTuple.Tuple;
-import Utils.Console.Printing;
 
 public class SpecialNumbers<T extends Object> extends NewSYSStopwatchTest<T> {
 

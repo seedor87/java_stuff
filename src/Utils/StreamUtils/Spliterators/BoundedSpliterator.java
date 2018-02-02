@@ -46,8 +46,8 @@ public class BoundedSpliterator<T> implements Spliterator<T> {
         StreamSupport.stream(
             new BoundedSpliterator<>(
                 'a',
-                character -> !character.equals('d'),
-                character -> (char) (character + 1)
+                c -> !c.equals('d'),
+                c -> ++c
             ) ,
             false
         )

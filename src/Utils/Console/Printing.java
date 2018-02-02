@@ -8,7 +8,6 @@ import Utils.StopWatches.TimeUnit;
 import java.lang.reflect.Array;
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.function.IntConsumer;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -16,12 +15,10 @@ import static Utils.Console.Special.*;
 
 public class Printing {
 
-    public static String format(String str, Object... args) {
-        return System.out.format(str, args).toString();
-    }
+    private static String DEFAULT_DELIM = ", ";
 
-    public static void print(PrintableSpecial c) {
-        print(c.toString());
+    public static String format(CharSequence str, Object... args) {
+        return System.out.format(str.toString(), args).toString();
     }
 
     public static void println() {
@@ -29,115 +26,41 @@ public class Printing {
     }
     public static void printrn() { print(CARR_RET); }
 
-    private static <T> void printMap(T obj) {
-        print("[");
-        String delim = "";
-        for(Object o : ((Map) obj).entrySet()) {
-            print(delim);
-            Map.Entry entry = (Map.Entry) o;
-            print("<");
-            print(entry.getKey());
-            print(" = ");
-            print(entry.getValue());
-            print(">");
-            delim = " , ";
-        }
-        print("]");
+    public static void print(PrintableSpecial c) {
+        print(c.toString());
     }
 
-    private static <T> void printArray(T arr) {
-        print("{");
-        String delim = "";
-        for (int i = 0; i < Array.getLength(arr); i++) {
-            Object obj = Array.get(arr, i);
-            print(delim);
-            print(obj);
-            delim = ", ";
-        }
-        print("}");
-    }
-
-    private static <T> void printTuple(T tup) {
-        print("(");
-        String delim = "";
-        for (int i = 0; i < Tuple.class.cast(tup).length; i++) {
-            Object obj = Tuple.class.cast(tup).get(i);
-            print(delim);
-            print(obj);
-            delim = ", ";
-        }
-        print(")");
-    }
-
-    private static <T> void printIterable(T col) {
-        print("[");
-        String delim = "";
-        for(Object elem: (Iterable<T>) col) {
-            print(delim);
-            print(elem);
-            delim = ", ";
-        }
-        print("]");
-    }
-
-    private static <T> void printChar(T c) {
-        print("'");
-        System.out.print(c);
-        print("'");
-    }
-
-    private static <T> void printStream(T s) {
-        ((Stream) s).forEach(new Consumer() {
-            int i = 0;
-
-            @Override
-            public void accept(Object o) {
-                if (i++ > 0) {
-                    print(" > ");
-                    print(o);
-                } else {
-                    print(o);
-                }
-            }
-        });
-    }
-
-    private static <T> void printIntStream(T s) {
-        ((IntStream) s).forEach(new IntConsumer() {
-            int i = 0;
-
-            @Override
-            public void accept(int value) {
-                if (i++ > 0) {
-                    print(" > ");
-                    print(value);
-                } else {
-                    print(value);
-                }
-            }
-        });
-    }
-
-    private static void printNull() {
-        print(FG_BRIGHT_RED, "NULL");
-    }
-
-    public static <T> void print(T o) {
+    public static void print(Object o) {
         try {
-            if (o.getClass().isArray()) {
-                printArray(o);
+            if (CharSequence.class.isInstance(o)) {
+                System.out.print(o);
+            } else if (o.getClass().isArray()) {
+                print("{");
+                CharSequence delim = "";
+                for (int i = 0; i < Array.getLength(o); i++) {
+                    Object obj = Array.get(o, i);
+                    print(delim);
+                    print(obj);
+                    delim = ", ";
+                }
+                print("}");
             } else if (Map.class.isInstance(o)) {
-                printMap(o);
+                printMap(
+                        DEFAULT_DELIM, (Map) o);
             } else if (Tuple.class.isInstance(o)) {
-                printTuple(o);
+                printTuple(
+                        DEFAULT_DELIM, (Tuple) o);
             } else if (Iterable.class.isInstance(o)) {
-                printIterable(o);
+                printIterable(
+                        DEFAULT_DELIM, (Iterable) o);
             } else if (Stream.class.isInstance(o)) {
-                printStream(o);
+                printStream(
+                        DEFAULT_DELIM, (Stream) o);
             } else if(IntStream.class.isInstance(o)) {
-                printIntStream(o);
+                printIntStream(
+                        DEFAULT_DELIM, (IntStream) o);
             } else if (Character.class.isInstance(o)) {
-                printChar(o);
+                printChar((Character) o);
             } else {
                 System.out.print(o);
             }
@@ -146,150 +69,191 @@ public class Printing {
         }
     }
 
-    public static <T> void print(T... args) {
-        String delim = "";
-        for (T elem : args) {
+    private static <T extends Character> void printChar(T car) {
+        print("'");
+        System.out.print(car);
+        print("'");
+    }
+
+    private static void printNull() {
+        print(FG_BRIGHT_RED, "NULL");
+    }
+
+    private static <T extends Iterable<E>, E> void printIterable(CharSequence delim, T col) {
+        print("[");
+        CharSequence temp = "";
+        for(E elem: col) {
+            print(temp);
+            print(elem);
+            temp = delim;
+        }
+        print("]");
+    }
+
+    private static <T extends Map<K, V>, K, V> void printMap(CharSequence delim, T map) {
+        print("[");
+        CharSequence temp = "";
+        for(Map.Entry<K, V> o : map.entrySet()) {
+            print(temp);
+            print("<");
+            print(o.getKey());
+            print(" = ");
+            print(o.getValue());
+            print(">");
+            temp = delim;
+        }
+        print("]");
+    }
+
+    private static <T extends Tuple> void printTuple(CharSequence delim, T tup) {
+        print("(");
+        CharSequence temp = "";
+        for (int i = 0; i < Tuple.class.cast(tup).length; i++) {
+            Object obj = Tuple.class.cast(tup).get(i);
+            print(temp);
+            print(obj);
+            temp = delim;
+        }
+        print(")");
+    }
+
+    private static <T extends Stream<E>, E> void printStream(CharSequence delim, T stm) {
+        stm.forEach(
+            new Consumer<E>() {
+                boolean first = true;
+                @Override
+                public void accept(E o) {
+                    if (first) {
+                        print(o);
+                        first = false;
+                    } else {
+                        print(delim);
+                        print(o);
+                    }
+                }
+            }
+        );
+    }
+
+    private static <T extends IntStream> void printIntStream(CharSequence delim, T stm) {
+        printStream(delim, stm.boxed());
+    }
+
+    public static void print(Object... args) {
+        CharSequence delim = "";
+        for (Object elem : args) {
             print(delim);
             print(elem);
             delim = " ";
         }
     }
 
-    public static <T> void println(T... args) {
+    public static void println(Object... args) {
         print(args);
         println();
     }
 
-    public static <T> void printrn(T... args) {
+    public static void printrn(Object... args) {
         printrn();
         print(args);
     }
 
-    public static <T> void print(PrintableSpecial c, T...args) {
+    public static void print(PrintableSpecial c, Object...args) {
         print(c);
         print(args);
         print(RESET);
     }
 
-    public static <T> void println(PrintableSpecial c, T...args) {
+    public static void println(PrintableSpecial c, Object...args) {
         print(c, args);
         println();
     }
 
-    public static <T> void printrn(PrintableSpecial c, T...args) {
+    public static void printrn(PrintableSpecial c, Object...args) {
         printrn();
         print(c, args);
     }
 
-    public static <T> void print(PrintableSpecial c1, PrintableSpecial c2, T...args) {
+    public static void print(PrintableSpecial c1, PrintableSpecial c2, Object...args) {
         print(c1);
         print(c2);
         print(args);
         print(RESET);
     }
 
-    public static <T> void println(PrintableSpecial c1, PrintableSpecial c2, T...args) {
+    public static void println(PrintableSpecial c1, PrintableSpecial c2, Object...args) {
         print(c1, c2, args);
         println();
     }
 
-    public static <T> void printrn(PrintableSpecial c1, PrintableSpecial c2, T...args) {
+    public static void printrn(PrintableSpecial c1, PrintableSpecial c2, Object...args) {
         printrn();
         print(c1, c2, args);
     }
 
-    public static <T> void printDelim(String delim, T... args) {
-        String temp = "";
-        for (T elem : args) {
+    public static void printDelim(CharSequence delim, Object... args) {
+        CharSequence temp = "";
+        for (Object elem : args) {
             print(temp);
             print(elem);
             temp = delim;
         }
     }
 
-    public static <T> void printlnDelim(String delim, T... args) {
+    public static void printlnDelim(CharSequence delim, Object... args) {
         printDelim(delim, args);
         println();
     }
 
-    public static <T> void printrnDelim(String delim, T... args) {
+    public static void printrnDelim(CharSequence delim, Object... args) {
         printrn();
         printDelim(delim, args);
     }
 
-    public static <T extends Collection<E>, E extends Object> void printDelim(String delim, T args) {
-        String temp = "";
-        for (E elem : args) {
-            print(temp);
-            print(elem);
-            temp = delim;
-        }
+    public static <T extends Collection<E>, E> void printDelim(CharSequence delim, T args) {
+        printIterable(delim, args);
     }
 
-    public static <T extends Collection<E>, E extends Object> void printlnDelim(String delim, T args) {
+    public static <T extends Collection<E>, E> void printlnDelim(CharSequence delim, T args) {
         printDelim(delim, args);
         println();
     }
 
-    public static <T extends Collection<E>, E extends Object> void printrnDelim(String delim, T args) {
+    public static <T extends Collection<E>, E> void printrnDelim(CharSequence delim, T args) {
         printrn();
         printDelim(delim, args);
     }
 
-    public static <T extends IntStream> void printDelim(String delim, T args) {
-        args.forEach(new IntConsumer() {
-            int i = 0;
-
-            @Override
-            public void accept(int value) {
-                if (i++ > 0) {
-                    print(delim);
-                    print(value);
-                } else {
-                    print(value);
-                }
-            }
-        });
+    public static <T extends IntStream> void printDelim(CharSequence delim, T args) {
+        printIntStream(delim, args);
     }
 
-    public static <T extends IntStream> void printlnDelim(String delim, T args) {
+    public static <T extends IntStream> void printlnDelim(CharSequence delim, T args) {
         printDelim(delim, args);
         println();
     }
 
-    public static <T extends IntStream> void printrnDelim(String delim, T args) {
+    public static <T extends IntStream> void printrnDelim(CharSequence delim, T args) {
         printrn();
         printDelim(delim, args);
     }
 
-    public static <T extends Stream<E>, E> void printDelim(String delim, T args) {
-        args.forEach(new Consumer<E>() {
-            int i = 0;
-
-            @Override
-            public void accept(E e) {
-                if (i++ > 0) {
-                    print(delim);
-                    print(e);
-                } else {
-                    print(e);
-                }
-            }
-        });
+    public static <T extends Stream<E>, E> void printDelim(CharSequence delim, T args) {
+        printStream(delim, args);
     }
 
-    public static <T extends Stream<E>, E> void printlnDelim(String delim, T args) {
+    public static <T extends Stream<E>, E> void printlnDelim(CharSequence delim, T args) {
         printDelim(delim, args);
         println();
     }
 
-    public static <T extends Stream<E>, E> void printrnDelim(String delim, T args) {
+    public static <T extends Stream<E>, E> void printrnDelim(CharSequence delim, T args) {
         printrn();
         printDelim(delim, args);
     }
 
-   public static void printDelim(String delim, char[] arr) {
-        String temp = "";
+   public static void printDelim(CharSequence delim, char[] arr) {
+        CharSequence temp = "";
         for(char c : arr) {
             print(temp);
             print(c);
@@ -297,12 +261,12 @@ public class Printing {
         }
    }
 
-   public static void printlnDelim(String delim, char[] arr) {
+   public static void printlnDelim(CharSequence delim, char[] arr) {
         printDelim(delim, arr);
         println();
    }
 
-    public static void printrnDelim(String delim, char[] arr) {
+    public static void printrnDelim(CharSequence delim, char[] arr) {
         printrn();
         printDelim(delim, arr);
     }

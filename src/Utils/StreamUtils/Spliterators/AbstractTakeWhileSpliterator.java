@@ -5,33 +5,17 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 
-public class TakeWhileSpliterator<T> implements Spliterator<T>, Consumer<T>, Cloneable {
-    private final Predicate<? super T> condition;
-    private final AtomicBoolean checked = new AtomicBoolean();
+public abstract class AbstractTakeWhileSpliterator<T> implements Spliterator<T>, Consumer<T>, Cloneable {
     private Spliterator<T> source;
+    protected final AtomicBoolean found = new AtomicBoolean();
 
-    public TakeWhileSpliterator(Spliterator<T> source, Predicate<? super T> predicate) {
-        this.condition = predicate;
+    public AbstractTakeWhileSpliterator(Spliterator<T> source) {
         this.source = source;
     }
 
     @Override
-    public void accept(T t) {}
-
-    @Override
-    public boolean tryAdvance(Consumer<? super T> action) {
-        return (!checked.get() &&
-            source.tryAdvance((e) -> {
-                if (condition.test(e)) {
-                    action.accept(e);
-                } else {
-                    checked.set(true);
-                }
-            })
-        );
-    }
+    public abstract boolean tryAdvance(Consumer<? super T> action);
 
     @Override
     public Spliterator<T> trySplit() {
@@ -39,16 +23,16 @@ public class TakeWhileSpliterator<T> implements Spliterator<T>, Consumer<T>, Clo
         if(prefix == null) {
             return null;
         }
-        if(checked.get()) {
+        if(found.get()) {
             return Spliterators.emptySpliterator();
         }
-        TakeWhileSpliterator<T> clone;
+        AbstractTakeWhileSpliterator<T> clone;
         try {
-            clone = (TakeWhileSpliterator<T>) clone();
+            clone = (AbstractTakeWhileSpliterator<T>) clone();
         } catch (CloneNotSupportedException e) {
             throw new InternalError(e);
         }
-        clone.source = prefix;
+        clone.setSource(prefix);
         return clone;
     }
 
@@ -65,5 +49,13 @@ public class TakeWhileSpliterator<T> implements Spliterator<T>, Consumer<T>, Clo
     @Override
     public Comparator<? super T> getComparator() {
         return source.getComparator();
+    }
+
+    public Spliterator<T> getSource() {
+        return source;
+    }
+
+    public void setSource(Spliterator<T> source) {
+        this.source = source;
     }
 }

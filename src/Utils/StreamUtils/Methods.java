@@ -7,11 +7,10 @@ import TestingUtils.JUnitTesting.TimedRule.TimedRule;
 import Utils.Console.Special;
 import Utils.StopWatches.SYSStopwatch;
 import Utils.StopWatches.TimeUnit;
-
 import Utils.StreamUtils.Spliterators.*;
+
 import org.junit.Rule;
 import org.junit.Test;
-
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.*;
@@ -19,31 +18,71 @@ import java.util.stream.*;
 public class Methods {
 
     @Rule
-    public TimedRule jcr = new TimedRule(SYSStopwatch.class, TimeUnit.MICROSECONDS);
+    public TimedRule jcr = new TimedRule(SYSStopwatch.class, TimeUnit.MILLISECONDS);
+
+    public static <T> String makeString(Stream<T> stream) {
+        return makeString(stream);
+    }
+
+    public static <T> String makeString(String delim, Stream<T> stream) {
+        return stream.map(Object::toString).collect(Collectors.joining(delim));
+    }
+
+    public static String makeString(IntStream stream) {
+        return makeString(stream);
+    }
+
+    public static String makeString(String delim, IntStream stream) {
+        return stream.boxed().map(Object::toString).collect(Collectors.joining(delim));
+    }
+
+
+    public static <T> Stream<T> reverse(Stream<T> stream) {
+        return StreamSupport.stream(new ReverseSpliterator<>(stream.spliterator()), stream.isParallel());
+    }
+
+    public static IntStream reverse(IntStream stream) {
+        return StreamSupport.stream(new IntReverseSpliterator(stream.spliterator()), stream.isParallel()).mapToInt(i -> i);
+    }
+
+
+    public static <T> Stream<T> iterate(T seed, Predicate<T> predicate, UnaryOperator<T> operator) {
+        return StreamSupport.stream(
+            new BoundedSpliterator<>(
+                seed,
+                predicate,
+                operator
+            ),
+            false
+        );
+    }
+
+    public static IntStream intIterate(Integer seed, IntPredicate predicate, IntUnaryOperator operator) {
+        return StreamSupport.intStream(
+            new IntBoundedSpliterator(
+                seed,
+                predicate,
+                operator
+            ),
+            false
+        );
+    }
 
 
     public static IntStream takeWhile(IntStream stream, IntPredicate predicate) {
-        return StreamSupport.stream(new IntTakeWhileSpliterator(stream.spliterator(), predicate), stream.isParallel()).mapToInt(i -> i);
+        return StreamSupport.intStream(new ConcreteIntTakeWhileSpliterator(stream.spliterator(), predicate), stream.isParallel());
     }
 
     public static IntStream takeWhile(IntStream stream, BiPredicate<Integer, Integer> predicate, Integer identity) {
-        return StreamSupport.stream(new BiIntTakeWhileSpliterator(stream.spliterator(), predicate, identity), stream.isParallel()).mapToInt(i -> i);
+        return StreamSupport.intStream(new ConcreteBiIntTakeWhileSpliterator(stream.spliterator(), predicate, identity), stream.isParallel());
     }
 
-    public static IntStream takeWhile(IntStream stream, BiPredicate<Integer, Integer> predicate) {
-        return StreamSupport.stream(new BiIntTakeWhileSpliterator(stream.spliterator(), predicate, null), stream.isParallel()).mapToInt(i -> i);
-    }
-
-    static <T> Stream<T> takeWhile(Stream<T> stream, Predicate<? super T> predicate) {
-        return StreamSupport.stream(new TakeWhileSpliterator<>(stream.spliterator(), predicate), stream.isParallel());
+    public static <T> Stream<T> takeWhile(Stream<T> stream, Predicate<? super T> predicate) {
+        return StreamSupport.stream(new ConcreteTakeWhileSpliterator<>(stream.spliterator(), predicate), stream.isParallel());
     }
 
     public static <T> Stream<T> takeWhile(Stream<T> stream, BiPredicate<? super T, ? super T> predicate, T identity) {
-        return StreamSupport.stream(new BiTakeWhileSpliterator<>(stream.spliterator(), predicate, identity), stream.isParallel());
-    }
-
-    public static <T> Stream<T> takeWhile(Stream<T> stream, BiPredicate<? super T, ? super T> predicate) {
-        return StreamSupport.stream(new BiTakeWhileSpliterator<>(stream.spliterator(), predicate, null), stream.isParallel());
+        return StreamSupport.stream(new ConcreteBiTakeWhileSpliterator<>(stream.spliterator(), predicate, identity), stream.isParallel());
     }
 
 
@@ -55,20 +94,12 @@ public class Methods {
         return stream.flatMap(Functions.dropWhile(identity, predicate));
     }
 
-    public static IntStream dropWhile(IntStream stream, BiPredicate<? super Integer, ? super Integer> predicate) {
-        return stream.flatMap(Functions.dropWhile(null, predicate));
-    }
-
     public static <T> Stream<T> dropWhile(Stream<T> stream, Predicate<T> predicate) {
         return stream.flatMap(Functions.dropWhile(predicate));
     }
 
     public static <T> Stream<T> dropWhile(Stream<T> stream, BiPredicate<? super T, ? super T> predicate, T identity) {
         return stream.flatMap(Functions.dropWhile(identity, predicate));
-    }
-
-    public static <T> Stream<T> dropWhile(Stream<T> stream, BiPredicate<? super T, ? super T> predicate) {
-        return stream.flatMap(Functions.dropWhile(null, predicate));
     }
 
 
@@ -120,126 +151,73 @@ public class Methods {
         return stream.boxed().flatMap(Functions.listsOfN(n)).map(integers -> integers.<Integer>toArray(new Integer[n]));
     }
 
-    public static <T> Stream<T> reverse(Stream<T> stream) {
-        return StreamSupport.stream(new ReverseSpliterator<>(stream.spliterator()), stream.isParallel());
-    }
-
-    public static IntStream reverse(IntStream stream) {
-        return StreamSupport.stream(new IntReverseSpliterator(stream.spliterator()), stream.isParallel()).mapToInt(i -> i);
-    }
-
-    public static <T> String makeString(Stream<T> stream) {
-        return stream.collect(
-            Collector.of(
-                StringBuilder::new,
-                (sb, s) -> sb.append(s.toString()),
-                StringBuilder::append,
-                StringBuilder::toString)
-            );
-    }
-
-    public static <T> String makeString(String delim, Stream<T> stream) {
-        return stream.collect(
-            Collector.of(
-                StringBuilder::new,
-                new BiConsumer<StringBuilder, T>() {
-                    boolean first = true;
-                    @Override
-                    public void accept(StringBuilder sb, T t) {
-                        if (!first) {
-                            sb.append(delim);
-                            sb.append(t);
-                        } else {
-                            sb.append(t);
-                            first = false;
-                        }
-                    }
-                },
-                StringBuilder::append,
-                StringBuilder::toString)
-        );
-    }
-
-    public static <T> Stream<T> iterate(T seed, Predicate<T> predicate, UnaryOperator<T> operator) {
-        return StreamSupport.stream(
-            new BoundedSpliterator<>(
-                seed,
-                predicate,
-                operator
-            ),
-            false
-        );
-    }
-
-    public static IntStream intIterate(Integer seed, IntPredicate predicate, IntUnaryOperator operator) {
-        return StreamSupport.intStream(
-            new IntBoundedSpliterator(
-                seed,
-                predicate,
-                operator
-            ),
-            false
-        );
-    }
-
     @Test
     public void test() {
+//        println(
+//            takeWhile(
+//                Stream.<Integer>generate(
+//                    new Supplier<Integer>() {
+//                        int i = 0;
+//                        @Override
+//                        public Integer get() { return i++; }
+//                    }
+//                ),
+//                i -> i < 1000000000
+//            )
+//            .mapToInt(i -> i)
+//            .summaryStatistics()
+//        );
 
-        println(Special.RESET,"toString(\", \", IntStream.range(0, 10).flatMap(intTakeEveryNth(3)).boxed()));\n", Special.FG_BRIGHT_CYAN,
-                makeString(", ", IntStream.range(0, 10).flatMap(intTakeEveryNth(3)).boxed()));
+        println(
+            takeWhile(
+                IntStream.generate(
+                    new IntSupplier() {
+                        int i = 0;
+                        @Override
+                        public int getAsInt() { return i++; }
+                    }
+                ),
+                i -> i < 1000000000
+            )
+            .summaryStatistics()
+        );
+    }
 
-        println(Special.RESET,"reverse(IntStream.range(0, 10)));\n", Special.FG_BRIGHT_CYAN,
-                reverse(IntStream.range(0, 10)));
+    public static void main(String[] args) {
 
-        println(Special.RESET,"reverse(Stream.of('a','b','c','d')));\n", Special.FG_BRIGHT_CYAN,
-                reverse(Stream.of('a','b','c','d')));
+        println(Special.FG_BRIGHT_CYAN, makeString(", ", IntStream.range(0, 10).flatMap(intTakeEveryNth(3))));
 
-        println(Special.RESET,"takeN(IntStream.range(0, 10), 5));\n", Special.FG_BRIGHT_CYAN,
-                takeN(IntStream.range(0, 10), 5));
+        println(Special.FG_BRIGHT_CYAN, reverse(IntStream.range(0, 10)));
 
-        println(Special.RESET,"dropN(IntStream.range(0, 10), 5));\n", Special.FG_BRIGHT_CYAN,
-                dropN(IntStream.range(0, 10), 5));
+        println(Special.FG_BRIGHT_CYAN, reverse(Stream.of('a','b','c','d')));
 
-        println(Special.RESET,"takeWhile(Stream.of(\"one\", \"two\", \"three\", \"four\", \"five\"), s -> !s.contains(\"ee\")));\n", Special.FG_BRIGHT_CYAN,
-                takeWhile(Stream.of("one", "two", "three", "four", "five"), s -> !s.contains("ee")));
+        println(Special.FG_BRIGHT_CYAN, takeN(IntStream.range(0, 10), 5));
 
-        println(Special.RESET,"dropWhile(Stream.of(\"one\", \"two\", \"three\", \"four\", \"five\"), s -> !s.contains(\"ee\")));\n", Special.FG_BRIGHT_CYAN,
-                dropWhile(Stream.of("one", "two", "three", "four", "five"), s -> !s.contains("ee")));
+        println(Special.FG_BRIGHT_CYAN, dropN(IntStream.range(0, 10), 5));
 
-        println(Special.RESET,"takeWhile(IntStream.of(1,2,3,4,3,2,1), (i1, i2) -> i1 < i2, Integer.MIN_VALUE));\n", Special.FG_BRIGHT_CYAN,
-                takeWhile(IntStream.of(1,2,3,4,3,2,1), (i1, i2) -> i1 < i2, Integer.MIN_VALUE));
+        println(Special.FG_BRIGHT_CYAN, takeWhile(Stream.of("one", "two", "three", "four", "five", "six"), s -> !s.contains("our")));
 
-        println(Special.RESET,"dropWhile(IntStream.of(1,2,3,4,3,2,1), (i1, i2) -> i1 < i2));\n", Special.FG_BRIGHT_CYAN,
-                dropWhile(IntStream.of(1,2,3,4,3,2,1), (i1, i2) -> i1 < i2));
+        println(Special.FG_BRIGHT_CYAN, dropWhile(Stream.of("one", "two", "three", "four", "five", "six"), s -> !s.contains("our")));
 
-        println(Special.RESET,"takeWhile(Stream.of(\"one\", \"two\", \"three\", \"four\", \"five\"), (i1, i2) -> i1.length() <= i2.length(), \"\"));\n", Special.FG_BRIGHT_CYAN,
-                takeWhile(Stream.of("one", "two", "three", "four", "five"), (i1, i2) -> i1.length() <= i2.length(), ""));
+        println(Special.FG_BRIGHT_CYAN, takeWhile(IntStream.range(0, 10), (i1, i2) -> i1 < i2, Integer.MIN_VALUE));
 
-        println(Special.RESET,"dropWhile(Stream.of(\"one\", \"two\", \"three\", \"four\", \"five\"), (i1, i2) -> i1.length() <= i2.length()));\n", Special.FG_BRIGHT_CYAN,
-                dropWhile(Stream.of("one", "two", "three", "four", "five"), (i1, i2) -> i1.length() <= i2.length()));
+        println(Special.FG_BRIGHT_CYAN, dropWhile(IntStream.range(0, 10), (i1, i2) -> i1 < i2, Integer.MIN_VALUE));
 
-        println(Special.RESET,"takeOnly(IntStream.range(0, 10), value -> value % 2 == 0));\n", Special.FG_BRIGHT_CYAN,
-                takeOnly(IntStream.range(0, 10), value -> value % 2 == 0));
+        println(Special.FG_BRIGHT_CYAN, takeWhile(Stream.of("one", "two", "three", "four", "five", "six"), (i1, i2) -> i1.length() <= i2.length(), ""));
 
-        println(Special.RESET,"dropOnly(IntStream.range(0, 10), value -> value % 2 == 0));\n", Special.FG_BRIGHT_CYAN,
-                dropOnly(IntStream.range(0, 10), value -> value % 2 == 0));
+        println(Special.FG_BRIGHT_CYAN, dropWhile(Stream.of("one", "two", "three", "four", "five", "six"), (i1, i2) -> i1.length() <= i2.length(), ""));
 
-        println(Special.RESET,"takeOnly(Stream.of(\"one\", \"two\", \"three\", \"four\", \"five\"), value -> value.length() < 5));\n", Special.FG_BRIGHT_CYAN,
-                takeOnly(Stream.of("one", "two", "three", "four", "five"), value -> value.length() < 5));
+        println(Special.FG_BRIGHT_CYAN, takeOnly(IntStream.range(0, 10), value -> value % 2 == 0));
 
-        println(Special.RESET,"listsOfN(Stream.of(\"one\", \"two\", \"one\", \"two\", \"one\", \"two\"), 2));\n", Special.FG_BRIGHT_CYAN,
-                listsOfN(Stream.of("one", "two", "one", "two", "one", "two"), 2));
+        println(Special.FG_BRIGHT_CYAN, dropOnly(IntStream.range(0, 10), value -> value % 2 == 0));
 
-        println(Special.RESET,"arraysOfN(IntStream.range(0, 100), 3));\n", Special.FG_BRIGHT_CYAN,
-                arraysOfN(IntStream.range(0, 100), 3));
+        println(Special.FG_BRIGHT_CYAN, takeOnly(Stream.of("one", "two", "three", "four", "five", "six"), value -> value.length() < 5));
 
-        println(Special.RESET,
-"            intIterate(\n" +
-"                1,\n" +
-"                i -> i <= 100,\n" +
-"                i -> i + 1\n" +
-"            )\n" +
-"        );\n", Special.FG_BRIGHT_CYAN,
+        println(Special.FG_BRIGHT_CYAN, listsOfN(Stream.of("one", "two", "three", "four", "five", "six"), 3));
+
+        println(Special.FG_BRIGHT_CYAN, arraysOfN(IntStream.range(0, 100), 3));
+
+        println(
             intIterate(
                 1,
                 i -> i <= 100,
@@ -247,13 +225,7 @@ public class Methods {
             )
         );
 
-        println(Special.RESET,
-"            iterate(\n" +
-"                'z',\n" +
-"                c -> !c.equals((char) ('a' - 1)),\n" +
-"                c -> (--c)\n" +
-"            )\n" +
-"        );\n", Special.FG_BRIGHT_CYAN,
+        println(
             iterate(
                 'z',
                 c -> !c.equals((char) ('a' - 1)),
@@ -261,13 +233,7 @@ public class Methods {
             )
         );
 
-        println(Special.RESET,
-"            iterate(\n" +
-"                \"1\",\n" +
-"                i -> i.length() < 10,\n" +
-"                i -> i + (char) (i.charAt(i.length()-1) + 1)\n" +
-"            )\n" +
-"        );\n", Special.FG_BRIGHT_CYAN,
+        println(
             iterate(
                 "1",
                 i -> i.length() < 10,
@@ -275,20 +241,7 @@ public class Methods {
             )
         );
 
-        println(Special.RESET,
-"            takeWhile(\n" +
-"                Stream.generate(\n" +
-"                    new Supplier<Character>() {\n" +
-"                        int c = ' ';\n" +
-"                        @Override\n" +
-"                        public Character get() {\n" +
-"                            return (char) c++;\n" +
-"                        }\n" +
-"                    }\n" +
-"                ),\n" +
-"                i -> i < 1000\n" +
-"            )\n" +
-"        );\n", Special.FG_BRIGHT_CYAN,
+        println(
             takeWhile(
                 Stream.generate(
                     new Supplier<Character>() {
@@ -303,18 +256,20 @@ public class Methods {
             )
         );
 
-        println(Special.RESET,
-"            takeWhile(\n" +
-"                IntStream.generate(\n" +
-"                    new IntSupplier() {\n" +
-"                        int i = 0;\n" +
-"                        @Override\n" +
-"                        public int getAsInt() { return i++; }\n" +
-"                    }\n" +
-"                ),\n" +
-"                i -> i < 1000\n" +
-"            )\n" +
-"        );\n", Special.FG_BRIGHT_CYAN,
+        println(
+            takeWhile(
+                Stream.<Integer>generate(
+                    new Supplier<Integer>() {
+                        int i = 0;
+                        @Override
+                        public Integer get() { return i++; }
+                    }
+                ),
+                i -> i < 1000
+            )
+        );
+
+        println(
             takeWhile(
                 IntStream.generate(
                     new IntSupplier() {
@@ -327,18 +282,7 @@ public class Methods {
             )
         );
 
-        println(Special.RESET,
-"               takeWhile(\n" +
-"                IntStream.generate(\n" +
-"                    new IntSupplier() {\n" +
-"                        int i = 0;\n" +
-"                        @Override\n" +
-"                        public int getAsInt() { return i++; }\n" +
-"                    }\n" +
-"                ),\n" +
-"                i -> i < 1000\n" +
-"            )\n" +
-"           )\n", Special.FG_BRIGHT_CYAN,
+        println(
             takeWhile(
                 IntStream.generate(
                     new IntSupplier() {
@@ -346,31 +290,10 @@ public class Methods {
                         @Override
                         public int getAsInt() { return i++; }
                     }
-                ),
-                i -> i < 1000
+                ).parallel(),
+                (o1, o2) -> o1 < o2 && o1 < 50,
+                Integer.MIN_VALUE
             )
-        );
-
-        println(Special.RESET,
-"           takeWhile(\n" +
-"            IntStream.generate(\n" +
-"                new IntSupplier() {\n" +
-"                    int i = 0;\n" +
-"                    @Override\n" +
-"                    public int getAsInt() { return i++; }\n" +
-"                }\n" +
-"            ), (first, second) -> first < second)\n" +
-"        );\n", Special.FG_BRIGHT_CYAN,
-        takeWhile(
-            IntStream.generate(
-                new IntSupplier() {
-                    int i = 0;
-                    @Override
-                    public int getAsInt() { return i++; }
-                }
-            ),
-            (first, second) -> first < second && first < 5,
-            Integer.MIN_VALUE)
         );
     }
 }

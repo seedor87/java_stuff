@@ -41,7 +41,7 @@ public class ArmstrongNumber {
         return
             Methods.takeWhile(
                 IntStream.iterate(n, i -> i / 10),
-                (IntPredicate) i -> i > 0
+                i -> i > 0
             )
             .map(j -> j % 10);
     }
@@ -75,41 +75,37 @@ public class ArmstrongNumber {
 
     @Test
     public void test() {
-        int lim = 1000000;
+        int lim = 10000000;
         int pow = 8;
 
         IntStream.range(2,pow)
-            .forEach(i -> {
-                println("Power:", i);
-                IntStream.range(2, lim)
-                    .filter((j) -> isNthArmstrNum(j, i))
-                        .forEach(k -> {
-                            parseDigits(k)
-                                .<ArrayList<String>>collect(
-                                    ArrayList::new,
-                                    (list, e) -> {
-                                        list.add(wrap(DigitColors.values()[e].color, e) + "^" + i + " = " + Math.pow(e, i));
-                                        list.add((list.size()/2), wrap(DigitColors.values()[e].color, e));
-                                        /* Used for reverse-ordered digits */
-//                                        (list).add(0, "" + wrap(DigitColors.values()[e].color, e));
-//                                        (list).add((list.size()/2)+1, wrap(DigitColors.values()[e].color, e) + "^" + i + " = " + Math.pow(e, i));
-                                    },
-                                    (list1, list2) -> (list1).addAll(list2)
-                                ).forEach(s -> {
-                                        if (s.length() < 11) {
-                                            print(s);
-                                        } else {
-                                            print("", s);
-                                        }
-                                    });
-                            println();
-                        });
+        .forEach(i -> {
+            println("Power:", i);
+            IntStream.range(2, lim)
+            .filter((j) -> isNthArmstrNum(j, i))
+            .forEach(k -> {
+                parseDigits(k)
+                .<ArrayList<String>>collect(
+                    ArrayList::new,
+                    (list, e) -> {
+                        list.add(wrap(DigitColors.values()[e].color, e) + "^" + i + " = " + Math.pow(e, i));
+                        list.add((list.size()/2), wrap(DigitColors.values()[e].color, e));
+                    },
+                    (list1, list2) -> (list1).addAll(list2))
+                .forEach(s -> {
+                    if (s.length() < 11) {
+                        print(s);
+                    } else {
+                        print("", s);
+                    }
+                });
+                println();
             });
+        });
         println();
     }
 
     public static void main(String args[]) {
-     Utils.Console.Printing.print(parseDigits(1234));
-//        new ArmstrongNumber().test();
+        new ArmstrongNumber().test();
     }
 }
