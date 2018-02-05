@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.*;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 public class Functions {
@@ -79,6 +80,40 @@ public class Functions {
         };
     }
 
+    public static LongFunction<? extends LongStream> dropWhile(LongPredicate condition) {
+        return new LongFunction<LongStream>() {
+            final AtomicBoolean found = new AtomicBoolean();
+            @Override
+            public LongStream apply(long value) {
+                if (!found.get()) {
+                    if (condition.test(value)) {
+                        return LongStream.empty();
+                    }
+                    found.set(true);
+                }
+                return LongStream.of(value);
+            }
+        };
+    }
+
+    public static LongFunction<? extends LongStream> dropWhile(Long identity, BiPredicate<? super Long, ? super Long> condition) {
+        return new LongFunction<LongStream>() {
+            final AtomicBoolean found = new AtomicBoolean();
+            Long prev = identity;
+            @Override
+            public LongStream apply(long value) {
+                if (!found.get()) {
+                    if (condition.test(prev, value)) {
+                        prev = value;
+                        return LongStream.empty();
+                    }
+                    found.set(true);
+                }
+                return LongStream.of(value);
+            }
+        };
+    }
+
     public static <T> Function<T, Stream<T>> dropWhile(Predicate<T> condition) {
         return new Function<T, Stream<T>>() {
             final AtomicBoolean found = new AtomicBoolean();
@@ -134,6 +169,16 @@ public class Functions {
         };
     }
 
+    public static LongFunction<? extends LongStream> longDropN(long n) {
+        return new LongFunction<LongStream>() {
+            long i = 0;
+            @Override
+            public LongStream apply(long value) {
+                return (i++ >= n) ? LongStream.of(value) : LongStream.empty();
+            }
+        };
+    }
+
     public static <T> Function<T, Stream<T>> dropN(long n) {
         return new Function<T, Stream<T>>() {
             long i = 0;
@@ -164,6 +209,16 @@ public class Functions {
         };
     }
 
+    public static LongFunction<? extends LongStream> longTakeN(long n) {
+        return new LongFunction<LongStream>() {
+            long i = 0;
+            @Override
+            public LongStream apply(long value) {
+                return (i++ >= n) ? LongStream.empty() : LongStream.of(value);
+            }
+        };
+    }
+
     public static <T> Function<T, Stream<T>> takeN(long n) {
         return new Function<T, Stream<T>>() {
             long i = 0;
@@ -190,6 +245,16 @@ public class Functions {
             @Override
             public DoubleStream apply(double value) {
                 return (i++ % n == 0) ? DoubleStream.of(value) : DoubleStream.empty();
+            }
+        };
+    }
+
+    public static LongFunction<? extends LongStream> longTakeEveryNth(long n) {
+        return new LongFunction<LongStream>() {
+            long i = 0;
+            @Override
+            public LongStream apply(long value) {
+                return (i++ % n == 0) ? LongStream.of(value) : LongStream.empty();
             }
         };
     }
@@ -226,6 +291,10 @@ public class Functions {
 
     public static DoubleFunction<DoubleStream> doubleTakeOnly(DoublePredicate condition) {
         return value -> (condition.test(value)) ? DoubleStream.of(value) : DoubleStream.empty();
+    }
+
+    public static LongFunction<LongStream> longTakeOnly(LongPredicate condition) {
+        return value -> (condition.test(value)) ? LongStream.of(value) : LongStream.empty();
     }
 
     public static <T> Function<T, Stream<T>> takeOnly(Predicate<T> condition) {

@@ -6,12 +6,12 @@ import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.stream.StreamSupport;
 
-public class BoundedGenericSpliterator<T> implements Spliterator<T> {
+public class GenericBoundedSpliterator<T> implements Spliterator<T> {
     private T index;
     private Predicate<T> condition;
     private UnaryOperator<T> increment;
 
-    public BoundedGenericSpliterator(T initialization, Predicate<T> termination, UnaryOperator<T> incrementation) {
+    public GenericBoundedSpliterator(T initialization, Predicate<T> termination, UnaryOperator<T> incrementation) {
         this.index = initialization;
         this.condition = termination;
         this.increment = incrementation;
@@ -44,7 +44,7 @@ public class BoundedGenericSpliterator<T> implements Spliterator<T> {
 
     public static void main(String[] args) {
         StreamSupport.stream(
-            new BoundedGenericSpliterator<>(
+            new GenericBoundedSpliterator<>(
                 'a',
                 c -> !c.equals('d'),
                 c -> ++c
