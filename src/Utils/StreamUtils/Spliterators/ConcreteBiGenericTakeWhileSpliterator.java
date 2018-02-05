@@ -4,11 +4,11 @@ import java.util.Spliterator;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 
-public class ConcreteBiTakeWhileSpliterator<T> extends AbstractTakeWhileSpliterator<T> {
+public class ConcreteBiGenericTakeWhileSpliterator<T> extends AbstractGenericTakeWhileSpliterator<T> {
     private final BiPredicate<? super T, ? super T> condition;
     private T prev;
 
-    public ConcreteBiTakeWhileSpliterator(Spliterator<T> source, BiPredicate<? super T, ? super T> predicate, T identity) {
+    public ConcreteBiGenericTakeWhileSpliterator(Spliterator<T> source, BiPredicate<? super T, ? super T> predicate, T identity) {
         super(source);
         this.condition = predicate;
         this.prev = identity;

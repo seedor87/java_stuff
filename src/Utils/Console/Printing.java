@@ -8,6 +8,7 @@ import Utils.StopWatches.TimeUnit;
 import java.lang.reflect.Array;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.stream.BaseStream;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -53,12 +54,9 @@ public class Printing {
             } else if (Iterable.class.isInstance(o)) {
                 printIterable(
                         DEFAULT_DELIM, (Iterable) o);
-            } else if (Stream.class.isInstance(o)) {
+            } else if (BaseStream.class.isInstance(o)) {
                 printStream(
-                        DEFAULT_DELIM, (Stream) o);
-            } else if(IntStream.class.isInstance(o)) {
-                printIntStream(
-                        DEFAULT_DELIM, (IntStream) o);
+                        DEFAULT_DELIM, (BaseStream) o);
             } else if (Character.class.isInstance(o)) {
                 printChar((Character) o);
             } else {
@@ -117,8 +115,8 @@ public class Printing {
         print(")");
     }
 
-    private static <T extends Stream<E>, E> void printStream(CharSequence delim, T stm) {
-        stm.forEach(
+    private static <T extends BaseStream<E, T>, E> void printStream(CharSequence delim, T stm) {
+        stm.iterator().forEachRemaining(
             new Consumer<E>() {
                 boolean first = true;
                 @Override
@@ -133,10 +131,6 @@ public class Printing {
                 }
             }
         );
-    }
-
-    private static <T extends IntStream> void printIntStream(CharSequence delim, T stm) {
-        printStream(delim, stm.boxed());
     }
 
     public static void print(Object... args) {
@@ -224,30 +218,16 @@ public class Printing {
         printDelim(delim, args);
     }
 
-    public static <T extends IntStream> void printDelim(CharSequence delim, T args) {
-        printIntStream(delim, args);
-    }
-
-    public static <T extends IntStream> void printlnDelim(CharSequence delim, T args) {
-        printDelim(delim, args);
-        println();
-    }
-
-    public static <T extends IntStream> void printrnDelim(CharSequence delim, T args) {
-        printrn();
-        printDelim(delim, args);
-    }
-
-    public static <T extends Stream<E>, E> void printDelim(CharSequence delim, T args) {
+    public static <T extends BaseStream<E, T>, E> void printDelim(CharSequence delim, T args) {
         printStream(delim, args);
     }
 
-    public static <T extends Stream<E>, E> void printlnDelim(CharSequence delim, T args) {
+    public static <T extends BaseStream<E, T>, E> void printlnDelim(CharSequence delim, T args) {
         printDelim(delim, args);
         println();
     }
 
-    public static <T extends Stream<E>, E> void printrnDelim(CharSequence delim, T args) {
+    public static <T extends BaseStream<E, T>, E> void printrnDelim(CharSequence delim, T args) {
         printrn();
         printDelim(delim, args);
     }

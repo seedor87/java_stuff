@@ -4,10 +4,10 @@ import java.util.Spliterator;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class ConcreteTakeWhileSpliterator<T> extends AbstractTakeWhileSpliterator<T> {
+public class ConcreteGenericTakeWhileSpliterator<T> extends AbstractGenericTakeWhileSpliterator<T> {
     private final Predicate<? super T> condition;
 
-    public ConcreteTakeWhileSpliterator(Spliterator<T> source, Predicate<? super T> predicate) {
+    public ConcreteGenericTakeWhileSpliterator(Spliterator<T> source, Predicate<? super T> predicate) {
         super(source);
         this.condition = predicate;
     }

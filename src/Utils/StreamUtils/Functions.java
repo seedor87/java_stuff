@@ -1,9 +1,11 @@
 package Utils.StreamUtils;
 
 import java.util.ArrayList;
+import java.util.DoubleSummaryStatistics;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.*;
+import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -39,6 +41,40 @@ public class Functions {
                     found.set(true);
                 }
                 return IntStream.of(value);
+            }
+        };
+    }
+
+    public static DoubleFunction<? extends DoubleStream> dropWhile(DoublePredicate condition) {
+        return new DoubleFunction<DoubleStream>() {
+            final AtomicBoolean found = new AtomicBoolean();
+            @Override
+            public DoubleStream apply(double value) {
+                if (!found.get()) {
+                    if (condition.test(value)) {
+                        return DoubleStream.empty();
+                    }
+                    found.set(true);
+                }
+                return DoubleStream.of(value);
+            }
+        };
+    }
+
+    public static DoubleFunction<? extends DoubleStream> dropWhile(Double identity, BiPredicate<? super Double, ? super Double> condition) {
+        return new DoubleFunction<DoubleStream>() {
+            final AtomicBoolean found = new AtomicBoolean();
+            Double prev = identity;
+            @Override
+            public DoubleStream apply(double value) {
+                if (!found.get()) {
+                    if (condition.test(prev, value)) {
+                        prev = value;
+                        return DoubleStream.empty();
+                    }
+                    found.set(true);
+                }
+                return DoubleStream.of(value);
             }
         };
     }
@@ -88,6 +124,16 @@ public class Functions {
         };
     }
 
+    public static DoubleFunction<? extends DoubleStream> doubleDropN(long n) {
+        return new DoubleFunction<DoubleStream>() {
+            long i = 0;
+            @Override
+            public DoubleStream apply(double value) {
+                return (i++ >= n) ? DoubleStream.of(value) : DoubleStream.empty();
+            }
+        };
+    }
+
     public static <T> Function<T, Stream<T>> dropN(long n) {
         return new Function<T, Stream<T>>() {
             long i = 0;
@@ -108,6 +154,16 @@ public class Functions {
         };
     }
 
+    public static DoubleFunction<? extends DoubleStream> doubleTakeN(long n) {
+        return new DoubleFunction<DoubleStream>() {
+            long i = 0;
+            @Override
+            public DoubleStream apply(double value) {
+                return (i++ >= n) ? DoubleStream.empty() : DoubleStream.of(value);
+            }
+        };
+    }
+
     public static <T> Function<T, Stream<T>> takeN(long n) {
         return new Function<T, Stream<T>>() {
             long i = 0;
@@ -124,6 +180,16 @@ public class Functions {
             @Override
             public IntStream apply(int value) {
                 return (i++ % n == 0) ? IntStream.of(value) : IntStream.empty();
+            }
+        };
+    }
+
+    public static DoubleFunction<? extends DoubleStream> doubleTakeEveryNth(long n) {
+        return new DoubleFunction<DoubleStream>() {
+            long i = 0;
+            @Override
+            public DoubleStream apply(double value) {
+                return (i++ % n == 0) ? DoubleStream.of(value) : DoubleStream.empty();
             }
         };
     }
@@ -156,6 +222,10 @@ public class Functions {
 
     public static IntFunction<IntStream> intTakeOnly(IntPredicate condition) {
         return value -> (condition.test(value)) ? IntStream.of(value) : IntStream.empty();
+    }
+
+    public static DoubleFunction<DoubleStream> doubleTakeOnly(DoublePredicate condition) {
+        return value -> (condition.test(value)) ? DoubleStream.of(value) : DoubleStream.empty();
     }
 
     public static <T> Function<T, Stream<T>> takeOnly(Predicate<T> condition) {

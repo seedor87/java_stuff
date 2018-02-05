@@ -5,7 +5,7 @@ import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 import java.util.function.IntPredicate;
 
-public class ConcreteIntTakeWhileSpliterator<T, U, V> extends AbstractIntTakeWhileSpliterator {
+public class ConcreteIntTakeWhileSpliterator extends AbstractIntTakeWhileSpliterator {
     private final IntPredicate condition;
 
     public ConcreteIntTakeWhileSpliterator(Spliterator.OfInt source, IntPredicate predicate) {

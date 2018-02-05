@@ -6,11 +6,11 @@ import java.util.Deque;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 
-public class ReverseSpliterator <T> implements Spliterator<T> {
+public class GenericReverseSpliterator<T> implements Spliterator<T> {
     private Spliterator<T> source;
     private final Deque<T> deque = new ArrayDeque<>();
 
-    public ReverseSpliterator(Spliterator<T> spliterator) {
+    public GenericReverseSpliterator(Spliterator<T> spliterator) {
         this.source = spliterator;
     }
 
@@ -33,7 +33,7 @@ public class ReverseSpliterator <T> implements Spliterator<T> {
 
         Spliterator<T> me = source;
         source = prev;
-        return new ReverseSpliterator(me);
+        return new GenericReverseSpliterator(me);
     }
 
     @Override

@@ -21,7 +21,7 @@ public class Methods {
     public TimedRule jcr = new TimedRule(SYSStopwatch.class, TimeUnit.MILLISECONDS);
 
     public static <T> String makeString(Stream<T> stream) {
-        return makeString(stream);
+        return makeString(", ", stream);
     }
 
     public static <T> String makeString(String delim, Stream<T> stream) {
@@ -29,26 +29,36 @@ public class Methods {
     }
 
     public static String makeString(IntStream stream) {
-        return makeString(stream);
+        return makeString(", ", stream);
     }
 
     public static String makeString(String delim, IntStream stream) {
         return stream.boxed().map(Object::toString).collect(Collectors.joining(delim));
     }
 
+    public static String makeString(String delim, DoubleStream stream) {
+        return stream.boxed().map(Object::toString).collect(Collectors.joining(delim));
+    }
+
+    public static String makeString(DoubleStream stream) {
+        return makeString(", ", stream);
+    }
 
     public static <T> Stream<T> reverse(Stream<T> stream) {
-        return StreamSupport.stream(new ReverseSpliterator<>(stream.spliterator()), stream.isParallel());
+        return StreamSupport.stream(new GenericReverseSpliterator<>(stream.spliterator()), stream.isParallel());
     }
 
     public static IntStream reverse(IntStream stream) {
-        return StreamSupport.stream(new IntReverseSpliterator(stream.spliterator()), stream.isParallel()).mapToInt(i -> i);
+        return StreamSupport.intStream(new IntReverseSpliterator(stream.spliterator()), stream.isParallel());
     }
 
+    public static DoubleStream reverse(DoubleStream stream) {
+        return StreamSupport.doubleStream(new DoubleReverseSpliterator(stream.spliterator()), stream.isParallel());
+    }
 
     public static <T> Stream<T> iterate(T seed, Predicate<T> predicate, UnaryOperator<T> operator) {
         return StreamSupport.stream(
-            new BoundedSpliterator<>(
+            new BoundedGenericSpliterator<>(
                 seed,
                 predicate,
                 operator
@@ -68,6 +78,17 @@ public class Methods {
         );
     }
 
+    public static DoubleStream doubleIterate(Double seed, DoublePredicate predicate, DoubleUnaryOperator operator) {
+        return StreamSupport.doubleStream(
+            new DoubleBoundedSpliterator(
+                    seed,
+                    predicate,
+                    operator
+            ),
+            false
+        );
+    }
+
 
     public static IntStream takeWhile(IntStream stream, IntPredicate predicate) {
         return StreamSupport.intStream(new ConcreteIntTakeWhileSpliterator(stream.spliterator(), predicate), stream.isParallel());
@@ -77,12 +98,20 @@ public class Methods {
         return StreamSupport.intStream(new ConcreteBiIntTakeWhileSpliterator(stream.spliterator(), predicate, identity), stream.isParallel());
     }
 
+    public static DoubleStream takeWhile(DoubleStream stream, DoublePredicate predicate) {
+        return StreamSupport.doubleStream(new ConcreteDoubleTakeWhileSpliterator(stream.spliterator(), predicate), stream.isParallel());
+    }
+
+    public static DoubleStream takeWhile(DoubleStream stream, BiPredicate<Double, Double> predicate, Double identity) {
+        return StreamSupport.doubleStream(new ConcreteBiDoubleTakeWhileSpliterator(stream.spliterator(), predicate, identity), stream.isParallel());
+    }
+
     public static <T> Stream<T> takeWhile(Stream<T> stream, Predicate<? super T> predicate) {
-        return StreamSupport.stream(new ConcreteTakeWhileSpliterator<>(stream.spliterator(), predicate), stream.isParallel());
+        return StreamSupport.stream(new ConcreteGenericTakeWhileSpliterator<>(stream.spliterator(), predicate), stream.isParallel());
     }
 
     public static <T> Stream<T> takeWhile(Stream<T> stream, BiPredicate<? super T, ? super T> predicate, T identity) {
-        return StreamSupport.stream(new ConcreteBiTakeWhileSpliterator<>(stream.spliterator(), predicate, identity), stream.isParallel());
+        return StreamSupport.stream(new ConcreteBiGenericTakeWhileSpliterator<>(stream.spliterator(), predicate, identity), stream.isParallel());
     }
 
 
@@ -91,6 +120,14 @@ public class Methods {
     }
 
     public static IntStream dropWhile(IntStream stream, BiPredicate<? super Integer, ? super Integer> predicate, Integer identity) {
+        return stream.flatMap(Functions.dropWhile(identity, predicate));
+    }
+
+    public static DoubleStream dropWhile(DoubleStream stream, DoublePredicate predicate) {
+        return stream.flatMap(Functions.dropWhile(predicate));
+    }
+
+    public static DoubleStream dropWhile(DoubleStream stream, BiPredicate<? super Double, ? super Double> predicate, Double identity) {
         return stream.flatMap(Functions.dropWhile(identity, predicate));
     }
 
@@ -107,12 +144,20 @@ public class Methods {
         return stream.flatMap(Functions.intTakeOnly(predicate));
     }
 
+    public static DoubleStream takeOnly(DoubleStream stream, DoublePredicate predicate) {
+        return stream.flatMap(Functions.doubleTakeOnly(predicate));
+    }
+
     public static <T> Stream<T> takeOnly(Stream<T> stream, Predicate<T> predicate) {
         return stream.flatMap(Functions.takeOnly(predicate));
     }
 
     public static IntStream dropOnly(IntStream stream, IntPredicate predicate) {
         return stream.flatMap(Functions.intTakeOnly(predicate.negate()));
+    }
+
+    public static DoubleStream dropOnly(DoubleStream stream, DoublePredicate predicate) {
+        return stream.flatMap(Functions.doubleTakeOnly(predicate.negate()));
     }
 
     public static <T> Stream<T> dropOnly(Stream<T> stream, Predicate<T> predicate) {
@@ -123,6 +168,10 @@ public class Methods {
         return stream.flatMap(Functions.intDropN(n));
     }
 
+    public static DoubleStream dropN(DoubleStream stream, long n) {
+        return stream.flatMap(Functions.doubleDropN(n));
+    }
+
     public static <T> Stream<T> dropN(Stream<T> stream, long n) {
         return stream.flatMap(Functions.dropN(n));
     }
@@ -131,24 +180,36 @@ public class Methods {
         return stream.flatMap(Functions.intTakeN(n));
     }
 
-    public static <T> Stream<T> takeN(Stream<T> stream, long n) {
-        return stream.flatMap(Functions.takeN(n));
+    public static DoubleStream takeN(DoubleStream stream, long n) {
+        return stream.flatMap(Functions.doubleTakeN(n));
     }
 
-    public static <T> Stream<List<T>> listsOfN(Stream<T> stream, int n) {
-        return stream.flatMap(Functions.listsOfN(n));
+    public static <T> Stream<T> takeN(Stream<T> stream, long n) {
+        return stream.flatMap(Functions.takeN(n));
     }
 
     public static Stream<List<Integer>> listsOfN(IntStream stream, int n) {
         return stream.boxed().flatMap(Functions.listsOfN(n));
     }
 
-    public static <T> Stream<T[]> arraysOfN(Stream<T> stream, int n) {
-        return stream.flatMap(Functions.listsOfN(n)).map(ts -> (T[]) ts.toArray());
+    public static Stream<List<Double>> listsOfN(DoubleStream stream, int n) {
+        return stream.boxed().flatMap(Functions.listsOfN(n));
+    }
+
+    public static <T> Stream<List<T>> listsOfN(Stream<T> stream, int n) {
+        return stream.flatMap(Functions.listsOfN(n));
     }
 
     public static Stream<Integer[]> arraysOfN(IntStream stream, int n) {
         return stream.boxed().flatMap(Functions.listsOfN(n)).map(integers -> integers.<Integer>toArray(new Integer[n]));
+    }
+
+    public static Stream<Double[]> arraysOfN(DoubleStream stream, int n) {
+        return stream.boxed().flatMap(Functions.listsOfN(n)).map(doubles -> doubles.<Double>toArray(new Double[n]));
+    }
+
+    public static <T> Stream<T[]> arraysOfN(Stream<T> stream, int n) {
+        return stream.flatMap(Functions.listsOfN(n)).map(ts -> (T[]) ts.toArray());
     }
 
     @Test
@@ -258,19 +319,6 @@ public class Methods {
 
         println(
             takeWhile(
-                Stream.<Integer>generate(
-                    new Supplier<Integer>() {
-                        int i = 0;
-                        @Override
-                        public Integer get() { return i++; }
-                    }
-                ),
-                i -> i < 1000
-            )
-        );
-
-        println(
-            takeWhile(
                 IntStream.generate(
                     new IntSupplier() {
                         int i = 0;
@@ -284,16 +332,28 @@ public class Methods {
 
         println(
             takeWhile(
-                IntStream.generate(
-                    new IntSupplier() {
-                        int i = 0;
+                Stream.<Double>generate(
+                    new Supplier<Double>() {
+                        double i = 0.1;
                         @Override
-                        public int getAsInt() { return i++; }
+                        public Double get() { return i *= 1.5; }
+                    }
+                ),
+                i -> i < 100
+            )
+        );
+
+        println(
+            takeWhile(
+                DoubleStream.generate(
+                    new DoubleSupplier() {
+                        double d = 0.001;
+                        @Override
+                        public double getAsDouble() { return d *= 1.001; }
                     }
                 ).parallel(),
-                (o1, o2) -> o1 < o2 && o1 < 50,
-                Integer.MIN_VALUE
-            )
+                (o) -> o < 100
+            ).summaryStatistics()
         );
     }
 }

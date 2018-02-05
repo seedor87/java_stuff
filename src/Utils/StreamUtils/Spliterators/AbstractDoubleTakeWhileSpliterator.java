@@ -6,29 +6,26 @@ import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
-public abstract class AbstractTakeWhileSpliterator<T> implements Spliterator<T>, Consumer<T>, Cloneable {
-    private Spliterator<T> source;
+public abstract class AbstractDoubleTakeWhileSpliterator implements Spliterator.OfDouble, Consumer<Double>, Cloneable {
+    private Spliterator.OfDouble source;
     protected final AtomicBoolean found = new AtomicBoolean();
 
-    public AbstractTakeWhileSpliterator(Spliterator<T> source) {
+    public AbstractDoubleTakeWhileSpliterator(Spliterator.OfDouble source) {
         this.source = source;
     }
 
     @Override
-    public abstract boolean tryAdvance(Consumer<? super T> action);
-
-    @Override
-    public Spliterator<T> trySplit() {
-        Spliterator<T> prefix = source.trySplit();
+    public Spliterator.OfDouble trySplit() {
+        Spliterator.OfDouble prefix = source.trySplit();
         if(prefix == null) {
             return null;
         }
         if(found.get()) {
-            return Spliterators.emptySpliterator();
+            return Spliterators.emptyDoubleSpliterator();
         }
-        AbstractTakeWhileSpliterator<T> clone;
+        AbstractDoubleTakeWhileSpliterator clone;
         try {
-            clone = (AbstractTakeWhileSpliterator<T>) clone();
+            clone = (AbstractDoubleTakeWhileSpliterator) clone();
         } catch (CloneNotSupportedException e) {
             throw new InternalError(e);
         }
@@ -47,15 +44,20 @@ public abstract class AbstractTakeWhileSpliterator<T> implements Spliterator<T>,
     }
 
     @Override
-    public Comparator<? super T> getComparator() {
+    public Comparator<? super Double> getComparator() {
         return source.getComparator();
     }
 
-    public Spliterator<T> getSource() {
+    public Spliterator.OfDouble getSource() {
         return source;
     }
 
-    public void setSource(Spliterator<T> source) {
+    public void setSource(Spliterator.OfDouble source) {
         this.source = source;
+    }
+
+    @Override
+    public void accept(Double aDouble) {
+
     }
 }
