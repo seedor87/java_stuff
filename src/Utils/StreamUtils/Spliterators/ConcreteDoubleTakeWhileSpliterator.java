@@ -15,10 +15,6 @@ public class ConcreteDoubleTakeWhileSpliterator extends AbstractDoubleTakeWhileS
     }
 
     @Override
-    public void accept(Double integer) {
-    }
-
-    @Override
     public boolean tryAdvance(DoubleConsumer action) {
         return (!found.get() &&
                 this.getSource().tryAdvance((DoubleConsumer) (e) -> {

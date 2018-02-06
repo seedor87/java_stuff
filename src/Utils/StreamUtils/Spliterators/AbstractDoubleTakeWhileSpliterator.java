@@ -4,9 +4,8 @@ import java.util.Comparator;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Consumer;
 
-public abstract class AbstractDoubleTakeWhileSpliterator implements Spliterator.OfDouble, Consumer<Double>, Cloneable {
+public abstract class AbstractDoubleTakeWhileSpliterator implements Spliterator.OfDouble, Cloneable {
     private Spliterator.OfDouble source;
     protected final AtomicBoolean found = new AtomicBoolean();
 
@@ -54,10 +53,5 @@ public abstract class AbstractDoubleTakeWhileSpliterator implements Spliterator.
 
     public void setSource(Spliterator.OfDouble source) {
         this.source = source;
-    }
-
-    @Override
-    public void accept(Double aDouble) {
-
     }
 }

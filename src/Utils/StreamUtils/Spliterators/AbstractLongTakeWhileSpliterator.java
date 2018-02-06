@@ -4,9 +4,8 @@ import java.util.Comparator;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Consumer;
 
-public abstract class AbstractLongTakeWhileSpliterator implements Spliterator.OfLong, Consumer<Long>, Cloneable {
+public abstract class AbstractLongTakeWhileSpliterator implements Spliterator.OfLong, Cloneable {
     private Spliterator.OfLong source;
     protected final AtomicBoolean found = new AtomicBoolean();
 
@@ -54,10 +53,5 @@ public abstract class AbstractLongTakeWhileSpliterator implements Spliterator.Of
 
     public void setSource(Spliterator.OfLong source) {
         this.source = source;
-    }
-
-    @Override
-    public void accept(Long aDouble) {
-
     }
 }

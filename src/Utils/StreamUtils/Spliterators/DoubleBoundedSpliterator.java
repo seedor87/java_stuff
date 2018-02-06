@@ -4,8 +4,6 @@ import java.util.Spliterator;
 import java.util.function.*;
 import java.util.stream.StreamSupport;
 
-import static Utils.Console.Printing.println;
-
 public class DoubleBoundedSpliterator implements Spliterator.OfDouble {
     private Double index;
     private DoublePredicate condition;

@@ -15,16 +15,11 @@ public class ConcreteBiLongTakeWhileSpliterator extends AbstractLongTakeWhileSpl
     }
 
     @Override
-    public void accept(Long i) {
-        this.prev = i;
-    }
-
-    @Override
     public boolean tryAdvance(LongConsumer action) {
         return (!found.get() &&
                 this.getSource().tryAdvance((LongConsumer) (e) -> {
                     if (condition.test(prev, e)) {
-                        this.accept(e);
+                        this.prev = e;
                         action.accept(e);
                     } else {
                         found.set(true);

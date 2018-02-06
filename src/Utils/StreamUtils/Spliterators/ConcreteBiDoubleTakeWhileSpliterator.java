@@ -3,7 +3,6 @@ package Utils.StreamUtils.Spliterators;
 import java.util.Spliterator;
 import java.util.function.BiPredicate;
 import java.util.function.DoubleConsumer;
-import java.util.function.IntConsumer;
 
 public class ConcreteBiDoubleTakeWhileSpliterator extends AbstractDoubleTakeWhileSpliterator {
     private final BiPredicate<? super Double, ? super Double> condition;
@@ -16,21 +15,16 @@ public class ConcreteBiDoubleTakeWhileSpliterator extends AbstractDoubleTakeWhil
     }
 
     @Override
-    public void accept(Double d) {
-        this.prev = d;
-    }
-
-    @Override
     public boolean tryAdvance(DoubleConsumer action) {
         return (!found.get() &&
-                this.getSource().tryAdvance((DoubleConsumer) (e) -> {
-                    if (condition.test(prev, e)) {
-                        this.accept(e);
-                        action.accept(e);
-                    } else {
-                        found.set(true);
-                    }
-                })
+            this.getSource().tryAdvance((DoubleConsumer) (e) -> {
+                if (condition.test(prev, e)) {
+                    this.prev = e;
+                    action.accept(e);
+                } else {
+                    found.set(true);
+                }
+            })
         );
     }
 }

@@ -15,14 +15,11 @@ public class ConcreteBiGenericTakeWhileSpliterator<T> extends AbstractGenericTak
     }
 
     @Override
-    public void accept(T e) { this.prev = e; }
-
-    @Override
     public boolean tryAdvance(Consumer<? super T> action) {
         return (!found.get() &&
             this.getSource().tryAdvance((e) -> {
                 if (condition.test(prev, e)) {
-                    this.accept(e);
+                    this.prev = e;
                     action.accept(e);
                 } else {
                     found.set(true);

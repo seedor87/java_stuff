@@ -15,16 +15,11 @@ public class ConcreteBiIntTakeWhileSpliterator extends AbstractIntTakeWhileSplit
     }
 
     @Override
-    public void accept(Integer i) {
-        this.prev = i;
-    }
-
-    @Override
     public boolean tryAdvance(IntConsumer action) {
         return (!found.get() &&
             this.getSource().tryAdvance((IntConsumer) (e) -> {
                 if (condition.test(prev, e)) {
-                    this.accept(e);
+                    this.prev = e;
                     action.accept(e);
                 } else {
                     found.set(true);

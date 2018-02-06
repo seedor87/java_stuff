@@ -6,7 +6,7 @@ import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
-public abstract class AbstractGenericTakeWhileSpliterator<T> implements Spliterator<T>, Consumer<T>, Cloneable {
+public abstract class AbstractGenericTakeWhileSpliterator<T> implements Spliterator<T>, Cloneable {
     private Spliterator<T> source;
     protected final AtomicBoolean found = new AtomicBoolean();
 

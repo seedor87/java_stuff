@@ -13,9 +13,6 @@ public class ConcreteGenericTakeWhileSpliterator<T> extends AbstractGenericTakeW
     }
 
     @Override
-    public void accept(T o) {}
-
-    @Override
     public boolean tryAdvance(Consumer<? super T> action) {
         return (!found.get() &&
             this.getSource().tryAdvance((e) -> {

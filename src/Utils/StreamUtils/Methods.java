@@ -20,17 +20,21 @@ public class Methods {
     @Rule
     public TimedRule jcr = new TimedRule(SYSStopwatch.class, TimeUnit.MILLISECONDS);
 
-    public static <E, T extends BaseStream<E, T>> String makeString(BaseStream<E, T> stream) {
+    public static <T, U extends BaseStream<T, U>> U testMethod(BaseStream<T, U> stream) {
+        return stream.parallel();
+    }
+
+    public static <T, U extends BaseStream<T, U>> String makeString(BaseStream<T, U> stream) {
         return makeString(", ", stream);
     }
 
-    public static <E, T extends BaseStream<E, T>> String makeString(CharSequence delim, BaseStream<E, T> stream) {
+    public static <T, U extends BaseStream<T, U>> String makeString(CharSequence delim, BaseStream<T, U> stream) {
         final StringBuilder sb = new StringBuilder();
-        stream.iterator().forEachRemaining(new Consumer<E>() {
+        stream.iterator().forEachRemaining(new Consumer<T>() {
             boolean first = true;
 
             @Override
-            public void accept(E e) {
+            public void accept(T e) {
                 if (!first) {
                     sb.append(delim);
                 } else {
@@ -42,7 +46,7 @@ public class Methods {
         return sb.toString();
     }
 
-    public static <T> Stream<T> reverse(Stream<T> stream) {
+    public static <T, U extends BaseStream<T, U>> Stream<T> reverse(BaseStream<T, U> stream) {
         return StreamSupport.stream(new GenericReverseSpliterator<>(stream.spliterator()), stream.isParallel());
     }
 
@@ -266,37 +270,39 @@ public class Methods {
 
     @Test
     public void test() {
-//        println(
-//            takeWhile(
-//                Stream.<Integer>generate(
-//                    new Supplier<Integer>() {
-//                        int i = 0;
-//                        @Override
-//                        public Integer get() { return i++; }
-//                    }
-//                ),
-//                i -> i < 1000000000
-//            )
-//            .mapToInt(i -> i)
-//            .summaryStatistics()
-//        );
-
         println(
             takeWhile(
-                IntStream.generate(
-                    new IntSupplier() {
-                        int i = 0;
+                DoubleStream.generate(
+                    new DoubleSupplier() {
+                        double d = 1;
                         @Override
-                        public int getAsInt() { return i++; }
+                        public double getAsDouble() { return d *= 1.000001; }
                     }
                 ),
-                i -> i < 1000000000
+                (o) -> o < 100
             )
             .summaryStatistics()
         );
+
+//        int count = 0;
+//        double sum = 0, min = Double.MAX_VALUE, max = Double.MIN_VALUE, avg;
+//        double d = 1;
+//        do {
+//            d *= 1.000001;
+//            min = (d < min) ? d : min;
+//            max = (d > max) ? d : max;
+//            sum += d;
+//            count++;
+//        } while (d < 100);
+//        avg = sum / count;
+//        println(count, sum, min, avg, max);
     }
 
     public static void main(String[] args) {
+
+        println(testMethod(IntStream.of(1,2,3,4)).summaryStatistics());
+        println(testMethod(DoubleStream.of(1,2,3,4)).summaryStatistics());
+        println(testMethod(Stream.of('a','b','c','d')).mapToInt(Character::getNumericValue).summaryStatistics());
 
         println(Special.FG_BRIGHT_CYAN, makeString(", ", IntStream.range(0, 10).flatMap(intTakeEveryNth(3))));
         println(Special.FG_BRIGHT_CYAN, makeString(takeWhile(DoubleStream.generate(new DoubleSupplier() {
@@ -406,11 +412,11 @@ public class Methods {
             takeWhile(
                 DoubleStream.generate(
                     new DoubleSupplier() {
-                        double d = 0.001;
+                        double d = 1;
                         @Override
-                        public double getAsDouble() { return d *= 1.1; }
+                        public double getAsDouble() { return d *= 1.000001; }
                     }
-                ).parallel(),
+                ),
                 (o) -> o < 100
             ).summaryStatistics()
         );

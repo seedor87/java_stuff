@@ -4,9 +4,8 @@ import java.util.Comparator;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Consumer;
 
-public abstract class AbstractIntTakeWhileSpliterator implements Spliterator.OfInt, Consumer<Integer>, Cloneable {
+public abstract class AbstractIntTakeWhileSpliterator implements Spliterator.OfInt, Cloneable {
     private Spliterator.OfInt source;
     protected final AtomicBoolean found = new AtomicBoolean();
 

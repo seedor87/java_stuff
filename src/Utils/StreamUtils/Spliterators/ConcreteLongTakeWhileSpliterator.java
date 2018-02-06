@@ -15,10 +15,6 @@ public class ConcreteLongTakeWhileSpliterator extends AbstractLongTakeWhileSplit
     }
 
     @Override
-    public void accept(Long integer) {
-    }
-
-    @Override
     public boolean tryAdvance(LongConsumer action) {
         return (!found.get() &&
                 this.getSource().tryAdvance((LongConsumer) (e) -> {

@@ -14,10 +14,6 @@ public class ConcreteIntTakeWhileSpliterator extends AbstractIntTakeWhileSpliter
     }
 
     @Override
-    public void accept(Integer integer) {
-    }
-
-    @Override
     public boolean tryAdvance(IntConsumer action) {
         return (!found.get() &&
             this.getSource().tryAdvance((IntConsumer) (e) -> {
