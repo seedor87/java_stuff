@@ -3,14 +3,12 @@ package RandomStuff.SpecialNumbers;
 import Utils.StreamUtils.Methods;
 import TestingUtils.JUnitTesting.TimedRule.TimedRule;
 import Utils.Console.Special;
-import Utils.StopWatches.SYSStopwatch;
-import Utils.StopWatches.TimeUnit;
+import Utils.Timing.SYSStopwatch;
+import Utils.Timing.TimeUnit;
 import org.junit.Rule;
 import org.junit.Test;
 
 import java.util.*;
-import java.util.function.IntPredicate;
-import java.util.function.IntSupplier;
 import java.util.stream.IntStream;
 
 import static Utils.Console.Printing.*;

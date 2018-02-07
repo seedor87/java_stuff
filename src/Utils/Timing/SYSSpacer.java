@@ -1,4 +1,4 @@
-package Utils.StopWatches;
+package Utils.Timing;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;

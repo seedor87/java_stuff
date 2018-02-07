@@ -1,19 +1,19 @@
-package Utils.StopWatches;
+package Utils.Timing;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
 
 public class CPUStopwatch extends AbstractStopwatch {
 
-    public CPUStopwatch() {super();}
+    public CPUStopwatch() { super(); }
     public CPUStopwatch(TimeUnit u) {
         super(u);
     }
 
     @Override
-    public double getTime () {
+    public long getTime () {
         ThreadMXBean bean = ManagementFactory.getThreadMXBean();
-        return bean.isCurrentThreadCpuTimeSupported() ? (double) bean.getCurrentThreadCpuTime(): 0D;
+        return bean.isCurrentThreadCpuTimeSupported() ? bean.getCurrentThreadCpuTime(): 0L;
     }
 
     @Override

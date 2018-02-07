@@ -1,9 +1,9 @@
 package Utils;
 
 import TestingUtils.JUnitTesting.TimedRule.TimedRule;
-import Utils.StopWatches.AbstractStopwatch;
-import Utils.StopWatches.SYSStopwatch;
-import Utils.StopWatches.TimeUnit;
+import Utils.Timing.AbstractStopwatch;
+import Utils.Timing.SYSStopwatch;
+import Utils.Timing.TimeUnit;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;

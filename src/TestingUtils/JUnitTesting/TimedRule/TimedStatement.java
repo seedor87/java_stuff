@@ -1,7 +1,7 @@
 package TestingUtils.JUnitTesting.TimedRule;
 
-import Utils.StopWatches.AbstractStopwatch;
-import Utils.StopWatches.TimeUnit;
+import Utils.Timing.AbstractStopwatch;
+import Utils.Timing.TimeUnit;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 import java.lang.reflect.Constructor;

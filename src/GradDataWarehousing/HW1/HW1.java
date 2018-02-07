@@ -1,7 +1,7 @@
 package GradDataWarehousing.HW1;
 
-import Utils.StopWatches.AbstractStopwatch;
-import Utils.StopWatches.SYSStopwatch;
+import Utils.Timing.AbstractStopwatch;
+import Utils.Timing.SYSStopwatch;
 
 import java.io.*;
 import java.text.NumberFormat;
@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import GradDataWarehousing.HWResources.*;
-import Utils.StopWatches.TimeUnit;
+import Utils.Timing.TimeUnit;
 
 import static Utils.Console.Printing.*;
 import static Utils.Console.Special.*;

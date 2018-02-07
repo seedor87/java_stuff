@@ -1,4 +1,4 @@
-package Utils.StopWatches;
+package Utils.Timing;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +17,7 @@ public class StopwatchApp {
     private static Special color = FG_BRIGHT_RED;
     private static AbstractStopwatch stopwatch;
     private static AbstractStopwatch.StopwatchState next;
-    private static TimeUnit unit = Utils.StopWatches.TimeUnit.SECONDS;
+    private static TimeUnit unit = Utils.Timing.TimeUnit.SECONDS;
     private static final Scanner READER = new Scanner(System.in);
     private static final Map<AbstractStopwatch.StopwatchState, Special> STATE_COLOR_MAP = new HashMap<AbstractStopwatch.StopwatchState, Special>()
     {{
@@ -44,7 +44,7 @@ public class StopwatchApp {
             try {
                 choice = READER.next();
                 input = Integer.parseInt(choice);
-                unit = Utils.StopWatches.TimeUnit.values()[input-1]; // -1 for array index offset
+                unit = Utils.Timing.TimeUnit.values()[input-1]; // -1 for array index offset
             } catch(NumberFormatException ex) {
                 println(FG_BRIGHT_BLUE, "Cannot Parse input: " + choice);
                 continue;

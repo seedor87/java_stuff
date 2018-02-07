@@ -1,4 +1,4 @@
-package Utils.StopWatches;
+package Utils.Timing;
 
 public enum MemUnit {
     BYTE("Bytes",   Math.pow(1024, 0),  "##,###,###,###.#"),

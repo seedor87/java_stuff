@@ -1,4 +1,4 @@
-package Utils.StopWatches;
+package Utils.Timing;
 
 import java.awt.Toolkit;
 import java.util.concurrent.*;

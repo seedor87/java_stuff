@@ -5,8 +5,8 @@ import static Utils.StreamUtils.Functions.*;
 
 import TestingUtils.JUnitTesting.TimedRule.TimedRule;
 import Utils.Console.Special;
-import Utils.StopWatches.SYSStopwatch;
-import Utils.StopWatches.TimeUnit;
+import Utils.Timing.SYSStopwatch;
+import Utils.Timing.TimeUnit;
 import Utils.StreamUtils.Spliterators.*;
 
 import org.junit.Rule;
@@ -271,31 +271,12 @@ public class Methods {
     @Test
     public void test() {
         println(
-            takeWhile(
-                DoubleStream.generate(
-                    new DoubleSupplier() {
-                        double d = 1;
-                        @Override
-                        public double getAsDouble() { return d *= 1.000001; }
-                    }
-                ),
-                (o) -> o < 100
-            )
-            .summaryStatistics()
+            takeWhile(LongStream.iterate(1L, (l) -> l+l), (l) -> l < Long.MAX_VALUE/2)
         );
 
-//        int count = 0;
-//        double sum = 0, min = Double.MAX_VALUE, max = Double.MIN_VALUE, avg;
-//        double d = 1;
-//        do {
-//            d *= 1.000001;
-//            min = (d < min) ? d : min;
-//            max = (d > max) ? d : max;
-//            sum += d;
-//            count++;
-//        } while (d < 100);
-//        avg = sum / count;
-//        println(count, sum, min, avg, max);
+//        println(
+//            longIterate(1L, (l) -> l < Long.MAX_VALUE/2, (l) -> l+l)
+//        );
     }
 
     public static void main(String[] args) {

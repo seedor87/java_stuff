@@ -1,8 +1,8 @@
 package Utils.Random;
 
-import Utils.StopWatches.AbstractStopwatch;
-import Utils.StopWatches.SYSStopwatch;
-import Utils.StopWatches.TimeUnit;
+import Utils.Timing.AbstractStopwatch;
+import Utils.Timing.SYSStopwatch;
+import Utils.Timing.TimeUnit;
 import org.junit.Test;
 import java.util.Random;
 

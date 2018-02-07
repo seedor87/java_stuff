@@ -1,4 +1,4 @@
-package Utils.StopWatches;
+package Utils.Timing;
 
 import TestingUtils.JUnitTesting.TimedRule.TimedRule;
 import org.junit.Rule;
@@ -7,6 +7,8 @@ import org.junit.Test;
 import java.text.DecimalFormat;
 
 import static Utils.Console.Printing.*;
+import static Utils.Timing.AbstractStopwatch.StopwatchState.RESUMED;
+import static Utils.Timing.AbstractStopwatch.StopwatchState.SUSPENDED;
 
 /***
  * Abstract timer that holds capabilities of general use in code timer.
@@ -15,7 +17,8 @@ import static Utils.Console.Printing.*;
  */
 public abstract class AbstractStopwatch {
 
-    private final long ZERO = 0L;
+    private final long ZERO = 0L;   // final ZERO long value
+
     /**
      * Special exception for bad state transitions.
      */
@@ -60,108 +63,108 @@ public abstract class AbstractStopwatch {
     /**
      * protected fields for access only within extending classes.
      */
-    protected TimeUnit timeUnit = Utils.StopWatches.TimeUnit.MILLISECONDS;
-    protected double startTime = ZERO, endTime = ZERO, elapsedTime = 0;
+    protected long startTime = ZERO, endTime = ZERO, elapsedTime = ZERO;
+    protected TimeUnit timeUnit = TimeUnit.NANOSECONDS;
     protected DecimalFormat formatter = new DecimalFormat(this.getTimeUnit().stringFormat);
-    protected StopwatchState current = StopwatchState.STOPPED;
+    protected StopwatchState currentState = StopwatchState.STOPPED;
 
     /**
      * abstract methods to be overridden.
-     * @return double - str present time per method of measurement, and current value of elapsed time, respectively.
+     * @return double - str present time per method of measurement, and currentState value of elapsed time, respectively.
      */
-    public abstract double getTime();
+    public abstract long getTime();
 
     /**
      * abstract methods to be overridden.
-     * @return double - str present time per method of measurement, and current value of elapsed time, respectively.
+     * @return double - str present time per method of measurement, and currentState value of elapsed time, respectively.
      */
     public abstract double getElapsed(TimeUnit u);
     public double getElapsed() {
-        return getElapsed(this.getTimeUnit());
+        return this.getElapsed(this.getTimeUnit());
     }
 
     /**
      * Default Constructor
      */
     public AbstractStopwatch() {}
-    public AbstractStopwatch(TimeUnit u) { setTimeUnit(u); }
-    private TimeUnit getTimeUnit() { return timeUnit; }
+    public AbstractStopwatch(TimeUnit u) { this.setTimeUnit(u); }
+    private TimeUnit getTimeUnit() { return this.timeUnit; }
 
     private void setTimeUnit(TimeUnit u) {
         this.timeUnit = u;
-        formatter = new DecimalFormat(this.getTimeUnit().stringFormat);
+        this.formatter = new DecimalFormat(this.getTimeUnit().stringFormat);
     }
 
     public double start () {
-        startTime = getTime();
-        elapsedTime = 0;
-        current = StopwatchState.STARTED;
-        return startTime;
+        this.startTime = this.getTime();
+        this.elapsedTime = 0;
+        this.currentState = StopwatchState.STARTED;
+        return this.startTime;
     }
 
     public double suspend() {
-        double hold = getTime();
-        if(current.transitions[1]) {
-            endTime = hold;
-            elapsedTime += (endTime - startTime);
-            startTime = ZERO;
-            current = StopwatchState.SUSPENDED;
+        long hold = this.getTime();
+        if(this.currentState.transitions[StopwatchState.SUSPENDED.ordinal()]) {
+            this.endTime = hold;
+            this.elapsedTime += (this.endTime - this.startTime);
+            this.startTime = this.ZERO;
+            this.currentState = StopwatchState.SUSPENDED;
             return endTime;
         }
-        endTime = ZERO;
-        throw new IllegalStateTransitionException(current + " -> " + StopwatchState.SUSPENDED);
+        this.endTime = this.ZERO;
+        throw new IllegalStateTransitionException(this.currentState + " -> " + StopwatchState.SUSPENDED);
     }
 
     public double resume() {
-        double hold = getTime();
-        if(current.transitions[2]) {
-            startTime = hold;
-            endTime = ZERO;
-            current = StopwatchState.RESUMED;
+        long hold = this.getTime();
+        if(this.currentState.transitions[StopwatchState.RESUMED.ordinal()]) {
+            this.startTime = hold;
+            this.endTime = ZERO;
+            this.currentState = StopwatchState.RESUMED;
             return startTime;
         }
-        throw new IllegalStateTransitionException(current + " -> " + StopwatchState.RESUMED);
+        throw new IllegalStateTransitionException(this.currentState + " -> " + StopwatchState.RESUMED);
     }
 
     public double stop () {
-        double hold = getTime();
-        if(isRunning()) {
-            endTime = hold;
-            elapsedTime += (endTime - startTime);
-            startTime = ZERO;
+        long hold = this.getTime();
+        if(this.isRunning()) {
+            this.endTime = hold;
+            this.elapsedTime += (this.endTime - this.startTime);
+            this.startTime = this.ZERO;
         } else {
-            startTime = 0;
-            endTime = 0;
+            this.startTime = 0;
+            this.endTime = 0;
         }
-        current = StopwatchState.STOPPED;
+        this.currentState = StopwatchState.STOPPED;
         return endTime;
     }
 
     public double getTimerValue(TimeUnit u) {
-        double hold = getTime();
+        long hold = this.getTime();
         if(isRunning()) {
-            endTime = hold;
-            elapsedTime += (endTime - startTime);
-            startTime = hold;
+            this.endTime = hold;
+            this.elapsedTime += (this.endTime - this.startTime);
+            this.startTime = hold;
         }
         return getElapsed(u);
     }
 
     public boolean isRunning() {
-        return current == StopwatchState.STARTED ||
-                current == StopwatchState.RESUMED;
+        return this.currentState == StopwatchState.STARTED ||
+                this.currentState == StopwatchState.RESUMED;
     }
 
     public double getTimerValue() {
-        return getTimerValue(getTimeUnit());
+        return getTimerValue(this.getTimeUnit());
     }
 
     public String toString(TimeUnit u) {
-        return formatter.format(getTimerValue(u)) + " " + u.name;
+        return this.formatter.format(this.getTimerValue(u)) + " " + u.name;
     }
 
     @Override
-    public String toString() {return toString(getTimeUnit());}
+    public String toString() { return toString(this.getTimeUnit()); }
 
     public static class AbstractStopwatchTest {
         @Rule

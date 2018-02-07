@@ -1,8 +1,8 @@
 package Utils.Random;
 
 import TestingUtils.JUnitTesting.TimedRule.TimedRule;
-import Utils.StopWatches.SYSStopwatch;
-import Utils.StopWatches.TimeUnit;
+import Utils.Timing.SYSStopwatch;
+import Utils.Timing.TimeUnit;
 import Utils.StreamUtils.Methods;
 import org.junit.Rule;
 

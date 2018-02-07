@@ -4,8 +4,8 @@ import java.util.Collection;
 import java.util.Comparator;
 import org.junit.Rule;
 import TestingUtils.JUnitTesting.TimedRule.TimedRule;
-import Utils.StopWatches.SYSStopwatch;
-import Utils.StopWatches.TimeUnit;
+import Utils.Timing.SYSStopwatch;
+import Utils.Timing.TimeUnit;
 
 public abstract class AbstractSortingAlgorithm<T extends Comparable<? super T>> implements SortingInterface<T> {
 

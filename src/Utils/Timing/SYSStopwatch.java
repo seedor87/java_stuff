@@ -1,16 +1,16 @@
-package Utils.StopWatches;
+package Utils.Timing;
 
 public class SYSStopwatch extends AbstractStopwatch {
 
     private final double nativeFactor = 1000000000.0;
 
-    public SYSStopwatch() {super();}
+    public SYSStopwatch() { super(); }
     public SYSStopwatch(TimeUnit u) {
         super(u);
     }
 
     @Override
-    public double getTime() {
+    public long getTime() {
         return System.nanoTime();
     }
 
