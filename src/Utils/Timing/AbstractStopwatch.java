@@ -7,10 +7,8 @@ import org.junit.Test;
 import java.text.DecimalFormat;
 
 import static Utils.Console.Printing.*;
-import static Utils.Timing.AbstractStopwatch.StopwatchState.RESUMED;
-import static Utils.Timing.AbstractStopwatch.StopwatchState.SUSPENDED;
 
-/***
+/**
  * Abstract timer that holds capabilities of general use in code timer.
  * when implemented requires instantiation of only the getTime() and getElapsedTime() methods,
  * All other work is done in this class.
@@ -140,6 +138,11 @@ public abstract class AbstractStopwatch {
         return endTime;
     }
 
+    public boolean isRunning() {
+        return this.currentState == StopwatchState.STARTED ||
+                this.currentState == StopwatchState.RESUMED;
+    }
+
     public double getTimerValue(TimeUnit u) {
         long hold = this.getTime();
         if(isRunning()) {
@@ -148,11 +151,6 @@ public abstract class AbstractStopwatch {
             this.startTime = hold;
         }
         return getElapsed(u);
-    }
-
-    public boolean isRunning() {
-        return this.currentState == StopwatchState.STARTED ||
-                this.currentState == StopwatchState.RESUMED;
     }
 
     public double getTimerValue() {
@@ -176,7 +174,7 @@ public abstract class AbstractStopwatch {
             while(true) {
                 printrn(i);
                 i++;
-                if (i % 100000 == 0) {
+                if (i % 10000000 == 0) {
                     println();
                     break;
                 }

@@ -1,16 +1,47 @@
 package Utils.StreamUtils.Spliterators;
 
+import Utils.StreamUtils.PredicateInterfaces.*;
+
 import java.util.Comparator;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.DoubleConsumer;
 
-public abstract class AbstractDoubleTakeWhileSpliterator implements Spliterator.OfDouble, Cloneable {
+public class DoubleTakeWhileSpliterator implements Spliterator.OfDouble, DoubleConsumer, Cloneable {
     private Spliterator.OfDouble source;
+    private final BinaryPredicate<? super Double> condition;
+    private Double prev;
     protected final AtomicBoolean found = new AtomicBoolean();
 
-    public AbstractDoubleTakeWhileSpliterator(Spliterator.OfDouble source) {
+    public DoubleTakeWhileSpliterator(Spliterator.OfDouble source, UnaryPredicate<? super Double> predicate) {
         this.source = source;
+        this.condition = predicate;
+    }
+
+    public DoubleTakeWhileSpliterator(Spliterator.OfDouble source, BinaryPredicate<? super Double> predicate, Double identity) {
+        this.source = source;
+        this.condition = predicate;
+        this.prev = identity;
+    }
+
+    @Override
+    public void accept(double e) {
+        this.prev = e;
+    }
+
+    @Override
+    public boolean tryAdvance(DoubleConsumer action) {
+        return (!found.get() &&
+            this.getSource().tryAdvance((DoubleConsumer) (e) -> {
+                if (condition.test(prev, e)) {
+                    this.accept(e);
+                    action.accept(e);
+                } else {
+                    found.set(true);
+                }
+            })
+        );
     }
 
     @Override
@@ -22,9 +53,9 @@ public abstract class AbstractDoubleTakeWhileSpliterator implements Spliterator.
         if(found.get()) {
             return Spliterators.emptyDoubleSpliterator();
         }
-        AbstractDoubleTakeWhileSpliterator clone;
+        DoubleTakeWhileSpliterator clone;
         try {
-            clone = (AbstractDoubleTakeWhileSpliterator) clone();
+            clone = (DoubleTakeWhileSpliterator) clone();
         } catch (CloneNotSupportedException e) {
             throw new InternalError(e);
         }
@@ -54,4 +85,5 @@ public abstract class AbstractDoubleTakeWhileSpliterator implements Spliterator.
     public void setSource(Spliterator.OfDouble source) {
         this.source = source;
     }
+
 }

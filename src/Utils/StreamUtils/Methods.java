@@ -8,6 +8,7 @@ import Utils.Console.Special;
 import Utils.Timing.SYSStopwatch;
 import Utils.Timing.TimeUnit;
 import Utils.StreamUtils.Spliterators.*;
+import Utils.StreamUtils.PredicateInterfaces.*;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -15,14 +16,11 @@ import java.util.*;
 import java.util.function.*;
 import java.util.stream.*;
 
+
 public class Methods {
 
     @Rule
     public TimedRule jcr = new TimedRule(SYSStopwatch.class, TimeUnit.MILLISECONDS);
-
-    public static <T, U extends BaseStream<T, U>> U testMethod(BaseStream<T, U> stream) {
-        return stream.parallel();
-    }
 
     public static <T, U extends BaseStream<T, U>> String makeString(BaseStream<T, U> stream) {
         return makeString(", ", stream);
@@ -106,36 +104,36 @@ public class Methods {
         );
     }
 
-    public static IntStream takeWhile(IntStream stream, IntPredicate predicate) {
-        return StreamSupport.intStream(new ConcreteIntTakeWhileSpliterator(stream.spliterator(), predicate), stream.isParallel());
+    public static IntStream takeWhile(IntStream stream, UnaryPredicate<Integer> predicate) {
+        return StreamSupport.intStream(new IntTakeWhileSpliterator(stream.spliterator(), predicate), stream.isParallel());
     }
 
-    public static IntStream takeWhile(IntStream stream, BiPredicate<Integer, Integer> predicate, Integer identity) {
-        return StreamSupport.intStream(new ConcreteBiIntTakeWhileSpliterator(stream.spliterator(), predicate, identity), stream.isParallel());
+    public static IntStream takeWhile(IntStream stream, BinaryPredicate<Integer> predicate, Integer identity) {
+        return StreamSupport.intStream(new IntTakeWhileSpliterator(stream.spliterator(), predicate, identity), stream.isParallel());
     }
 
-    public static DoubleStream takeWhile(DoubleStream stream, DoublePredicate predicate) {
-        return StreamSupport.doubleStream(new ConcreteDoubleTakeWhileSpliterator(stream.spliterator(), predicate), stream.isParallel());
+    public static DoubleStream takeWhile(DoubleStream stream, UnaryPredicate<Double> predicate) {
+        return StreamSupport.doubleStream(new DoubleTakeWhileSpliterator(stream.spliterator(), predicate), stream.isParallel());
     }
 
-    public static DoubleStream takeWhile(DoubleStream stream, BiPredicate<Double, Double> predicate, Double identity) {
-        return StreamSupport.doubleStream(new ConcreteBiDoubleTakeWhileSpliterator(stream.spliterator(), predicate, identity), stream.isParallel());
+    public static DoubleStream takeWhile(DoubleStream stream, BinaryPredicate<Double> predicate, Double identity) {
+        return StreamSupport.doubleStream(new DoubleTakeWhileSpliterator(stream.spliterator(), predicate, identity), stream.isParallel());
     }
 
-    public static LongStream takeWhile(LongStream stream, LongPredicate predicate) {
-        return StreamSupport.longStream(new ConcreteLongTakeWhileSpliterator(stream.spliterator(), predicate), stream.isParallel());
+    public static LongStream takeWhile(LongStream stream, UnaryPredicate<Long> predicate) {
+        return StreamSupport.longStream(new LongTakeWhileSpliterator(stream.spliterator(), predicate), stream.isParallel());
     }
 
-    public static LongStream takeWhile(LongStream stream, BiPredicate<Long, Long> predicate, Long identity) {
-        return StreamSupport.longStream(new ConcreteBiLongTakeWhileSpliterator(stream.spliterator(), predicate, identity), stream.isParallel());
+    public static LongStream takeWhile(LongStream stream, BinaryPredicate<Long> predicate, Long identity) {
+        return StreamSupport.longStream(new LongTakeWhileSpliterator(stream.spliterator(), predicate, identity), stream.isParallel());
     }
 
-    public static <T> Stream<T> takeWhile(Stream<T> stream, Predicate<? super T> predicate) {
-        return StreamSupport.stream(new ConcreteGenericTakeWhileSpliterator<>(stream.spliterator(), predicate), stream.isParallel());
+    public static <T> Stream<T> takeWhile(Stream<T> stream, UnaryPredicate<? super T> predicate) {
+        return StreamSupport.stream(new GenericTakeWhileSpliterator(stream.spliterator(), predicate), stream.isParallel());
     }
 
-    public static <T> Stream<T> takeWhile(Stream<T> stream, BiPredicate<? super T, ? super T> predicate, T identity) {
-        return StreamSupport.stream(new ConcreteBiGenericTakeWhileSpliterator<>(stream.spliterator(), predicate, identity), stream.isParallel());
+    public static <T> Stream<T> takeWhile(Stream<T> stream, BinaryPredicate<? super T> predicate, T identity) {
+        return StreamSupport.stream(new GenericTakeWhileSpliterator(stream.spliterator(), predicate, identity), stream.isParallel());
     }
 
 
@@ -281,18 +279,15 @@ public class Methods {
 
     public static void main(String[] args) {
 
-        println(testMethod(IntStream.of(1,2,3,4)).summaryStatistics());
-        println(testMethod(DoubleStream.of(1,2,3,4)).summaryStatistics());
-        println(testMethod(Stream.of('a','b','c','d')).mapToInt(Character::getNumericValue).summaryStatistics());
-
         println(Special.FG_BRIGHT_CYAN, makeString(", ", IntStream.range(0, 10).flatMap(intTakeEveryNth(3))));
         println(Special.FG_BRIGHT_CYAN, makeString(takeWhile(DoubleStream.generate(new DoubleSupplier() {
             double d = 10d;
+
             @Override
             public double getAsDouble() {
                 return d *= 0.9999;
             }
-        }), d -> d >= 10d * 0.9)));
+        }), (d) -> d >= 10d * 0.9)));
 
         println(Special.FG_BRIGHT_CYAN, reverse(IntStream.range(0, 10)));
 
@@ -323,6 +318,10 @@ public class Methods {
         println(Special.FG_BRIGHT_CYAN, listsOfN(Stream.of("one", "two", "three", "four", "five", "six"), 3));
 
         println(Special.FG_BRIGHT_CYAN, arraysOfN(IntStream.range(0, 100), 3));
+
+        println(Special.FG_RED, takeWhile(DoubleStream.of(1,2,3,4,3,3,1), (d) -> d < 4));
+
+        println(Special.FG_RED, takeWhile(DoubleStream.of(1,2,3,4,3,3,1), (d1, d2) -> d1 < d2, Double.MIN_VALUE));
 
         println(
             intIterate(

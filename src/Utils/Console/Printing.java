@@ -15,7 +15,7 @@ import static Utils.Console.Special.*;
 
 public class Printing {
 
-    private static String DEFAULT_DELIM = ", ";
+    private static CharSequence DEFAULT_DELIM = ", ";
 
     public static String format(CharSequence str, Object... args) {
         return System.out.format(str.toString(), args).toString();

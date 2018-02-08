@@ -1,21 +1,49 @@
 package Utils.StreamUtils.Spliterators;
 
+import Utils.StreamUtils.PredicateInterfaces.BinaryPredicate;
+import Utils.StreamUtils.PredicateInterfaces.UnaryPredicate;
+
 import java.util.Comparator;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
-public abstract class AbstractGenericTakeWhileSpliterator<T> implements Spliterator<T>, Cloneable {
+public class GenericTakeWhileSpliterator<T> implements Spliterator<T>, Consumer<T>, Cloneable {
     private Spliterator<T> source;
+    private final BinaryPredicate<? super T> condition;
+    private T prev;
     protected final AtomicBoolean found = new AtomicBoolean();
 
-    public AbstractGenericTakeWhileSpliterator(Spliterator<T> source) {
+    public GenericTakeWhileSpliterator(Spliterator<T> source, UnaryPredicate<T> predicate) {
         this.source = source;
+        this.condition = predicate;
+    }
+
+    public GenericTakeWhileSpliterator(Spliterator<T> source, BinaryPredicate<T> predicate, T identity) {
+        this.source = source;
+        this.condition = predicate;
+        this.prev = identity;
     }
 
     @Override
-    public abstract boolean tryAdvance(Consumer<? super T> action);
+    public void accept(T e) {
+        this.prev = e;
+    }
+
+    @Override
+    public boolean tryAdvance(Consumer<? super T> action) {
+        return (!found.get() &&
+            this.getSource().tryAdvance((e) -> {
+                if (condition.test(prev, e)) {
+                    this.accept(e);
+                    action.accept(e);
+                } else {
+                    found.set(true);
+                }
+            })
+        );
+    }
 
     @Override
     public Spliterator<T> trySplit() {
@@ -26,9 +54,9 @@ public abstract class AbstractGenericTakeWhileSpliterator<T> implements Splitera
         if(found.get()) {
             return Spliterators.emptySpliterator();
         }
-        AbstractGenericTakeWhileSpliterator<T> clone;
+        GenericTakeWhileSpliterator<T> clone;
         try {
-            clone = (AbstractGenericTakeWhileSpliterator<T>) clone();
+            clone = (GenericTakeWhileSpliterator<T>) clone();
         } catch (CloneNotSupportedException e) {
             throw new InternalError(e);
         }
