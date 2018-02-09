@@ -1,5 +1,6 @@
 package Utils.StreamUtils.Spliterators;
 
+
 import Utils.StreamUtils.PredicateInterfaces.BinaryPredicate;
 import Utils.StreamUtils.PredicateInterfaces.UnaryPredicate;
 
@@ -8,27 +9,35 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
+import java.util.function.IntConsumer;
+import java.util.stream.*;
 
-public class GenericTakeWhileSpliterator<T> implements Spliterator<T>, Consumer<T>, Cloneable {
-    private Spliterator<T> source;
-    private final BinaryPredicate<? super T> condition;
-    private T prev;
+import static Utils.Console.Printing.println;
+import static Utils.StreamUtils.Methods.takeWhile;
+
+public class GenericTakeWhileSpliterator<T> implements Spliterator<T>, Cloneable {
+    protected Spliterator<T> source;
+    protected BinaryPredicate<? super T> condition;
+    protected T prev;
     protected final AtomicBoolean found = new AtomicBoolean();
 
-    public GenericTakeWhileSpliterator(Spliterator<T> source, UnaryPredicate<T> predicate) {
+    public GenericTakeWhileSpliterator(Spliterator<T> source, UnaryPredicate<? super T> predicate) {
         this.source = source;
         this.condition = predicate;
     }
 
-    public GenericTakeWhileSpliterator(Spliterator<T> source, BinaryPredicate<T> predicate, T identity) {
+    public GenericTakeWhileSpliterator(Spliterator<T> source, BinaryPredicate<? super T> predicate, T identity) {
         this.source = source;
         this.condition = predicate;
         this.prev = identity;
     }
 
-    @Override
-    public void accept(T e) {
-        this.prev = e;
+    public void actionAccept(Consumer<? super T> action, T e) {
+        action.accept(e);
+    }
+
+    public Spliterator<T> getEmtpySpliterator() {
+        return Spliterators.emptySpliterator();
     }
 
     @Override
@@ -36,8 +45,8 @@ public class GenericTakeWhileSpliterator<T> implements Spliterator<T>, Consumer<
         return (!found.get() &&
             this.getSource().tryAdvance((e) -> {
                 if (condition.test(prev, e)) {
-                    this.accept(e);
-                    action.accept(e);
+                    this.prev = e;
+                    this.actionAccept(action, e);
                 } else {
                     found.set(true);
                 }
@@ -52,7 +61,7 @@ public class GenericTakeWhileSpliterator<T> implements Spliterator<T>, Consumer<
             return null;
         }
         if(found.get()) {
-            return Spliterators.emptySpliterator();
+            return this.getEmtpySpliterator();
         }
         GenericTakeWhileSpliterator<T> clone;
         try {
@@ -64,6 +73,14 @@ public class GenericTakeWhileSpliterator<T> implements Spliterator<T>, Consumer<
         return clone;
     }
 
+    public Spliterator<T> getSource() {
+        return source;
+    }
+
+    public void setSource(Spliterator<T> source) {
+        this.source = source;
+    }
+
     @Override
     public long estimateSize() {
         return source.estimateSize();
@@ -71,7 +88,7 @@ public class GenericTakeWhileSpliterator<T> implements Spliterator<T>, Consumer<
 
     @Override
     public int characteristics() {
-        return source.characteristics() & (DISTINCT | SORTED | NONNULL);
+        return source.characteristics();
     }
 
     @Override
@@ -79,11 +96,28 @@ public class GenericTakeWhileSpliterator<T> implements Spliterator<T>, Consumer<
         return source.getComparator();
     }
 
-    public Spliterator<T> getSource() {
-        return source;
-    }
+    public static void main(String[] args) {
 
-    public void setSource(Spliterator<T> source) {
-        this.source = source;
+        GenericTakeWhileSpliterator<Double> myCPTWS1 = new DoubleTakeWhileSpliterator(
+                DoubleStream.of(0, 1, 2, 4, 8, 16, 32, 64, 128).spliterator(),
+                (d1, d2) -> d1 + 4d > d2,
+                0d);
+        println(StreamSupport.doubleStream((DoubleTakeWhileSpliterator) myCPTWS1, false));
+
+
+        AbstractPrimitiveTakeWhileSpliterator<Integer, IntConsumer, OfInt> myCPTWS2 = new IntTakeWhileSpliterator(
+                IntStream.of(0, 1, 2, 4, 8, 16, 32, 64, 128).spliterator(),
+                (i) -> i < 3);
+        println(StreamSupport.intStream((IntTakeWhileSpliterator) myCPTWS2, false));
+
+
+        LongTakeWhileSpliterator myCPTWS3 = new LongTakeWhileSpliterator(
+                LongStream.of(0, 1, 2, 4, 8, 16, 32, 64, 128).spliterator(),
+                (i) -> true);
+        println(StreamSupport.longStream(myCPTWS3, false));
+
+        println(takeWhile(Stream.of('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'), s -> s.compareTo('e') < 0));
+
+        println(takeWhile(Stream.of("one", "two", "three", "four", "five", "six"), (t1, t2) -> t1.length() <= t2.length(), ""));
     }
 }

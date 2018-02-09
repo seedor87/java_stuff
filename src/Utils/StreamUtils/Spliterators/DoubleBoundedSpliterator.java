@@ -47,7 +47,7 @@ public class DoubleBoundedSpliterator implements Spliterator.OfDouble {
                 index,
                 i -> i > 0.0,
                 i -> i / 2
-            ) ,
+            ),
             false
         )
         .forEach(Utils.Console.Printing::println);
