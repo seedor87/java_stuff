@@ -1,8 +1,12 @@
 package Utils.StreamUtils.Spliterators;
 
 
+import TestingUtils.JUnitTesting.TimedRule.TimedRule;
 import Utils.StreamUtils.PredicateInterfaces.BinaryPredicate;
 import Utils.StreamUtils.PredicateInterfaces.UnaryPredicate;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestRule;
 
 import java.util.Comparator;
 import java.util.Spliterator;
@@ -96,28 +100,34 @@ public class GenericTakeWhileSpliterator<T> implements Spliterator<T>, Cloneable
         return source.getComparator();
     }
 
-    public static void main(String[] args) {
+    public static class TestingClass {
 
-        GenericTakeWhileSpliterator<Double> myCPTWS1 = new DoubleTakeWhileSpliterator(
+        @Rule
+        public TestRule rule = new TimedRule();
+
+        @Test
+        public void test() {
+            GenericTakeWhileSpliterator<Double> myCPTWS1 = new DoubleTakeWhileSpliterator(
                 DoubleStream.of(0, 1, 2, 4, 8, 16, 32, 64, 128).spliterator(),
-                (d1, d2) -> d1 + 4d > d2,
+                (d1, d2) -> d1 + 8d > d2,
                 0d);
-        println(StreamSupport.doubleStream((DoubleTakeWhileSpliterator) myCPTWS1, false));
+            println(StreamSupport.doubleStream((DoubleTakeWhileSpliterator) myCPTWS1, false));
 
 
-        AbstractPrimitiveTakeWhileSpliterator<Integer, IntConsumer, OfInt> myCPTWS2 = new IntTakeWhileSpliterator(
+            AbstractPrimitiveTakeWhileSpliterator<Integer, IntConsumer, OfInt> myCPTWS2 = new IntTakeWhileSpliterator(
                 IntStream.of(0, 1, 2, 4, 8, 16, 32, 64, 128).spliterator(),
-                (i) -> i < 3);
-        println(StreamSupport.intStream((IntTakeWhileSpliterator) myCPTWS2, false));
+                (i) -> i < 16);
+            println(StreamSupport.intStream((IntTakeWhileSpliterator) myCPTWS2, false));
 
 
-        LongTakeWhileSpliterator myCPTWS3 = new LongTakeWhileSpliterator(
+            LongTakeWhileSpliterator myCPTWS3 = new LongTakeWhileSpliterator(
                 LongStream.of(0, 1, 2, 4, 8, 16, 32, 64, 128).spliterator(),
                 (i) -> true);
-        println(StreamSupport.longStream(myCPTWS3, false));
+            println(StreamSupport.longStream(myCPTWS3, false));
 
-        println(takeWhile(Stream.of('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'), s -> s.compareTo('e') < 0));
+            println(takeWhile(Stream.of('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'), s -> s.compareTo('e') < 0));
 
-        println(takeWhile(Stream.of("one", "two", "three", "four", "five", "six"), (t1, t2) -> t1.length() <= t2.length(), ""));
+            println(takeWhile(Stream.of("one", "two", "three", "four", "five", "six"), (t1, t2) -> t1.length() <= t2.length(), ""));
+        }
     }
 }

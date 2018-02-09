@@ -6,8 +6,9 @@ import Utils.StreamUtils.PredicateInterfaces.UnaryPredicate;
 import java.util.Spliterator;
 
 public abstract class AbstractPrimitiveTakeWhileSpliterator<T, U, V extends Spliterator.OfPrimitive<T, U, V>> extends GenericTakeWhileSpliterator<T> {
-
+    @Override
     public abstract V getEmtpySpliterator();
+
     public abstract void actionAccept(U action, T e);
 
     public AbstractPrimitiveTakeWhileSpliterator(V source, UnaryPredicate<? super T> predicate) {

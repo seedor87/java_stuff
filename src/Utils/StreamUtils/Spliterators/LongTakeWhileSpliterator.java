@@ -7,7 +7,7 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.LongConsumer;
 
-public class LongTakeWhileSpliterator extends AbstractPrimitiveTakeWhileSpliterator<Long, LongConsumer, Spliterator.OfLong> implements Spliterator.OfLong, Cloneable {
+public class LongTakeWhileSpliterator extends AbstractPrimitiveTakeWhileSpliterator<Long, LongConsumer, Spliterator.OfLong> implements Spliterator.OfLong {
 
     public LongTakeWhileSpliterator(Spliterator.OfLong source, UnaryPredicate<? super Long> predicate) {
         super(source, predicate);

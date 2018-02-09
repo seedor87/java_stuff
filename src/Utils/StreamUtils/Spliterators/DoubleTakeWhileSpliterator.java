@@ -6,7 +6,7 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.DoubleConsumer;
 
-public class DoubleTakeWhileSpliterator extends AbstractPrimitiveTakeWhileSpliterator<Double, DoubleConsumer, Spliterator.OfDouble> implements Spliterator.OfDouble, Cloneable {
+public class DoubleTakeWhileSpliterator extends AbstractPrimitiveTakeWhileSpliterator<Double, DoubleConsumer, Spliterator.OfDouble> implements Spliterator.OfDouble {
 
     public DoubleTakeWhileSpliterator(Spliterator.OfDouble source, UnaryPredicate<? super Double> predicate) {
         super(source, predicate);
