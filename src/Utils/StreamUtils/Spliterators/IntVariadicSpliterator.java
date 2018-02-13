@@ -8,6 +8,10 @@ import java.util.function.IntConsumer;
 
 public class IntVariadicSpliterator extends AbstractPrimitiveVariadicSpliterator<Integer, IntConsumer, Spliterator.OfInt> implements Spliterator.OfInt {
 
+    public IntVariadicSpliterator(OfInt source, Transformation<Integer> transformation, Process process) {
+        super(source, transformation, process);
+    }
+
     public IntVariadicSpliterator(OfInt source, Transformation<Integer> transformation) {
         super(source, transformation);
     }

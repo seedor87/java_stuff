@@ -8,6 +8,10 @@ import java.util.function.DoubleConsumer;
 
 public class DoubleVariadicSpliterator extends AbstractPrimitiveVariadicSpliterator<Double, DoubleConsumer, Spliterator.OfDouble> implements Spliterator.OfDouble {
 
+    public DoubleVariadicSpliterator(OfDouble source, Transformation<Double> transformation, Process process) {
+        super(source, transformation, process);
+    }
+
     public DoubleVariadicSpliterator(OfDouble source, Transformation<Double> transformation) {
         super(source, transformation);
     }

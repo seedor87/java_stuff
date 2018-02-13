@@ -10,6 +10,7 @@ import Utils.Timing.SYSStopwatch;
 import Utils.Timing.TimeUnit;
 import Utils.StreamUtils.Spliterators.*;
 import Utils.StreamUtils.PredicateInterfaces.*;
+import Utils.StreamUtils.Spliterators.GenericVariadicSpliterator.Process;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -267,20 +268,36 @@ public class Methods {
         return stream.flatMap(Functions.listsOfN(n)).map(ts -> (T[]) ts.toArray());
     }
 
+    public static <S extends Transformation<Integer>> IntStream variadicMapToObj(IntStream stream, S pred, Process process) {
+        return StreamSupport.intStream(new IntVariadicSpliterator(stream.spliterator(), pred, process), false);
+    }
+
     public static <S extends Transformation<Integer>> IntStream variadicMapToObj(IntStream stream, S pred) {
-        return StreamSupport.intStream(new IntVariadicSpliterator(stream.spliterator(), pred), false).map(i -> i);
+        return StreamSupport.intStream(new IntVariadicSpliterator(stream.spliterator(), pred), false);
+    }
+
+    public static <S extends Transformation<Double>> DoubleStream variadicMapToObj(DoubleStream stream, S pred, Process process) {
+        return StreamSupport.doubleStream(new DoubleVariadicSpliterator(stream.spliterator(), pred, process), false);
     }
 
     public static <S extends Transformation<Double>> DoubleStream variadicMapToObj(DoubleStream stream, S pred) {
-        return StreamSupport.doubleStream(new DoubleVariadicSpliterator(stream.spliterator(), pred), false).map(d -> d);
+        return StreamSupport.doubleStream(new DoubleVariadicSpliterator(stream.spliterator(), pred), false);
+    }
+
+    public static <S extends Transformation<Long>> LongStream variadicMapToObj(LongStream stream, S pred, Process process) {
+        return StreamSupport.longStream(new LongVariadicSpliterator(stream.spliterator(), pred, process), false);
     }
 
     public static <S extends Transformation<Long>> LongStream variadicMapToObj(LongStream stream, S pred) {
-        return StreamSupport.longStream(new LongVariadicSpliterator(stream.spliterator(), pred), false).map(l -> l);
+        return StreamSupport.longStream(new LongVariadicSpliterator(stream.spliterator(), pred), false);
+    }
+
+    public static <S extends Transformation<T>, T> Stream<T> variadicMapToObj(Stream<T> stream, S pred, Process process) {
+        return StreamSupport.stream(new GenericVariadicSpliterator(stream.spliterator(), pred, process), false);
     }
 
     public static <S extends Transformation<T>, T> Stream<T> variadicMapToObj(Stream<T> stream, S pred) {
-        return StreamSupport.stream(new GenericVariadicSpliterator(stream.spliterator(), pred), false).map(o ->o);
+        return StreamSupport.stream(new GenericVariadicSpliterator(stream.spliterator(), pred), false);
     }
 
     @Test
@@ -432,14 +449,14 @@ public class Methods {
             variadicMapToObj(
                 IntStream.range(0,1000),
                 (Transformation3<Integer>) (i1, i2, i3) -> i1 * i2 * i3
-            )
+            ).mapToObj(i -> i + "  ")
         );
 
         println(
             variadicMapToObj(
                 doubleIterate(0d, d -> d < 1000, d -> ++d),
                 (Transformation3<Double>) (d1, d2, d3) -> d1 * d2 * d3
-            )
+            ).mapToObj(d -> String.format("%.1f", d))
         );
     }
 }

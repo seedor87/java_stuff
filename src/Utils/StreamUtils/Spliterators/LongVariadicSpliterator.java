@@ -8,6 +8,10 @@ import java.util.function.LongConsumer;
 
 public class LongVariadicSpliterator extends AbstractPrimitiveVariadicSpliterator<Long, LongConsumer, Spliterator.OfLong> implements Spliterator.OfLong {
 
+    public LongVariadicSpliterator(OfLong source, Transformation<Long> transformation, Process process) {
+        super(source, transformation, process);
+    }
+
     public LongVariadicSpliterator(OfLong source, Transformation<Long> transformation) {
         super(source, transformation);
     }

@@ -3,7 +3,6 @@ package Utils.StreamUtils.Spliterators;
 import Utils.StreamUtils.VariadicFunctionalInterfaces.Transformation;
 
 import java.util.Spliterator;
-import java.util.function.Consumer;
 
 public abstract class AbstractPrimitiveVariadicSpliterator<T, U, V extends Spliterator.OfPrimitive<T, U, V>> extends GenericVariadicSpliterator<T> {
 
@@ -11,6 +10,10 @@ public abstract class AbstractPrimitiveVariadicSpliterator<T, U, V extends Split
     public abstract V getEmtpySpliterator();
 
     public abstract boolean actionAccept(U action);
+
+    public AbstractPrimitiveVariadicSpliterator(V source, Transformation<T> transformation, Process process) {
+        super(source, transformation, process);
+    }
 
     public AbstractPrimitiveVariadicSpliterator(V source, Transformation<T> transformation) {
         super(source, transformation);
@@ -20,8 +23,7 @@ public abstract class AbstractPrimitiveVariadicSpliterator<T, U, V extends Split
         return (this.getSource().tryAdvance((e) -> {
             queue.add(e);
             if (this.actionAccept(action)) {
-                queue.remove(0);
-//                queue.clear();
+                this.algorithm.apply(this.queue);
             }
         }));
     }
