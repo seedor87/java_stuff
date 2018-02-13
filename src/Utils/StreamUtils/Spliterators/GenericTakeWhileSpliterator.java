@@ -107,23 +107,23 @@ public class GenericTakeWhileSpliterator<T> implements Spliterator<T>, Cloneable
 
         @Test
         public void test() {
-            GenericTakeWhileSpliterator<Double> myCPTWS1 = new DoubleTakeWhileSpliterator(
+            GenericTakeWhileSpliterator<Double> myGTWS1 = new DoubleTakeWhileSpliterator(
                 DoubleStream.of(0, 1, 2, 4, 8, 16, 32, 64, 128).spliterator(),
                 (d1, d2) -> d1 + 8d > d2,
                 0d);
-            println(StreamSupport.doubleStream((DoubleTakeWhileSpliterator) myCPTWS1, false));
+            println(StreamSupport.doubleStream((DoubleTakeWhileSpliterator) myGTWS1, false));
 
 
-            AbstractPrimitiveTakeWhileSpliterator<Integer, IntConsumer, OfInt> myCPTWS2 = new IntTakeWhileSpliterator(
+            AbstractPrimitiveTakeWhileSpliterator<Integer, IntConsumer, OfInt> myGTWS2 = new IntTakeWhileSpliterator(
                 IntStream.of(0, 1, 2, 4, 8, 16, 32, 64, 128).spliterator(),
                 (i) -> i < 16);
-            println(StreamSupport.intStream((IntTakeWhileSpliterator) myCPTWS2, false));
+            println(StreamSupport.intStream((IntTakeWhileSpliterator) myGTWS2, false));
 
 
-            LongTakeWhileSpliterator myCPTWS3 = new LongTakeWhileSpliterator(
+            LongTakeWhileSpliterator myGTWS3 = new LongTakeWhileSpliterator(
                 LongStream.of(0, 1, 2, 4, 8, 16, 32, 64, 128).spliterator(),
                 (i) -> true);
-            println(StreamSupport.longStream(myCPTWS3, false));
+            println(StreamSupport.longStream(myGTWS3, false));
 
             println(takeWhile(Stream.of('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'), s -> s.compareTo('e') < 0));
 

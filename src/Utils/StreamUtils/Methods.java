@@ -5,6 +5,7 @@ import static Utils.StreamUtils.Functions.*;
 
 import TestingUtils.JUnitTesting.TimedRule.TimedRule;
 import Utils.Console.Special;
+import Utils.StreamUtils.VariadicFunctionalInterfaces.*;
 import Utils.Timing.SYSStopwatch;
 import Utils.Timing.TimeUnit;
 import Utils.StreamUtils.Spliterators.*;
@@ -266,6 +267,10 @@ public class Methods {
         return stream.flatMap(Functions.listsOfN(n)).map(ts -> (T[]) ts.toArray());
     }
 
+    public static <T extends Transformation<Double>> DoubleStream variadicMapToObj(DoubleStream stream, T pred) {
+        return StreamSupport.doubleStream(new DoubleVariadicSpliterator(stream.spliterator(), pred), false);
+    }
+
     @Test
     public void test() {
         println(
@@ -280,14 +285,24 @@ public class Methods {
     public static void main(String[] args) {
 
         println(Special.FG_BRIGHT_CYAN, makeString(", ", IntStream.range(0, 10).flatMap(intTakeEveryNth(3))));
-        println(Special.FG_BRIGHT_CYAN, makeString(takeWhile(DoubleStream.generate(new DoubleSupplier() {
-            double d = 10d;
+        println(
+            Special.FG_BRIGHT_CYAN,
+            takeWhile(
+                DoubleStream.generate(
+                    new DoubleSupplier() {
+                        double d = 10d;
 
-            @Override
-            public double getAsDouble() {
-                return d *= 0.9999;
-            }
-        }), (d) -> d >= 10d * 0.9)));
+                        @Override
+                        public double getAsDouble() {
+                            return d *= 0.1;
+                        }
+                    }
+                ),
+                (d) -> d >= 0.000001
+            )
+            .reduce((left, right) -> left + right
+            )
+        );
 
         println(Special.FG_BRIGHT_CYAN, reverse(IntStream.range(0, 10)));
 
@@ -399,6 +414,16 @@ public class Methods {
                 ),
                 (o) -> o < 100
             ).summaryStatistics()
+        );
+
+        println(
+            takeWhile(
+                variadicMapToObj(
+                    DoubleStream.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
+                    (Transformation2<Double>) (d1, d2) -> (d1 * d2)
+                ).map(d -> d),
+                (d -> d < 200)
+            )
         );
     }
 }
