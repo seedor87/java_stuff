@@ -46,19 +46,19 @@ public class Methods {
     }
 
     public static <T, U extends BaseStream<T, U>> Stream<T> reverse(BaseStream<T, U> stream) {
-        return StreamSupport.stream(new GenericReverseSpliterator<>(stream.spliterator()), stream.isParallel());
+        return StreamSupport.stream(new GenericReverseSpliterator<>(stream.spliterator()), false);
     }
 
     public static IntStream reverse(IntStream stream) {
-        return StreamSupport.intStream(new IntReverseSpliterator(stream.spliterator()), stream.isParallel());
+        return StreamSupport.intStream(new IntReverseSpliterator(stream.spliterator()), false);
     }
 
     public static DoubleStream reverse(DoubleStream stream) {
-        return StreamSupport.doubleStream(new DoubleReverseSpliterator(stream.spliterator()), stream.isParallel());
+        return StreamSupport.doubleStream(new DoubleReverseSpliterator(stream.spliterator()), false);
     }
 
     public static LongStream reverse(LongStream stream) {
-        return StreamSupport.longStream(new LongReverseSpliterator(stream.spliterator()), stream.isParallel());
+        return StreamSupport.longStream(new LongReverseSpliterator(stream.spliterator()), false);
     }
 
     public static <T> Stream<T> iterate(T seed, Predicate<T> predicate, UnaryOperator<T> operator) {
@@ -106,35 +106,35 @@ public class Methods {
     }
 
     public static IntStream takeWhile(IntStream stream, UnaryPredicate<Integer> predicate) {
-        return StreamSupport.intStream(new IntTakeWhileSpliterator(stream.spliterator(), predicate), stream.isParallel());
+        return StreamSupport.intStream(new IntTakeWhileSpliterator(stream.spliterator(), predicate), false);
     }
 
     public static IntStream takeWhile(IntStream stream, BinaryPredicate<Integer> predicate, Integer identity) {
-        return StreamSupport.intStream(new IntTakeWhileSpliterator(stream.spliterator(), predicate, identity), stream.isParallel());
+        return StreamSupport.intStream(new IntTakeWhileSpliterator(stream.spliterator(), predicate, identity), false);
     }
 
     public static DoubleStream takeWhile(DoubleStream stream, UnaryPredicate<Double> predicate) {
-        return StreamSupport.doubleStream(new DoubleTakeWhileSpliterator(stream.spliterator(), predicate), stream.isParallel());
+        return StreamSupport.doubleStream(new DoubleTakeWhileSpliterator(stream.spliterator(), predicate), false);
     }
 
     public static DoubleStream takeWhile(DoubleStream stream, BinaryPredicate<Double> predicate, Double identity) {
-        return StreamSupport.doubleStream(new DoubleTakeWhileSpliterator(stream.spliterator(), predicate, identity), stream.isParallel());
+        return StreamSupport.doubleStream(new DoubleTakeWhileSpliterator(stream.spliterator(), predicate, identity), false);
     }
 
     public static LongStream takeWhile(LongStream stream, UnaryPredicate<Long> predicate) {
-        return StreamSupport.longStream(new LongTakeWhileSpliterator(stream.spliterator(), predicate), stream.isParallel());
+        return StreamSupport.longStream(new LongTakeWhileSpliterator(stream.spliterator(), predicate), false);
     }
 
     public static LongStream takeWhile(LongStream stream, BinaryPredicate<Long> predicate, Long identity) {
-        return StreamSupport.longStream(new LongTakeWhileSpliterator(stream.spliterator(), predicate, identity), stream.isParallel());
+        return StreamSupport.longStream(new LongTakeWhileSpliterator(stream.spliterator(), predicate, identity), false);
     }
 
     public static <T> Stream<T> takeWhile(Stream<T> stream, UnaryPredicate<? super T> predicate) {
-        return StreamSupport.stream(new GenericTakeWhileSpliterator(stream.spliterator(), predicate), stream.isParallel());
+        return StreamSupport.stream(new GenericTakeWhileSpliterator(stream.spliterator(), predicate), false);
     }
 
     public static <T> Stream<T> takeWhile(Stream<T> stream, BinaryPredicate<? super T> predicate, T identity) {
-        return StreamSupport.stream(new GenericTakeWhileSpliterator(stream.spliterator(), predicate, identity), stream.isParallel());
+        return StreamSupport.stream(new GenericTakeWhileSpliterator(stream.spliterator(), predicate, identity), false);
     }
 
 
@@ -267,8 +267,20 @@ public class Methods {
         return stream.flatMap(Functions.listsOfN(n)).map(ts -> (T[]) ts.toArray());
     }
 
-    public static <T extends Transformation<Double>> DoubleStream variadicMapToObj(DoubleStream stream, T pred) {
-        return StreamSupport.doubleStream(new DoubleVariadicSpliterator(stream.spliterator(), pred), false);
+    public static <S extends Transformation<Integer>> IntStream variadicMapToObj(IntStream stream, S pred) {
+        return StreamSupport.intStream(new IntVariadicSpliterator(stream.spliterator(), pred), false).map(i -> i);
+    }
+
+    public static <S extends Transformation<Double>> DoubleStream variadicMapToObj(DoubleStream stream, S pred) {
+        return StreamSupport.doubleStream(new DoubleVariadicSpliterator(stream.spliterator(), pred), false).map(d -> d);
+    }
+
+    public static <S extends Transformation<Long>> LongStream variadicMapToObj(LongStream stream, S pred) {
+        return StreamSupport.longStream(new LongVariadicSpliterator(stream.spliterator(), pred), false).map(l -> l);
+    }
+
+    public static <S extends Transformation<T>, T> Stream<T> variadicMapToObj(Stream<T> stream, S pred) {
+        return StreamSupport.stream(new GenericVariadicSpliterator(stream.spliterator(), pred), false).map(o ->o);
     }
 
     @Test
@@ -417,12 +429,16 @@ public class Methods {
         );
 
         println(
-            takeWhile(
-                variadicMapToObj(
-                    DoubleStream.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
-                    (Transformation2<Double>) (d1, d2) -> (d1 * d2)
-                ).map(d -> d),
-                (d -> d < 200)
+            variadicMapToObj(
+                IntStream.range(0,1000),
+                (Transformation3<Integer>) (i1, i2, i3) -> i1 * i2 * i3
+            )
+        );
+
+        println(
+            variadicMapToObj(
+                doubleIterate(0d, d -> d < 1000, d -> ++d),
+                (Transformation3<Double>) (d1, d2, d3) -> d1 * d2 * d3
             )
         );
     }

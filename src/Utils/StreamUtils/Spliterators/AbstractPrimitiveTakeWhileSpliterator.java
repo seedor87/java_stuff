@@ -43,7 +43,7 @@ public abstract class AbstractPrimitiveTakeWhileSpliterator<T, U, V extends Spli
         }
         AbstractPrimitiveTakeWhileSpliterator clone;
         try {
-            clone = (DoubleTakeWhileSpliterator) clone();
+            clone = (AbstractPrimitiveTakeWhileSpliterator) clone();
         } catch (CloneNotSupportedException e) {
             throw new InternalError(e);
         }
