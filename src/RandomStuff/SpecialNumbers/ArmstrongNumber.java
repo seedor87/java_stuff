@@ -3,6 +3,7 @@ package RandomStuff.SpecialNumbers;
 import Utils.StreamUtils.Methods;
 import TestingUtils.JUnitTesting.TimedRule.TimedRule;
 import Utils.Console.Special;
+import Utils.StreamUtils.Interfaces.UnaryPredicate;
 import Utils.Timing.SYSStopwatch;
 import Utils.Timing.TimeUnit;
 import org.junit.Rule;
@@ -39,7 +40,7 @@ public class ArmstrongNumber {
         return
             Methods.takeWhile(
                 IntStream.iterate(n, i -> i / 10),
-                i -> i > 0
+                    (UnaryPredicate<Integer>) i -> i > 0
             )
             .map(j -> j % 10);
     }

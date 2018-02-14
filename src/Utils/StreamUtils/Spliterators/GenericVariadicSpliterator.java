@@ -1,6 +1,6 @@
 package Utils.StreamUtils.Spliterators;
 
-import Utils.StreamUtils.VariadicFunctionalInterfaces.*;
+import Utils.StreamUtils.Interfaces.NaryMapping;
 import com.sun.jmx.remote.internal.ArrayQueue;
 
 import java.util.*;
@@ -11,11 +11,11 @@ import static Utils.StreamUtils.Spliterators.GenericVariadicSpliterator.Process.
 
 public class GenericVariadicSpliterator<T> implements Spliterator<T>, Cloneable {
 
-    interface Processable<T> {
-        void process(ArrayQueue<T> queue);
+    interface Processable {
+        void process(ArrayQueue queue);
     }
     public enum Process {
-        SUBDIVIDED(AbstractList::clear),
+        SUBDIVIDED(ArrayQueue::clear),
         NONSUBDVIDED(queue -> queue.remove(0));
         private Processable processable;
         Process(Processable processable) {
@@ -25,28 +25,28 @@ public class GenericVariadicSpliterator<T> implements Spliterator<T>, Cloneable 
             this.processable.process(queue);
         }
     }
-    protected Spliterator<T> source;
-    protected Transformation<T> transformation;
+    private Spliterator<T> source;
+    protected NaryMapping<T, T> mapping;
     protected Process algorithm;
     protected final AtomicBoolean found = new AtomicBoolean();
     protected int transformationSize;
     protected ArrayQueue<T> queue;
 
-    public GenericVariadicSpliterator(Spliterator<T> source, Transformation<T> transformation, Process algorithm) {
+    public GenericVariadicSpliterator(Spliterator<T> source, NaryMapping<T, T> mapping, Process algorithm) {
         this.source = source;
-        this.transformation = transformation;
-        this.transformationSize = transformation.getSize();
+        this.mapping = mapping;
+        this.transformationSize = mapping.getSize();
         this.queue = new ArrayQueue<>(this.transformationSize);
         this.algorithm = algorithm;
     }
 
-    public GenericVariadicSpliterator(Spliterator<T> source, Transformation<T> transformation) {
-        this(source, transformation, SUBDIVIDED);
+    public GenericVariadicSpliterator(Spliterator<T> source, NaryMapping<T, T> mapping) {
+        this(source, mapping, SUBDIVIDED);
     }
 
     public boolean actionAccept(Consumer<? super T> action) {
         if(queue.size() >= transformationSize) {
-            action.accept(transformation.execute(queue));
+            action.accept(mapping.execute(queue));
             return true;
         }
        return false;

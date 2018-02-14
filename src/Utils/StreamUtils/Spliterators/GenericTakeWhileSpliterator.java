@@ -2,12 +2,14 @@ package Utils.StreamUtils.Spliterators;
 
 
 import TestingUtils.JUnitTesting.TimedRule.TimedRule;
-import Utils.StreamUtils.PredicateInterfaces.BinaryPredicate;
-import Utils.StreamUtils.PredicateInterfaces.UnaryPredicate;
+import Utils.StreamUtils.Interfaces.BinaryPredicate;
+import Utils.StreamUtils.Interfaces.NaryPredicate;
+import Utils.StreamUtils.Interfaces.UnaryPredicate;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 
+import com.sun.jmx.remote.internal.ArrayQueue;
 import java.util.Comparator;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -21,23 +23,31 @@ import static Utils.StreamUtils.Methods.takeWhile;
 
 public class GenericTakeWhileSpliterator<T> implements Spliterator<T>, Cloneable {
     protected Spliterator<T> source;
-    protected BinaryPredicate<? super T> condition;
-    protected T prev;
+    protected NaryPredicate<T> condition;
+    protected ArrayQueue<T> queue;
     protected final AtomicBoolean found = new AtomicBoolean();
+    protected int transformationSize;
 
-    public GenericTakeWhileSpliterator(Spliterator<T> source, UnaryPredicate<? super T> predicate) {
+    public GenericTakeWhileSpliterator(Spliterator<T> source, NaryPredicate<T> predicate) {
         this.source = source;
         this.condition = predicate;
+        this.transformationSize = condition.getSize();
+        this.queue = new ArrayQueue<>(this.transformationSize);
     }
 
-    public GenericTakeWhileSpliterator(Spliterator<T> source, BinaryPredicate<? super T> predicate, T identity) {
-        this.source = source;
-        this.condition = predicate;
-        this.prev = identity;
-    }
-
-    public void actionAccept(Consumer<? super T> action, T e) {
-        action.accept(e);
+    public boolean actionAccept(Consumer<? super T> action) {
+        if(queue.size() >= transformationSize) {
+            if (!condition.execute(queue)) {
+                if (queue.size() > 1) {
+                    for (int i = 0; i < transformationSize-1; i++) {
+                        action.accept(queue.remove(0));
+                    }
+                }
+                return false;
+            }
+            action.accept(queue.remove(0));
+        }
+        return true;
     }
 
     public Spliterator<T> getEmtpySpliterator() {
@@ -48,10 +58,9 @@ public class GenericTakeWhileSpliterator<T> implements Spliterator<T>, Cloneable
     public boolean tryAdvance(Consumer<? super T> action) {
         return (!found.get() &&
             this.getSource().tryAdvance((e) -> {
-                if (condition.test(prev, e)) {
-                    this.prev = e;
-                    this.actionAccept(action, e);
-                } else {
+                queue.add(e);
+                if (!this.actionAccept(action)) {
+                    queue.clear();
                     found.set(true);
                 }
             })
@@ -109,25 +118,24 @@ public class GenericTakeWhileSpliterator<T> implements Spliterator<T>, Cloneable
         public void test() {
             GenericTakeWhileSpliterator<Double> myGTWS1 = new DoubleTakeWhileSpliterator(
                 DoubleStream.of(0, 1, 2, 4, 8, 16, 32, 64, 128).spliterator(),
-                (d1, d2) -> d1 + 8d > d2,
-                0d);
+                    (BinaryPredicate<Double>) (d1, d2) -> d1 + 8d > d2);
             println(StreamSupport.doubleStream((DoubleTakeWhileSpliterator) myGTWS1, false));
 
 
             AbstractPrimitiveTakeWhileSpliterator<Integer, IntConsumer, OfInt> myGTWS2 = new IntTakeWhileSpliterator(
                 IntStream.of(0, 1, 2, 4, 8, 16, 32, 64, 128).spliterator(),
-                (i) -> i < 16);
+                    (UnaryPredicate<Integer>) (i) -> i < 16);
             println(StreamSupport.intStream((IntTakeWhileSpliterator) myGTWS2, false));
 
 
             LongTakeWhileSpliterator myGTWS3 = new LongTakeWhileSpliterator(
                 LongStream.of(0, 1, 2, 4, 8, 16, 32, 64, 128).spliterator(),
-                (i) -> true);
+                (UnaryPredicate<Long>) (i) -> true);
             println(StreamSupport.longStream(myGTWS3, false));
 
-            println(takeWhile(Stream.of('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'), s -> s.compareTo('e') < 0));
+            println(takeWhile(Stream.of('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'), (UnaryPredicate<Character>) s -> s.compareTo('e') < 0));
 
-            println(takeWhile(Stream.of("one", "two", "three", "four", "five", "six"), (t1, t2) -> t1.length() <= t2.length(), ""));
+            println(takeWhile(Stream.of("one", "two", "three", "four", "five", "six"), (BinaryPredicate<String>) (t1, t2) -> t1.length() <= t2.length()));
         }
     }
 }

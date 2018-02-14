@@ -1,6 +1,6 @@
 package Utils.StreamUtils.Spliterators;
 
-import Utils.StreamUtils.VariadicFunctionalInterfaces.Transformation;
+import Utils.StreamUtils.Interfaces.NaryMapping;
 
 import java.util.Spliterator;
 
@@ -11,12 +11,12 @@ public abstract class AbstractPrimitiveVariadicSpliterator<T, U, V extends Split
 
     public abstract boolean actionAccept(U action);
 
-    public AbstractPrimitiveVariadicSpliterator(V source, Transformation<T> transformation, Process process) {
-        super(source, transformation, process);
+    public AbstractPrimitiveVariadicSpliterator(V source, NaryMapping<T, T> mapping, Process process) {
+        super(source, mapping, process);
     }
 
-    public AbstractPrimitiveVariadicSpliterator(V source, Transformation<T> transformation) {
-        super(source, transformation);
+    public AbstractPrimitiveVariadicSpliterator(V source, NaryMapping<T, T> mapping) {
+        super(source, mapping);
     }
 
     public boolean tryAdvance(U action) {
@@ -30,7 +30,7 @@ public abstract class AbstractPrimitiveVariadicSpliterator<T, U, V extends Split
 
     @Override
     public V trySplit() {
-        V prefix = (V) source.trySplit();
+        V prefix = (V) this.getSource().trySplit();
         if(prefix == null) {
             return null;
         }

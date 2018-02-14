@@ -1,6 +1,6 @@
 package Utils.StreamUtils.Spliterators;
 
-import Utils.StreamUtils.VariadicFunctionalInterfaces.Transformation;
+import Utils.StreamUtils.Interfaces.NaryMapping;
 
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -8,12 +8,12 @@ import java.util.function.DoubleConsumer;
 
 public class DoubleVariadicSpliterator extends AbstractPrimitiveVariadicSpliterator<Double, DoubleConsumer, Spliterator.OfDouble> implements Spliterator.OfDouble {
 
-    public DoubleVariadicSpliterator(OfDouble source, Transformation<Double> transformation, Process process) {
-        super(source, transformation, process);
+    public DoubleVariadicSpliterator(OfDouble source, NaryMapping<Double, Double> mapping, Process process) {
+        super(source, mapping, process);
     }
 
-    public DoubleVariadicSpliterator(OfDouble source, Transformation<Double> transformation) {
-        super(source, transformation);
+    public DoubleVariadicSpliterator(OfDouble source, NaryMapping<Double, Double> mapping) {
+        super(source, mapping);
     }
 
     @Override
@@ -24,7 +24,7 @@ public class DoubleVariadicSpliterator extends AbstractPrimitiveVariadicSplitera
     @Override
     public boolean actionAccept(DoubleConsumer action) {
         if(queue.size() >= transformationSize) {
-            action.accept(transformation.execute(queue));
+            action.accept(mapping.execute(queue));
             return true;
         }
         return false;

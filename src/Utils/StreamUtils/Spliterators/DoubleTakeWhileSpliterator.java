@@ -1,6 +1,6 @@
 package Utils.StreamUtils.Spliterators;
 
-import Utils.StreamUtils.PredicateInterfaces.*;
+import Utils.StreamUtils.Interfaces.*;
 
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -8,12 +8,8 @@ import java.util.function.DoubleConsumer;
 
 public class DoubleTakeWhileSpliterator extends AbstractPrimitiveTakeWhileSpliterator<Double, DoubleConsumer, Spliterator.OfDouble> implements Spliterator.OfDouble {
 
-    public DoubleTakeWhileSpliterator(Spliterator.OfDouble source, UnaryPredicate<? super Double> predicate) {
+    public DoubleTakeWhileSpliterator(Spliterator.OfDouble source, NaryPredicate<Double> predicate) {
         super(source, predicate);
-    }
-
-    public DoubleTakeWhileSpliterator(Spliterator.OfDouble source, BinaryPredicate<? super Double> predicate, Double identity) {
-        super(source, predicate, identity);
     }
 
     @Override
@@ -22,7 +18,18 @@ public class DoubleTakeWhileSpliterator extends AbstractPrimitiveTakeWhileSplite
     }
 
     @Override
-    public void actionAccept(DoubleConsumer action, Double e) {
-        action.accept(e);
+    public boolean actionAccept(DoubleConsumer action) {
+        if(queue.size() >= transformationSize) {
+            if (!condition.execute(queue)) {
+                if (queue.size() > 1) {
+                    for (int i = 0; i < transformationSize-1; i++) {
+                        action.accept(queue.remove(0));
+                    }
+                }
+                return false;
+            }
+            action.accept(queue.remove(0));
+        }
+        return true;
     }
 }

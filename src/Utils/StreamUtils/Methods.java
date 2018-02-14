@@ -5,11 +5,10 @@ import static Utils.StreamUtils.Functions.*;
 
 import TestingUtils.JUnitTesting.TimedRule.TimedRule;
 import Utils.Console.Special;
-import Utils.StreamUtils.VariadicFunctionalInterfaces.*;
 import Utils.Timing.SYSStopwatch;
 import Utils.Timing.TimeUnit;
 import Utils.StreamUtils.Spliterators.*;
-import Utils.StreamUtils.PredicateInterfaces.*;
+import Utils.StreamUtils.Interfaces.*;
 import Utils.StreamUtils.Spliterators.GenericVariadicSpliterator.Process;
 
 import org.junit.Rule;
@@ -106,38 +105,21 @@ public class Methods {
         );
     }
 
-    public static IntStream takeWhile(IntStream stream, UnaryPredicate<Integer> predicate) {
+    public static IntStream takeWhile(IntStream stream, NaryPredicate<Integer> predicate) {
         return StreamSupport.intStream(new IntTakeWhileSpliterator(stream.spliterator(), predicate), false);
     }
 
-    public static IntStream takeWhile(IntStream stream, BinaryPredicate<Integer> predicate, Integer identity) {
-        return StreamSupport.intStream(new IntTakeWhileSpliterator(stream.spliterator(), predicate, identity), false);
-    }
-
-    public static DoubleStream takeWhile(DoubleStream stream, UnaryPredicate<Double> predicate) {
+    public static DoubleStream takeWhile(DoubleStream stream, NaryPredicate<Double> predicate) {
         return StreamSupport.doubleStream(new DoubleTakeWhileSpliterator(stream.spliterator(), predicate), false);
     }
 
-    public static DoubleStream takeWhile(DoubleStream stream, BinaryPredicate<Double> predicate, Double identity) {
-        return StreamSupport.doubleStream(new DoubleTakeWhileSpliterator(stream.spliterator(), predicate, identity), false);
-    }
-
-    public static LongStream takeWhile(LongStream stream, UnaryPredicate<Long> predicate) {
+    public static LongStream takeWhile(LongStream stream, NaryPredicate<Long> predicate) {
         return StreamSupport.longStream(new LongTakeWhileSpliterator(stream.spliterator(), predicate), false);
     }
 
-    public static LongStream takeWhile(LongStream stream, BinaryPredicate<Long> predicate, Long identity) {
-        return StreamSupport.longStream(new LongTakeWhileSpliterator(stream.spliterator(), predicate, identity), false);
-    }
-
-    public static <T> Stream<T> takeWhile(Stream<T> stream, UnaryPredicate<? super T> predicate) {
+    public static <T> Stream<T> takeWhile(Stream<T> stream, NaryPredicate<? super T> predicate) {
         return StreamSupport.stream(new GenericTakeWhileSpliterator(stream.spliterator(), predicate), false);
     }
-
-    public static <T> Stream<T> takeWhile(Stream<T> stream, BinaryPredicate<? super T> predicate, T identity) {
-        return StreamSupport.stream(new GenericTakeWhileSpliterator(stream.spliterator(), predicate, identity), false);
-    }
-
 
     public static IntStream dropWhile(IntStream stream, IntPredicate predicate) {
         return stream.flatMap(Functions.dropWhile(predicate));
@@ -268,42 +250,42 @@ public class Methods {
         return stream.flatMap(Functions.listsOfN(n)).map(ts -> (T[]) ts.toArray());
     }
 
-    public static <S extends Transformation<Integer>> IntStream variadicMapToObj(IntStream stream, S pred, Process process) {
+    public static <S extends NaryMapping<Integer, Integer>> IntStream variadicMapToObj(IntStream stream, S pred, Process process) {
         return StreamSupport.intStream(new IntVariadicSpliterator(stream.spliterator(), pred, process), false);
     }
 
-    public static <S extends Transformation<Integer>> IntStream variadicMapToObj(IntStream stream, S pred) {
+    public static <S extends NaryMapping<Integer, Integer>> IntStream variadicMapToObj(IntStream stream, S pred) {
         return StreamSupport.intStream(new IntVariadicSpliterator(stream.spliterator(), pred), false);
     }
 
-    public static <S extends Transformation<Double>> DoubleStream variadicMapToObj(DoubleStream stream, S pred, Process process) {
+    public static <S extends NaryMapping<Double, Double>> DoubleStream variadicMapToObj(DoubleStream stream, S pred, Process process) {
         return StreamSupport.doubleStream(new DoubleVariadicSpliterator(stream.spliterator(), pred, process), false);
     }
 
-    public static <S extends Transformation<Double>> DoubleStream variadicMapToObj(DoubleStream stream, S pred) {
+    public static <S extends NaryMapping<Double, Double>> DoubleStream variadicMapToObj(DoubleStream stream, S pred) {
         return StreamSupport.doubleStream(new DoubleVariadicSpliterator(stream.spliterator(), pred), false);
     }
 
-    public static <S extends Transformation<Long>> LongStream variadicMapToObj(LongStream stream, S pred, Process process) {
+    public static <S extends NaryMapping<Long, Long>> LongStream variadicMapToObj(LongStream stream, S pred, Process process) {
         return StreamSupport.longStream(new LongVariadicSpliterator(stream.spliterator(), pred, process), false);
     }
 
-    public static <S extends Transformation<Long>> LongStream variadicMapToObj(LongStream stream, S pred) {
+    public static <S extends NaryMapping<Long, Long>> LongStream variadicMapToObj(LongStream stream, S pred) {
         return StreamSupport.longStream(new LongVariadicSpliterator(stream.spliterator(), pred), false);
     }
 
-    public static <S extends Transformation<T>, T> Stream<T> variadicMapToObj(Stream<T> stream, S pred, Process process) {
+    public static <S extends NaryMapping<T, T>, T> Stream<T> variadicMapToObj(Stream<T> stream, S pred, Process process) {
         return StreamSupport.stream(new GenericVariadicSpliterator(stream.spliterator(), pred, process), false);
     }
 
-    public static <S extends Transformation<T>, T> Stream<T> variadicMapToObj(Stream<T> stream, S pred) {
+    public static <S extends NaryMapping<T, T>, T> Stream<T> variadicMapToObj(Stream<T> stream, S pred) {
         return StreamSupport.stream(new GenericVariadicSpliterator(stream.spliterator(), pred), false);
     }
 
     @Test
     public void test() {
         println(
-            takeWhile(LongStream.iterate(1L, (l) -> l+l), (l) -> l < Long.MAX_VALUE/2)
+            takeWhile(LongStream.iterate(1L, (l) -> l+l), (UnaryPredicate<Long>) (l) -> l < Long.MAX_VALUE/2)
         );
 
 //        println(
@@ -314,6 +296,7 @@ public class Methods {
     public static void main(String[] args) {
 
         println(Special.FG_BRIGHT_CYAN, makeString(", ", IntStream.range(0, 10).flatMap(intTakeEveryNth(3))));
+
         println(
             Special.FG_BRIGHT_CYAN,
             takeWhile(
@@ -327,10 +310,9 @@ public class Methods {
                         }
                     }
                 ),
-                (d) -> d >= 0.000001
+                    (UnaryPredicate<Double>) (d) -> d >= 0.000001
             )
-            .reduce((left, right) -> left + right
-            )
+            .reduce((left, right) -> left + right)
         );
 
         println(Special.FG_BRIGHT_CYAN, reverse(IntStream.range(0, 10)));
@@ -341,15 +323,15 @@ public class Methods {
 
         println(Special.FG_BRIGHT_CYAN, dropN(IntStream.range(0, 10), 5));
 
-        println(Special.FG_BRIGHT_CYAN, takeWhile(Stream.of("one", "two", "three", "four", "five", "six"), s -> !s.contains("our")));
+        println(Special.FG_BRIGHT_CYAN, takeWhile(Stream.of("one", "two", "three", "four", "five", "six"), (UnaryPredicate<String>) s -> !s.contains("our")).map(s -> s));
 
         println(Special.FG_BRIGHT_CYAN, dropWhile(Stream.of("one", "two", "three", "four", "five", "six"), s -> !s.contains("our")));
 
-        println(Special.FG_BRIGHT_CYAN, takeWhile(IntStream.range(0, 10), (i1, i2) -> i1 < i2, Integer.MIN_VALUE));
+        println(Special.FG_BRIGHT_CYAN, takeWhile(IntStream.range(0, 10), (BinaryPredicate<Integer>) (i1, i2) -> i1 < i2).map(i -> i));
 
-        println(Special.FG_BRIGHT_CYAN, dropWhile(IntStream.range(0, 10), (i1, i2) -> i1 < i2, Integer.MIN_VALUE));
+        println(Special.FG_BRIGHT_CYAN, dropWhile(IntStream.range(0, 10), (i) -> i < 10));
 
-        println(Special.FG_BRIGHT_CYAN, takeWhile(Stream.of("one", "two", "three", "four", "five", "six"), (i1, i2) -> i1.length() <= i2.length(), ""));
+        println(Special.FG_BRIGHT_CYAN, takeWhile(Stream.of("one", "two", "three", "four", "five", "six"), (TernaryPredicate<String>) (i1, i2, i3) -> i1.length() <= i2.length() && i2.length() < i3.length()).map(i -> i));
 
         println(Special.FG_BRIGHT_CYAN, dropWhile(Stream.of("one", "two", "three", "four", "five", "six"), (i1, i2) -> i1.length() <= i2.length(), ""));
 
@@ -363,9 +345,11 @@ public class Methods {
 
         println(Special.FG_BRIGHT_CYAN, arraysOfN(IntStream.range(0, 100), 3));
 
-        println(Special.FG_RED, takeWhile(DoubleStream.of(1,2,3,4,3,3,1), (d) -> d < 4));
+        println(Special.FG_RED, takeWhile(DoubleStream.of(1,2,3,4,3,2,1), (UnaryPredicate<Double>) (d) -> d < 4));
 
-        println(Special.FG_RED, takeWhile(DoubleStream.of(1,2,3,4,3,3,1), (d1, d2) -> d1 < d2, Double.MIN_VALUE));
+        println(Special.FG_RED, takeWhile(DoubleStream.of(1,2,3,4,3,2,1), (BinaryPredicate<Double>) (d1, d2) -> d1 < d2).mapToObj(d -> d));
+
+        println(Special.FG_RED, dropWhile(DoubleStream.of(1,2,3,4,3,2,1), (BiPredicate<Double, Double>) (d1, d2) -> d1 < d2, Double.MIN_VALUE).mapToObj(d -> d));
 
         println(
             intIterate(
@@ -402,7 +386,7 @@ public class Methods {
                         }
                     }
                 ),
-                i -> i < 1000
+                (UnaryPredicate<Character>) i -> i < 1000
             )
         );
 
@@ -415,7 +399,7 @@ public class Methods {
                         public int getAsInt() { return i++; }
                     }
                 ),
-                i -> i < 1000
+                (UnaryPredicate<Integer>) i -> i < 1000
             )
         );
 
@@ -428,7 +412,7 @@ public class Methods {
                         public Double get() { return i *= 1.5; }
                     }
                 ),
-                i -> i < 100
+                (UnaryPredicate<Double>) i -> i < 100
             )
         );
 
@@ -441,21 +425,23 @@ public class Methods {
                         public double getAsDouble() { return d *= 1.000001; }
                     }
                 ),
-                (o) -> o < 100
+                (UnaryPredicate<Double>) (o) -> o < 100
             ).summaryStatistics()
         );
 
         println(
             variadicMapToObj(
                 IntStream.range(0,1000),
-                (Transformation3<Integer>) (i1, i2, i3) -> i1 * i2 * i3
+                (TernaryMapping<Integer, Integer>) (i1, i2, i3) -> i1 * i2 * i3,
+                Process.NONSUBDVIDED
             ).mapToObj(i -> i + "  ")
         );
 
         println(
             variadicMapToObj(
                 doubleIterate(0d, d -> d < 1000, d -> ++d),
-                (Transformation3<Double>) (d1, d2, d3) -> d1 * d2 * d3
+                (TernaryMapping<Double, Double>) (d1, d2, d3) -> d1 * d2 * d3,
+                Process.NONSUBDVIDED
             ).mapToObj(d -> String.format("%.1f", d))
         );
     }

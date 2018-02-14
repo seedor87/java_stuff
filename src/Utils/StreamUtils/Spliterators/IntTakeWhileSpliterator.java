@@ -1,7 +1,6 @@
 package Utils.StreamUtils.Spliterators;
 
-import Utils.StreamUtils.PredicateInterfaces.BinaryPredicate;
-import Utils.StreamUtils.PredicateInterfaces.UnaryPredicate;
+import Utils.StreamUtils.Interfaces.NaryPredicate;
 
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -9,12 +8,8 @@ import java.util.function.IntConsumer;
 
 public class IntTakeWhileSpliterator extends AbstractPrimitiveTakeWhileSpliterator<Integer, IntConsumer, Spliterator.OfInt> implements Spliterator.OfInt {
 
-    public IntTakeWhileSpliterator(Spliterator.OfInt source, UnaryPredicate<? super Integer> predicate) {
+    public IntTakeWhileSpliterator(Spliterator.OfInt source, NaryPredicate<Integer> predicate) {
         super(source, predicate);
-    }
-
-    public IntTakeWhileSpliterator(Spliterator.OfInt source, BinaryPredicate<? super Integer> predicate, Integer identity) {
-        super(source, predicate, identity);
     }
 
     @Override
@@ -23,7 +18,18 @@ public class IntTakeWhileSpliterator extends AbstractPrimitiveTakeWhileSpliterat
     }
 
     @Override
-    public void actionAccept(IntConsumer action, Integer e) {
-        action.accept(e);
+    public boolean actionAccept(IntConsumer action) {
+        if(queue.size() >= transformationSize) {
+            if (!condition.execute(queue)) {
+                if (queue.size() > 1) {
+                    for (int i = 0; i < transformationSize-1; i++) {
+                        action.accept(queue.remove(0));
+                    }
+                }
+                return false;
+            }
+            action.accept(queue.remove(0));
+        }
+        return true;
     }
 }

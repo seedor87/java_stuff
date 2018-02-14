@@ -1,7 +1,6 @@
 package Utils.StreamUtils.Spliterators;
 
-import Utils.StreamUtils.PredicateInterfaces.BinaryPredicate;
-import Utils.StreamUtils.PredicateInterfaces.UnaryPredicate;
+import Utils.StreamUtils.Interfaces.NaryPredicate;
 
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -9,12 +8,8 @@ import java.util.function.LongConsumer;
 
 public class LongTakeWhileSpliterator extends AbstractPrimitiveTakeWhileSpliterator<Long, LongConsumer, Spliterator.OfLong> implements Spliterator.OfLong {
 
-    public LongTakeWhileSpliterator(Spliterator.OfLong source, UnaryPredicate<? super Long> predicate) {
+    public LongTakeWhileSpliterator(Spliterator.OfLong source, NaryPredicate<Long> predicate) {
         super(source, predicate);
-    }
-
-    public LongTakeWhileSpliterator(Spliterator.OfLong source, BinaryPredicate<? super Long> predicate, Long identity) {
-        super(source, predicate, identity);
     }
 
     @Override
@@ -23,7 +18,18 @@ public class LongTakeWhileSpliterator extends AbstractPrimitiveTakeWhileSplitera
     }
 
     @Override
-    public void actionAccept(LongConsumer action, Long e) {
-        action.accept(e);
+    public boolean actionAccept(LongConsumer action) {
+        if(queue.size() >= transformationSize) {
+            if (!condition.execute(queue)) {
+                if (queue.size() > 1) {
+                    for (int i = 0; i < transformationSize-1; i++) {
+                        action.accept(queue.remove(0));
+                    }
+                }
+                return false;
+            }
+            action.accept(queue.remove(0));
+        }
+        return true;
     }
 }

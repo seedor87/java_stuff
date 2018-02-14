@@ -1,7 +1,6 @@
 package Utils.StreamUtils.Spliterators;
 
-import Utils.StreamUtils.PredicateInterfaces.BinaryPredicate;
-import Utils.StreamUtils.PredicateInterfaces.UnaryPredicate;
+import Utils.StreamUtils.Interfaces.NaryPredicate;
 
 import java.util.Spliterator;
 
@@ -9,23 +8,18 @@ public abstract class AbstractPrimitiveTakeWhileSpliterator<T, U, V extends Spli
     @Override
     public abstract V getEmtpySpliterator();
 
-    public abstract void actionAccept(U action, T e);
-
-    public AbstractPrimitiveTakeWhileSpliterator(V source, UnaryPredicate<? super T> predicate) {
+    public AbstractPrimitiveTakeWhileSpliterator(V source, NaryPredicate<T> predicate) {
         super(source, predicate);
     }
 
-    public AbstractPrimitiveTakeWhileSpliterator(V source, BinaryPredicate<? super T> predicate, T identity) {
-        super(source, predicate, identity);
-    }
+    public abstract boolean actionAccept(U action);
 
     public boolean tryAdvance(U action) {
         return (!found.get() &&
             this.getSource().tryAdvance((e) -> {
-                if (condition.test(prev, e)) {
-                    this.prev = e;
-                    this.actionAccept(action, e);
-                } else {
+                queue.add(e);
+                if (!this.actionAccept(action)) {
+                    queue.clear();
                     found.set(true);
                 }
             })
