@@ -1,14 +1,14 @@
 package Utils.StreamUtils.Interfaces;
 
 @FunctionalInterface
-public interface NullaryPredicate<T> extends NaryPredicate<T> {
-    Boolean execute();
+public interface NullaryMapping<S, T> extends NaryMapping<S, T> {
+    S execute();
     @Override
     default int getSize() {
         return 0;
     }
     @Override
-    default Boolean execute(T... args) {
+    default S execute(T... args) {
         return execute();
     }
 }

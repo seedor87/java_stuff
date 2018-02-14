@@ -22,11 +22,11 @@ import static Utils.Console.Printing.println;
 import static Utils.StreamUtils.Methods.takeWhile;
 
 public class GenericTakeWhileSpliterator<T> implements Spliterator<T>, Cloneable {
-    protected Spliterator<T> source;
+    private Spliterator<T> source;
     protected NaryPredicate<T> condition;
-    protected ArrayQueue<T> queue;
     protected final AtomicBoolean found = new AtomicBoolean();
     protected int transformationSize;
+    protected ArrayQueue<T> queue;
 
     public GenericTakeWhileSpliterator(Spliterator<T> source, NaryPredicate<T> predicate) {
         this.source = source;

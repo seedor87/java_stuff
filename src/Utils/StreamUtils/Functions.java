@@ -1,5 +1,9 @@
 package Utils.StreamUtils;
 
+import Utils.StreamUtils.Interfaces.BinaryPredicate;
+import Utils.StreamUtils.Interfaces.NaryPredicate;
+import com.sun.jmx.remote.internal.ArrayQueue;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -11,137 +15,100 @@ import java.util.stream.Stream;
 
 public class Functions {
 
-    public static IntFunction<? extends IntStream> dropWhile(IntPredicate condition) {
+    public static IntFunction<? extends IntStream> intDropWhile(NaryPredicate<Integer> condition) {
         return new IntFunction<IntStream>() {
             final AtomicBoolean found = new AtomicBoolean();
+            int transformationSize = condition.getSize();
+            ArrayQueue<Integer> queue = new ArrayQueue<>(transformationSize);
+
             @Override
-            public IntStream apply(int value) {
+            public IntStream apply(int t) {
                 if (!found.get()) {
-                    if (condition.test(value)) {
-                        return IntStream.empty();
+                    queue.add(t);
+                    if(queue.size() >= transformationSize) {
+                        if (condition.execute(queue)) {
+                            queue.remove(0);
+                            return IntStream.empty();
+                        }
+                        found.set(true);
+                        return IntStream.of(t);
                     }
-                    found.set(true);
+                    return IntStream.empty();
                 }
-                return IntStream.of(value);
+                return IntStream.of(t);
             }
         };
     }
 
-    public static IntFunction<? extends IntStream> dropWhile(Integer identity, BiPredicate<? super Integer, ? super Integer> condition) {
-        return new IntFunction<IntStream>() {
-            final AtomicBoolean found = new AtomicBoolean();
-            Integer prev = identity;
-            @Override
-            public IntStream apply(int value) {
-                if (!found.get()) {
-                    if (condition.test(prev, value)) {
-                        prev = value;
-                        return IntStream.empty();
-                    }
-                    found.set(true);
-                }
-                return IntStream.of(value);
-            }
-        };
-    }
-
-    public static DoubleFunction<? extends DoubleStream> dropWhile(DoublePredicate condition) {
+    public static DoubleFunction<? extends DoubleStream> doubleDropWhile(NaryPredicate<Double> condition) {
         return new DoubleFunction<DoubleStream>() {
             final AtomicBoolean found = new AtomicBoolean();
+            int transformationSize = condition.getSize();
+            ArrayQueue<Double> queue = new ArrayQueue<>(transformationSize);
+
             @Override
-            public DoubleStream apply(double value) {
+            public DoubleStream apply(double t) {
                 if (!found.get()) {
-                    if (condition.test(value)) {
-                        return DoubleStream.empty();
+                    queue.add(t);
+                    if(queue.size() >= transformationSize) {
+                        if (condition.execute(queue)) {
+                            queue.remove(0);
+                            return DoubleStream.empty();
+                        }
+                        found.set(true);
+                        return DoubleStream.of(t);
                     }
-                    found.set(true);
+                    return DoubleStream.empty();
                 }
-                return DoubleStream.of(value);
+                return DoubleStream.of(t);
             }
         };
     }
 
-    public static DoubleFunction<? extends DoubleStream> dropWhile(Double identity, BiPredicate<? super Double, ? super Double> condition) {
-        return new DoubleFunction<DoubleStream>() {
-            final AtomicBoolean found = new AtomicBoolean();
-            Double prev = identity;
-            @Override
-            public DoubleStream apply(double value) {
-                if (!found.get()) {
-                    if (condition.test(prev, value)) {
-                        prev = value;
-                        return DoubleStream.empty();
-                    }
-                    found.set(true);
-                }
-                return DoubleStream.of(value);
-            }
-        };
-    }
-
-    public static LongFunction<? extends LongStream> dropWhile(LongPredicate condition) {
+    public static LongFunction<? extends LongStream> longDropWhile(NaryPredicate<Long> condition) {
         return new LongFunction<LongStream>() {
             final AtomicBoolean found = new AtomicBoolean();
+            int transformationSize = condition.getSize();
+            ArrayQueue<Long> queue = new ArrayQueue<>(transformationSize);
+
             @Override
-            public LongStream apply(long value) {
+            public LongStream apply(long t) {
                 if (!found.get()) {
-                    if (condition.test(value)) {
-                        return LongStream.empty();
+                    queue.add(t);
+                    if(queue.size() >= transformationSize) {
+                        if (condition.execute(queue)) {
+                            queue.remove(0);
+                            return LongStream.empty();
+                        }
+                        found.set(true);
+                        return LongStream.of(t);
                     }
-                    found.set(true);
+                    return LongStream.empty();
                 }
-                return LongStream.of(value);
+                return LongStream.of(t);
             }
         };
     }
 
-    public static LongFunction<? extends LongStream> dropWhile(Long identity, BiPredicate<? super Long, ? super Long> condition) {
-        return new LongFunction<LongStream>() {
-            final AtomicBoolean found = new AtomicBoolean();
-            Long prev = identity;
-            @Override
-            public LongStream apply(long value) {
-                if (!found.get()) {
-                    if (condition.test(prev, value)) {
-                        prev = value;
-                        return LongStream.empty();
-                    }
-                    found.set(true);
-                }
-                return LongStream.of(value);
-            }
-        };
-    }
-
-    public static <T> Function<T, Stream<T>> dropWhile(Predicate<T> condition) {
+    public static <T> Function<T, Stream<T>> dropWhile(NaryPredicate<T> condition) {
         return new Function<T, Stream<T>>() {
             final AtomicBoolean found = new AtomicBoolean();
-            @Override
-            public Stream<T> apply(T t) {
-                if (!found.get()) {
-                    if (condition.test(t)) {
-                        return Stream.empty();
-                    }
-                    found.set(true);
-                }
-                return Stream.of(t);
-            }
-        };
-    }
-
-    public static <T> Function<T, Stream<T>> dropWhile(T identity, BiPredicate<? super T, ? super T> condition) {
-        return new Function<T, Stream<T>>() {
-            final AtomicBoolean found = new AtomicBoolean();
-            T prev = identity;
+            int transformationSize = condition.getSize();
+            ArrayQueue<T> queue = new ArrayQueue<>(transformationSize);
 
             @Override
             public Stream<T> apply(T t) {
                 if (!found.get()) {
-                    if (condition.test(prev, t)) {
-                        prev = t;
-                        return Stream.empty();
+                    queue.add(t);
+                    if(queue.size() >= transformationSize) {
+                        if (condition.execute(queue)) {
+                            queue.clear();
+                            return Stream.empty();
+                        }
+                        found.set(true);
+                        return Stream.of(t);
                     }
-                    found.set(true);
+                    return Stream.empty();
                 }
                 return Stream.of(t);
             }

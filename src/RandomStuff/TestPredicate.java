@@ -1,5 +1,7 @@
 package RandomStuff;
 
+import com.sun.jmx.remote.internal.ArrayQueue;
+
 import static Utils.Console.Printing.println;
 
 interface NaryPred<T> {
@@ -41,6 +43,12 @@ public class TestPredicate {
     }
 
     public static void main(String[] args) {
+        ArrayQueue<Integer> q = new ArrayQueue<>(4);
+        q.add(4);
+        println(q);
+        q.add(3);
+        println(q);
+
         Integer[] ints = new Integer[]{0,1,2,2};
 
         NaryPred<Integer> naryPred = integers -> {

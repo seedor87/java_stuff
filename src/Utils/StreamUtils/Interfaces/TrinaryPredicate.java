@@ -1,6 +1,7 @@
 package Utils.StreamUtils.Interfaces;
 
-public interface TernaryPredicate<T> extends NaryPredicate<T> {
+@FunctionalInterface
+public interface TrinaryPredicate<T> extends NaryPredicate<T> {
     Boolean execute(T t1, T t2, T t3);
     @Override
     default int getSize() {

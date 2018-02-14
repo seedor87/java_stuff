@@ -28,7 +28,7 @@ public abstract class AbstractPrimitiveTakeWhileSpliterator<T, U, V extends Spli
 
     @Override
     public V trySplit() {
-        V prefix = (V) source.trySplit();
+        V prefix = (V) this.getSource().trySplit();
         if(prefix == null) {
             return null;
         }

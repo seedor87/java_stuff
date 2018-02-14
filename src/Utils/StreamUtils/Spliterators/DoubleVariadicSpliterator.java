@@ -1,5 +1,6 @@
 package Utils.StreamUtils.Spliterators;
 
+import Utils.StreamUtils.Interfaces.NaryHomogenousMapping;
 import Utils.StreamUtils.Interfaces.NaryMapping;
 
 import java.util.Spliterator;
@@ -8,11 +9,11 @@ import java.util.function.DoubleConsumer;
 
 public class DoubleVariadicSpliterator extends AbstractPrimitiveVariadicSpliterator<Double, DoubleConsumer, Spliterator.OfDouble> implements Spliterator.OfDouble {
 
-    public DoubleVariadicSpliterator(OfDouble source, NaryMapping<Double, Double> mapping, Process process) {
+    public DoubleVariadicSpliterator(OfDouble source, NaryHomogenousMapping<Double> mapping, Process process) {
         super(source, mapping, process);
     }
 
-    public DoubleVariadicSpliterator(OfDouble source, NaryMapping<Double, Double> mapping) {
+    public DoubleVariadicSpliterator(OfDouble source, NaryHomogenousMapping<Double> mapping) {
         super(source, mapping);
     }
 

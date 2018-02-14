@@ -1,5 +1,6 @@
 package Utils.StreamUtils.Spliterators;
 
+import Utils.StreamUtils.Interfaces.NaryHomogenousMapping;
 import Utils.StreamUtils.Interfaces.NaryMapping;
 import com.sun.jmx.remote.internal.ArrayQueue;
 
@@ -26,13 +27,13 @@ public class GenericVariadicSpliterator<T> implements Spliterator<T>, Cloneable 
         }
     }
     private Spliterator<T> source;
-    protected NaryMapping<T, T> mapping;
+    protected NaryHomogenousMapping<T> mapping;
     protected Process algorithm;
     protected final AtomicBoolean found = new AtomicBoolean();
     protected int transformationSize;
     protected ArrayQueue<T> queue;
 
-    public GenericVariadicSpliterator(Spliterator<T> source, NaryMapping<T, T> mapping, Process algorithm) {
+    public GenericVariadicSpliterator(Spliterator<T> source, NaryHomogenousMapping<T> mapping, Process algorithm) {
         this.source = source;
         this.mapping = mapping;
         this.transformationSize = mapping.getSize();
@@ -40,7 +41,7 @@ public class GenericVariadicSpliterator<T> implements Spliterator<T>, Cloneable 
         this.algorithm = algorithm;
     }
 
-    public GenericVariadicSpliterator(Spliterator<T> source, NaryMapping<T, T> mapping) {
+    public GenericVariadicSpliterator(Spliterator<T> source, NaryHomogenousMapping<T> mapping) {
         this(source, mapping, SUBDIVIDED);
     }
 
