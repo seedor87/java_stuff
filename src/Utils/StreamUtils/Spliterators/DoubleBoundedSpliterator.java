@@ -4,52 +4,40 @@ import java.util.Spliterator;
 import java.util.function.*;
 import java.util.stream.StreamSupport;
 
-public class DoubleBoundedSpliterator implements Spliterator.OfDouble {
-    private Double index;
-    private DoublePredicate condition;
-    private DoubleUnaryOperator increment;
+import static Utils.Console.Printing.println;
 
-    public DoubleBoundedSpliterator(Double initialization, DoublePredicate termination, DoubleUnaryOperator incrementation) {
-        this.index = initialization;
-        this.condition = termination;
-        this.increment = incrementation;
+public class DoubleBoundedSpliterator extends AbstractPrimitiveBoundedSpliterator<Double, DoubleConsumer, Spliterator.OfDouble> implements Spliterator.OfDouble {
+
+    public DoubleBoundedSpliterator(Double initialization, Predicate<Double> termination, UnaryOperator<Double> incrementation) {
+        super(initialization, termination, incrementation);
     }
 
     @Override
     public boolean tryAdvance(DoubleConsumer action) {
         if (condition.test(index)) {
             action.accept(index);
-            index = increment.applyAsDouble(index);
+            index = increment.apply(index);
             return true;
         }
         return false;
     }
 
     @Override
-    public Spliterator.OfDouble trySplit() {
-        return this;
-    }
+    public void forEachRemaining(DoubleConsumer action) {
 
-    @Override
-    public long estimateSize() {
-        return Long.MAX_VALUE;
-    }
-
-    @Override
-    public int characteristics() {
-        return 0;
     }
 
     public static void main(String[] args) {
         double index = 10d;
-        StreamSupport.doubleStream(
+        StreamSupport.stream(
             new DoubleBoundedSpliterator(
                 index,
                 i -> i > 0.0,
                 i -> i / 2
-            ),
+            ) ,
             false
         )
         .forEach(Utils.Console.Printing::println);
+        println("\n", index);
     }
 }

@@ -18,18 +18,15 @@ public class IntTakeWhileSpliterator extends AbstractPrimitiveTakeWhileSpliterat
     }
 
     @Override
-    public boolean actionAccept(IntConsumer action) {
-        if(queue.size() >= transformationSize) {
+    public boolean actionAccept(IntConsumer action, Integer e) {
+        queue.add(e);
+        if (queue.size() >= transformationSize) {
             if (!condition.execute(queue)) {
-                if (queue.size() > 1) {
-                    for (int i = 0; i < transformationSize-1; i++) {
-                        action.accept(queue.remove(0));
-                    }
-                }
                 return false;
             }
-            action.accept(queue.remove(0));
+            queue.remove(0);
         }
+        action.accept(e);
         return true;
     }
 }

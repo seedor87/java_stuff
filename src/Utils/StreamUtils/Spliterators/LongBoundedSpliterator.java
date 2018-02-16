@@ -1,45 +1,27 @@
 package Utils.StreamUtils.Spliterators;
 
 import java.util.Spliterator;
-import java.util.function.LongConsumer;
-import java.util.function.LongPredicate;
-import java.util.function.LongUnaryOperator;
+import java.util.function.*;
 import java.util.stream.StreamSupport;
 
-public class LongBoundedSpliterator implements Spliterator.OfLong {
-    private Long index;
-    private LongPredicate condition;
-    private LongUnaryOperator increment;
+public class LongBoundedSpliterator extends AbstractPrimitiveBoundedSpliterator<Long, LongConsumer, Spliterator.OfLong> implements Spliterator.OfLong {
 
-    public LongBoundedSpliterator(Long initialization, LongPredicate termination, LongUnaryOperator incrementation) {
-        this.index = initialization;
-        this.condition = termination;
-        this.increment = incrementation;
+    public LongBoundedSpliterator(Long initialization, Predicate<Long> termination, UnaryOperator<Long> incrementation) {
+        super(initialization, termination, incrementation);
     }
 
-    @Override
     public boolean tryAdvance(LongConsumer action) {
         if (condition.test(index)) {
             action.accept(index);
-            index = increment.applyAsLong(index);
+            index = increment.apply(index);
             return true;
         }
         return false;
     }
 
     @Override
-    public Spliterator.OfLong trySplit() {
-        return this;
-    }
+    public void forEachRemaining(LongConsumer action) {
 
-    @Override
-    public long estimateSize() {
-        return Long.MAX_VALUE;
-    }
-
-    @Override
-    public int characteristics() {
-        return 0;
     }
 
     public static void main(String[] args) {

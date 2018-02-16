@@ -1,6 +1,5 @@
 package Utils.StreamUtils;
 
-import Utils.StreamUtils.Interfaces.BinaryPredicate;
 import Utils.StreamUtils.Interfaces.NaryPredicate;
 import com.sun.jmx.remote.internal.ArrayQueue;
 
@@ -151,46 +150,6 @@ public class Functions {
             @Override
             public Stream<T> apply(T value) {
                 return (i++ >= n) ? Stream.of(value) : Stream.empty();
-            }
-        };
-    }
-
-    public static IntFunction<? extends IntStream> intTakeN(long n) {
-        return new IntFunction<IntStream>() {
-            long i = 0;
-            @Override
-            public IntStream apply(int value) {
-                return (i++ >= n) ? IntStream.empty() : IntStream.of(value);
-            }
-        };
-    }
-
-    public static DoubleFunction<? extends DoubleStream> doubleTakeN(long n) {
-        return new DoubleFunction<DoubleStream>() {
-            long i = 0;
-            @Override
-            public DoubleStream apply(double value) {
-                return (i++ >= n) ? DoubleStream.empty() : DoubleStream.of(value);
-            }
-        };
-    }
-
-    public static LongFunction<? extends LongStream> longTakeN(long n) {
-        return new LongFunction<LongStream>() {
-            long i = 0;
-            @Override
-            public LongStream apply(long value) {
-                return (i++ >= n) ? LongStream.empty() : LongStream.of(value);
-            }
-        };
-    }
-
-    public static <T> Function<T, Stream<T>> takeN(long n) {
-        return new Function<T, Stream<T>>() {
-            long i = 0;
-            @Override
-            public Stream<T> apply(T t) {
-                return (i++ >= n) ? Stream.empty() : Stream.of(t);
             }
         };
     }

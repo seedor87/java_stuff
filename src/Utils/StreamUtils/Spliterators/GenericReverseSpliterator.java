@@ -6,9 +6,9 @@ import java.util.Deque;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 
-public class GenericReverseSpliterator<T> implements Spliterator<T> {
-    private Spliterator<T> source;
-    private final Deque<T> deque = new ArrayDeque<>();
+public class GenericReverseSpliterator<T> implements Spliterator<T>, Cloneable {
+    protected Spliterator<T> source;
+    protected final Deque<T> deque = new ArrayDeque<>();
 
     public GenericReverseSpliterator(Spliterator<T> spliterator) {
         this.source = spliterator;
@@ -34,6 +34,14 @@ public class GenericReverseSpliterator<T> implements Spliterator<T> {
         Spliterator<T> me = source;
         source = prev;
         return new GenericReverseSpliterator(me);
+    }
+
+    public Spliterator<T> getSource() {
+        return source;
+    }
+
+    public void setSource(Spliterator<T> source) {
+        this.source = source;
     }
 
     @Override

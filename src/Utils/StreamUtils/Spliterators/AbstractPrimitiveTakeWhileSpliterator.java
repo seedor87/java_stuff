@@ -4,7 +4,7 @@ import Utils.StreamUtils.Interfaces.NaryPredicate;
 
 import java.util.Spliterator;
 
-public abstract class AbstractPrimitiveTakeWhileSpliterator<T, U, V extends Spliterator.OfPrimitive<T, U, V>> extends GenericTakeWhileSpliterator<T> {
+public abstract class AbstractPrimitiveTakeWhileSpliterator<T, U, V extends Spliterator.OfPrimitive<T, U, V>> extends GenericTakeWhileSpliterator<T> implements Spliterator.OfPrimitive<T, U, V> {
     @Override
     public abstract V getEmtpySpliterator();
 
@@ -12,14 +12,12 @@ public abstract class AbstractPrimitiveTakeWhileSpliterator<T, U, V extends Spli
         super(source, predicate);
     }
 
-    public abstract boolean actionAccept(U action);
+    public abstract boolean actionAccept(U action, T e);
 
     public boolean tryAdvance(U action) {
         return (!found.get() &&
             this.getSource().tryAdvance((e) -> {
-                queue.add(e);
-                if (!this.actionAccept(action)) {
-                    queue.clear();
+                if (!this.actionAccept(action, e)) {
                     found.set(true);
                 }
             })

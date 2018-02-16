@@ -15,6 +15,7 @@ import Utils.StreamUtils.Spliterators.GenericVariadicSpliterator.Process;
 import org.junit.Rule;
 import org.junit.Test;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.*;
 import java.util.stream.*;
 
@@ -62,7 +63,7 @@ public class Methods {
         return StreamSupport.stream(new GenericReverseSpliterator<>(stream.spliterator()), false);
     }
 
-    public static IntStream intIterate(Integer seed, IntPredicate predicate, IntUnaryOperator operator) {
+    public static IntStream intIterate(Integer seed, Predicate<Integer> predicate, UnaryOperator<Integer> operator) {
         return StreamSupport.intStream(
             new IntBoundedSpliterator(
                 seed,
@@ -73,7 +74,7 @@ public class Methods {
         );
     }
 
-    public static DoubleStream doubleIterate(Double seed, DoublePredicate predicate, DoubleUnaryOperator operator) {
+    public static DoubleStream doubleIterate(double seed, Predicate<Double> predicate, UnaryOperator<Double> operator) {
         return StreamSupport.doubleStream(
             new DoubleBoundedSpliterator(
                     seed,
@@ -84,7 +85,7 @@ public class Methods {
         );
     }
 
-    public static LongStream longIterate(Long seed, LongPredicate predicate, LongUnaryOperator operator) {
+    public static LongStream longIterate(Long seed, Predicate<Long> predicate, UnaryOperator<Long> operator) {
         return StreamSupport.longStream(
             new LongBoundedSpliterator(
                     seed,
@@ -109,32 +110,104 @@ public class Methods {
     public static <S extends NaryPredicate<Integer>> IntStream takeWhile(IntStream stream, S predicate) {
         return StreamSupport.intStream(new IntTakeWhileSpliterator(stream.spliterator(), predicate), false);
     }
+    public static <S extends UnaryPredicate<Integer>> IntStream takeWhile(IntStream stream, S predicate) {
+        return StreamSupport.intStream(new IntTakeWhileSpliterator(stream.spliterator(), predicate), false);
+    }
+    public static <S extends BinaryPredicate<Integer>> IntStream takeWhile(IntStream stream, S predicate) {
+        return StreamSupport.intStream(new IntTakeWhileSpliterator(stream.spliterator(), predicate), false);
+    }
+    public static <S extends TrinaryPredicate<Integer>> IntStream takeWhile(IntStream stream, S predicate) {
+        return StreamSupport.intStream(new IntTakeWhileSpliterator(stream.spliterator(), predicate), false);
+    }
 
     public static <S extends NaryPredicate<Double>> DoubleStream takeWhile(DoubleStream stream, S predicate) {
+        return StreamSupport.doubleStream(new DoubleTakeWhileSpliterator(stream.spliterator(), predicate), false);
+    }
+    public static <S extends UnaryPredicate<Double>> DoubleStream takeWhile(DoubleStream stream, S predicate) {
+        return StreamSupport.doubleStream(new DoubleTakeWhileSpliterator(stream.spliterator(), predicate), false);
+    }
+    public static <S extends BinaryPredicate<Double>> DoubleStream takeWhile(DoubleStream stream, S predicate) {
+        return StreamSupport.doubleStream(new DoubleTakeWhileSpliterator(stream.spliterator(), predicate), false);
+    }
+    public static <S extends TrinaryPredicate<Double>> DoubleStream takeWhile(DoubleStream stream, S predicate) {
         return StreamSupport.doubleStream(new DoubleTakeWhileSpliterator(stream.spliterator(), predicate), false);
     }
 
     public static <S extends NaryPredicate<Long>> LongStream takeWhile(LongStream stream, S predicate) {
         return StreamSupport.longStream(new LongTakeWhileSpliterator(stream.spliterator(), predicate), false);
     }
+    public static <S extends UnaryPredicate<Long>> LongStream takeWhile(LongStream stream, S predicate) {
+        return StreamSupport.longStream(new LongTakeWhileSpliterator(stream.spliterator(), predicate), false);
+    }
+    public static <S extends BinaryPredicate<Long>> LongStream takeWhile(LongStream stream, S predicate) {
+        return StreamSupport.longStream(new LongTakeWhileSpliterator(stream.spliterator(), predicate), false);
+    }
+    public static <S extends TrinaryPredicate<Long>> LongStream takeWhile(LongStream stream, S predicate) {
+        return StreamSupport.longStream(new LongTakeWhileSpliterator(stream.spliterator(), predicate), false);
+    }
 
     public static <S extends NaryPredicate<T>, T> Stream<T> takeWhile(Stream<T> stream, S predicate) {
+        return StreamSupport.stream(new GenericTakeWhileSpliterator<>(stream.spliterator(), predicate), false);
+    }
+    public static <S extends UnaryPredicate<T>, T> Stream<T> takeWhile(Stream<T> stream, S predicate) {
+        return StreamSupport.stream(new GenericTakeWhileSpliterator<>(stream.spliterator(), predicate), false);
+    }
+    public static <S extends BinaryPredicate<T>, T> Stream<T> takeWhile(Stream<T> stream, S predicate) {
+        return StreamSupport.stream(new GenericTakeWhileSpliterator<>(stream.spliterator(), predicate), false);
+    }
+    public static <S extends TrinaryPredicate<T>, T> Stream<T> takeWhile(Stream<T> stream, S predicate) {
         return StreamSupport.stream(new GenericTakeWhileSpliterator<>(stream.spliterator(), predicate), false);
     }
 
     public static <S extends NaryPredicate<Integer>> IntStream dropWhile(IntStream stream, S predicate) {
         return stream.flatMap(Functions.intDropWhile(predicate));
     }
+    public static <S extends UnaryPredicate<Integer>> IntStream dropWhile(IntStream stream, S predicate) {
+        return stream.flatMap(Functions.intDropWhile(predicate));
+    }
+    public static <S extends BinaryPredicate<Integer>> IntStream dropWhile(IntStream stream, S predicate) {
+        return stream.flatMap(Functions.intDropWhile(predicate));
+    }
+    public static <S extends TrinaryPredicate<Integer>> IntStream dropWhile(IntStream stream, S predicate) {
+        return stream.flatMap(Functions.intDropWhile(predicate));
+    }
 
     public static <S extends NaryPredicate<Double>> DoubleStream dropWhile(DoubleStream stream, S predicate) {
+        return stream.flatMap(Functions.doubleDropWhile(predicate));
+    }
+    public static <S extends UnaryPredicate<Double>> DoubleStream dropWhile(DoubleStream stream, S predicate) {
+        return stream.flatMap(Functions.doubleDropWhile(predicate));
+    }
+    public static <S extends BinaryPredicate<Double>> DoubleStream dropWhile(DoubleStream stream, S predicate) {
+        return stream.flatMap(Functions.doubleDropWhile(predicate));
+    }
+    public static <S extends TrinaryPredicate<Double>> DoubleStream dropWhile(DoubleStream stream, S predicate) {
         return stream.flatMap(Functions.doubleDropWhile(predicate));
     }
 
     public static <S extends NaryPredicate<Long>> LongStream dropWhile(LongStream stream, S predicate) {
         return stream.flatMap(Functions.longDropWhile(predicate));
     }
+    public static <S extends UnaryPredicate<Long>> LongStream dropWhile(LongStream stream, S predicate) {
+        return stream.flatMap(Functions.longDropWhile(predicate));
+    }
+    public static <S extends BinaryPredicate<Long>> LongStream dropWhile(LongStream stream, S predicate) {
+        return stream.flatMap(Functions.longDropWhile(predicate));
+    }
+    public static <S extends TrinaryPredicate<Long>> LongStream dropWhile(LongStream stream, S predicate) {
+        return stream.flatMap(Functions.longDropWhile(predicate));
+    }
 
     public static <S extends NaryPredicate<T>, T> Stream<T> dropWhile(Stream<T> stream, S predicate) {
+        return stream.flatMap(Functions.dropWhile(predicate));
+    }
+    public static <S extends UnaryPredicate<T>, T> Stream<T> dropWhile(Stream<T> stream, S predicate) {
+        return stream.flatMap(Functions.dropWhile(predicate));
+    }
+    public static <S extends BinaryPredicate<T>, T> Stream<T> dropWhile(Stream<T> stream, S predicate) {
+        return stream.flatMap(Functions.dropWhile(predicate));
+    }
+    public static <S extends TrinaryPredicate<T>, T> Stream<T> dropWhile(Stream<T> stream, S predicate) {
         return stream.flatMap(Functions.dropWhile(predicate));
     }
 
@@ -186,22 +259,6 @@ public class Methods {
         return stream.flatMap(Functions.dropN(n));
     }
 
-    public static IntStream takeN(IntStream stream, long n) {
-        return stream.flatMap(Functions.intTakeN(n));
-    }
-
-    public static DoubleStream takeN(DoubleStream stream, long n) {
-        return stream.flatMap(Functions.doubleTakeN(n));
-    }
-
-    public static LongStream takeN(LongStream stream, long n) {
-        return stream.flatMap(Functions.longTakeN(n));
-    }
-
-    public static <T> Stream<T> takeN(Stream<T> stream, long n) {
-        return stream.flatMap(Functions.takeN(n));
-    }
-
     public static Stream<List<Integer>> listsOfN(IntStream stream, int n) {
         return stream.boxed().flatMap(Functions.listsOfN(n));
     }
@@ -232,18 +289,6 @@ public class Methods {
 
     public static <T> Stream<T[]> arraysOfN(Stream<T> stream, int n) {
         return stream.flatMap(Functions.listsOfN(n)).map(ts -> (T[]) ts.toArray());
-    }
-
-    public static <T> Stream<List<T>> pctiles(Stream<T> stream, int n) {
-        List<T> list = stream.collect(Collectors.toList());
-        double pctile = 100 / n;
-        return Stream.generate(new Supplier<List<T>>() {
-            int count = 0;
-            @Override
-            public List<T> get() {
-                return list.subList((int) pctile * ++count, (int) pctile * count);
-            }
-        });
     }
 
     public static <S extends NaryHomogenousMapping<Integer>> IntStream variadicMapToObj(IntStream stream, S pred, Process process) {
@@ -278,18 +323,100 @@ public class Methods {
         return StreamSupport.stream(new GenericVariadicSpliterator(stream.spliterator(), pred), false);
     }
 
+    public static Stream<List<Integer>> makeNtiles(IntStream stream, double n) {
+        return makeNtiles(stream.boxed(), n);
+    }
+
+    public static Stream<List<Double>> makeNtiles(DoubleStream stream, double n) {
+        return makeNtiles(stream.boxed(), n);
+    }
+
+    public static Stream<List<Long>> makeNtiles(LongStream stream, double n) {
+        return makeNtiles(stream.boxed(), n);
+    }
+
+    public static <T> Stream<List<T>> makeNtiles(Stream<T> stream, double n) {
+        if (n > 1.0 || n <= 0.0) {
+            throw new IllegalArgumentException("n: " + n + ", must be between 0 and 1");
+        }
+        final List<T> list = stream.collect(Collectors.toList());
+        final int amount = (int) (1.0 / n);
+        final int len = (int) (n * list.size());
+        final AtomicInteger count = new AtomicInteger(0);
+        int remainder = list.size() % len;
+        int[] break_pts = new int[amount+1];
+        for (int i = 1; i < break_pts.length; i++) {
+            break_pts[i] = len;
+        }
+        while (remainder >= amount) {
+            for (int i = 1; i < break_pts.length; i++) {
+                break_pts[i] += 1;
+                remainder--;
+            }
+        }
+        while(remainder > 0) {
+            break_pts[remainder--] += 1;
+        }
+        for (int i = 1; i < break_pts.length; i++) {
+            break_pts[i] = break_pts[i-1] + break_pts[i];
+        }
+        return Stream.generate(() ->
+            list.subList(
+                break_pts[count.get()],
+                break_pts[count.incrementAndGet()]
+            )
+        ).limit(amount);
+    }
+
+    public static Stream<IntStream> Ntiles (IntStream stream, double n) {
+        return makeNtiles(stream, n).map(integers -> integers.stream().mapToInt(i -> i));
+    }
+
+    public static Stream<DoubleStream> Ntiles (DoubleStream stream, double n) {
+        return makeNtiles(stream, n).map(doubles -> doubles.stream().mapToDouble(d -> d));
+    }
+
+    public static Stream<LongStream> Ntiles (LongStream stream, double n) {
+        return makeNtiles(stream, n).map(longs -> longs.stream().mapToLong(l -> l));
+    }
+
+    public static <T> Stream<Stream<T>> Ntiles (Stream<T> stream, double n) {
+        return makeNtiles(stream, n).map(Collection::stream);
+    }
+
+    public static IntStream concat(IntStream... streams) {
+        return Stream.of(streams).reduce(IntStream.empty(), IntStream::concat);
+    }
+    public static DoubleStream concat(DoubleStream... streams) {
+        return Stream.of(streams).reduce(DoubleStream.empty(), DoubleStream::concat);
+    }
+    public static LongStream concat(LongStream... streams) {
+        return Stream.of(streams).reduce(LongStream.empty(), LongStream::concat);
+    }
+    public static <T> Stream<T> concat(Stream<T>... streams) {
+        return Stream.of(streams).reduce(Stream.empty(), Stream::concat);
+    }
+
     @Test
     public void test() {
-        println(
-            takeWhile(LongStream.iterate(1L, (l) -> l+l), (UnaryPredicate<Long>) (l) -> l < Long.MAX_VALUE/2)
-        );
-
-//        println(
-//            longIterate(1L, (l) -> l < Long.MAX_VALUE/2, (l) -> l+l)
-//        );
+        double[] percentiles = new double[]{.01,.02,.03,.04,.05,.06,.07,.08,.09,.10,.11,.12,.13,.14,.15,.16,.17,.18,.19,.2,.21,.22,.23,.24,.25};
+        for (double d : percentiles) {
+            println(d);
+            Ntiles(IntStream.range(0,1000), d).forEach(intStream -> print("", intStream.summaryStatistics()));
+            println();
+        }
     }
 
     public static void main(String[] args) {
+
+        println(takeWhile(IntStream.range(0,10), (UnaryPredicate<Integer>) (i) -> i < 10));
+        println(takeWhile(IntStream.range(0,10), (UnaryPredicate<Integer>) (i) -> i < 5));
+        println(takeWhile(IntStream.range(0,10), (UnaryPredicate<Integer>) (i) -> i < 0));
+
+        println(takeWhile(IntStream.of(1,2,3,4,3,2,1), (BinaryPredicate<Integer>) (i1, i2) -> i1 <= i2));
+        println(takeWhile(IntStream.of(1,2,3,4,3,2,1), (BinaryPredicate<Integer>) (i1, i2) -> true));
+        println(takeWhile(IntStream.of(1,2,3,4,3,2,1), (BinaryPredicate<Integer>) (i1, i2) -> i1 > i2));
+
 
         println(Special.FG_BRIGHT_CYAN, makeString(", ", IntStream.range(0, 10).flatMap(intTakeEveryNth(3))));
 
@@ -306,7 +433,7 @@ public class Methods {
                         }
                     }
                 ),
-                    (UnaryPredicate<Double>) (d) -> d >= 0.000001
+                    (UnaryPredicate<Double>) (d) -> d >= .000001
             )
             .reduce((left, right) -> left + right)
         );
@@ -315,17 +442,17 @@ public class Methods {
 
         println(Special.FG_BRIGHT_CYAN, reverse(Stream.of('a','b','c','d')));
 
-        println(Special.FG_BRIGHT_CYAN, takeN(IntStream.range(0, 10), 5));
+        println(Special.FG_BRIGHT_CYAN, IntStream.range(0, 10).limit(5));
 
         println(Special.FG_BRIGHT_CYAN, dropN(IntStream.range(0, 10), 5));
 
-        println(Special.FG_BRIGHT_CYAN, takeWhile(Stream.of("one", "two", "three", "four", "five", "six"), (UnaryPredicate<String>) s -> !s.contains("our")).map(s -> s));
+        println(Special.FG_BRIGHT_CYAN, takeWhile(Stream.of("one", "two", "three", "four", "five", "six"), (UnaryPredicate<String>) s -> !s.contains("our")));
 
         println(Special.FG_BRIGHT_CYAN, dropWhile(Stream.of("one", "two", "three", "four", "five", "six"), (UnaryPredicate<String>) s -> !s.contains("our")));
 
         println(Special.FG_BRIGHT_CYAN, takeWhile(IntStream.range(0, 10), (BinaryPredicate<Integer>) (i1, i2) -> i1 < i2).map(i -> i));
 
-        println(Special.FG_BRIGHT_CYAN, dropWhile(IntStream.range(0, 10), (UnaryPredicate<Integer>) (i) -> i < 10));
+        println(Special.FG_BRIGHT_CYAN, dropWhile(IntStream.range(0, 10), (BinaryPredicate<Integer>) (i1, i2) -> i1 > i2));
 
         println(Special.FG_BRIGHT_CYAN, takeWhile(Stream.of("one", "two", "three", "four", "five", "six"), (TrinaryPredicate<String>) (i1, i2, i3) -> i1.length() <= i2.length() && i2.length() < i3.length()).map(i -> i));
 
@@ -446,6 +573,14 @@ public class Methods {
                 (TrinaryHomogenousMapping<Double>) (d1, d2, d3) -> d1 * d2 * d3,
                 Process.NONSUBDVIDED
             ).mapToObj(d -> String.format("%.1f", d))
+        );
+
+        println(
+            concat(
+                intIterate(0, i -> i < 3, i -> ++i).boxed(),
+                intIterate(3, i -> i < 6, i -> ++i).boxed(),
+                intIterate(6, i -> i < 9, i -> ++i).boxed()
+            )
         );
     }
 }

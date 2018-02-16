@@ -4,7 +4,7 @@ import Utils.StreamUtils.Interfaces.NaryHomogenousMapping;
 
 import java.util.Spliterator;
 
-public abstract class AbstractPrimitiveVariadicSpliterator<T, U, V extends Spliterator.OfPrimitive<T, U, V>> extends GenericVariadicSpliterator<T> {
+public abstract class AbstractPrimitiveVariadicSpliterator<T, U, V extends Spliterator.OfPrimitive<T, U, V>> extends GenericVariadicSpliterator<T> implements Spliterator.OfPrimitive<T, U, V> {
 
     @Override
     public abstract V getEmtpySpliterator();

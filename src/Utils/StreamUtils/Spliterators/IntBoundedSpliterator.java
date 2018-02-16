@@ -6,40 +6,25 @@ import java.util.Spliterator;
 import java.util.function.*;
 import java.util.stream.StreamSupport;
 
-public class IntBoundedSpliterator implements Spliterator.OfInt {
-    private Integer index;
-    private IntPredicate condition;
-    private IntUnaryOperator increment;
+public class IntBoundedSpliterator extends AbstractPrimitiveBoundedSpliterator<Integer, IntConsumer, Spliterator.OfInt> implements Spliterator.OfInt {
 
-    public IntBoundedSpliterator(Integer initialization, IntPredicate termination, IntUnaryOperator incrementation) {
-        this.index = initialization;
-        this.condition = termination;
-        this.increment = incrementation;
+    public IntBoundedSpliterator(Integer initialization, Predicate<Integer> termination, UnaryOperator<Integer> incrementation) {
+        super(initialization, termination, incrementation);
     }
 
     @Override
     public boolean tryAdvance(IntConsumer action) {
         if (condition.test(index)) {
             action.accept(index);
-            index = increment.applyAsInt(index);
+            index = increment.apply(index);
             return true;
         }
         return false;
     }
 
     @Override
-    public Spliterator.OfInt trySplit() {
-        return this;
-    }
+    public void forEachRemaining(IntConsumer action) {
 
-    @Override
-    public long estimateSize() {
-        return Long.MAX_VALUE;
-    }
-
-    @Override
-    public int characteristics() {
-        return 0;
     }
 
     public static void main(String[] args) {

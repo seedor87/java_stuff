@@ -1,15 +1,16 @@
 package Utils.StreamUtils.Spliterators;
 
+import java.util.Comparator;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.stream.StreamSupport;
 
-public class GenericBoundedSpliterator<T> implements Spliterator<T> {
-    private T index;
-    private Predicate<T> condition;
-    private UnaryOperator<T> increment;
+public class GenericBoundedSpliterator<T> implements Spliterator<T>, Cloneable {
+    protected T index;
+    protected Predicate<T> condition;
+    protected UnaryOperator<T> increment;
 
     public GenericBoundedSpliterator(T initialization, Predicate<T> termination, UnaryOperator<T> incrementation) {
         this.index = initialization;
@@ -29,7 +30,17 @@ public class GenericBoundedSpliterator<T> implements Spliterator<T> {
 
     @Override
     public Spliterator<T> trySplit() {
-        return this;
+        Spliterator<T> prefix = this.trySplit();
+        if(prefix == null) {
+            return null;
+        }
+        GenericBoundedSpliterator<T> clone;
+        try {
+            clone = (GenericBoundedSpliterator<T>) clone();
+        } catch (CloneNotSupportedException e) {
+            throw new InternalError(e);
+        }
+        return clone;
     }
 
     @Override
@@ -40,6 +51,26 @@ public class GenericBoundedSpliterator<T> implements Spliterator<T> {
     @Override
     public int characteristics() {
         return 0;
+    }
+
+    @Override
+    public boolean hasCharacteristics(int characteristics) {
+        return false;
+    }
+
+    @Override
+    public long getExactSizeIfKnown() {
+        return 0;
+    }
+
+    @Override
+    public Comparator<? super T> getComparator() {
+        return null;
+    }
+
+    @Override
+    public void forEachRemaining(Consumer<? super T> action) {
+        this.tryAdvance(action);
     }
 
     public static void main(String[] args) {

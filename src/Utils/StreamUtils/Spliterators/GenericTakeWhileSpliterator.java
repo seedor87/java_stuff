@@ -35,18 +35,15 @@ public class GenericTakeWhileSpliterator<T> implements Spliterator<T>, Cloneable
         this.queue = new ArrayQueue<>(this.transformationSize);
     }
 
-    public boolean actionAccept(Consumer<? super T> action) {
+    public boolean actionAccept(Consumer<? super T> action, T e) {
+        queue.add(e);
         if(queue.size() >= transformationSize) {
             if (!condition.execute(queue)) {
-                if (queue.size() > 1) {
-                    for (int i = 0; i < transformationSize-1; i++) {
-                        action.accept(queue.remove(0));
-                    }
-                }
                 return false;
             }
-            action.accept(queue.remove(0));
+            queue.remove(0);
         }
+        action.accept(e);
         return true;
     }
 
@@ -58,9 +55,7 @@ public class GenericTakeWhileSpliterator<T> implements Spliterator<T>, Cloneable
     public boolean tryAdvance(Consumer<? super T> action) {
         return (!found.get() &&
             this.getSource().tryAdvance((e) -> {
-                queue.add(e);
-                if (!this.actionAccept(action)) {
-                    queue.clear();
+                if (!this.actionAccept(action, e)) {
                     found.set(true);
                 }
             })
