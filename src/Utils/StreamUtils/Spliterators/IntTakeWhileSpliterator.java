@@ -6,6 +6,8 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.IntConsumer;
 
+import static Utils.Console.Printing.println;
+
 public class IntTakeWhileSpliterator extends AbstractPrimitiveTakeWhileSpliterator<Integer, IntConsumer, Spliterator.OfInt> implements Spliterator.OfInt {
 
     public IntTakeWhileSpliterator(Spliterator.OfInt source, NaryPredicate<Integer> predicate) {
@@ -20,13 +22,23 @@ public class IntTakeWhileSpliterator extends AbstractPrimitiveTakeWhileSpliterat
     @Override
     public boolean actionAccept(IntConsumer action, Integer e) {
         queue.add(e);
-        if (queue.size() >= transformationSize) {
+        if (!queueFilled) {
+            if (queue.size() < transformationSize) {
+                return true;
+            }
+            queueFilled = true;
             if (!condition.execute(queue)) {
                 return false;
             }
-            queue.remove(0);
+            for (int i = 0; i < transformationSize-1; i++) {
+                action.accept(queue.get(i));
+            }
+        }
+        if (!condition.execute(queue)) {
+            return false;
         }
         action.accept(e);
+        queue.remove(0);
         return true;
     }
 }

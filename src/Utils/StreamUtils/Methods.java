@@ -413,10 +413,20 @@ public class Methods {
         println(takeWhile(IntStream.range(0,10), (UnaryPredicate<Integer>) (i) -> i < 5));
         println(takeWhile(IntStream.range(0,10), (UnaryPredicate<Integer>) (i) -> i < 0));
 
-        println(takeWhile(IntStream.of(1,2,3,4,3,2,1), (BinaryPredicate<Integer>) (i1, i2) -> i1 <= i2));
-        println(takeWhile(IntStream.of(1,2,3,4,3,2,1), (BinaryPredicate<Integer>) (i1, i2) -> true));
-        println(takeWhile(IntStream.of(1,2,3,4,3,2,1), (BinaryPredicate<Integer>) (i1, i2) -> i1 > i2));
+        println(takeWhile(IntStream.of(1,2,3,4,3,2,1), (BinaryPredicate<Integer>) (i1, i2) -> i1 <= i2).map(i -> i));
+        println(takeWhile(IntStream.of(1,2,3,4,3,2,1), (BinaryPredicate<Integer>) (i1, i2) -> i1 != i2).map(i -> i));
+        println(takeWhile(IntStream.of(1,2,3,4,3,2,1), (BinaryPredicate<Integer>) (i1, i2) -> i1 > i2).map(i -> i));
 
+        println(takeWhile(IntStream.of(1,2,3,4,5,6), (TrinaryPredicate<Integer>) (i1, i2, i3) -> i1 + i2 + i3 < 15).map(j -> j));
+        println();
+
+        println(dropWhile(IntStream.range(0,10), (UnaryPredicate<Integer>) (i) -> i < 10));
+        println(dropWhile(IntStream.range(0,10), (UnaryPredicate<Integer>) (i) -> i < 5));
+        println(dropWhile(IntStream.range(0,10), (UnaryPredicate<Integer>) (i) -> i < 0));
+
+        println(dropWhile(IntStream.of(1,2,3,4,3,2,1), (BinaryPredicate<Integer>) (i1, i2) -> i1 <= i2));
+        println(dropWhile(IntStream.of(1,2,3,4,3,2,1), (BinaryPredicate<Integer>) (i1, i2) -> true));
+        println(dropWhile(IntStream.of(1,2,3,4,3,2,1), (BinaryPredicate<Integer>) (i1, i2) -> i1 > i2));
 
         println(Special.FG_BRIGHT_CYAN, makeString(", ", IntStream.range(0, 10).flatMap(intTakeEveryNth(3))));
 

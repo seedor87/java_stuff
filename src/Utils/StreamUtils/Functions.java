@@ -25,12 +25,11 @@ public class Functions {
                 if (!found.get()) {
                     queue.add(t);
                     if(queue.size() >= transformationSize) {
-                        if (condition.execute(queue)) {
-                            queue.remove(0);
-                            return IntStream.empty();
+                        if (!condition.execute(queue)) {
+                            found.set(true);
+                            return IntStream.of(t);
                         }
-                        found.set(true);
-                        return IntStream.of(t);
+                        queue.remove(0);
                     }
                     return IntStream.empty();
                 }
@@ -42,6 +41,7 @@ public class Functions {
     public static DoubleFunction<? extends DoubleStream> doubleDropWhile(NaryPredicate<Double> condition) {
         return new DoubleFunction<DoubleStream>() {
             final AtomicBoolean found = new AtomicBoolean();
+            final AtomicBoolean queueFilled = new AtomicBoolean();
             int transformationSize = condition.getSize();
             ArrayQueue<Double> queue = new ArrayQueue<>(transformationSize);
 
@@ -50,12 +50,11 @@ public class Functions {
                 if (!found.get()) {
                     queue.add(t);
                     if(queue.size() >= transformationSize) {
-                        if (condition.execute(queue)) {
-                            queue.remove(0);
-                            return DoubleStream.empty();
+                        if (!condition.execute(queue)) {
+                            found.set(true);
+                            return DoubleStream.of(t);
                         }
-                        found.set(true);
-                        return DoubleStream.of(t);
+                        queue.remove(0);
                     }
                     return DoubleStream.empty();
                 }
@@ -75,12 +74,11 @@ public class Functions {
                 if (!found.get()) {
                     queue.add(t);
                     if(queue.size() >= transformationSize) {
-                        if (condition.execute(queue)) {
-                            queue.remove(0);
-                            return LongStream.empty();
+                        if (!condition.execute(queue)) {
+                            found.set(true);
+                            return LongStream.of(t);
                         }
-                        found.set(true);
-                        return LongStream.of(t);
+                        queue.remove(0);
                     }
                     return LongStream.empty();
                 }
@@ -100,12 +98,11 @@ public class Functions {
                 if (!found.get()) {
                     queue.add(t);
                     if(queue.size() >= transformationSize) {
-                        if (condition.execute(queue)) {
-                            queue.clear();
-                            return Stream.empty();
+                        if (!condition.execute(queue)) {
+                            found.set(true);
+                            return Stream.of(t);
                         }
-                        found.set(true);
-                        return Stream.of(t);
+                        queue.remove(0);
                     }
                     return Stream.empty();
                 }

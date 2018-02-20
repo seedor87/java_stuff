@@ -27,6 +27,7 @@ public class GenericTakeWhileSpliterator<T> implements Spliterator<T>, Cloneable
     protected final AtomicBoolean found = new AtomicBoolean();
     protected int transformationSize;
     protected ArrayQueue<T> queue;
+    protected boolean queueFilled = false;
 
     public GenericTakeWhileSpliterator(Spliterator<T> source, NaryPredicate<T> predicate) {
         this.source = source;
@@ -37,13 +38,25 @@ public class GenericTakeWhileSpliterator<T> implements Spliterator<T>, Cloneable
 
     public boolean actionAccept(Consumer<? super T> action, T e) {
         queue.add(e);
-        if(queue.size() >= transformationSize) {
+        if (!queueFilled) {
+            if (queue.size() < transformationSize) {
+                return true;
+            }
+            queueFilled = true;
             if (!condition.execute(queue)) {
                 return false;
             }
+            for (int i = 0; i < transformationSize; i++) {
+                action.accept(queue.get(i));
+            }
             queue.remove(0);
+            return true;
+        }
+        if (!condition.execute(queue)) {
+            return false;
         }
         action.accept(e);
+        queue.remove(0);
         return true;
     }
 
