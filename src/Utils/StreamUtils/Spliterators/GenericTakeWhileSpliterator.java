@@ -4,6 +4,7 @@ package Utils.StreamUtils.Spliterators;
 import TestingUtils.JUnitTesting.TimedRule.TimedRule;
 import Utils.StreamUtils.Interfaces.BinaryPredicate;
 import Utils.StreamUtils.Interfaces.NaryPredicate;
+import Utils.StreamUtils.Interfaces.NullaryPredicate;
 import Utils.StreamUtils.Interfaces.UnaryPredicate;
 import org.junit.Rule;
 import org.junit.Test;
@@ -32,7 +33,7 @@ public class GenericTakeWhileSpliterator<T> implements Spliterator<T>, Cloneable
     public GenericTakeWhileSpliterator(Spliterator<T> source, NaryPredicate<T> predicate) {
         this.source = source;
         this.condition = predicate;
-        this.conditionSize = condition.getSize();
+        this.conditionSize = (condition.getSize() > 0) ? condition.getSize() : 1;
         this.queue = new ArrayQueue<>(this.conditionSize);
     }
 
@@ -122,7 +123,7 @@ public class GenericTakeWhileSpliterator<T> implements Spliterator<T>, Cloneable
             println(StreamSupport.doubleStream((DoubleTakeWhileSpliterator) myGTWS1, false));
 
 
-            AbstractPrimitiveTakeWhileSpliterator<Integer, IntConsumer, OfInt> myGTWS2 = new IntTakeWhileSpliterator(
+            PrimitiveTakeWhileSpliterator<Integer, IntConsumer, OfInt> myGTWS2 = new IntTakeWhileSpliterator(
                 IntStream.of(0, 1, 2, 4, 8, 16, 32, 64, 128).spliterator(),
                     (UnaryPredicate<Integer>) (i) -> i < 16);
             println(StreamSupport.intStream((IntTakeWhileSpliterator) myGTWS2, false));
@@ -136,6 +137,8 @@ public class GenericTakeWhileSpliterator<T> implements Spliterator<T>, Cloneable
             println(takeWhile(Stream.of('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'), (UnaryPredicate<Character>) s -> s.compareTo('e') < 0));
 
             println(takeWhile(Stream.of("one", "two", "three", "four", "five", "six"), (BinaryPredicate<String>) (t1, t2) -> t1.length() <= t2.length()));
+
+            println(takeWhile(Stream.of("one", "two", "three", "four", "five", "six"), (NullaryPredicate<String>) () -> true));
         }
     }
 }

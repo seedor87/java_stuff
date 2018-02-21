@@ -4,18 +4,18 @@ import Utils.StreamUtils.Interfaces.NaryHomogenousMapping;
 
 import java.util.Spliterator;
 
-public abstract class AbstractPrimitiveVariadicSpliterator<T, U, V extends Spliterator.OfPrimitive<T, U, V>> extends GenericVariadicSpliterator<T> implements Spliterator.OfPrimitive<T, U, V> {
+public abstract class PrimitiveVariadicSpliterator<T, U, V extends Spliterator.OfPrimitive<T, U, V>> extends GenericVariadicSpliterator<T> implements Spliterator.OfPrimitive<T, U, V> {
 
     @Override
     public abstract V getEmtpySpliterator();
 
     public abstract boolean actionAccept(U action);
 
-    public AbstractPrimitiveVariadicSpliterator(V source, NaryHomogenousMapping<T> mapping, Process process) {
+    public PrimitiveVariadicSpliterator(V source, NaryHomogenousMapping<T> mapping, Process process) {
         super(source, mapping, process);
     }
 
-    public AbstractPrimitiveVariadicSpliterator(V source, NaryHomogenousMapping<T> mapping) {
+    public PrimitiveVariadicSpliterator(V source, NaryHomogenousMapping<T> mapping) {
         super(source, mapping);
     }
 
@@ -37,9 +37,9 @@ public abstract class AbstractPrimitiveVariadicSpliterator<T, U, V extends Split
         if(found.get()) {
             return this.getEmtpySpliterator();
         }
-        AbstractPrimitiveVariadicSpliterator clone;
+        PrimitiveVariadicSpliterator clone;
         try {
-            clone = (AbstractPrimitiveVariadicSpliterator) clone();
+            clone = (PrimitiveVariadicSpliterator) clone();
         } catch (CloneNotSupportedException e) {
             throw new InternalError(e);
         }

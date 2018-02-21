@@ -6,7 +6,7 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.DoubleConsumer;
 
-public class DoubleDropWhileSpliterator extends AbstractPrimitiveDropWhileSpliterator<Double, DoubleConsumer, Spliterator.OfDouble> implements Spliterator.OfDouble {
+public class DoubleDropWhileSpliterator extends PrimitiveDropWhileSpliterator<Double, DoubleConsumer, Spliterator.OfDouble> implements Spliterator.OfDouble {
 
     public DoubleDropWhileSpliterator(Spliterator.OfDouble source, NaryPredicate<Double> predicate) {
         super(source, predicate);

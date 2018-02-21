@@ -6,7 +6,7 @@ import java.util.stream.StreamSupport;
 
 import static Utils.Console.Printing.println;
 
-public class DoubleBoundedSpliterator extends AbstractPrimitiveBoundedSpliterator<Double, DoubleConsumer, Spliterator.OfDouble> implements Spliterator.OfDouble {
+public class DoubleBoundedSpliterator extends PrimitiveBoundedSpliterator<Double, DoubleConsumer, Spliterator.OfDouble> implements Spliterator.OfDouble {
 
     public DoubleBoundedSpliterator(Double initialization, Predicate<Double> termination, UnaryOperator<Double> incrementation) {
         super(initialization, termination, incrementation);

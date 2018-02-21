@@ -3,11 +3,11 @@ package Utils.StreamUtils.Spliterators;
 import java.util.Spliterator;
 import java.util.function.*;
 
-public abstract class AbstractPrimitiveBoundedSpliterator<T, U, V extends Spliterator.OfPrimitive<T, U, V>> extends GenericBoundedSpliterator<T> implements Spliterator.OfPrimitive<T, U, V> {
+public abstract class PrimitiveBoundedSpliterator<T, U, V extends Spliterator.OfPrimitive<T, U, V>> extends GenericBoundedSpliterator<T> implements Spliterator.OfPrimitive<T, U, V> {
 
     public abstract boolean tryAdvance(U action);
 
-    public AbstractPrimitiveBoundedSpliterator(T initialization, Predicate<T> termination, UnaryOperator<T> incrementation) {
+    public PrimitiveBoundedSpliterator(T initialization, Predicate<T> termination, UnaryOperator<T> incrementation) {
         super(initialization, termination, incrementation);
     }
 
@@ -17,9 +17,9 @@ public abstract class AbstractPrimitiveBoundedSpliterator<T, U, V extends Splite
         if(prefix == null) {
             return null;
         }
-        AbstractPrimitiveBoundedSpliterator<T, U, V> clone;
+        PrimitiveBoundedSpliterator<T, U, V> clone;
         try {
-            clone = (AbstractPrimitiveBoundedSpliterator<T, U, V>) clone();
+            clone = (PrimitiveBoundedSpliterator<T, U, V>) clone();
         } catch (CloneNotSupportedException e) {
             throw new InternalError(e);
         }

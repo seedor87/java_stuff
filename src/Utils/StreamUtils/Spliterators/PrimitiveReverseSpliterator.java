@@ -2,11 +2,11 @@ package Utils.StreamUtils.Spliterators;
 
 import java.util.Spliterator;
 
-public abstract class AbstractPrimitiveReverseSpliterator<T, U, V extends Spliterator.OfPrimitive<T, U, V>> extends GenericReverseSpliterator<T> implements Spliterator.OfPrimitive<T, U, V> {
+public abstract class PrimitiveReverseSpliterator<T, U, V extends Spliterator.OfPrimitive<T, U, V>> extends GenericReverseSpliterator<T> implements Spliterator.OfPrimitive<T, U, V> {
 
     public abstract boolean tryAdvance(U action);
 
-    public AbstractPrimitiveReverseSpliterator(Spliterator<T> source) {
+    public PrimitiveReverseSpliterator(Spliterator<T> source) {
         super(source);
     }
 
@@ -16,9 +16,9 @@ public abstract class AbstractPrimitiveReverseSpliterator<T, U, V extends Splite
         if(prefix == null) {
             return null;
         }
-        AbstractPrimitiveReverseSpliterator<T, U, V> clone;
+        PrimitiveReverseSpliterator<T, U, V> clone;
         try {
-            clone = (AbstractPrimitiveReverseSpliterator<T, U, V>) clone();
+            clone = (PrimitiveReverseSpliterator<T, U, V>) clone();
         } catch (CloneNotSupportedException e) {
             throw new InternalError(e);
         }

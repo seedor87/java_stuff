@@ -3,13 +3,12 @@ package Utils.StreamUtils.Spliterators;
 import Utils.StreamUtils.Interfaces.NaryPredicate;
 
 import java.util.Spliterator;
-import java.util.function.IntConsumer;
 
-public abstract class AbstractPrimitiveDropWhileSpliterator<T, U, V extends Spliterator.OfPrimitive<T, U, V>> extends GenericDropWhileSpliterator<T> implements Spliterator.OfPrimitive<T, U, V> {
+public abstract class PrimitiveDropWhileSpliterator<T, U, V extends Spliterator.OfPrimitive<T, U, V>> extends GenericDropWhileSpliterator<T> implements Spliterator.OfPrimitive<T, U, V> {
     @Override
     public abstract V getEmtpySpliterator();
 
-    public AbstractPrimitiveDropWhileSpliterator(V source, NaryPredicate<T> predicate) {
+    public PrimitiveDropWhileSpliterator(V source, NaryPredicate<T> predicate) {
         super(source, predicate);
     }
 
@@ -29,9 +28,9 @@ public abstract class AbstractPrimitiveDropWhileSpliterator<T, U, V extends Spli
         if(found.get()) {
             return this.getEmtpySpliterator();
         }
-        AbstractPrimitiveTakeWhileSpliterator clone;
+        PrimitiveTakeWhileSpliterator clone;
         try {
-            clone = (AbstractPrimitiveTakeWhileSpliterator) clone();
+            clone = (PrimitiveTakeWhileSpliterator) clone();
         } catch (CloneNotSupportedException e) {
             throw new InternalError(e);
         }

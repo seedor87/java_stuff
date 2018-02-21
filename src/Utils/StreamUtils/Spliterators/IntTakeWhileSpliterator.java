@@ -8,7 +8,7 @@ import java.util.function.IntConsumer;
 
 import static Utils.Console.Printing.println;
 
-public class IntTakeWhileSpliterator extends AbstractPrimitiveTakeWhileSpliterator<Integer, IntConsumer, Spliterator.OfInt> implements Spliterator.OfInt {
+public class IntTakeWhileSpliterator extends PrimitiveTakeWhileSpliterator<Integer, IntConsumer, Spliterator.OfInt> implements Spliterator.OfInt {
 
     public IntTakeWhileSpliterator(Spliterator.OfInt source, NaryPredicate<Integer> predicate) {
         super(source, predicate);

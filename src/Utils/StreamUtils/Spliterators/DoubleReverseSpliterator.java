@@ -3,7 +3,7 @@ package Utils.StreamUtils.Spliterators;
 import java.util.Spliterator;
 import java.util.function.DoubleConsumer;
 
-public class DoubleReverseSpliterator extends AbstractPrimitiveReverseSpliterator<Double, DoubleConsumer, Spliterator.OfDouble> implements Spliterator.OfDouble {
+public class DoubleReverseSpliterator extends PrimitiveReverseSpliterator<Double, DoubleConsumer, Spliterator.OfDouble> implements Spliterator.OfDouble {
 
     public DoubleReverseSpliterator(OfDouble spliterator) {
         super(spliterator);

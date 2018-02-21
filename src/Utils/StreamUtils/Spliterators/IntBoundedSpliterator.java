@@ -6,7 +6,7 @@ import java.util.Spliterator;
 import java.util.function.*;
 import java.util.stream.StreamSupport;
 
-public class IntBoundedSpliterator extends AbstractPrimitiveBoundedSpliterator<Integer, IntConsumer, Spliterator.OfInt> implements Spliterator.OfInt {
+public class IntBoundedSpliterator extends PrimitiveBoundedSpliterator<Integer, IntConsumer, Spliterator.OfInt> implements Spliterator.OfInt {
 
     public IntBoundedSpliterator(Integer initialization, Predicate<Integer> termination, UnaryOperator<Integer> incrementation) {
         super(initialization, termination, incrementation);

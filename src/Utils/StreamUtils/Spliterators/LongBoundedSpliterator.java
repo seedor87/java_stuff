@@ -4,7 +4,7 @@ import java.util.Spliterator;
 import java.util.function.*;
 import java.util.stream.StreamSupport;
 
-public class LongBoundedSpliterator extends AbstractPrimitiveBoundedSpliterator<Long, LongConsumer, Spliterator.OfLong> implements Spliterator.OfLong {
+public class LongBoundedSpliterator extends PrimitiveBoundedSpliterator<Long, LongConsumer, Spliterator.OfLong> implements Spliterator.OfLong {
 
     public LongBoundedSpliterator(Long initialization, Predicate<Long> termination, UnaryOperator<Long> incrementation) {
         super(initialization, termination, incrementation);

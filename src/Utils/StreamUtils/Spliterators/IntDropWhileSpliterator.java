@@ -11,7 +11,7 @@ import java.util.stream.StreamSupport;
 
 import static Utils.Console.Printing.println;
 
-public class IntDropWhileSpliterator extends AbstractPrimitiveDropWhileSpliterator<Integer, IntConsumer, Spliterator.OfInt> implements Spliterator.OfInt {
+public class IntDropWhileSpliterator extends PrimitiveDropWhileSpliterator<Integer, IntConsumer, Spliterator.OfInt> implements Spliterator.OfInt {
 
     public IntDropWhileSpliterator(Spliterator.OfInt source, NaryPredicate<Integer> predicate) {
         super(source, predicate);

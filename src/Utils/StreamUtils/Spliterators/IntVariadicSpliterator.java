@@ -1,13 +1,12 @@
 package Utils.StreamUtils.Spliterators;
 
 import Utils.StreamUtils.Interfaces.NaryHomogenousMapping;
-import Utils.StreamUtils.Interfaces.NaryMapping;
 
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.IntConsumer;
 
-public class IntVariadicSpliterator extends AbstractPrimitiveVariadicSpliterator<Integer, IntConsumer, Spliterator.OfInt> implements Spliterator.OfInt {
+public class IntVariadicSpliterator extends PrimitiveVariadicSpliterator<Integer, IntConsumer, Spliterator.OfInt> implements Spliterator.OfInt {
 
     public IntVariadicSpliterator(OfInt source, NaryHomogenousMapping<Integer> mapping, Process process) {
         super(source, mapping, process);
