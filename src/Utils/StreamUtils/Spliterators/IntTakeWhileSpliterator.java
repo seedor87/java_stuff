@@ -1,12 +1,10 @@
 package Utils.StreamUtils.Spliterators;
 
-import Utils.StreamUtils.Interfaces.NaryPredicate;
+import Utils.StreamUtils.MappingInterfaces.NaryPredicate;
 
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.IntConsumer;
-
-import static Utils.Console.Printing.println;
 
 public class IntTakeWhileSpliterator extends PrimitiveTakeWhileSpliterator<Integer, IntConsumer, Spliterator.OfInt> implements Spliterator.OfInt {
 

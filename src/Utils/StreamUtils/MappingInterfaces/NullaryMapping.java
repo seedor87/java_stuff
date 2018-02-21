@@ -1,4 +1,4 @@
-package Utils.StreamUtils.Interfaces;
+package Utils.StreamUtils.MappingInterfaces;
 
 @FunctionalInterface
 public interface NullaryMapping<S, T> extends NaryMapping<S, T> {

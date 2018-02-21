@@ -1,7 +1,7 @@
 package Utils.StreamUtils.Spliterators;
 
-import Utils.StreamUtils.Interfaces.NaryPredicate;
-import Utils.StreamUtils.Interfaces.UnaryPredicate;
+import Utils.StreamUtils.MappingInterfaces.NaryPredicate;
+import Utils.StreamUtils.MappingInterfaces.UnaryPredicate;
 
 import java.util.Spliterator;
 import java.util.Spliterators;

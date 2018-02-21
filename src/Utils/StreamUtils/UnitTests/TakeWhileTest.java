@@ -1,12 +1,11 @@
 package Utils.StreamUtils.UnitTests;
 
 import TestingUtils.JUnitTesting.TimedRule.TimedRule;
-import Utils.StreamUtils.Interfaces.BinaryPredicate;
-import Utils.StreamUtils.Interfaces.NullaryPredicate;
-import Utils.StreamUtils.Interfaces.TrinaryPredicate;
-import Utils.StreamUtils.Interfaces.UnaryPredicate;
+import Utils.StreamUtils.MappingInterfaces.BinaryPredicate;
+import Utils.StreamUtils.MappingInterfaces.NullaryPredicate;
+import Utils.StreamUtils.MappingInterfaces.TrinaryPredicate;
+import Utils.StreamUtils.MappingInterfaces.UnaryPredicate;
 import Utils.StreamUtils.Spliterators.DoubleTakeWhileSpliterator;
-import Utils.StreamUtils.Spliterators.GenericDropWhileSpliterator;
 import Utils.StreamUtils.Spliterators.GenericTakeWhileSpliterator;
 import Utils.StreamUtils.Spliterators.IntTakeWhileSpliterator;
 import org.junit.Rule;
@@ -14,7 +13,6 @@ import org.junit.Test;
 import org.junit.rules.TestRule;
 
 import java.util.function.DoubleSupplier;
-import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;

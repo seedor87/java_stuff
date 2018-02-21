@@ -1,23 +1,13 @@
 package Utils.StreamUtils.Spliterators;
 
-import TestingUtils.JUnitTesting.TimedRule.TimedRule;
-import Utils.StreamUtils.Interfaces.*;
+import Utils.StreamUtils.MappingInterfaces.*;
 import com.sun.jmx.remote.internal.ArrayQueue;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestRule;
 
 import java.util.Comparator;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
-import java.util.stream.IntStream;
-import java.util.stream.StreamSupport;
-
-import static Utils.Console.Printing.println;
-import static Utils.StreamUtils.Methods.makeString;
-import static junit.framework.TestCase.assertEquals;
 
 public class GenericDropWhileSpliterator<T> implements Spliterator<T>, Cloneable {
     protected Spliterator<T> source;

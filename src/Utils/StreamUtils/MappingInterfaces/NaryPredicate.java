@@ -1,4 +1,4 @@
-package Utils.StreamUtils.Interfaces;
+package Utils.StreamUtils.MappingInterfaces;
 
 import java.util.Collection;
 

@@ -1,4 +1,4 @@
-package Utils.StreamUtils.Interfaces;
+package Utils.StreamUtils.MappingInterfaces;
 
 @FunctionalInterface
 public interface QuaternaryPredicate<T> extends NaryPredicate<T> {

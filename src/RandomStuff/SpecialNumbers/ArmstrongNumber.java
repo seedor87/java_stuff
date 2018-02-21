@@ -3,7 +3,7 @@ package RandomStuff.SpecialNumbers;
 import Utils.StreamUtils.Methods;
 import TestingUtils.JUnitTesting.TimedRule.TimedRule;
 import Utils.Console.Special;
-import Utils.StreamUtils.Interfaces.UnaryPredicate;
+import Utils.StreamUtils.MappingInterfaces.UnaryPredicate;
 import Utils.Timing.SYSStopwatch;
 import Utils.Timing.TimeUnit;
 import org.junit.Rule;

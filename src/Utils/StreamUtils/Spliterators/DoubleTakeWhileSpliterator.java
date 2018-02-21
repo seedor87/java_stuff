@@ -1,6 +1,6 @@
 package Utils.StreamUtils.Spliterators;
 
-import Utils.StreamUtils.Interfaces.*;
+import Utils.StreamUtils.MappingInterfaces.*;
 
 import java.util.Spliterator;
 import java.util.Spliterators;

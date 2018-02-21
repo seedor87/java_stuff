@@ -1,10 +1,10 @@
 package Utils.StreamUtils.UnitTests;
 
 import TestingUtils.JUnitTesting.TimedRule.TimedRule;
-import Utils.StreamUtils.Interfaces.BinaryPredicate;
-import Utils.StreamUtils.Interfaces.NullaryPredicate;
-import Utils.StreamUtils.Interfaces.TrinaryPredicate;
-import Utils.StreamUtils.Interfaces.UnaryPredicate;
+import Utils.StreamUtils.MappingInterfaces.BinaryPredicate;
+import Utils.StreamUtils.MappingInterfaces.NullaryPredicate;
+import Utils.StreamUtils.MappingInterfaces.TrinaryPredicate;
+import Utils.StreamUtils.MappingInterfaces.UnaryPredicate;
 import Utils.StreamUtils.Spliterators.IntDropWhileSpliterator;
 import org.junit.Rule;
 import org.junit.Test;

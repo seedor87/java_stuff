@@ -1,4 +1,4 @@
-package Utils.StreamUtils.Interfaces;
+package Utils.StreamUtils.MappingInterfaces;
 
 public interface UnaryHomogenousMapping<T> extends NaryMapping<T, T> {
     T execute(T t);

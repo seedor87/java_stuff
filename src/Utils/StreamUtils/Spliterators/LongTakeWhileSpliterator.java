@@ -1,6 +1,6 @@
 package Utils.StreamUtils.Spliterators;
 
-import Utils.StreamUtils.Interfaces.NaryPredicate;
+import Utils.StreamUtils.MappingInterfaces.NaryPredicate;
 
 import java.util.Spliterator;
 import java.util.Spliterators;

@@ -1,6 +1,6 @@
 package Utils.StreamUtils.Spliterators;
 
-import Utils.StreamUtils.Interfaces.NaryHomogenousMapping;
+import Utils.StreamUtils.MappingInterfaces.NaryHomogenousMapping;
 
 import java.util.Spliterator;
 import java.util.Spliterators;

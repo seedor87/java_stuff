@@ -1,7 +1,6 @@
 package Utils.StreamUtils.Spliterators;
 
-import Utils.StreamUtils.Interfaces.NaryHomogenousMapping;
-import Utils.StreamUtils.Interfaces.NaryMapping;
+import Utils.StreamUtils.MappingInterfaces.NaryHomogenousMapping;
 import com.sun.jmx.remote.internal.ArrayQueue;
 
 import java.util.*;

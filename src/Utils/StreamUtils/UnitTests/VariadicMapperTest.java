@@ -1,7 +1,7 @@
 package Utils.StreamUtils.UnitTests;
 
 import TestingUtils.JUnitTesting.TimedRule.TimedRule;
-import Utils.StreamUtils.Interfaces.TrinaryHomogenousMapping;
+import Utils.StreamUtils.MappingInterfaces.TrinaryHomogenousMapping;
 import Utils.StreamUtils.Spliterators.GenericVariadicSpliterator;
 import Utils.StreamUtils.Spliterators.IntVariadicSpliterator;
 import org.junit.Rule;

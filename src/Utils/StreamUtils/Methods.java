@@ -1,15 +1,13 @@
 package Utils.StreamUtils;
 
 import static Utils.Console.Printing.*;
-import static Utils.StreamUtils.Functions.*;
 
 import TestingUtils.JUnitTesting.TimedRule.TimedRule;
-import Utils.Console.Special;
-import Utils.StreamUtils.Interfaces.BinaryPredicate;
+import Utils.StreamUtils.MappingInterfaces.BinaryPredicate;
 import Utils.Timing.SYSStopwatch;
 import Utils.Timing.TimeUnit;
 import Utils.StreamUtils.Spliterators.*;
-import Utils.StreamUtils.Interfaces.*;
+import Utils.StreamUtils.MappingInterfaces.*;
 import Utils.StreamUtils.Spliterators.GenericVariadicSpliterator.Process;
 
 import org.junit.Rule;

@@ -1,14 +1,9 @@
 package Utils.StreamUtils.UnitTests;
 
 import TestingUtils.JUnitTesting.TimedRule.TimedRule;
-import Utils.StreamUtils.Interfaces.BinaryPredicate;
-import Utils.StreamUtils.Spliterators.IntDropWhileSpliterator;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
-
-import java.util.stream.IntStream;
-import java.util.stream.StreamSupport;
 
 import static Utils.Console.Printing.println;
 import static Utils.StreamUtils.Methods.intIterate;

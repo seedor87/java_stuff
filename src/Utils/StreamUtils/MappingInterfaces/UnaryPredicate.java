@@ -1,4 +1,4 @@
-package Utils.StreamUtils.Interfaces;
+package Utils.StreamUtils.MappingInterfaces;
 
 public interface UnaryPredicate<T> extends NaryPredicate<T> {
     Boolean execute(T t);

@@ -1,6 +1,6 @@
 package Utils.StreamUtils;
 
-import Utils.StreamUtils.Interfaces.NaryPredicate;
+import Utils.StreamUtils.MappingInterfaces.NaryPredicate;
 import com.sun.jmx.remote.internal.ArrayQueue;
 
 import java.util.ArrayList;
@@ -14,78 +14,9 @@ import java.util.stream.Stream;
 
 public class Functions {
 
-    public static IntFunction<? extends IntStream> intDropWhile(NaryPredicate<Integer> condition) {
-        return new IntFunction<IntStream>() {
-            final AtomicBoolean found = new AtomicBoolean();
-            int transformationSize = condition.getSize();
-            ArrayQueue<Integer> queue = new ArrayQueue<>(transformationSize);
-
-            @Override
-            public IntStream apply(int t) {
-                if (!found.get()) {
-                    queue.add(t);
-                    if(queue.size() >= transformationSize) {
-                        if (!condition.execute(queue)) {
-                            found.set(true);
-                            return IntStream.of(t);
-                        }
-                        queue.remove(0);
-                    }
-                    return IntStream.empty();
-                }
-                return IntStream.of(t);
-            }
-        };
-    }
-
-    public static DoubleFunction<? extends DoubleStream> doubleDropWhile(NaryPredicate<Double> condition) {
-        return new DoubleFunction<DoubleStream>() {
-            final AtomicBoolean found = new AtomicBoolean();
-            final AtomicBoolean queueFilled = new AtomicBoolean();
-            int transformationSize = condition.getSize();
-            ArrayQueue<Double> queue = new ArrayQueue<>(transformationSize);
-
-            @Override
-            public DoubleStream apply(double t) {
-                if (!found.get()) {
-                    queue.add(t);
-                    if(queue.size() >= transformationSize) {
-                        if (!condition.execute(queue)) {
-                            found.set(true);
-                            return DoubleStream.of(t);
-                        }
-                        queue.remove(0);
-                    }
-                    return DoubleStream.empty();
-                }
-                return DoubleStream.of(t);
-            }
-        };
-    }
-
-    public static LongFunction<? extends LongStream> longDropWhile(NaryPredicate<Long> condition) {
-        return new LongFunction<LongStream>() {
-            final AtomicBoolean found = new AtomicBoolean();
-            int transformationSize = condition.getSize();
-            ArrayQueue<Long> queue = new ArrayQueue<>(transformationSize);
-
-            @Override
-            public LongStream apply(long t) {
-                if (!found.get()) {
-                    queue.add(t);
-                    if(queue.size() >= transformationSize) {
-                        if (!condition.execute(queue)) {
-                            found.set(true);
-                            return LongStream.of(t);
-                        }
-                        queue.remove(0);
-                    }
-                    return LongStream.empty();
-                }
-                return LongStream.of(t);
-            }
-        };
-    }
+/*
+    This is the outdated way to deploy drop while, it can be used, but it bugs out with skipping the first elem of the stream regardless.
+    It may be cheaper than the spliterator but does not provide desired, predictable behavior, it has been kept for posterity
 
     public static <T> Function<T, Stream<T>> dropWhile(NaryPredicate<T> condition) {
         return new Function<T, Stream<T>>() {
@@ -110,6 +41,7 @@ public class Functions {
             }
         };
     }
+*/
 
     public static IntFunction<? extends IntStream> intDropN(long n) {
         return new IntFunction<IntStream>() {
