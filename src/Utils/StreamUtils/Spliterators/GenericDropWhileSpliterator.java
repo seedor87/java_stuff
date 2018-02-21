@@ -20,7 +20,7 @@ import java.util.stream.StreamSupport;
 import static Utils.Console.Printing.println;
 
 public class GenericDropWhileSpliterator<T> implements Spliterator<T>, Cloneable {
-    private Spliterator<T> source;
+    protected Spliterator<T> source;
     protected NaryPredicate<T> condition;
     protected final AtomicBoolean found = new AtomicBoolean();
     protected int conditionSize;
@@ -35,32 +35,36 @@ public class GenericDropWhileSpliterator<T> implements Spliterator<T>, Cloneable
     }
 
     public void actionAccept(Consumer<? super T> action, T e) {
-        queue.add(e);
-        if(!queueFilled.get()) {
-            if (queue.size() < conditionSize) { return; }
-            queueFilled.set(true);
-            if (!condition.execute(queue)) {
-                for (int i = 0; i < conditionSize -1; i++) {
-                    action.accept(queue.get(i));
+        if (!found.get()) {
+            queue.add(e);
+            if (!queueFilled.get()) {
+                if (queue.size() < conditionSize) {
+                    return;
+                }
+                queueFilled.set(true);
+                if (!condition.execute(queue)) {
+                    for (int i = 0; i < conditionSize - 1; i++) {
+                        action.accept(queue.get(i));
+                    }
                 }
             }
+            if (!condition.execute(queue)) {
+                found.set(true);
+                action.accept(e);
+            }
+            queue.remove(0);
+            return;
         }
-        if(!condition.execute(queue)) {
-            found.set(true);
-            action.accept(e);
-        }
-        queue.remove(0);
+        action.accept(e);
     }
 
     public boolean tryAdvance(Consumer<? super T> action) {
-        if(found.get()) { return source.tryAdvance(action); }
-        while(!found.get() && source.tryAdvance(t -> actionAccept(action, t)));
-        return found.get();
+        return this.getSource().tryAdvance(t -> actionAccept(action, t));
     }
 
     public void forEachRemaining(Consumer<? super T> action) {
         while(!found.get()) if(!tryAdvance(action)) return;
-        source.forEachRemaining(action);
+        this.getSource().forEachRemaining(action);
     }
 
     public Spliterator<T> getEmtpySpliterator() {
@@ -69,7 +73,7 @@ public class GenericDropWhileSpliterator<T> implements Spliterator<T>, Cloneable
 
     @Override
     public Spliterator<T> trySplit() {
-        Spliterator<T> prefix = source.trySplit();
+        Spliterator<T> prefix = this.getSource().trySplit();
         if(prefix == null) {
             return null;
         }

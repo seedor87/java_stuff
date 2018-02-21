@@ -160,55 +160,55 @@ public class Methods {
     }
 
     public static <S extends NaryPredicate<Integer>> IntStream dropWhile(IntStream stream, S predicate) {
-        return stream.flatMap(Functions.intDropWhile(predicate));
+        return StreamSupport.intStream(new IntDropWhileSpliterator(stream.spliterator(), predicate), false);
     }
     public static <S extends UnaryPredicate<Integer>> IntStream dropWhile(IntStream stream, S predicate) {
-        return stream.flatMap(Functions.intDropWhile(predicate));
+        return StreamSupport.intStream(new IntDropWhileSpliterator(stream.spliterator(), predicate), false);
     }
     public static <S extends BinaryPredicate<Integer>> IntStream dropWhile(IntStream stream, S predicate) {
-        return stream.flatMap(Functions.intDropWhile(predicate));
+        return StreamSupport.intStream(new IntDropWhileSpliterator(stream.spliterator(), predicate), false);
     }
     public static <S extends TrinaryPredicate<Integer>> IntStream dropWhile(IntStream stream, S predicate) {
-        return stream.flatMap(Functions.intDropWhile(predicate));
+        return StreamSupport.intStream(new IntDropWhileSpliterator(stream.spliterator(), predicate), false);
     }
 
     public static <S extends NaryPredicate<Double>> DoubleStream dropWhile(DoubleStream stream, S predicate) {
-        return stream.flatMap(Functions.doubleDropWhile(predicate));
+        return StreamSupport.doubleStream(new DoubleDropWhileSpliterator(stream.spliterator(), predicate), false);
     }
     public static <S extends UnaryPredicate<Double>> DoubleStream dropWhile(DoubleStream stream, S predicate) {
-        return stream.flatMap(Functions.doubleDropWhile(predicate));
+        return StreamSupport.doubleStream(new DoubleDropWhileSpliterator(stream.spliterator(), predicate), false);
     }
     public static <S extends BinaryPredicate<Double>> DoubleStream dropWhile(DoubleStream stream, S predicate) {
-        return stream.flatMap(Functions.doubleDropWhile(predicate));
+        return StreamSupport.doubleStream(new DoubleDropWhileSpliterator(stream.spliterator(), predicate), false);
     }
     public static <S extends TrinaryPredicate<Double>> DoubleStream dropWhile(DoubleStream stream, S predicate) {
-        return stream.flatMap(Functions.doubleDropWhile(predicate));
+        return StreamSupport.doubleStream(new DoubleDropWhileSpliterator(stream.spliterator(), predicate), false);
     }
 
     public static <S extends NaryPredicate<Long>> LongStream dropWhile(LongStream stream, S predicate) {
-        return stream.flatMap(Functions.longDropWhile(predicate));
+        return StreamSupport.longStream(new LongDropWhileSpliterator(stream.spliterator(), predicate), false);
     }
     public static <S extends UnaryPredicate<Long>> LongStream dropWhile(LongStream stream, S predicate) {
-        return stream.flatMap(Functions.longDropWhile(predicate));
+        return StreamSupport.longStream(new LongDropWhileSpliterator(stream.spliterator(), predicate), false);
     }
     public static <S extends BinaryPredicate<Long>> LongStream dropWhile(LongStream stream, S predicate) {
-        return stream.flatMap(Functions.longDropWhile(predicate));
+        return StreamSupport.longStream(new LongDropWhileSpliterator(stream.spliterator(), predicate), false);
     }
     public static <S extends TrinaryPredicate<Long>> LongStream dropWhile(LongStream stream, S predicate) {
-        return stream.flatMap(Functions.longDropWhile(predicate));
+        return StreamSupport.longStream(new LongDropWhileSpliterator(stream.spliterator(), predicate), false);
     }
 
     public static <S extends NaryPredicate<T>, T> Stream<T> dropWhile(Stream<T> stream, S predicate) {
-        return stream.flatMap(Functions.dropWhile(predicate));
+        return StreamSupport.stream(new GenericDropWhileSpliterator(stream.spliterator(), predicate), false);
     }
     public static <S extends UnaryPredicate<T>, T> Stream<T> dropWhile(Stream<T> stream, S predicate) {
-        return stream.flatMap(Functions.dropWhile(predicate));
+        return StreamSupport.stream(new GenericDropWhileSpliterator(stream.spliterator(), predicate), false);
     }
     public static <S extends BinaryPredicate<T>, T> Stream<T> dropWhile(Stream<T> stream, S predicate) {
-        return stream.flatMap(Functions.dropWhile(predicate));
+        return StreamSupport.stream(new GenericDropWhileSpliterator(stream.spliterator(), predicate), false);
     }
     public static <S extends TrinaryPredicate<T>, T> Stream<T> dropWhile(Stream<T> stream, S predicate) {
-        return stream.flatMap(Functions.dropWhile(predicate));
+        return StreamSupport.stream(new GenericDropWhileSpliterator(stream.spliterator(), predicate), false);
     }
 
     public static IntStream takeOnly(IntStream stream, IntPredicate predicate) {
@@ -417,16 +417,13 @@ public class Methods {
         println(takeWhile(IntStream.of(1,2,3,4,3,2,1), (BinaryPredicate<Integer>) (i1, i2) -> i1 != i2).map(i -> i));
         println(takeWhile(IntStream.of(1,2,3,4,3,2,1), (BinaryPredicate<Integer>) (i1, i2) -> i1 > i2).map(i -> i));
 
-        println(takeWhile(IntStream.of(1,2,3,4,5,6), (TrinaryPredicate<Integer>) (i1, i2, i3) -> i1 + i2 + i3 < 15).map(j -> j));
-        println();
+        println(dropWhile(IntStream.range(0,10), (UnaryPredicate<Integer>) (i) -> i < 10).map(i -> i));
+        println(dropWhile(IntStream.range(0,10), (UnaryPredicate<Integer>) (i) -> i < 5).map(i -> i));
+        println(dropWhile(IntStream.range(0,10), (UnaryPredicate<Integer>) (i) -> i < 0).map(i -> i));
 
-        println(dropWhile(IntStream.range(0,10), (UnaryPredicate<Integer>) (i) -> i < 10));
-        println(dropWhile(IntStream.range(0,10), (UnaryPredicate<Integer>) (i) -> i < 5));
-        println(dropWhile(IntStream.range(0,10), (UnaryPredicate<Integer>) (i) -> i < 0));
-
-        println(dropWhile(IntStream.of(1,2,3,4,3,2,1), (BinaryPredicate<Integer>) (i1, i2) -> i1 <= i2));
-        println(dropWhile(IntStream.of(1,2,3,4,3,2,1), (BinaryPredicate<Integer>) (i1, i2) -> true));
-        println(dropWhile(IntStream.of(1,2,3,4,3,2,1), (BinaryPredicate<Integer>) (i1, i2) -> i1 > i2));
+        println(dropWhile(IntStream.of(1,2,3,4,3,2,1), (BinaryPredicate<Integer>) (i1, i2) -> i1 <= i2).map(i -> i));
+        println(dropWhile(IntStream.of(1,2,3,4,3,2,1), (BinaryPredicate<Integer>) (i1, i2) -> true).map(i -> i));
+        println(dropWhile(IntStream.of(1,2,3,4,3,2,1), (BinaryPredicate<Integer>) (i1, i2) -> i1 > i2).map(i -> i));
 
         println(Special.FG_BRIGHT_CYAN, makeString(", ", IntStream.range(0, 10).flatMap(intTakeEveryNth(3))));
 
@@ -456,40 +453,40 @@ public class Methods {
 
         println(Special.FG_BRIGHT_CYAN, dropN(IntStream.range(0, 10), 5));
 
-        println(Special.FG_BRIGHT_CYAN, takeWhile(Stream.of("one", "two", "three", "four", "five", "six"), (UnaryPredicate<String>) s -> !s.contains("our")));
+        println(Special.FG_BRIGHT_CYAN, takeWhile(Stream.of("one", "two", "three", "four", "five", "six"), (UnaryPredicate<String>) s -> !s.contains("our")).map(i -> i));
 
-        println(Special.FG_BRIGHT_CYAN, dropWhile(Stream.of("one", "two", "three", "four", "five", "six"), (UnaryPredicate<String>) s -> !s.contains("our")));
+        println(Special.FG_BRIGHT_CYAN, dropWhile(Stream.of("one", "two", "three", "four", "five", "six"), (UnaryPredicate<String>) s -> !s.contains("our")).map(i -> i));
 
         println(Special.FG_BRIGHT_CYAN, takeWhile(IntStream.range(0, 10), (BinaryPredicate<Integer>) (i1, i2) -> i1 < i2).map(i -> i));
 
-        println(Special.FG_BRIGHT_CYAN, dropWhile(IntStream.range(0, 10), (BinaryPredicate<Integer>) (i1, i2) -> i1 > i2));
+        println(Special.FG_BRIGHT_CYAN, dropWhile(IntStream.range(0, 10), (BinaryPredicate<Integer>) (i1, i2) -> i1 > i2).map(i -> i));
 
         println(Special.FG_BRIGHT_CYAN, takeWhile(Stream.of("one", "two", "three", "four", "five", "six"), (TrinaryPredicate<String>) (i1, i2, i3) -> i1.length() <= i2.length() && i2.length() < i3.length()).map(i -> i));
 
-        println(Special.FG_BRIGHT_CYAN, dropWhile(Stream.of("one", "two", "three", "four", "five", "six"), (BinaryPredicate<String>) (i1, i2) -> i1.length() <= i2.length()));
+        println(Special.FG_BRIGHT_CYAN, dropWhile(Stream.of("one", "two", "three", "four", "five", "six"), (BinaryPredicate<String>) (i1, i2) -> i1.length() <= i2.length()).map(i -> i));
 
-        println(Special.FG_BRIGHT_CYAN, takeOnly(IntStream.range(0, 10), value -> value % 2 == 0));
+        println(Special.FG_BRIGHT_CYAN, takeOnly(IntStream.range(0, 10), value -> value % 2 == 0).map(i -> i));
 
-        println(Special.FG_BRIGHT_CYAN, dropOnly(IntStream.range(0, 10), value -> value % 2 == 0));
+        println(Special.FG_BRIGHT_CYAN, dropOnly(IntStream.range(0, 10), value -> value % 2 == 0).map(i -> i));
 
-        println(Special.FG_BRIGHT_CYAN, takeOnly(Stream.of("one", "two", "three", "four", "five", "six"), value -> value.length() < 5));
+        println(Special.FG_BRIGHT_CYAN, takeOnly(Stream.of("one", "two", "three", "four", "five", "six"), value -> value.length() < 5).map(i -> i));
 
-        println(Special.FG_BRIGHT_CYAN, listsOfN(Stream.of("one", "two", "three", "four", "five", "six"), 3));
+        println(Special.FG_BRIGHT_CYAN, listsOfN(Stream.of("one", "two", "three", "four", "five", "six"), 3).map(i -> i));
 
-        println(Special.FG_BRIGHT_CYAN, arraysOfN(IntStream.range(0, 100), 3));
+        println(Special.FG_BRIGHT_CYAN, arraysOfN(IntStream.range(0, 100), 3).map(i -> i));
 
-        println(Special.FG_RED, takeWhile(DoubleStream.of(1,2,3,4,3,2,1), (UnaryPredicate<Double>) (d) -> d < 4));
+        println(Special.FG_RED, takeWhile(DoubleStream.of(1,2,3,4,3,2,1), (UnaryPredicate<Double>) (d) -> d < 4).map(i -> i));
 
-        println(Special.FG_RED, takeWhile(DoubleStream.of(1,2,3,4,3,2,1), (BinaryPredicate<Double>) (d1, d2) -> d1 < d2).boxed());
+        println(Special.FG_RED, takeWhile(DoubleStream.of(1,2,3,4,3,2,1), (BinaryPredicate<Double>) (d1, d2) -> d1 < d2).boxed().map(i -> i));
 
 
-        println(Special.FG_RED, dropWhile(DoubleStream.of(1,2,3,4,3,2,1), (UnaryPredicate<Double>) (d) -> d < 4));
+        println(Special.FG_RED, dropWhile(DoubleStream.of(1,2,3,4,3,2,1), (UnaryPredicate<Double>) (d) -> d < 4).map(i -> i));
 
-        println(Special.FG_RED, dropWhile(DoubleStream.of(1,2,3,4,3,2,1), (BinaryPredicate<Double>) (d1, d2) -> d1 < d2));
+        println(Special.FG_RED, dropWhile(DoubleStream.of(1,2,3,4,3,2,1), (BinaryPredicate<Double>) (d1, d2) -> d1 < d2).map(i -> i));
 
-        println(Special.FG_RED, dropWhile(DoubleStream.of(1,2,3,4,3,2,1), (TrinaryPredicate<Double>) (d1, d2, d3) -> d1 < d2));
+        println(Special.FG_RED, dropWhile(DoubleStream.of(1,2,3,4,3,2,1), (TrinaryPredicate<Double>) (d1, d2, d3) -> d1 < d2).map(i -> i));
 
-        println(Special.FG_RED, dropWhile(DoubleStream.of(1,2,3,4,3,2,1), (QuaternaryPredicate<Double>) (d1, d2, d3, d4) -> d1 < d2));
+        println(Special.FG_RED, dropWhile(DoubleStream.of(1,2,3,4,3,2,1), (QuaternaryPredicate<Double>) (d1, d2, d3, d4) -> d1 < d2).map(i -> i));
 
         println(
             intIterate(
