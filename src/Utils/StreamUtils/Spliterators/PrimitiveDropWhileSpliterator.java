@@ -28,9 +28,9 @@ public abstract class PrimitiveDropWhileSpliterator<T, U, V extends Spliterator.
         if(found.get()) {
             return this.getEmtpySpliterator();
         }
-        PrimitiveTakeWhileSpliterator clone;
+        PrimitiveDropWhileSpliterator clone;
         try {
-            clone = (PrimitiveTakeWhileSpliterator) clone();
+            clone = (PrimitiveDropWhileSpliterator) clone();
         } catch (CloneNotSupportedException e) {
             throw new InternalError(e);
         }

@@ -2,15 +2,14 @@ package Utils.StreamUtils.Spliterators;
 
 
 import TestingUtils.JUnitTesting.TimedRule.TimedRule;
-import Utils.StreamUtils.Interfaces.BinaryPredicate;
-import Utils.StreamUtils.Interfaces.NaryPredicate;
-import Utils.StreamUtils.Interfaces.NullaryPredicate;
-import Utils.StreamUtils.Interfaces.UnaryPredicate;
+import Utils.StreamUtils.Interfaces.*;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 
 import com.sun.jmx.remote.internal.ArrayQueue;
+import org.junit.runners.JUnit4;
+
 import java.util.Comparator;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -20,7 +19,9 @@ import java.util.function.IntConsumer;
 import java.util.stream.*;
 
 import static Utils.Console.Printing.println;
+import static Utils.StreamUtils.Methods.makeString;
 import static Utils.StreamUtils.Methods.takeWhile;
+import static junit.framework.TestCase.assertEquals;
 
 public class GenericTakeWhileSpliterator<T> implements Spliterator<T>, Cloneable {
     private Spliterator<T> source;
@@ -108,37 +109,5 @@ public class GenericTakeWhileSpliterator<T> implements Spliterator<T>, Cloneable
     @Override
     public Comparator<? super T> getComparator() {
         return source.getComparator();
-    }
-
-    public static class TestingClass {
-
-        @Rule
-        public TestRule rule = new TimedRule();
-
-        @Test
-        public void test() {
-            GenericTakeWhileSpliterator<Double> myGTWS1 = new DoubleTakeWhileSpliterator(
-                DoubleStream.of(0, 1, 2, 4, 8, 16, 32, 64, 128).spliterator(),
-                    (BinaryPredicate<Double>) (d1, d2) -> d1 + 8d > d2);
-            println(StreamSupport.doubleStream((DoubleTakeWhileSpliterator) myGTWS1, false));
-
-
-            PrimitiveTakeWhileSpliterator<Integer, IntConsumer, OfInt> myGTWS2 = new IntTakeWhileSpliterator(
-                IntStream.of(0, 1, 2, 4, 8, 16, 32, 64, 128).spliterator(),
-                    (UnaryPredicate<Integer>) (i) -> i < 16);
-            println(StreamSupport.intStream((IntTakeWhileSpliterator) myGTWS2, false));
-
-
-            LongTakeWhileSpliterator myGTWS3 = new LongTakeWhileSpliterator(
-                LongStream.of(0, 1, 2, 4, 8, 16, 32, 64, 128).spliterator(),
-                (UnaryPredicate<Long>) (i) -> true);
-            println(StreamSupport.longStream(myGTWS3, false));
-
-            println(takeWhile(Stream.of('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'), (UnaryPredicate<Character>) s -> s.compareTo('e') < 0));
-
-            println(takeWhile(Stream.of("one", "two", "three", "four", "five", "six"), (BinaryPredicate<String>) (t1, t2) -> t1.length() <= t2.length()));
-
-            println(takeWhile(Stream.of("one", "two", "three", "four", "five", "six"), (NullaryPredicate<String>) () -> true));
-        }
     }
 }

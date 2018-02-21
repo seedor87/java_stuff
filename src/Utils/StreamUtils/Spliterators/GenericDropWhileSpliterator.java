@@ -1,10 +1,7 @@
 package Utils.StreamUtils.Spliterators;
 
 import TestingUtils.JUnitTesting.TimedRule.TimedRule;
-import Utils.StreamUtils.Interfaces.BinaryPredicate;
-import Utils.StreamUtils.Interfaces.NaryPredicate;
-import Utils.StreamUtils.Interfaces.NullaryPredicate;
-import Utils.StreamUtils.Interfaces.UnaryPredicate;
+import Utils.StreamUtils.Interfaces.*;
 import com.sun.jmx.remote.internal.ArrayQueue;
 import org.junit.Rule;
 import org.junit.Test;
@@ -19,6 +16,8 @@ import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
 
 import static Utils.Console.Printing.println;
+import static Utils.StreamUtils.Methods.makeString;
+import static junit.framework.TestCase.assertEquals;
 
 public class GenericDropWhileSpliterator<T> implements Spliterator<T>, Cloneable {
     protected Spliterator<T> source;
@@ -81,9 +80,9 @@ public class GenericDropWhileSpliterator<T> implements Spliterator<T>, Cloneable
         if(found.get()) {
             return this.getEmtpySpliterator();
         }
-        GenericTakeWhileSpliterator<T> clone;
+        GenericDropWhileSpliterator<T> clone;
         try {
-            clone = (GenericTakeWhileSpliterator<T>) clone();
+            clone = (GenericDropWhileSpliterator<T>) clone();
         } catch (CloneNotSupportedException e) {
             throw new InternalError(e);
         }
@@ -112,24 +111,5 @@ public class GenericDropWhileSpliterator<T> implements Spliterator<T>, Cloneable
     @Override
     public Comparator<? super T> getComparator() {
         return source.getComparator();
-    }
-
-    public static class TestingClass {
-
-        @Rule
-        public TestRule rule = new TimedRule();
-
-        @Test
-        public void test() {
-            println(StreamSupport.stream(new GenericDropWhileSpliterator<>(IntStream.of(1,2,3,4).boxed().spliterator(), (NullaryPredicate<Integer>) () -> true), false));
-
-            println(StreamSupport.stream(new GenericDropWhileSpliterator<>(IntStream.of(1,2,3,4).boxed().spliterator(), (UnaryPredicate<Integer>) i -> i < 3), false).map(i -> i));
-
-            println(StreamSupport.stream(new GenericDropWhileSpliterator<>(IntStream.of(1,2,3,4).boxed().spliterator(), (BinaryPredicate<Integer>) (i1, i2) -> i1 < i2), false).map(i -> i));
-
-            println(StreamSupport.stream(new GenericDropWhileSpliterator<>(IntStream.of(1,2,3,4).boxed().spliterator(), (BinaryPredicate<Integer>) (i1, i2) -> i1 > i2), false).map(i -> i));
-
-            println(StreamSupport.stream(new GenericDropWhileSpliterator<>(IntStream.of(1,2,4,4).boxed().spliterator(), (BinaryPredicate<Integer>) (i1, i2) -> i1 < i2), false).map(i -> i));
-        }
     }
 }
