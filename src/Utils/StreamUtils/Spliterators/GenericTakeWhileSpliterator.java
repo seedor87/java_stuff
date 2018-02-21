@@ -25,36 +25,28 @@ public class GenericTakeWhileSpliterator<T> implements Spliterator<T>, Cloneable
     private Spliterator<T> source;
     protected NaryPredicate<T> condition;
     protected final AtomicBoolean found = new AtomicBoolean();
-    protected int transformationSize;
+    protected int conditionSize;
     protected ArrayQueue<T> queue;
-    protected boolean queueFilled = false;
+    protected AtomicBoolean queueFilled = new AtomicBoolean();
 
     public GenericTakeWhileSpliterator(Spliterator<T> source, NaryPredicate<T> predicate) {
         this.source = source;
         this.condition = predicate;
-        this.transformationSize = condition.getSize();
-        this.queue = new ArrayQueue<>(this.transformationSize);
+        this.conditionSize = condition.getSize();
+        this.queue = new ArrayQueue<>(this.conditionSize);
     }
 
     public boolean actionAccept(Consumer<? super T> action, T e) {
         queue.add(e);
-        if (!queueFilled) {
-            if (queue.size() < transformationSize) {
-                return true;
-            }
-            queueFilled = true;
-            if (!condition.execute(queue)) {
-                return false;
-            }
-            for (int i = 0; i < transformationSize; i++) {
-                action.accept(queue.get(i));
-            }
+        if (!queueFilled.get()) {
+            if (queue.size() < conditionSize) { return true; }
+            queueFilled.set(true);
+            if (!condition.execute(queue)) { return false; }
+            for (int i = 0; i < conditionSize; i++) { action.accept(queue.get(i)); }
             queue.remove(0);
             return true;
         }
-        if (!condition.execute(queue)) {
-            return false;
-        }
+        if (!condition.execute(queue)) { return false; }
         action.accept(e);
         queue.remove(0);
         return true;
