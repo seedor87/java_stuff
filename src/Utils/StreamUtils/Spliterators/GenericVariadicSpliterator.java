@@ -15,6 +15,28 @@ public class GenericVariadicSpliterator<T> implements Spliterator<T>, Cloneable 
     interface Processable {
         void process(ArrayQueue queue);
     }
+
+    /**
+     * The enum Process represents the fine detail of the algorithm that consumes elements of the stream in a specified manner.
+     * SUBDIVIDED works by consuming the entire queue of size n after each successful pass of the mapping's execution.
+     * NONSUBDIVIDED works by rolling the queue with each new element and (aside from the onset) the queue is never empty.
+     *
+     * E.G.
+     * NONSUBDIVIDED {
+     *     input of [1,2,3,4,5] with a Binary Mapper ->
+     *          0th: [1,2],
+     *          1st: [2,3],
+     *          2nd: [3,4],
+     *          3rd: [4,5]
+     * }
+     *  SUBDIVIDED iteration {
+     *      input of [1,2,3,4,5] with a BinaryMapper ->
+     *          0th: [1,2],
+     *          1st: [3,4]
+     *          2nd: will not exec as len([5]) < BinaryMapper.size()
+     *  }
+     *
+     */
     public enum Process {
         SUBDIVIDED(ArrayQueue::clear),
         NONSUBDVIDED(queue -> queue.remove(0));

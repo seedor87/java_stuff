@@ -3,6 +3,7 @@ package Utils.StreamUtils.Spliterators;
 import TestingUtils.JUnitTesting.TimedRule.TimedRule;
 import Utils.StreamUtils.Interfaces.BinaryPredicate;
 import Utils.StreamUtils.Interfaces.NaryPredicate;
+import Utils.StreamUtils.Interfaces.NullaryPredicate;
 import Utils.StreamUtils.Interfaces.UnaryPredicate;
 import com.sun.jmx.remote.internal.ArrayQueue;
 import org.junit.Rule;
@@ -30,7 +31,7 @@ public class GenericDropWhileSpliterator<T> implements Spliterator<T>, Cloneable
     public GenericDropWhileSpliterator(Spliterator<T> source, NaryPredicate<T> predicate) {
         this.source = source;
         this.condition = predicate;
-        this.conditionSize = condition.getSize();
+        this.conditionSize = (condition.getSize() > 0) ? condition.getSize() : 1;
         this.queue = new ArrayQueue<>(this.conditionSize);
     }
 
@@ -120,6 +121,8 @@ public class GenericDropWhileSpliterator<T> implements Spliterator<T>, Cloneable
 
         @Test
         public void test() {
+            println(StreamSupport.stream(new GenericDropWhileSpliterator<>(IntStream.of(1,2,3,4).boxed().spliterator(), (NullaryPredicate<Integer>) () -> true), false));
+
             println(StreamSupport.stream(new GenericDropWhileSpliterator<>(IntStream.of(1,2,3,4).boxed().spliterator(), (UnaryPredicate<Integer>) i -> i < 3), false).map(i -> i));
 
             println(StreamSupport.stream(new GenericDropWhileSpliterator<>(IntStream.of(1,2,3,4).boxed().spliterator(), (BinaryPredicate<Integer>) (i1, i2) -> i1 < i2), false).map(i -> i));
