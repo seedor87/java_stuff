@@ -20,11 +20,11 @@ public class DoubleTakeWhileSpliterator extends AbstractPrimitiveTakeWhileSplite
     @Override
     public boolean actionAccept(DoubleConsumer action, Double e) {
         queue.add(e);
-        if (!queueFilled) {
+        if (!queueFilled.get()) {
             if (queue.size() < conditionSize) {
                 return true;
             }
-            queueFilled = true;
+            queueFilled.set(true);
             if (!condition.execute(queue)) {
                 return false;
             }

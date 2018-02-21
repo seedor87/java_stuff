@@ -22,11 +22,11 @@ public class IntTakeWhileSpliterator extends AbstractPrimitiveTakeWhileSpliterat
     @Override
     public boolean actionAccept(IntConsumer action, Integer e) {
         queue.add(e);
-        if (!queueFilled) {
+        if (!queueFilled.get()) {
             if (queue.size() < conditionSize) {
                 return true;
             }
-            queueFilled = true;
+            queueFilled.set(true);
             if (!condition.execute(queue)) {
                 return false;
             }

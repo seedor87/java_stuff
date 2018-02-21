@@ -20,11 +20,11 @@ public class LongTakeWhileSpliterator extends AbstractPrimitiveTakeWhileSplitera
     @Override
     public boolean actionAccept(LongConsumer action, Long e) {
         queue.add(e);
-        if (!queueFilled) {
+        if (!queueFilled.get()) {
             if (queue.size() < conditionSize) {
                 return true;
             }
-            queueFilled = true;
+            queueFilled.set(true);
             if (!condition.execute(queue)) {
                 return false;
             }
