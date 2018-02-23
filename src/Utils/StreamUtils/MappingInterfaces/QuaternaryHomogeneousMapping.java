@@ -1,7 +1,7 @@
 package Utils.StreamUtils.MappingInterfaces;
 
 @FunctionalInterface
-public interface QuaternaryHomogenousMapping<T> extends NaryMapping<T, T> {
+public interface QuaternaryHomogeneousMapping<T> extends NaryHomogeneousMapping<T> {
     T execute(T t1, T t2, T t3, T t4);
     @Override
     default int getSize() {

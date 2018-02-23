@@ -1,6 +1,6 @@
 package Utils.StreamUtils.Spliterators;
 
-import Utils.StreamUtils.MappingInterfaces.NaryHomogenousMapping;
+import Utils.StreamUtils.MappingInterfaces.NaryHomogeneousMapping;
 import com.sun.jmx.remote.internal.ArrayQueue;
 
 import java.util.*;
@@ -22,16 +22,16 @@ public class GenericVariadicSpliterator<T> implements Spliterator<T>, Cloneable 
      *
      * E.G.
      * NONSUBDIVIDED {
-     *     input of [1,2,3,4,5] with a Binary Mapper ->
-     *          0th: [1,2],
-     *          1st: [2,3],
-     *          2nd: [3,4],
-     *          3rd: [4,5]
+     *     input of [1,2,3,4,5], (BinaryMapper<Integer>) (i1, i2) -> i1 + i2  =
+     *          0th: 3 : [1,2],
+     *          1st: 5 : [2,3],
+     *          2nd: 7 : [3,4],
+     *          3rd: 9 : [4,5]
      * }
-     *  SUBDIVIDED iteration {
-     *      input of [1,2,3,4,5] with a BinaryMapper ->
-     *          0th: [1,2],
-     *          1st: [3,4]
+     * SUBDIVIDED iteration {
+     *      input of [1,2,3,4,5], (BinaryMapper<Integer>) (i1, i2) -> i1 + i2  =
+     *          0th: 3 : [1,2],
+     *          1st: 7: [3,4]
      *          2nd: will not exec as len([5]) < BinaryMapper.size()
      *  }
      *
@@ -47,14 +47,15 @@ public class GenericVariadicSpliterator<T> implements Spliterator<T>, Cloneable 
             this.processable.process(queue);
         }
     }
+
     private Spliterator<T> source;
-    protected NaryHomogenousMapping<T> mapping;
+    protected NaryHomogeneousMapping<T> mapping;
     protected Process algorithm;
     protected final AtomicBoolean found = new AtomicBoolean();
     protected int transformationSize;
     protected ArrayQueue<T> queue;
 
-    public GenericVariadicSpliterator(Spliterator<T> source, NaryHomogenousMapping<T> mapping, Process algorithm) {
+    public GenericVariadicSpliterator(Spliterator<T> source, NaryHomogeneousMapping<T> mapping, Process algorithm) {
         this.source = source;
         this.mapping = mapping;
         this.transformationSize = mapping.getSize();
@@ -62,7 +63,7 @@ public class GenericVariadicSpliterator<T> implements Spliterator<T>, Cloneable 
         this.algorithm = algorithm;
     }
 
-    public GenericVariadicSpliterator(Spliterator<T> source, NaryHomogenousMapping<T> mapping) {
+    public GenericVariadicSpliterator(Spliterator<T> source, NaryHomogeneousMapping<T> mapping) {
         this(source, mapping, SUBDIVIDED);
     }
 

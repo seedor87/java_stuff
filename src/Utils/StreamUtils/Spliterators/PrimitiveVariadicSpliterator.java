@@ -1,6 +1,6 @@
 package Utils.StreamUtils.Spliterators;
 
-import Utils.StreamUtils.MappingInterfaces.NaryHomogenousMapping;
+import Utils.StreamUtils.MappingInterfaces.NaryHomogeneousMapping;
 
 import java.util.Spliterator;
 
@@ -11,11 +11,11 @@ public abstract class PrimitiveVariadicSpliterator<T, U, V extends Spliterator.O
 
     public abstract boolean actionAccept(U action);
 
-    public PrimitiveVariadicSpliterator(V source, NaryHomogenousMapping<T> mapping, Process process) {
+    public PrimitiveVariadicSpliterator(V source, NaryHomogeneousMapping<T> mapping, Process process) {
         super(source, mapping, process);
     }
 
-    public PrimitiveVariadicSpliterator(V source, NaryHomogenousMapping<T> mapping) {
+    public PrimitiveVariadicSpliterator(V source, NaryHomogeneousMapping<T> mapping) {
         super(source, mapping);
     }
 

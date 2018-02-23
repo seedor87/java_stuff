@@ -288,35 +288,35 @@ public class Methods {
         return stream.flatMap(Functions.listsOfN(n)).map(ts -> (T[]) ts.toArray());
     }
 
-    public static <S extends NaryHomogenousMapping<Integer>> IntStream variadicMapToObj(IntStream stream, S pred, Process process) {
+    public static <S extends NaryHomogeneousMapping<Integer>> IntStream variadicMapToObj(IntStream stream, S pred, Process process) {
         return StreamSupport.intStream(new IntVariadicSpliterator(stream.spliterator(), pred, process), false);
     }
 
-    public static <S extends NaryHomogenousMapping<Integer>> IntStream variadicMapToObj(IntStream stream, S pred) {
+    public static <S extends NaryHomogeneousMapping<Integer>> IntStream variadicMapToObj(IntStream stream, S pred) {
         return StreamSupport.intStream(new IntVariadicSpliterator(stream.spliterator(), pred), false);
     }
 
-    public static <S extends NaryHomogenousMapping<Double>> DoubleStream variadicMapToObj(DoubleStream stream, S pred, Process process) {
+    public static <S extends NaryHomogeneousMapping<Double>> DoubleStream variadicMapToObj(DoubleStream stream, S pred, Process process) {
         return StreamSupport.doubleStream(new DoubleVariadicSpliterator(stream.spliterator(), pred, process), false);
     }
 
-    public static <S extends NaryHomogenousMapping<Double>> DoubleStream variadicMapToObj(DoubleStream stream, S pred) {
+    public static <S extends NaryHomogeneousMapping<Double>> DoubleStream variadicMapToObj(DoubleStream stream, S pred) {
         return StreamSupport.doubleStream(new DoubleVariadicSpliterator(stream.spliterator(), pred), false);
     }
 
-    public static <S extends NaryHomogenousMapping<Long>> LongStream variadicMapToObj(LongStream stream, S pred, Process process) {
+    public static <S extends NaryHomogeneousMapping<Long>> LongStream variadicMapToObj(LongStream stream, S pred, Process process) {
         return StreamSupport.longStream(new LongVariadicSpliterator(stream.spliterator(), pred, process), false);
     }
 
-    public static <S extends NaryHomogenousMapping<Long>> LongStream variadicMapToObj(LongStream stream, S pred) {
+    public static <S extends NaryHomogeneousMapping<Long>> LongStream variadicMapToObj(LongStream stream, S pred) {
         return StreamSupport.longStream(new LongVariadicSpliterator(stream.spliterator(), pred), false);
     }
 
-    public static <S extends NaryHomogenousMapping<T>, T> Stream<T> variadicMapToObj(Stream<T> stream, S pred, Process process) {
+    public static <S extends NaryHomogeneousMapping<T>, T> Stream<T> variadicMapToObj(Stream<T> stream, S pred, Process process) {
         return StreamSupport.stream(new GenericVariadicSpliterator(stream.spliterator(), pred, process), false);
     }
 
-    public static <S extends NaryHomogenousMapping<T>, T> Stream<T> variadicMapToObj(Stream<T> stream, S pred) {
+    public static <S extends NaryHomogeneousMapping<T>, T> Stream<T> variadicMapToObj(Stream<T> stream, S pred) {
         return StreamSupport.stream(new GenericVariadicSpliterator(stream.spliterator(), pred), false);
     }
 
@@ -365,19 +365,19 @@ public class Methods {
         ).limit(num_lists);
     }
 
-    public static Stream<IntStream> Ntiles (IntStream stream, double n) {
+    public static Stream<IntStream> ntiles(IntStream stream, double n) {
         return makeNtiles(stream, n).map(integers -> integers.stream().mapToInt(i -> i));
     }
 
-    public static Stream<DoubleStream> Ntiles (DoubleStream stream, double n) {
+    public static Stream<DoubleStream> ntiles(DoubleStream stream, double n) {
         return makeNtiles(stream, n).map(doubles -> doubles.stream().mapToDouble(d -> d));
     }
 
-    public static Stream<LongStream> Ntiles (LongStream stream, double n) {
+    public static Stream<LongStream> ntiles(LongStream stream, double n) {
         return makeNtiles(stream, n).map(longs -> longs.stream().mapToLong(l -> l));
     }
 
-    public static <T> Stream<Stream<T>> Ntiles (Stream<T> stream, double n) {
+    public static <T> Stream<Stream<T>> ntiles(Stream<T> stream, double n) {
         return makeNtiles(stream, n).map(Collection::stream);
     }
 
@@ -399,7 +399,7 @@ public class Methods {
         double[] percentiles = new double[]{.01,.02,.03,.04,.05,.06,.07,.08,.09,.10,.11,.12,.13,.14,.15,.16,.17,.18,.19,.2,.21,.22,.23,.24,.25};
         for (double d : percentiles) {
             println(d);
-            Ntiles(IntStream.range(0,1000), d).forEach(intStream -> print("", intStream.summaryStatistics()));
+            ntiles(IntStream.range(0,1000), d).forEach(intStream -> print("", intStream.summaryStatistics()));
             println();
         }
     }

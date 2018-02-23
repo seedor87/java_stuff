@@ -1,7 +1,9 @@
 package Utils.StreamUtils.UnitTests;
 
 import TestingUtils.JUnitTesting.TimedRule.TimedRule;
-import Utils.StreamUtils.MappingInterfaces.TrinaryHomogenousMapping;
+import Utils.StreamUtils.MappingInterfaces.BinaryHomogeneousMapping;
+import Utils.StreamUtils.MappingInterfaces.QuaternaryHomogeneousMapping;
+import Utils.StreamUtils.MappingInterfaces.TernaryHomogeneousMapping;
 import Utils.StreamUtils.Spliterators.GenericVariadicSpliterator;
 import Utils.StreamUtils.Spliterators.IntVariadicSpliterator;
 import org.junit.Rule;
@@ -22,12 +24,40 @@ public class VariadicMapperTest {
     @Test
     public void test() {
         assertEquals(
+                "3, 5, 7, 9",
+                makeString(
+                        StreamSupport.intStream(
+                                new IntVariadicSpliterator(
+                                        IntStream.range(1, 6).spliterator(),
+                                        (BinaryHomogeneousMapping<Integer>) (i1, i2) -> i1 + i2,
+                                        GenericVariadicSpliterator.Process.NONSUBDVIDED
+                                ),
+                                false
+                        ).map(i -> i)
+                )
+        );
+
+        assertEquals(
+                "3, 7",
+                makeString(
+                        StreamSupport.intStream(
+                                new IntVariadicSpliterator(
+                                        IntStream.range(1, 6).spliterator(),
+                                        (BinaryHomogeneousMapping<Integer>) (i1, i2) -> i1 + i2,
+                                        GenericVariadicSpliterator.Process.SUBDIVIDED
+                                ),
+                                false
+                        ).map(i -> i)
+                )
+        );
+
+        assertEquals(
                 "3, 12, 21",
                 makeString(
                         StreamSupport.intStream(
                                 new IntVariadicSpliterator(
                                         IntStream.range(0, 10).spliterator(),
-                                        (TrinaryHomogenousMapping<Integer>) (i1, i2, i3) -> i1 + i2 + i3,
+                                        (TernaryHomogeneousMapping<Integer>) (i1, i2, i3) -> i1 + i2 + i3,
                                         GenericVariadicSpliterator.Process.SUBDIVIDED
                                 ),
                                 false
@@ -41,7 +71,7 @@ public class VariadicMapperTest {
                         StreamSupport.intStream(
                                 new IntVariadicSpliterator(
                                         IntStream.range(0, 10).spliterator(),
-                                        (TrinaryHomogenousMapping<Integer>) (i1, i2, i3) -> i1 + i2 + i3,
+                                        (TernaryHomogeneousMapping<Integer>) (i1, i2, i3) -> i1 + i2 + i3,
                                         GenericVariadicSpliterator.Process.NONSUBDVIDED
                                 ),
                                 false
@@ -55,7 +85,7 @@ public class VariadicMapperTest {
                         StreamSupport.intStream(
                                 new IntVariadicSpliterator(
                                         IntStream.range(0, 10).spliterator(),
-                                        (TrinaryHomogenousMapping<Integer>) (i1, i2, i3) -> i1 + i3,
+                                        (TernaryHomogeneousMapping<Integer>) (i1, i2, i3) -> i1 + i3,
                                         GenericVariadicSpliterator.Process.SUBDIVIDED
                                 ),
                                 false
@@ -69,7 +99,7 @@ public class VariadicMapperTest {
                         StreamSupport.intStream(
                                 new IntVariadicSpliterator(
                                         IntStream.range(0, 10).spliterator(),
-                                        (TrinaryHomogenousMapping<Integer>) (i1, i2, i3) -> i1 + i3,
+                                        (TernaryHomogeneousMapping<Integer>) (i1, i2, i3) -> i1 + i3,
                                         GenericVariadicSpliterator.Process.NONSUBDVIDED
                                 ),
                                 false

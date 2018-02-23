@@ -1,6 +1,6 @@
 package Utils.StreamUtils.Spliterators;
 
-import Utils.StreamUtils.MappingInterfaces.NaryHomogenousMapping;
+import Utils.StreamUtils.MappingInterfaces.NaryHomogeneousMapping;
 
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -8,11 +8,11 @@ import java.util.function.LongConsumer;
 
 public class LongVariadicSpliterator extends PrimitiveVariadicSpliterator<Long, LongConsumer, Spliterator.OfLong> implements Spliterator.OfLong {
 
-    public LongVariadicSpliterator(OfLong source, NaryHomogenousMapping<Long> mapping, Process process) {
+    public LongVariadicSpliterator(OfLong source, NaryHomogeneousMapping<Long> mapping, Process process) {
         super(source, mapping, process);
     }
 
-    public LongVariadicSpliterator(OfLong source, NaryHomogenousMapping<Long> mapping) {
+    public LongVariadicSpliterator(OfLong source, NaryHomogeneousMapping<Long> mapping) {
         super(source, mapping);
     }
 

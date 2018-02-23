@@ -1,72 +1,77 @@
 package RandomStuff;
 
-import com.sun.jmx.remote.internal.ArrayQueue;
+import java.util.Arrays;
+import java.util.Collection;
 
 import static Utils.Console.Printing.println;
 
-interface NaryPred<T> {
-    default boolean test() { return true; }
-    default boolean test(T t) { return test(); }
-    default boolean test(T t1, T t2) { return test(t1); }
-    default boolean test(T t1, T t2, T t3) { return test(t1, t2); }
-            boolean test(T... ts);
+interface NaryPred<R, S> {
+            R test(S... ts);
+    default R test(Collection<S> ts) { return test((S[]) ts.toArray()); }
 }
 
-interface TernaryPred<T> extends NaryPred<T> {
+interface TernaryPred<R, S> extends NaryPred<R, S> {
+            R test(S t1, S t2, S t3);
     @Override
-            boolean test(T t1, T t2, T t3);
-    default boolean test(T... ts) { return test(ts[0], ts[1], ts[2]); }
+    default R test(S... ts) { return test(ts[0], ts[1], ts[2]); }
 }
 
-interface BinaryPred<T> extends TernaryPred<T> {
+interface BinaryPred<R, S> extends NaryPred<R, S> {
+            R test(S t1, S t2);
     @Override
-            boolean test(T t1, T t2);
-    default boolean test(T t1, T t2, T t3) { return test(t1, t2); }
+    default R test(S...ts) { return test(ts[0], ts[1]); }
 }
 
-interface UnaryPred<T> extends BinaryPred<T> {
+interface UnaryPred<R, S> extends NaryPred<R, S> {
+            R test(S t);
     @Override
-            boolean test(T t);
-    default boolean test(T t1, T t2) { return test(t1); }
+    default R test(S... ts) { return test(ts[0]); }
 }
 
-interface NullaryPred<T> extends UnaryPred<T> {
+interface NullaryPred<R, S> extends NaryPred<R, S> {
+            R test();
     @Override
-            boolean test();
-    default boolean test(T t) { return test(); }
+    default R test(S... ts) { return test(); }
 }
 
 public class TestPredicate {
 
-    public static <T extends Comparable> boolean eval(NaryPred<T> pred) {
-        return pred.test();
+    public static <R, S> R eval(NaryPred<R, S> pred, S... ts) {
+        return pred.test(ts);
+    }
+
+    public static <R, S> R eval(NaryPred<R, S> pred, Collection<S> ts) {
+        return pred.test(ts);
     }
 
     public static void main(String[] args) {
-        ArrayQueue<Integer> q = new ArrayQueue<>(4);
-        q.add(4);
-        println(q);
-        q.add(3);
-        println(q);
 
-        Integer[] ints = new Integer[]{0,1,2,2};
+        println(TestPredicate.eval((NullaryPred<Boolean, Integer>) () -> 1 < 2));
+        println(TestPredicate.eval((NullaryPred<Boolean, Integer>) () -> 1  < 2, Arrays.asList()));
 
-        NaryPred<Integer> naryPred = integers -> {
+        println(TestPredicate.eval((UnaryPred<Boolean, Integer>) (t) -> t < 50, 1));
+        println(TestPredicate.eval((UnaryPred<Boolean, Integer>) (t) -> t < 50, Arrays.asList(1)));
+
+        println(TestPredicate.eval((BinaryPred<Boolean, Integer>) (t1, t2) -> t1 < t2, 1, 2));
+        println(TestPredicate.eval((BinaryPred<Boolean, Integer>) (t1, t2) -> t1 < t2, Arrays.asList(1,2)));
+
+        println(TestPredicate.eval((TernaryPred<Boolean, Integer>) (t1, t2, t3) -> t1 < t2 && t2 < t3, 1,2,3));
+        println(TestPredicate.eval((TernaryPred<Boolean, Integer>) (t1, t2, t3) -> t1 < t2 && t2 < t3, Arrays.asList(1,2,3)));
+
+        println(TestPredicate.eval((NaryPred<Boolean, Integer>) ts -> {
             int i = 0;
-            while (i+1 < integers.length) {
-                if (integers[i] >= integers[++i]) { return false; }
+            while(i+1 < ts.length) {
+                if (ts[i] >= ts[++i]) { return false; }
             }
             return true;
-        };
+        }, 1,2,3,4));
+        println(TestPredicate.eval((NaryPred<Boolean, Integer>) ts -> {
+            int i = 0;
+            while(i+1 < ts.length) {
+                if (ts[i] >= ts[++i]) { return false; }
+            }
+            return true;
+        }, Arrays.asList(1,2,3,4)));
 
-        println(TestPredicate.eval(naryPred));
-
-        println(TestPredicate.eval((TernaryPred<Integer>) (t1, t2, t3) -> t1.compareTo(t2) < 0 && t2.compareTo(t3) < 0));
-
-        println(TestPredicate.eval((BinaryPred<Integer>) (t1, t2) -> t1 < t2));
-
-        println(TestPredicate.eval((UnaryPred<Integer>) (t) -> t < 50));
-
-        println(TestPredicate.eval((NullaryPred<Integer>) () -> 1 < 2));
     }
 }
